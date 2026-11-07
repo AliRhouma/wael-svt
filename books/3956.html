@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Cours reproduction masculine</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="Lycée Pilote de Médenine">
+<meta data-pagefind-meta="n[content]" content="3956">
+<meta data-pagefind-meta="title[content]" content="Cours reproduction masculine">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Cours reproduction masculine" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Cours reproduction masculine</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Lycée Pilote de Médenine · Par EZZEDDINI Mohamed · ezzeddini@gmail.com</span> <span class="tg">Cours</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1IJv7jTrj_psAMbRX-euFGbsN8RsEQRYg/view">↗ Cours reproduction masculine.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (6)</b><ul><li><a href="https://drive.google.com/file/d/1IJv7jTrj_psAMbRX-euFGbsN8RsEQRYg/view">Iyed Hasnaoui · bac 2024 › Nouveau dossier / SVT / Homme</a></li><li><a href="https://drive.google.com/file/d/1aRWnK89ru1z6H2zyUhe_C4S7xmH13QuK/view">Anas Saïd · IDEAL BAC MATH(Anas Saïd) › SVT / SVT pilote mednine / Homme</a></li><li><a href="https://drive.google.com/file/d/1Mmr9wVRwFiQ4Q0Oh6k6vtr9_Dy9MviuA/view">Emna bac maths 2025 · Drive de Emna (Bac maths) › svt / Homme cours+série+correction</a></li><li><a href="https://drive.google.com/file/d/1Uga86iDuX6_n0SQRDuOcmqMKIO5MoqFf/view">Mohamed aziz saideni lycee Farhat Hached bizertebac 2026 · BAC MATH 2026 MOHAMED AZIZ SAIDENI › TOUT 2026 / SVT / Homme</a></li><li><a href="https://drive.google.com/file/d/1oTJdXe_wrT6YTY3x_if9B43ivEobe-Ce/view">Mohamed Ahmed Zahi · Bac Math Zahi 2024/2025 › SVT / Cours / 2) reproduction humaine et santé / 1) reproduction chez l&#x27;homme</a></li><li><a href="https://drive.google.com/file/d/1-ATOSxPu8ZpbJhbn2keAMykJyZ0NNPT6/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 1 - Reproduction humaine et santé / Homme</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Reproduction chez l&#x27;homme</h2></div>
+<!-- SOURCE: Lycée Pilote de Médenine · Par EZZEDDINI Mohamed · ezzeddini@gmail.com -->
+<div class="exh"><span class="idx">Cours</span><h2>Chapitre I : COURS REPRODUCTION MASCULINE</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/3956.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Lycée Pilote de Médenine · Par EZZEDDINI Mohamed · ezzeddini@gmail.com</span> <span class="tg">Cours</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1IJv7jTrj_psAMbRX-euFGbsN8RsEQRYg/view">↗ Cours reproduction masculine.pdf</a></div>
+<!-- page 01 -->
+<p class="para"><b><span class="t-blue"><u>Année scolaire 2021- 2022</u></span></b></p>
+<p class="para"><b><span class="t-blue"><u>SV BAC (toutes les sections)</u></span></b></p>
+<!-- CROP: 3956 1 1 0.08 0.205 0.885 0.638 3956_hormones_steroides -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_hormones_steroides.png" alt=""></figure>
+<p class="subhead t-red"><b><u>Chapitre I : COURS REPRODUCTION MASCULINE</u></b></p>
+<!-- page 02 -->
+<p class="subhead t-red"><b><u>Leçon 1: Étude de la structure du testicule et du spermatozoïde chez l'homme</u></b></p>
+<p class="subhead t-navy"><b>I. Introduction</b></p>
+<p class="para">À partir de <b><span class="t-blue"><u>la puberté</u></span></b>, des modifications profondes apparaissent chez le garçon: développement de la barbe, aggravation de la voix, développement de la musculature, modification et développement de l'appareil génital mâle et production du sperme.</p>
+<p class="subhead t-navy"><b>II. Organisation de l'appareil génital de l'homme</b></p>
+<table>
+<tr><td>1</td><td><span class="t-blue">Testicule</span></td></tr>
+<tr><td>2</td><td><span class="t-blue">Epididyme</span></td></tr>
+<tr><td>3</td><td><span class="t-blue">Canal déférent</span></td></tr>
+<tr><td>4</td><td><span class="t-blue">Glande de Cowper</span></td></tr>
+<tr><td>5</td><td><span class="t-blue">Vésicule séminale</span></td></tr>
+<tr><td>6</td><td><span class="t-blue">Prostate</span></td></tr>
+<tr><td>7</td><td><span class="t-blue">Urètre</span></td></tr>
+<tr><td>8</td><td><span class="t-blue">Corps spongieux</span></td></tr>
+<tr><td>9</td><td><span class="t-blue">Corps caverneux</span></td></tr>
+<tr><td>10</td><td><span class="t-blue">Gland</span></td></tr>
+<tr><td>11</td><td><span class="t-blue">Orifice urogénital</span></td></tr>
+</table>
+<!-- CROP: 3956 1 2 0.35 0.232 0.967 0.572 3956_appareil_genital_homme -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_appareil_genital_homme.png" alt=""></figure>
+<table>
+<tr><th>Organes</th><th>Nombre et nom</th><th>Rôles</th></tr>
+<tr><td>Gonades</td><td>2 Testicules</td><td>Fonction exocrine (spermatogenèse)<br>Fonction endocrine (hormonogenèse)</td></tr>
+<tr><td rowspan="3">Voies génitales</td><td>2 épididymes</td><td>Stockage et maturation des spermatozoïdes</td></tr>
+<tr><td>2 Canaux déférents</td><td>Transport des spzs</td></tr>
+<tr><td>1 Pénis</td><td>Evacuation du sperme dans les voies génitales femelles</td></tr>
+<tr><td rowspan="3">Glandes annexes</td><td>2 Vésicules séminales</td><td rowspan="3">Sécrétion d'un liquide séminal nutritif, d'un produit riche en enzymes et d'un liquide diluant</td></tr>
+<tr><td>1 Prostate</td></tr>
+<tr><td>2 Glandes de Cowper</td></tr>
+<tr><td>Verge</td><td>Pénis</td><td>Organe d'accouplement ou de copulation</td></tr>
+</table>
+<!-- page 03 -->
+<p class="subhead t-navy"><b>III. STRUCTURE DU TESTICULE</b></p>
+<!-- CROP: 3956 1 3 0.06 0.102 0.945 0.332 3956_structure_testicule_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_structure_testicule_schema.png" alt=""></figure>
+<!-- CROP: 3956 1 3 0.052 0.326 0.482 0.612 3956_coupe_testicule_micro -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_coupe_testicule_micro.png" alt=""></figure>
+<!-- CROP: 3956 1 3 0.498 0.326 0.94 0.612 3956_tubes_seminiferes_meb -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_tubes_seminiferes_meb.png" alt=""></figure>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+<tr><td>Tube séminifère</td><td>Tissu interstitiel</td><td>Lumière du tube séminifère</td><td>Paroi du tube séminifère</td></tr>
+</table>
+<p class="para"><b>Activité 2 :</b></p>
+<p class="para">L'étude histologique du testicule d'un mammifère fournit la microphotographie ainsi que le schéma d'interprétation ci-dessous:</p>
+<!-- CROP: 3956 1 3 0.115 0.708 0.46 0.896 3956_activite2_microphotographie -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_activite2_microphotographie.png" alt=""></figure>
+<p class="para">Microphotographie</p>
+<!-- page 04 -->
+<ol class="qn">
+<li><b><span class="t-blue">Identifiez</span></b> les 3 zones a, b et c de la microphotographie en utilisant les termes suivants : tissu interstitiel, lumière du tube séminifère, paroi du tube séminifère</li>
+<li><span class="t-blue">Annotez</span> le schéma d'interprétation (de 1 à 12) de la partie encadrée avec les termes suivants :</li>
+</ol>
+<div class="data"><p class="para"><i>Spermatide en différenciation, spermatogonie, spermatocyte I en division, spermatocyte II, spermatide, spermatozoïde, cellule de Sertoli, capillaire sanguin, cellules de Leydig, spermatocyte I, spermatogonie en division, tissu interstitiel (tissu de Leydig).</i></p></div>
+<!-- CROP: 3956 1 4 0.495 0.048 0.962 0.366 3956_schema_interpretation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_schema_interpretation.png" alt=""></figure>
+<p class="para"><b>Schéma d'interprétation</b></p>
+<table>
+<tr><td><b><span class="t-blue">1 Spermatogonie</span></b></td><td><b><span class="t-blue">7 Cellule de Sertoli</span></b></td></tr>
+<tr><td><b><span class="t-blue">2 Spermatocyte I</span></b></td><td><b><span class="t-blue">8 Capillaire sanguin</span></b></td></tr>
+<tr><td><b><span class="t-blue">3 Spermatocyte II</span></b></td><td><b><span class="t-blue">9 Cellules de Leydig</span></b></td></tr>
+<tr><td><b><span class="t-blue">4 Spermatide</span></b></td><td><b><span class="t-blue">10 Spermatogonie en division</span></b></td></tr>
+<tr><td><b><span class="t-blue">5 Spermatide en différenciation</span></b></td><td><b><span class="t-blue">11 Tissu interstitiel</span></b></td></tr>
+<tr><td><b><span class="t-blue">6 Spermatozoïde</span></b></td><td><b><span class="t-blue">12 Spermatocyte II en division</span></b></td></tr>
+</table>
+<p class="para"><b>Un testicule est formé de deux types de tissus histologiquement et fonctionnellement différents:</b></p>
+<div class="data">
+<p class="para"><b><span class="t-red"><u>1. Les tubes séminifères:</u></span> chaque tube est formé d'une paroi qui entoure une lumière. La paroi est formée de deux types de cellules:</b></p>
+<p class="para"><b><span class="t-red"><u>a. Les cellules germinales</u></span> ou les cellules souches appelées aussi Gonies à l'origine de la formation des spermatozoïdes (spermatogenèse):fertilité de l'homme.</b></p>
+<p class="para"><b><span class="t-red"><u>b. Cellules de Sertoli</u></span> ayant un rôle de soutien et de nutrition des spermatozoïdes. Elles synthétisent aussi des hormones et des protéines.</b></p>
+<p class="para"><b><span class="t-red"><u>2. Le tissu interstitiel</u></span> <u>formé de </u>cellules de Leydig en contact étroit avec des capillaires sanguins.</b></p>
+</div>
+<!-- page 05 -->
+<!-- CROP: 3956 1 5 0.043 0.092 0.695 0.422 3956_structures_fonction_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_structures_fonction_testicule.png" alt=""></figure>
+<!-- CROP: 3956 1 5 0.695 0.092 0.963 0.422 3956_spermatozoides_photo -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_spermatozoides_photo.png" alt=""></figure>
+<p class="subhead t-red"><b><u>IV. Structure et particularités cytologique et chromosomiques du gamète mâle; le spermatozoïde: activité 4</u></b></p>
+<p class="subhead t-navy"><b><u>1. La structure (1<sup>ère</sup> et 2<sup>ème</sup> questions)</u></b></p>
+<p class="para"><b>Le document suivant illustre d'une façon schématique la structure d'un spermatozoïde (gamète mâle).</b></p>
+<!-- CROP: 3956 1 5 0.08 0.555 0.92 0.755 3956_schema_spermatozoide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_schema_spermatozoide.png" alt=""></figure>
+<ol class="qn">
+<li><b><span class="t-blue">Identifiez</span></b> les zones A, B et C en utilisant les termes suivants : tête- queue- pièce intermédiaire.</li>
+<li><b><span class="t-blue">Légendez</span></b> le schéma en utilisant les termes suivants : centriole- noyau- mitochondrie- cytoplasme- acrosome- membrane plasmique, flagelle.</li>
+<li><b><span class="t-blue">Indiquez</span></b> les particularités cytologiques et chromosomiques du spermatozoïde en relation avec sa fonction.</li>
+</ol>
+<p class="para"><b><u>Réponses aux questions</u></b></p>
+<!-- page 06 -->
+<p class="para"><b><span class="t-blue"><u>1.</u> A: tête;<br>
+B: pièce intermédiaire;<br>
+C : queue (cytoplasme + flagelle)</span></b></p>
+<p class="para"><b><span class="t-red"><u>2.</u> 1: membrane plasmique<br>
+2: acrosome<br>
+3: noyau<br>
+4: centriole<br>
+5: mitochondrie<br>
+6: cytoplasme<br>
+7: flagelle</span></b></p>
+<p class="subhead t-navy"><b><span class="t-blue"><u>2 . Particularités cytologiques et chromosomiques du spz en relation avec sa fonction (Q3 activité 3). A apprendre</u></span></b></p>
+<p class="subhead t-navy"><b><span class="t-blue"><u>a. Le spermatozoïde est une cellule très différenciée, formée de 3 parties:</u></span></b></p>
+<div class="data">
+<p class="para">- <u>Tête </u>contenant un noyau haploïde à 23 chromosomes, ce noyau est coiffé d'un acrosome.<br>
+- <u>Pièce intermédiaire </u>contenant de nombreuses mitochondries (énergie) formant une hélice.<br>
+- <u> La </u>queue formée d'un flagelle entouré par la membrane plasmique.</p>
+</div>
+<p class="subhead t-navy"><b><span class="t-blue"><u>b. Relation structure – fonction :</u></span></b></p>
+<div class="data">
+<p class="para"><b><span class="t-blue">Le spermatozoïde se déplace dans les voies génitales de la femme et forme, après fécondation, avec le gamète femelle un œuf :<br>
+<u>1. </u>La forme allongée hydrodynamique avec faible masse du cytoplasme.<br>
+2. La présence d'un flagelle (appareil propulseur) qui <u>facilite la propulsion et le déplacement du </u>cytoplasme.<br>
+<u>3. </u>La présence de mitochondries qui fournissent l'énergie nécessaire pour le mouvement du spermatozoïde (le pouvoir de se mouvoir).<br>
+<u>4. </u>La présence au niveau de la tête d'un acrosome riche en enzymes permettant la pénétration à l'intérieur du gamète femelle.<br>
+<u>5. </u>Une tête à noyau haploïde (n=23 chromosomes) qui permet de rétablir la diploïdie après fécondation.<br>
+<u>6.</u> La présence d'un centriole qui formera l'aster de la cellule œuf au cours de la fécondation</span></b></p>
+</div>
+<p class="para">NB :</p>
+<div class="data">
+<p class="para"><b>Microscopiquement</b>, le testicule est formé de différents types de cellules :</p>
+<table>
+<tr><th colspan="2">Cellules testiculaires</th><th>Localisation</th></tr>
+<tr><td colspan="2">Germinales</td><td rowspan="2">Tubes séminifères</td></tr>
+<tr><td rowspan="2">somatiques</td><td>Cellules de Sertoli</td></tr>
+<tr><td>Cellules de Leydig</td><td>Tissu interstitiel</td></tr>
+</table>
+</div>
+<!-- page 07 -->
+<!-- CROP: 3956 1 7 0.07 0.035 0.94 0.258 3956_doc1_coupe_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_doc1_coupe_testicule.png" alt=""></figure>
+<p class="para"><b><span class="t-red">Document 1 : Coupe transversale partielle d'un testicule d'un homme pubère</span></b></p>
+<!-- CROP: 3956 1 7 0.07 0.29 0.94 0.596 3956_doc2_tube_seminifere -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_doc2_tube_seminifere.png" alt=""></figure>
+<p class="para"><b><span class="t-red">Document 2 : Coupe d'une portion de tube séminifère d'un homme adulte</span></b></p>
+<!-- CROP: 3956 1 7 0.075 0.672 0.94 0.89 3956_schema_spermatozoide_a_legender -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_schema_spermatozoide_a_legender.png" alt=""></figure>
+<!-- page 08 -->
+<p class="para"><u>Exercice d'application</u></p>
+<p class="para">Le spermatozoïde est une cellule sexuelle dont la structure est adaptée à sa fonction. Le document à côté représente l'organisation de cette cellule sexuelle.</p>
+<p class="para"><b>1.</b> Légendez ce document en reportant sur votre copie les numéros correspondants.<br>
+<b>2.</b> Précisez le rôle des structures 3, 4, 5 et 8 dans l'accomplissement de la fonction du spermatozoïde.</p>
+<!-- CROP: 3956 1 8 0.66 0.07 0.91 0.295 3956_exercice_spermatozoide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_exercice_spermatozoide.png" alt=""></figure>
+<!-- page 09 -->
+<p class="subhead t-red"><b><span class="t-blue">Leçon 2 : ETUDE DES FONCTIONS TESTICULAIRES</span></b></p>
+<p class="subhead t-red"><b>I. <u>Mise en évidence des fonctions testiculaires:</u></b></p>
+<p class="para"><b><u>Activité 1</u></b></p>
+<p class="consigne">Lisez les deux textes A et B (page 10 bac sc) (page 75 bac M)</p>
+<table>
+<tr><th>Texte A</th><th>Texte B</th></tr>
+<tr><td><b><span class="t-red"><u>Les eunuques </u></span></b>hommes ayant subi l'ablation totale des deux testicules étaient stériles (chargés de garde des sérails) et présentent les caractères suivants :<br>
+- Voix aigue, si l'ablation est faite avant la puberté.<br>
+- Musculature peu développée.<br>
+- Faible pilosité<br>
+- Tendance à la surcharge pondérale.</td>
+<td><b><span class="t-blue"><u>La cryptorchidie </u></span></b>est une anomalie qui affecte <u>la descente </u>des testicules de la cavité abdominale vers le scrotum (ou bourses) au cours de la vie fœtale. Lorsque cette descente testiculaire, bilatérale n'a pas eu lieu, les individus sont stériles car la température de l'abdomen empêche la production des spermatozoïdes mais les caractères sexuels secondaires sont normaux (voix, musculature, pilosité…).<br>
+Le doc. 1 représente une coupe de testicule d'un individu normal, alors que le doc.2 représente la coupe de testicule cryptorchide.</td></tr>
+</table>
+<!-- CROP: 3956 1 9 0.075 0.375 0.448 0.612 3956_figure1_testicule_normal -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_figure1_testicule_normal.png" alt=""></figure>
+<p class="para">Figure 1 : coupe d'un testicule normal</p>
+<!-- CROP: 3956 1 9 0.465 0.375 0.852 0.612 3956_figure2_testicule_cryptorchide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_figure2_testicule_cryptorchide.png" alt=""></figure>
+<p class="para">Figure 2 : coupe d'un testicule cryptorchide</p>
+<ol class="qn">
+<li>Comparez les deux figures 1 et 2 (tableau suivant).</li>
+</ol>
+<table>
+<tr><th colspan="2"></th><th>Figure 1</th><th>Figure 2</th></tr>
+<tr><td rowspan="3"><b>Tubes séminifères</b></td><td><b><span class="t-blue">Cellules germinales</span></b></td><td><i><span class="t-red">Toutes les cellules de la lignée germinale sont présentes: spermatogonies→ spermatocytes I → spermatocytes II → spermatides</span></i></td><td><i><span class="t-red">Uniquement les spermatogonies</span></i></td></tr>
+<tr><td><b><span class="t-blue">Cellules de Sertoli</span></b></td><td><i>Présentes, intactes et développées</i></td><td><i>Atrophiées (réduites)</i></td></tr>
+<tr><td><b><span class="t-blue">Spermatozoïdes (lumière du tube séminifère)</span></b></td><td><i><span class="t-red">Nombreux et abondants</span></i></td><td><i><span class="t-red">absents</span></i></td></tr>
+<tr><td colspan="2"><b><span class="t-blue">Tissu interstitiel</span></b></td><td colspan="2"><i>Cellules de Leydig présentes, intactes et développées</i></td></tr>
+</table>
+<!-- page 10 -->
+<ol class="qn" start="2">
+<li>Dégagez les signes (les symptômes, les manifestations) morphologiques et physiologiques de la puberté. Déduisez les <span class="t-red">deux fonctions testiculaires.</span></li>
+</ol>
+<ul class="dash">
+<li><b>Les manifestations de la puberté</b><br>
+L'aggravation de la voix, le développement de la musculature, l'apparition de la pilosité, le développement du pénis et des testicules… constituent les Caractères Sexuels Secondaires (CSS).</li>
+<li>Développement des testicules, des glandes annexes et du pénis: Caractères Sexuels primaires</li>
+</ul>
+<div class="conclusion"><p><b><i><span class="t-red">Conclusion : Les testicules assurent la production des spermatozoïdes et le contrôle les caractères sexuels.</span></i></b></p></div>
+<p class="para"><b><u>Activité 2</u></b></p>
+<p class="consigne">Exploitez les coupes testiculaires ci-dessous de trois sujets différents et complétez le tableau</p>
+<!-- CROP: 3956 1 10 0.07 0.23 0.962 0.445 3956_activite2_coupes_trois_sujets -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_activite2_coupes_trois_sujets.png" alt=""></figure>
+<table>
+<tr><th></th><th>Sujet 1</th><th>Sujet 2</th><th>Sujet 3</th></tr>
+<tr><td>Fertilité</td><td><span class="t-red">+</span></td><td><span class="t-red">-</span></td><td><span class="t-red">-</span></td></tr>
+<tr><td>CS Masculins</td><td><span class="t-red">+</span></td><td><span class="t-red">-</span></td><td><span class="t-red">+</span></td></tr>
+</table>
+<div class="data">
+<p class="para"><i>Le testicule se caractérise par une <b>dualité (double) structurale</b> et <b>fonctionnelle</b>, en effet<br>
+- <b>Les tubes séminifères</b> assurent la <u>production des spermatozoïdes (spermatogenèse) :</u> <b>fonction exocrine responsable de la fertilité.</b><br>
+- <b>Le tissu interstitiel</b> est responsable de l'apparition, développement et maintien des <u>caractères sexuels masculins (primaires et secondaires) :</u> <b><u>responsable de la virilité</u></b><br>
+<u>Comment le tissu interstitiel contrôle l'apparition, le développement et le maintien des CSM?</u></i></p>
+</div>
+<p class="subhead t-navy"><b><u>II. Fonction exocrine: Rôle du tube séminifère: la spermatogenèse:</u></b></p>
+<p class="subhead t-navy"><b><u>1. Définition</u></b></p>
+<div class="data"><p class="para"><i>La spermatogenèse est le processus de <u>multiplication </u>et de <u>différenciation</u> cellulaires qui, après la puberté, aboutit à la production de spermatozoïdes à partir de cellules souches appelées spermatogonies. Elle dure 74 jours et elle est <u>continue</u> de la puberté jusqu'à la mort selon les étapes suivantes:</i></p></div>
+<!-- page 11 -->
+<p class="subhead t-navy"><b>2. <u>Étapes de la spermatogenèse:</u></b></p>
+<p class="para"><b><u>Activité 3</u></b></p>
+<p class="para">Le document suivant résume les étapes de la spermatogenèse</p>
+<!-- CROP: 3956 1 11 0.055 0.14 0.965 0.445 3956_etapes_spermatogenese_doc -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_etapes_spermatogenese_doc.png" alt=""></figure>
+<p class="para"><b>1.</b> Reconnaissez puis décrivez les étapes de la spermatogenèse.<br>
+<b>2.</b> Reconstituez à l'aide d'un schéma la réduction chromatique au cours de la spermatogenèse (2n=4 dont une paire sexuelle) puis schématisez les anaphases possibles.</p>
+<!-- CROP: 3956 1 11 0.038 0.5 0.967 0.745 3956_spermatogenese_tube_seminifere -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_spermatogenese_tube_seminifere.png" alt=""></figure>
+<!-- page 12 -->
+<p class="para"><b><u>Question 1</u></b></p>
+<p class="para"><b>a. <span class="t-red"><u>Phase de MULTIPLICATION:</u></span></b> par des mitoses successives et <u><span class="t-gold">illimitées</span></u>, les spermatogonies à 2n chromosomes se multiplient.</p>
+<p class="para">Chaque spermatogonie donne une spermatogonie qui reste à la périphérie du tube séminifère pour assurer la conservation du stock de spermatogonies; l'autre spermatogonie subit d'autres mitoses et s'engage dans la spermatogenèse.</p>
+<p class="para"><b>b</b>. <b><span class="t-red"><u>Phase d'ACCROISSEMENT:</u></span></b> les spermatogonies subissent un accroissement et deviennent plus volumineuses et restent à 2n entiers : spermatocytes I.</p>
+<p class="para"><b>c. <span class="t-red">Phase de MATURATION</span> :</b> il y a une réduction du nombre des chromosomes des spermatocytes I (2n entiers). Chaque spermatocyte I subit la division réductionnelle et donne deux spermatocytes II chacun à n chrs entiers. Chaque spermatocyte II subit la division équationnelle et donne deux spermatides chacun à n chrs simples.</p>
+<p class="para">d. <b><span class="t-red"><u>Phase de DIFFERENCIATION ou SPERMIOGENESE</u></span><u>:</u></b> les spermatides subissent des profondes transformations pour devenir des spermatozoïdes toujours à n simples (comme les spermatides). <u>Il y a formation </u>de l'acrosome, réduction du cytoplasme, apparition de la pièce intermédiaire et du flagelle.</p>
+<!-- CROP: 3956 1 12 0.032 0.358 0.968 0.625 3956_etapes_duree_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_etapes_duree_spermatogenese.png" alt=""></figure>
+<table>
+<tr><td>Réponse de la question n°2</td><td></td></tr>
+</table>
+<!-- page 13 -->
+<!-- CROP: 3956 1 13 0.285 0.024 0.897 0.325 3956_section_tube_seminifere_meiose -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_section_tube_seminifere_meiose.png" alt=""></figure>
+<p class="subhead t-navy"><b><span class="t-red"><u>3. Variation de la quantité d'ADN au cours de la spermatogenèse </u></span></b><u>(Application)</u></p>
+<p class="para">Le document suivant traduit la variation de la quantité d'ADN au cours de la spermatogenèse</p>
+<!-- CROP: 3956 1 13 0.068 0.38 0.905 0.66 3956_variation_adn_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_variation_adn_spermatogenese.png" alt=""></figure>
+<p class="consigne">Localisez sur le document les 4 phases de la spermatogenèse</p>
+<p class="subhead t-red"><b><u>III. Rôle du tissu interstitiel: La fonction endocrine</u></b></p>
+<p class="subhead t-red"><b><u>1. Hypothèse:</u></b></p>
+<p class="para">L'apparition, le développement et le maintien des CS (primaires et secondaires) sont contrôlés par voie sanguine grâce à <u>une hormone secrétée </u>par le tissu interstitiel.</p>
+<p class="subhead t-red"><b><u>2.</u> <u>Expériences et résultats: Activité 4</u></b></p>
+<table>
+<tr><th>Expériences</th><th>Résultats</th></tr>
+<tr><td>a- <span class="t-red">Castration</span> <span class="t-blue">(ablation bilatérale)</span> d'un animal jeune impubère: ablation des testicules</td><td>L'animal reste toujours impubère</td></tr>
+<tr><td>b- <span class="t-red">Castration</span> d'un animal adulte fertile.</td><td>- stérilité.<br>- régression des caractères sexuels secondaires (CSS).<br>- atrophie du tractus génital: vésicules séminales et prostate (caractères sexuels primaires).</td></tr>
+</table>
+<!-- page 14 -->
+<table>
+<tr><td>c- <span class="t-red">Greffe</span> d'un testicule sous la peau d'un castrat adulte.</td><td rowspan="2">- toujours stérilité.<br>- restauration des caractères sexuels primaires et secondaires</td></tr>
+<tr><td>d- <span class="t-red">Injections</span> quotidiennes, à un castrat, d'extraits testiculaires.</td></tr>
+<tr><td>e- Destruction des tubes séminifères par irradiation des testicules d'un rat adulte aux rayons X (le tissu interstitiel reste intact).</td><td>- stérilité par absence de spermatogenèse<br>- maintien des caractères sexuels secondaires et primaires</td></tr>
+</table>
+<p class="consigne"><b><u>Analysez </u>ces résultats <u>afin de déterminer</u> le rôle du tissu interstitiel.</b></p>
+<p class="subhead t-red"><b><u>3.</u> <u>Analyse et déductions</u></b></p>
+<table>
+<tr><th>Exp.</th><th>Analyses</th><th>Déductions</th></tr>
+<tr><td><b>a</b></td><td>La castration d'un jeune rat entraine l'absence des signes de la puberté.</td><td><b><span class="t-blue">Les testicules sont responsables de l'apparition des <span class="t-red"><u>................................... .</u></span></span></b></td></tr>
+<tr><td><b>b</b></td><td>L'ablation <u>bilatérale </u>chez un rat pubère entraine <u>la stérilité </u>et la <u>régression</u> des CS Secondaires <u>et atrophie </u>des CS Primaires.</td><td><b><span class="t-blue">Les testicules assurent <span class="t-red"><u>……………….</u></span>et contrôlent l'<span class="t-red"><u>………………..</u></span>, le <span class="t-red"><u>………………..</u></span> et le <span class="t-red"><u>…………….</u></span> des caractères sexuels primaires et secondaires (caractères sexuels masculins).</span></b></td></tr>
+<tr><td><b>c</b></td><td rowspan="2">La greffe (relation sanguine) du testicule comme l'injection d'extraits testiculaires (substances chimiques déversées dans le sang) à un castrat assurent la restauration des caractères sexuels primaires et secondaires.</td><td rowspan="2"><b><span class="t-blue">Les testicules contrôlent l'apparition et le maintien des <u>C.S primaires et secondaires</u> par <span class="t-red"><u>……………..</u></span> grâce à une <i><u>hormone </u></i><span class="t-red"><u>…………………………</u></span> <i><u>appelée la</u></i> <span class="t-red"><u>……………………. .</u></span></span></b></td></tr>
+<tr><td><b>d</b></td></tr>
+<tr><td><b>e</b></td><td>Après <u>destruction</u> des tubes séminifères et <u>maintien</u> <u>du tissu interstitiel,</u> les caractères sexuels sont maintenus.</td><td><b><span class="t-red"><u>Le tissu interstitiel</u></span> <span class="t-blue">(cellules de Leydig) assure le maintien des caractères sexuels par la production de la </span><span class="t-red"><u>testostérone</u></span><span class="t-blue">. La testostérone intervient dans la spermatogenèse.</span></b></td></tr>
+</table>
+<p class="subhead t-red"><b><u>4.</u> <u>Rôle du tissu interstitiel (à apprendre)</u></b></p>
+<p class="para">La fonction du tissu interstitiel est assurée par des hormones sexuelles mâles: les androgènes dont la <u>testostérone</u> est la principale hormone.</p>
+<p class="para"><b><u><span class="t-gold">Les effets biologiques de la testostérone</span></u></b></p>
+<div class="data">
+<ul class="b">
+<li><u>À la puberté</u>, la testostérone assure <u>l'apparition des Caractères Sexuels Secondaires et le développement des Caractères Sexuels Primaires</u>: développement de la verge, des glandes annexes, de la pilosité, modification de la voix…</li>
+<li><u>Après la puberté</u>, la testostérone assure le <u>maintien </u>des CS masculins (primaires et secondaires). Elle stimule, également, l'évolution des cellules germinales en spermatozoïdes (spermatogenèse)<b>.</b></li>
+</ul>
+</div>
+<p class="para"><b><span class="t-gold">NB</span></b>:</p>
+<div class="data">
+<p class="para">• La testostérone agit sur les <u>cellules cibles </u>car ces dernières possèdent des ………………………… à cette hormone. La formation de la complexe testostérone – récepteur a une action sur l'ADN de la cellule cible; cette action modifie l'activité cellulaire selon le programme génétique activé (transcription puis traduction et synthèse des protéines).</p>
+<p class="para">• La testostérone est <b>un <u>stéroïde</u></b> (de nature lipidique) dont les récepteurs sont<b><u> cytoplasmiques et non pas membranaires</u></b>.</p>
+</div>
+<!-- page 15 -->
+<!-- CROP: 3956 1 15 0.155 0.03 0.885 0.296 3956_mode_action_hormones_steroides -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_mode_action_hormones_steroides.png" alt=""></figure>
+<div class="data"><p class="para">•Une hormone est une substance chimique secrétée par une glande endocrine (cellules endocrines), déversée dans le sang, agit à faibles doses sur des cellules cibles ayant des récepteurs spécifiques pour modifier le fonctionnement de ces cellules.</p></div>
+<!-- CROP: 3956 1 15 0.045 0.422 0.935 0.713 3956_hormone_steroide_proteique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_hormone_steroide_proteique.png" alt=""></figure>
+<!-- page 16 -->
+<p class="subhead t-red"><b><u>Leçon 3: RÉGULATION DES FONCTIONS TESTICULAIRES</u></b></p>
+<p class="subhead t-red"><b><u>I. Introduction: <i>manuel scolaire page 13 (bac Sc) ou page 78 (bac M) :</i></u></b></p>
+<p class="para">Le testicule assure une double fonction :<br>
+- Une fonction exocrine : production de spermatozoïdes et leur sécrétion a l'extérieur<br>
+- Une fonction endocrine : sécrétion d'une hormone, la testostérone.</p>
+<ul class="b">
+<li>Les spermatozoïdes produits par les tubes séminifères sont nécessairement évacués (par les éjaculations) ou détruits dans les voies génitales. La spermatogenèse est alors activée pour compenser la baisse du nombre de spermatozoïdes.</li>
+<li>D'autre part, la testostérone secrétée par les cellules interstitielles est constamment dégradée dans le foie et est éliminée dans les urines. Or sa concentration chez l'adulte est stabilisée à un taux plasmatique moyen de 700 nano-grammes par 100 ml (1 nanogramme=10<sup>-9</sup> gramme). Donc sa dégradation est compensée par une sécrétion de testostérone par les cellules interstitielles.</li>
+<li>Il devrait donc exister un système de régulation qui permet d'informer les tubes séminifères et les cellules interstitielles sur les modifications de la quantité des spermatozoïdes et sur la concentration plasmatique de la testostérone (testostéronémie) pour que ces structures puissent rétablir ces quantités à leur niveau normal.</li>
+</ul>
+<p class="para"><b><i><span class="t-red">1. Identifiez ce <u>système de régulation </u>des fonctions testiculaires?<br>
+2. Comment fonctionne ce système?</span></i></b></p>
+<p class="subhead t-navy"><b><span class="t-blue"><u>II. Mise en évidence du système régulateur: (complexe hypothalamo-hypophysaire).</u></span></b></p>
+<p class="subhead t-navy"><b><span class="t-blue">1. <u>Mise en évidence du rôle du complexe hypothalamo-hypophysaire</u></span></b></p>
+<p class="para"><b><u>Activité 1 :</u></b> Certaines observations cliniques ont montré que</p>
+<ul class="dash">
+<li><b>Des lésions</b> de l'hypophyse antérieure entraînent l'<b>arrêt</b> du fonctionnement testiculaire.</li>
+<li>De même, certaines lésions au niveau de l'<b>hypothalamus</b> provoquent des <b>perturbations</b>, <b>hypophysaire</b> et <b>testiculaire</b>.</li>
+</ul>
+<p class="consigne"><b><u>Proposez</u></b> une hypothèse quant à la relation fonctionnelle entre l'axe hypothalamo-hypophysaire et les testicules.</p>
+<p class="para"><b><u>Hypothèse</u></b>: l'axe ……………………………………….. <b>contrôle</b> (commande) les fonctions testiculaires.</p>
+<p class="subhead t-navy"><b><span class="t-blue">2. <u>Organisation du complexe hypothalamo-hypophysaire:</u> Activité 2</span></b></p>
+<p class="para">Le schéma ci- dessous représente l'organisation de l'axe hypothalamo-hypophysaire</p>
+<!-- CROP: 3956 1 16 0.028 0.575 0.95 0.892 3956_axe_hypothalamo_hypophysaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_axe_hypothalamo_hypophysaire.png" alt=""></figure>
+<p class="para"><b>1 : Hypothalamus<br>
+2 : Tige pituitaire ou hypophysaire<br>
+3 : système porte<br>
+4 : hypophyse antérieure</b></p>
+<!-- page 17 -->
+<p class="subhead t-navy"><b><span class="t-blue"><u>III/ Rôle de l'hypophyse</u></span></b></p>
+<p class="subhead t-navy"><b><span class="t-blue">1. <u>Expériences et résultats (Mise en évidence expérimentale du rôle de l'hypophyse):</u></span></b></p>
+<p class="para"><b>Activité 3</b></p>
+<table>
+<tr><th>Expériences</th><th>Résultats</th></tr>
+<tr><td><b>1. Ablation</b> de l'hypophyse (hypophysectomie) chez un rat adulte.</td><td>- <b>Atrophie</b> des testicules.<br>- <b>Régression</b> des tubes séminifères et du tissu interstitiel.<br>- Arrêt de la production des spermatozoïdes et de testostérone.</td></tr>
+<tr><td><b>2. I</b>njections d'extraits hypophysaires ou <b>greffe</b> d'une hypophyse en place chez ce rat.</td><td>Reprise de la spermatogenèse et de la sécrétion de la testostérone.</td></tr>
+</table>
+<p class="consigne"><b>Analysez</b> ces résultats afin <b>de déterminer</b> le rôle de l'hypophyse.</p>
+<p class="subhead t-navy"><b><span class="t-blue"><u>2. Analyse et déductions</u></span></b></p>
+<table>
+<tr><th>Exp.</th><th>Analyse</th><th>Déduction</th></tr>
+<tr><td>1</td><td>L'hypophysectomie chez un rat adulte entraine :<br>
+•L'atrophie du testicule et régression des tubes séminifères et du tissu interstitiel.<br>
+• l'arrêt des fonctions testiculaires (endocrine et exocrine).</td><td rowspan="2">L'hypophyse (antérieure) contrôle (stimule= commande):<br>
+• <b>Le <span class="t-blue">développement et le maintien</span></b> des structures testiculaires (tubes séminifères et tissu interstitiel).<br>
+• Les 2 fonctions testiculaires <b><span class="t-blue">…………………………..</span></b> grâce à la sécrétion des <b>hormones</b> hypophysaires <b><span class="t-red">(gonadostimulines =gonadotrophines) qui sont appelées ……… et …….. .</span></b></td></tr>
+<tr><td>2</td><td>Les <b>injections</b> d'extraits hypophysaires ou la <b>greffe</b> (……………………………………) d'une hypophyse à ce rat hypophysectomisé entrainent la <b><u>reprise</u></b> de la spermatogenèse et de la sécrétion de la testostérone.</td></tr>
+</table>
+<p class="subhead t-navy"><b><span class="t-blue"><u>3. Rôle des hormones hypophysaires:</u></span></b></p>
+<p class="subhead t-red"><b><u>a. Expériences et résultats: activité 4</u></b></p>
+<table>
+<tr><th>Expériences</th><th>Résultats</th></tr>
+<tr><td><b>1. Injections de LH</b> chez un rat hypophysectomisé</td><td>- <b>Développement</b> du tissu interstitiel.<br>- Augmentation du taux sanguin de la <b>testostérone</b> sans rétablissement de la <b>spermatogenèse.</b></td></tr>
+<tr><td><b>2. Injections de FSH</b> à ce rat</td><td>- Développement des cellules de Sertoli.<br>- Sécrétion de l'ABP sans rétablissement de la spermatogenèse.</td></tr>
+<tr><td><b>3.</b> Injections <b>combinées</b> de FSH et de LH à ce même rat hypophysectomisé.</td><td>- Production de <b>testostérone</b>.<br>- Rétablissement de la spermatogenèse.</td></tr>
+</table>
+<p class="consigne"><b>Analysez</b> ces résultats afin de (') :</p>
+<ul class="b">
+<li><b>déterminer</b> les cellules cibles et l'action des hormones hypophysaires.</li>
+<li><b>expliquer</b> le contrôle hormonal de la spermatogenèse.</li>
+</ul>
+<p class="subhead t-red"><b><u>b. Analyse et déduction</u></b></p>
+<table>
+<tr><th></th><th>Analyse</th><th>Déduction</th></tr>
+<tr><td>1</td><td>L'injection de <b>la <span class="t-red">LH</span> <span class="t-red">seule</span></b> à un rat hypophysectomisé stimule le développement du <b>tissu interstitiel</b> et la production de la <b>testostérone</b> <i><u>sans rétablissement de la fonction exocrine.</u></i></td><td><ul class="b"><li>La LH agit <b><span class="t-red">spécifiquement</span></b> sur les <i>cellules de</i> ……………….. (ce sont les cellules <b>cibles</b>) et stimule <b><span class="t-red">la synthèse et la production de la ……………………. .</span></b></li><li>La LH seule ne rétablit pas la spermatogenèse.</li></ul></td></tr>
+<tr><td>2</td><td>L'injection de <b>la FSH seule</b> à un rat hypophysectomisé stimule le développement des cellules de Sertoli et la production de l'ABP <i><u>sans rétablissement de la fonction exocrine.</u></i></td><td><ul class="b"><li>La FSH agit <b>spécifiquement</b> sur <b><span class="t-red">les <i>cellules de</i> …………</span></b> (ce sont les cellules cibles) et stimule la synthèse et la <b><span class="t-red">production de l'…………</span></b> (protéine de transport).</li><li>La FSH seule ne rétablit pas la spermatogenèse.</li></ul></td></tr>
+</table>
+<!-- page 18 -->
+<table>
+<tr><td>3</td><td><b>Des injections <span class="t-blue">combinées</span> de FSH et de LH à un rat hypophysectomisé rétablissent <span class="t-blue">aussi bien <u>la sécrétion de la testostérone que la spermatogenèse.</u></span></b></td><td><b>Le déroulement normal de la <u>spermatogenèse</u> nécessite <span class="t-blue"><u>l'action combinée de la LH et de la FSH.</u></span></b></td></tr>
+</table>
+<p class="subhead t-navy"><b><span class="t-blue"><u>4. Explication du déterminisme hormonal de la spermatogenèse</u></span></b></p>
+<div class="data">
+<ul class="b">
+<li>L'hypophyse sécrète <b><span class="t-blue">les gonadotrophines</span></b> (par les cellules gonadotropes ou hypophysaires), la FSH et la LH.</li>
+<li>La <b><span class="t-blue">FSH</span></b> stimule (<b>+</b>) la synthèse et la sécrétion de l'ABP par les cellules de Sertoli.</li>
+<li>La <b><span class="t-blue">LH</span></b> stimule (<b>+</b>) la synthèse et la sécrétion de la testostérone par les cellules de Leydig.</li>
+<li>L'<b><span class="t-blue">ABP</span></b> se combine avec la testostérone et forment ensemble le complexe ABP-T qui active (+) la spermatogenèse.</li>
+</ul>
+</div>
+<!-- CROP: 3956 1 18 0.03 0.252 0.928 0.668 3956_determinisme_hormonal_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_determinisme_hormonal_spermatogenese.png" alt=""></figure>
+<p class="subhead t-navy"><b><span class="t-blue"><u>IV. Rôle de l'hypothalamus:</u></span></b></p>
+<p class="subhead t-red"><b><u>1. Expériences et résultats: activité 5</u></b></p>
+<table>
+<tr><th>Expériences</th><th>Résultats</th></tr>
+<tr><td><b>1.</b> Lésions de certains noyaux hypothalamiques.</td><td>Arrêt de la sécrétion des gonadostimulines et par la suite atrophie des testicules</td></tr>
+<tr><td><b>2. Section</b> ou ligature de la tige pituitaire</td><td>Arrêt de la sécrétion des gonadostimulines</td></tr>
+<tr><td><b>3.</b> Micro-injections <u>discontinues</u> d'extraits hypothalamiques dans la circulation sanguine de la tige pituitaire sectionnée.</td><td>Reprise de la sécrétion des gonadostimulines</td></tr>
+<tr><td><b>4.</b> Micro injections <u>continues</u> d'extraits hypothalamiques dans la circulation sanguine de la tige pituitaire sectionnée.</td><td>Pas de reprise de la sécrétion des gonadostimulines</td></tr>
+</table>
+<p class="consigne"><b>Analysez</b> ces résultats <b>afin de</b> déterminer le rôle de l'hypothalamus<b>.</b></p>
+<!-- page 19 -->
+<p class="subhead t-red"><b><u>2. Analyse et déductions</u></b></p>
+<table>
+<tr><th></th><th>Analyse</th><th>Déduction</th></tr>
+<tr><td>1 &amp; 2</td><td>La lésion de certains noyaux hypothalamiques ou la ligature de la tige pituitaire entraînent l'arrêt de la sécrétion des gonadostimulines par l'hypophyse.</td><td><span class="t-blue">L'hypothalamus stimule l'hypophyse grâce à une neurohormone appelée gonadolibérine ou GnRH déversée <u>directement</u> dans la circulation sanguine de la tige pituitaire.</span></td></tr>
+</table>
+<div class="data"><p class="para"><span class="t-blue">L'hypothalamus sécrète une <b>neurohormone</b> appelée <b>GnRH</b> (GonadoReleasing Hormon) ou Gonadolibérine (décapeptide : constituée de 10 AA). Elle est sécrétée par des neurones hypothalamiques dont les axones se trouvent dans les vaisseaux sanguins du tige pituitaire.<br>
+La GnRH se fixe sur des récepteurs des cellules de <u>l'hypophyse antérieure </u>et stimule la synthèse et la sécrétion des <u>Gonadostimulines</u></span>.</p></div>
+<table>
+<tr><td>3 &amp; 4</td><td>Des micro injections discontinues d'extraits hypothalamiques rétablissent la sécrétion des gonadostimulines alors que les micro injections continues ne rétablissent pas cette sécrétion.</td><td>La sécrétion de la GnRH est discontinue; <span class="t-blue"><u>elle est …………….. .</u></span></td></tr>
+</table>
+<p class="para">La sécrétion de la GnRH est <b><u>pulsatile</u></b> avec une fréquence de 1 pulse/90mn chez l'homme.</p>
+<p class="subhead t-navy"><b><span class="t-blue"><u>V. Mode de sécrétion des hormones hypothalamo-hypophysaires et testiculaires:</u></span></b></p>
+<p class="para"><b>Activité 6 :</b></p>
+<p class="para">On a dosé chez le bélier la production de <b>GnRH</b>, <b>LH</b> et <b>Testostérone</b> durant une dizaine d'heures. Les résultats sont représentés par le document suivant.</p>
+<!-- CROP: 3956 1 19 0.49 0.322 0.978 0.695 3956_secretions_gnrh_lh_testosterone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_secretions_gnrh_lh_testosterone.png" alt=""></figure>
+<ol class="qn">
+<li>Quelle relation simple peut –on établir entre les 3 sécrétions hormonales enregistrées ?</li>
+<li>Peut-on dégager l'effet des pulses de la testostérone sur ceux de la LH et de la GnRH.</li>
+</ol>
+<table>
+<tr><th>Analyse</th><th>Déduction</th></tr>
+<tr><td><ul class="b">
+<li>La sécrétion des hormones GnRH, LH et testostérone <b>est pulsatile.</b></li>
+<li>Les pulses de GnRH <b>précédent</b> les pulses de LH, les pulses de LH précédent les pulses de testostérone.</li>
+<li>Les pulses de testostérone accentuent l'inhibition de la sécrétion de LH et de GnRH (RC-) ; cette inhibition sera levée à faible testostéronemie.<br>
+En effet :<br>
+Le premier pulse de GnRH se produit <b>à t=6h</b> et atteint une valeur de <b>10pg.ml<sup>-1</sup></b> ; celui de la LH se produit après un <b>temps de latence</b> de <b>30mn</b> (et atteint</li>
+</ul></td>
+<td>Il y a une relation <b>de causalité</b> entre les trois sécrétions :
+<ul class="b">
+<li>L'hypothalamus par la GnRH contrôle l'hypophyse antérieure.</li>
+<li>L'hypophyse antérieure par la LH contrôle les testicules qui sécrètent la</li>
+</ul></td></tr>
+</table>
+<!-- page 20 -->
+<table>
+<tr><td><b>3ng.ml<sup>-1</sup></b>) ; après un deuxième temps de latence de <b>15mn</b> se produit le pulse de la testostérone avec une valeur de 5ng.ml<sup>-1</sup>.<br>
+Le premier <b>pulse (maximum)</b> de la testostérone à t= 6h45mn est suivi (après un certain temps de latence) à un temps « t » supérieur (>) à t= 6h45mn par une baisse du taux de Gn RH (un minimum) puis baisse du taux de LH (aussi à son minimum).<br>
+Par contre, lorsque à t=10h, la testostérone est minimale aura pour conséquence à t>à 10h, une hausse (un maximum) (un pulse de GnRH puis un autre de LH).</td>
+<td>testostérone.
+<ul class="b">
+<li>A fortes doses (>à la normale) la testostérone exerce un rétrocontrôle négatif accentué sur l'axe hypothalamo-hypophysaire.</li>
+<li>Il y a levée de ce RC- à faibles concentrations de testostérone (&lt;à la normale).</li>
+</ul></td></tr>
+</table>
+<ol class="qn" start="2">
+<li>Le pic de testostérone (forte dose de testostérone qui dépasse 4ng.ml<sup>-1</sup> après 7 heures) <u>est suivi </u>d'une chute du taux de LH et de GnRH, on dit que la testostérone, à forte dose, a exercé un freinage sur les sécrétions de GnRH et du LH: il s'agit d'une <b>rétroaction négative</b> ou d'un <b>rétrocontrôle négatif</b> sur l'axe hypothalamo-hypophysaire exercé par la testostérone à forte dose. Un taux minimal de testostérone (à faibles doses de testostérone) entraine une <b>levée</b> de ce <b>RC-.</b></li>
+</ol>
+<table>
+<tr><th><i>Expériences</i></th><th><i>Résultats</i></th></tr>
+<tr><td><i><b>1.</b> Castration bilatérale d'un animal adulte.</i></td><td><i>Elévation des pulses de GnRH ainsi que le taux plasmatique des hormones hypophysaires (FSH et LH).</i></td></tr>
+<tr><td><i><b>2.</b> Injection massive de testostérone chez ce castrat.</i></td><td><i>- Baisse rapide du taux sanguin de LH.<br>- Maintien du taux de FSH élevé.</i></td></tr>
+<tr><td><i><b>3.</b> Injection de testostérone dans l'hypothalamus d'un animal.</i></td><td><i>Baisse de la fréquence et de l'amplitude des pulses de GnRH (et donc de FSH et de LH).</i></td></tr>
+<tr><td><i><b>4.</b> Destruction, par irradiation, des tubes séminifères.</i></td><td><i>- Augmentation du taux sanguin de FSH.<br>- Maintien du taux normal de LH.</i></td></tr>
+<tr><td><i><b>5.</b> Injection d'Inhibine, hormone extraite des cellules de Sertoli, chez un animal normal.</i></td><td><b><i>- Baisse du taux sanguin de FSH.<br>- Maintien du taux sanguin de LH.</i></b></td></tr>
+</table>
+<p class="subhead t-navy"><b><span class="t-blue"><u>VI. Action des testicules sur le complexe hypothalamo- hypophysaire</u></span></b></p>
+<p class="subhead t-navy"><b><span class="t-blue">1. Expériences et résultats: activité 7</span></b></p>
+<p class="consigne"><b>Analysez</b> ces résultats <b>afin de déduire</b> l'action des testicules sur l'axe hypothalamo-hypophysaire.</p>
+<p class="subhead t-navy"><b><span class="t-blue"><u>2.</u> Analyse et déduction</span></b></p>
+<table>
+<tr><th>Exp.</th><th>Analyse</th><th>Déduction</th></tr>
+<tr><td><b>1</b></td><td>La castration <b>bilatérale</b> entraine une sécrétion massive de gonadostimulines ainsi que l'élévation de la fréquence des pulses de GnRH.</td><td>Les <b>testicules freinent (inhibent)</b> l'activité de l'axe hypopthalamo-hypophysaire: il s'agit d'un rétrocontrôle négatif (rétroaction négative ou feed back négatif.</td></tr>
+<tr><td><b>2</b></td><td>L'injection massive de testostérone à ce castrat entraine la baisse rapide du taux de LH sans toucher celui de la FSH.</td><td><b><span class="t-blue">La testostérone à forte dose exerce un RC- uniquement sur la sécrétion de LH.</span></b></td></tr>
+<tr><td><b>3</b></td><td>L'injection massive de testostérone dans l'hypothalamus de ce castrat entraine la baisse de la fréquence de GnRH (et donc baisse du taux de FSH et du LH).</td><td>La testostérone exerce un <b>RC-</b> sur la sécrétion de la gonadolibérine (GnRH) et par suite baisse des taux des gonadostimulines (FSH et LH).</td></tr>
+<tr><td><b>4&amp;5</b></td><td>La destruction des tubes séminifères entraine l'augmentation du taux de FSH.<br>
+L'injection de l'inhibine entraine la baisse du taux de FSH (le taux de LH n'est pas touché dans les deux expériences)</td><td><b><span class="t-blue">Les cellules de Sertoli sécrètent une hormone appelée inhibine qui exerce un RC- uniquement sur la sécrétion de la FSH.</span></b></td></tr>
+</table>
+<!-- page 21 -->
+<div class="data">
+<p class="para"><b><span class="t-blue">Les deux fonctions du testicule (Spermatogenèse et sécrétion de testostérone) sont-elles indépendantes? (MS page 16 bac Sc, page 80 bac M )</span></b></p>
+<ul class="b">
+<li>La testostérone exerce directement un RC- sur la sécrétion du GnRH (et donc indirectement sur les gonadostimulines) : contrôle de la testostéronemie et du taux des spermatozoïdes.</li>
+<li>La testostérone exerce directement un RC- sur la sécrétion de LH: contrôle de la testostéronemie.</li>
+</ul>
+<p class="para">L'inhibine exerce directement un RC- sur la sécrétion de la FSH: contrôle du taux des spermatozoïdes</p>
+</div>
+<p class="para"><u>NB : A APPRENDRE</u></p>
+<p class="subhead t-red"><b><u>Mécanisme de régulation de la sécrétion de la testostérone: notion de valeur seuil (ou de référence)</u></b></p>
+<!-- CROP: 3956 1 21 0.025 0.27 0.99 0.513 3956_valeur_seuil_testosterone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_valeur_seuil_testosterone.png" alt=""></figure>
+<p class="para"><b><u>Comment maintenir stable le taux de la testostérone?</u></b></p>
+<div class="data">
+<p class="para"><b>Par un mécanisme de rétrocontrôle négatif, la testostérone contrôle la sécrétion de la testostérone ce qui assure <u>la stabilité de sa sécrétion</u>: testostéronémie stable<br>
+* <span class="t-blue">L'élévation (la hausse)</span> du taux de testostérone par rapport aux valeurs de référence (seuil) <span class="t-blue"><u>accentue </u></span><u>le freinage (RC-) </u>sur l'hypophyse d'où une diminution de <span class="t-blue">l'amplitude et de la fréquence des pulses</span> la LH et par suite les cellules de Leydig deviennent <span class="t-blue">moins activées, abaissent</span> <u>leur production de la testostérone <span class="t-blue">jusqu'à la normale</span>.</u><br>
+<u>* <span class="t-blue">La baisse</span> (la chute) </u>de la testostéronemie par rapport au seuil provoque <span class="t-blue">une <u>levée (suppression) </u></span>de l'inhibition exercée sur l'hypophyse d'où une <span class="t-blue"><u>augmentation </u></span><u>de l'amplitude et de la fréquence des pulses de la LH </u>ce qui stimule la production de la testostérone.</b></p>
+</div>
+<p class="para"><b><u>Comment maintenir stable la production des spermatozoïdes ?</u></b></p>
+<div class="data"><p class="para">L'inhibine est une hormone secrétée par les cellules de Sertoli, exerce une <b><u>rétroaction négative</u></b> sur les cellules <b><u>gonadotropes</u></b> sécrétrices de FSH. Cette rétroaction active <b><span class="t-blue"><u>a pour but de maintenir constante la production des spermatozoïdes</u></span></b>.</p></div>
+<!-- page 22 -->
+<!-- CROP: 3956 1 22 0.028 0.11 0.983 0.752 3956_schema_regulation_fonctions_testiculaires -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_schema_regulation_fonctions_testiculaires.png" alt=""></figure>
+<!-- page 23 -->
+<!-- CROP: 3956 1 23 0.09 0.08 0.91 0.9 3956_controle_hormonal_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_controle_hormonal_testicule.png" alt=""></figure>
+<!-- page 24 -->
+<!-- CROP: 3956 1 24 0.095 0.065 0.9 0.73 3956_schema_regulation_a_completer -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3956/3956_schema_regulation_a_completer.png" alt=""></figure>
+
+</section>
+
+</div>
+</body>
+</html>

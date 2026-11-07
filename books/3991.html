@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Serie et correction — brouillon série rep masculine</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="3991">
+<meta data-pagefind-meta="title[content]" content="Serie et correction — brouillon série rep masculine">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Serie et correction — brouillon série rep masculine" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Serie et correction — brouillon série rep masculine</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1lXbW9iQwlctB507cEZ37aGRItbRvGitP/view">↗ brouillon-Série 3 - Rep masculine (1).pdf</a> <a href="https://drive.google.com/file/d/1jN8PEXFlt63JHWoUuv2zW2gIBk-H5HT4/view">↗ brouillon Série 2 - Rep masculine 07-10-2022.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/1lXbW9iQwlctB507cEZ37aGRItbRvGitP/view">Karim Fourati · Bac 2KF25 › SVT / SVT -Taki 2024 / SVT / Serie et correction</a></li><li><a href="https://drive.google.com/file/d/1jN8PEXFlt63JHWoUuv2zW2gIBk-H5HT4/view">Karim Fourati · Bac 2KF25 › SVT / SVT -Taki 2024 / SVT / Serie et correction</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Reproduction chez l&#x27;homme</h2></div>
+<!-- SOURCE: Taki Academy · www.takiacademy.com -->
+<div class="exh"><span class="idx ex">Série</span><h2>brouillon série rep masculine</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/3991.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1lXbW9iQwlctB507cEZ37aGRItbRvGitP/view">↗ brouillon-Série 3 - Rep masculine (1).pdf</a> <a href="https://drive.google.com/file/d/1jN8PEXFlt63JHWoUuv2zW2gIBk-H5HT4/view">↗ brouillon Série 2 - Rep masculine 07-10-2022.pdf</a></div>
+<div class="exsub">brouillon-Série 3 - Rep masculine (1)</div>
+<!-- page 01 -->
+<!-- ROTATE: 3991 part1 p01 180 -->
+<!-- NOTE: handwritten correction page (entirely handwritten) — transcribed as best reading -->
+<div class="exsub">Exercice 1</div>
+<p class="para">1)</p>
+<table>
+<tr><th><span class="t-red">Experiences</span></th><th><span class="t-red">Résultats</span></th></tr>
+<tr><td>Ablation de l'hypophyse ou hypophysectomie chez un rat pubère</td><td>- sterilité<br>- troubles de fonctionnem testiculaire</td></tr>
+<tr><td>Injection d'extrait hypophysaire à ce rat hypophysectomisé</td><td>- fertilité<br>- Correction des troubles testiculaires.</td></tr>
+</table>
+<!-- PROOFREAD: 3991 part1 p01 — table handwriting: "fonctionnem…" cut at right edge, only visible letters typed, "testiculaire"/"tsticulaire" uncertain -->
+<p class="para">2)</p>
+<table>
+<tr><th><span class="t-red">Substances Secretés</span></th><th><span class="t-red">Origines</span></th></tr>
+<tr><td>Testostérone (steroide)</td><td>ç de Leydig</td></tr>
+<tr><td>Inhibine (protein)</td><td rowspan="2">ç de Sertoli</td></tr>
+<tr><td>ABP (proteine)</td></tr>
+</table>
+<p class="para">3)</p>
+<p class="para">- R<sub>1</sub> : la GnRH agit et stimule l'hypophyse anterieur pour sécreter la LH et FSH</p>
+<p class="para">- R<sub>2</sub> : par les gonadostimulines :</p>
+<p class="para">* La LH agit et stimule les ç de Leydig pour secréter la testosterone qui assure le developpement + maintien des CS</p>
+<!-- PROOFREAD: 3991 part1 p01 — "CS" (end of line) uncertain -->
+<!-- page 02 -->
+<!-- ROTATE: 3991 part1 p02 180 -->
+<p class="para">• La FSH agit sur les ç de Sertoli et stimule la Sécretion d'ABP qui s'associe et se fixe à la tstosterone pour activer le déroulement de la spermatogenèse</p>
+<p class="para">- R<sub>3</sub> : toute élévation (forte dose) du taux de tstosterone exerce un RC(-) sur le Complexe Hypothalamo-hypophysaire d'où une baisse du taux de LH ⇒ ↓ du taux de tstosterone</p>
+<div class="exsub">Exercice 2</div>
+<!-- NOTE: highlighter marks over some answers (2, 3, 4, 6) left out -->
+<p class="para">1) 1 : ç de Leydig</p>
+<p class="para">2 : spermatogonie</p>
+<p class="para">3 : Spermatocyte I</p>
+<p class="para">4 : spermatocyte II</p>
+<p class="para">5 : ç de Sertoli</p>
+<p class="para">6 : spermatozoïde</p>
+<p class="para">2)</p>
+<table>
+<tr><th><span class="t-red">ç</span></th><th>2</th><th>3</th><th>4</th><th>6</th></tr>
+<tr><td><span class="t-red">nombre</span></td><td>2n</td><td>2n</td><td>n</td><td>n</td></tr>
+<tr><td><span class="t-red">état</span></td><td>dupliqué ou simple</td><td>dupliqués</td><td>dupliqués</td><td>simples</td></tr>
+</table>
+<!-- page 03 -->
+<p class="para">3) <span class="t-red">Rôles des ç de Sertoli :</span></p>
+<p class="para">- Sécretion d'ABP (proteine de liaison) nécessaire pour la reception de la tstosterone ce qui active le deroulement de la spermatogenèse</p>
+<p class="para">- Nutrition des Spermatozoïdes ;</p>
+<p class="para">- sécretion d'inhibine qui exerce un RC(-) sur les Sécretions hypophysaires de FSH par les ç gonadotropes pour maintenir une production normale de Spermatozoïde.</p>
+<p class="para">4) la prise, par les athlètes, des anabolisant steroidiens, ayant une structure analogue à la tstosterone exercent un RC(-) sur le complexe H-H → baisse de la production de GnRH, de FSH et de LH.</p>
+<p class="para">⇒ Le testicule moins stimulé, abaisse la production de tstosterone ce qui explique l'atrophie testiculaire ⇒ provoque la stérilité.</p>
+<!-- page 04 -->
+<div class="exsub">Exercice 3</div>
+<p class="para">1) Sujet pubère car son sperme contient des spermatozoïdes ⇒ il y a deroulement de la Spermatogenèse sous le Contrôle de testosterone responsable du développement des CSI.</p>
+<p class="para">2)</p>
+<table>
+<tr><th><span class="t-red">Analyse</span></th><th><span class="t-red">Deductions</span></th></tr>
+<tr><td><span class="t-red">a</span> - Avant l'injection de tstosterone (TTT) dans la periode [-3 , 0]<sub>mois</sub><br>: Concentration des 2 paramètres est variable et proportionnelle (en //)<br>• Concentration des spz varie entre 60 et 110 millions /ml<br>• [FSH] varie de 120 à 180 ng/ml</td><td>Etat normal (exp temoin)<br>il y a une synchronisation entre la [ ] des spz et celle de la FSH</td></tr>
+<tr><td>[0 , 9 mois] injection de tstosterone 200 mg/semaines (forte dose) provoque une</td><td>La forte dose de testosterone inhibe la sécrétion de FSH</td></tr>
+</table>
+<!-- PROOFREAD: 3991 part1 p04 — "[-3 , 0] mois", "180 ng/ml" handwriting uncertain -->
+<!-- page 05 -->
+<table>
+<tr><td>diminution progressive de la concentration des spz de 80 millions/ml jusqu'à une valeur nulle au bout de 4 mois<br>de même la [FSH] diminue aussi progressivement de 160 ng/ml jusqu'à une valeur inferieur à 20 ng/ml</td><td>et par la suite la production des spermatozoïde.</td></tr>
+</table>
+<!-- PROOFREAD: 3991 part1 p05 — "160 ng/ml", "20 ng/ml" handwriting uncertain -->
+<p class="para"><span class="t-red">b</span> a forte dose de tstosterone il s'exerce un RC(-) sur l'hypothalamus en inhibant la secrétion de GnRH d'où une ↓ de la secretion de la FSH par l'hypophyse antérieur d'où ↓ de la liberation d'ABP ⇒ ↓ production de spz</p>
+<p class="para">3) FSH de synthèse injectée dans le sang, joue le m̂ rôle que la FSH naturelle, stimule la sécretion de l'ABP par les ç de Sertoli qui s'associent à la tstosterone pour stimuler les ç germinale ⇒ Déroulement de la spermatogenèse.</p>
+<!-- page 06 -->
+<p class="para">4)</p>
+<table>
+<tr><th><span class="t-red">Analyse</span></th><th><span class="t-red">Conclusions</span></th></tr>
+<tr><td>situation 1 : animal presentant une testosteronémie normale<br>- secretion pulsatile de LH 6 pulses en 6 heures d'amplitude 3 à 4 ng/ml<br>- ç à l'état normal</td><td>Exp témoin : état de référence normale</td></tr>
+<tr><td>situation 2 : animal presentant une augmentation de la testosteronémie :<br>- taux de LH presque cst, faible et ne presente aucun pic<br>- ç hypotrophiée : organites ç peu nombreux et peu developpés ⇒ hypoactivité</td><td>l'augmentation de TTT inhibe la secretion de LH par RC(-) sur le CHH ⇒ ↓ du taux de LH<br>⇒ atrophie (moins active) des ç de Leydig<br>⇒ ↓ de la Secretion de tstosterone ce qui Corrige l'augmentation de la testosteronémie de depart</td></tr>
+</table>
+<!-- PROOFREAD: 3991 part1 p06 — "hypotrophiée" (overwritten letters) uncertain -->
+<!-- page 07 -->
+<table>
+<tr><td>situation 3 animal presentant une baisse de la testosteronémie :<br>- le taux de LH décrit 5 pulses de 16 ng/ml à 20 ng/ml<br>- hypertrophie des ç de Leydig : organite cytoplasmiques, très nombreux et très developpés</td><td>en cas de baisse de la testosteronémie ⇒ il y a levée du RC(-) ce qui entraine une ↑ de la Secretion de la LH ⇒ stimulation et activation des ç de Leydig ⇒ ↑ de la production de testosterone ce qui corrige la baisse de la testosteronémie de départ</td></tr>
+</table>
+<!-- PROOFREAD: 3991 part1 p07 — "16 ng/ml à 20 ng/ml" handwriting uncertain -->
+<p class="para">5) Relation de causalité GnRH stimule la secretion des gonadostimulines de façon proportionnelle.</p>
+<!-- CROP: 3991 1 7 0.100 0.636 0.960 0.920 3991_lh_gnrh_graphe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3991/3991_lh_gnrh_graphe.png" alt=""></figure>
+<!-- page 08 -->
+<!-- ROTATE: 3991 part1 p08 180 -->
+<!-- CROP: 3991 1 8 0.040 0.085 0.985 0.720 3991_schema_controle_hormonal -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3991/3991_schema_controle_hormonal.png" alt=""></figure>
+<p class="para">End</p>
+<p class="para"><u>SBIL</u></p>
+<!-- PROOFREAD: 3991 part1 p08 — handwritten "SBIL" under "End" (signature?) uncertain -->
+<div class="exsub">brouillon Série 2 - Rep masculine 07-10-2022</div>
+<!-- page 01 -->
+<div class="exsub">Exercice 1</div>
+<!-- CROP: 3991 2 1 0.075 0.175 0.870 0.580 3991_mots_croises -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3991/3991_mots_croises.png" alt=""></figure>
+<div class="exsub">Exercice 2</div>
+<p class="para">1) <span class="t-red">a</span> Zone A = paroi du tube Séminifère<br>Zone B = Tissu interstitiel.</p>
+<p class="para"><span class="t-red">b</span> 1 : Spermatogonie<br>2 : Spermatocyte I en Anaphase I<br>3 : Spermatocyte II<br>4 : Spermatide.</p>
+<!-- page 02 -->
+<p class="para">5 : Spermatozoïde<br>6 : ç de Sertoli<br>7 : Capillaire sanguin<br>8 : ç de Leydig</p>
+<p class="para"><span class="t-red">c</span> Spermatogenèse</p>
+<p class="para"><span class="t-red">d</span></p>
+<!-- CROP: 3991 2 2 0.080 0.265 1.000 0.645 3991_schema_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3991/3991_schema_spermatogenese.png" alt=""></figure>
+<p class="para"><span class="t-red">2)</span></p>
+<table>
+<tr><th><span class="t-red">Analyse</span></th><th><span class="t-red">conclusion</span></th></tr>
+<tr><td>Lot 1 : Destruction ciblée par rayon X des ç de Leydig provoque :<br>- Régression des CSII<sup>aire</sup><br>- Stérilité (pas de spermatogenèse)</td><td>les ç de Leydig contrôlent le développement et le maintien des CSS et la production des S/Z ⇒ déroulement</td></tr>
+</table>
+<!-- page 03 -->
+<table>
+<tr><td></td><td rowspan="2">de la Spermatogenèse<br>La synthèse des spz necessite la presence des ç de Leydig (zone B) et ç de Sertoli (zone A)<br>⇒ Tstosterone (ç de Leydig) + ABP (ç de Sertoli) agissent sur les ç germinales assurant le déroulement de la spermatogenèse</td></tr>
+<tr><td>lot 2 : La destruction des ç de la paroi du tube séminifère provoque :<br>• la stérilité<br>et n'a aucun effet sur les CSS</td></tr>
+</table>
+<div class="exsub">Exercice 3</div>
+<p class="para">1)</p>
+<table>
+<tr><th><span class="t-red">Exploitation</span></th><th><span class="t-red">conclusion</span></th></tr>
+<tr><td>1<sup>ère</sup> Serie d'experience<br>A animal <u>normal</u> qui n'a subi aucune operation ni aucun traitement<br>⇒ taux de LH cst de 4 ng/ml</td><td>Experience temoin (Etat normal)</td></tr>
+<tr><td>B<br>- avant l'hypophysectomie à To : le taux de LH est cst normal de 4 ng/ml</td><td><u>hypothèse</u> :<br>L'origine de la LH est l'hypophyse</td></tr>
+</table>
+<!-- page 04 -->
+<table>
+<tr><td>- Aprés l'hypophysectomie à To : diminution du taux de LH jusqu'à s'annuler à T<sub>4</sub></td><td></td></tr>
+<tr><td>C<br>- Avant (T<sub>o</sub>) la lesion de l'hypothalamus ⇒ le taux de LH est cst de 4 ng/ml<br>- Aprés la lésion de l'hypothalamus avec une hypophyse intact ⇒ comme l'exp B il y a ↓ progressive du taux de LH qui s'annule à T<sub>4</sub></td><td>L'hypothalamus contrôle la sécretion de LH par l'hypophyse à travers la tige pituitaire par voie sanguine</td></tr>
+<tr><td>D , E<br>- Avant l'hypophysectomie à To : le taux de LH est cst de 4 ng/ml<br>- Aprés l'hypophysectomie entre To et T<sub>1</sub> : ↓ du taux de LH qui passe de 4 à 2 ng/ml</td><td></td></tr>
+</table>
+<!-- page 05 -->
+<!-- NOTE: highlighter boxes over some words left out -->
+<table>
+<tr><td>- Greffage de l'hypophyse à T<sub>1</sub> :<br>* (D) : à son emplacement d'origine, en contact avec la tige pituitaire provoque une ↑ du taux de LH qui revient à sa valeur normal initial à T<sub>5</sub> : 4 ng/ml<br>* (E) : dans la chambre anterieur de l'oeil ⇒ le taux de LH continue à diminuer et s'annule à T<sub>4</sub></td><td></td></tr>
+<tr><td><span class="t-red">2) 2<sup>ème</sup> Serie d'experience</span><br><u>Exp 1</u> : ç hypophysaire + X de façon continue ⇒ aucune variation du taux de LH qui demeure nulle<br><u>Exp 2</u> par contre X de façon discontinue à très faible dose chaque heure : en presence</td><td>Il y a une relation de causalité : chaque pulse de X cause une pulse de LH<br><span class="t-red">⇒ Secretion pulsatile pour ces 2 substances (LH et X)</span><br><span class="t-green">Donc X = GnRH</span></td></tr>
+</table>
+<!-- page 06 -->
+<!-- ROTATE: 3991 part2 p06 180 -->
+<table>
+<tr><td>de ç hypophysaire ⇒ suite à chaque injection de X, il y a un pic de LH de 2,5 ng/ml</td><td></td></tr>
+<tr><td><span class="t-red">3) a 3<sup>ème</sup> Serie d'experience</span><br>periode 1 : avant la castration (état normal)<br>* La LH est discontinue : 3 pics de 3,5 à 4,5 ng/ml en 3 heures<br>* Comme la LH, la tstosterone décrit aussi 3 pics de 15 à 18 UI/ml avec un faible decalage de 15 mn</td><td>Il y a une relation de causalité : chaque pulse de LH cause un pulse de tstosterone.<br><span class="t-red">⇒ sécretion pulsatile</span> pour ces 2 hormones<br>⇒ L'hypophyse à travers la LH stimule la sécretion testiculaire de tstosterone</td></tr>
+<tr><td><span class="t-red">b</span> periode 2 / quelques jours aprés la castration<br>→ taux de tstosterone est presque nulle avec une hypersecretion</td><td>Les testicules à travers la testosterone exerce un RC(-) sur la secretion de LH</td></tr>
+</table>
+<!-- PROOFREAD: 3991 part2 p06 — "3,5 à 4,5 ng/ml" (unit cut/cramped), "15 à 18 UI/ml" uncertain -->
+<!-- page 07 -->
+<table>
+<tr><td>de LH entre 4,5 à 5 ng/ml<br>periode 3 : Injection régulière de tstosterone de 18 à 20 UI/ml (forte dose) chez l'animal castré provoque une baisse remarquable du taux de LH de 0,5 ng/ml.</td><td></td></tr>
+</table>
+<p class="para"><span class="t-red">4)</span></p>
+<!-- CROP: 3991 2 7 0.090 0.455 0.950 0.885 3991_schema_regulation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3991/3991_schema_regulation.png" alt=""></figure>
+<p class="para">End</p>
+<p class="para">SBIL</p>
+<!-- PROOFREAD: 3991 part2 p07 — handwritten signature under "End" read "SBIL" (looks like "SBk") -->
+
+</section>
+
+</div>
+</body>
+</html>

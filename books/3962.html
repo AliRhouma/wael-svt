@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · CamScanner 10-11-2024 13.51</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="Source non indiquée">
+<meta data-pagefind-meta="n[content]" content="3962">
+<meta data-pagefind-meta="title[content]" content="CamScanner 10-11-2024 13.51">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · CamScanner 10-11-2024 13.51" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>CamScanner 10-11-2024 13.51</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Cours</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1uutRkGvFGTMwRq28meWnloyAS7e6lgKg/view">↗ CamScanner 10-11-2024 13.51.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1uutRkGvFGTMwRq28meWnloyAS7e6lgKg/view">Mohamed Ahmed Zahi · Bac Math Zahi 2024/2025 › SVT / Cours / 2) reproduction humaine et santé / 1) reproduction chez l&#x27;homme</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Reproduction chez l&#x27;homme</h2></div>
+<div class="exh"><span class="idx">Cours</span><h2>CamScanner 10-11-2024 13.51</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/3962.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Cours</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1uutRkGvFGTMwRq28meWnloyAS7e6lgKg/view">↗ CamScanner 10-11-2024 13.51.pdf</a></div>
+<!-- NOTE: entirely handwritten course notes (two columns per page), transcribed column by column; highlighter marks over the handwriting are left out -->
+<!-- page 01 -->
+<p class="subhead t-red">I] organisation de l'appareil genital de l'homme</p>
+<p class="para">Reproducteu</p>
+<!-- PROOFREAD: 3962 part1 p01 — "faint grey word 'Reproducteu' written under 'genital' (correction or bleed-through)" -->
+<p class="para">* Les gonades : Les deux testicules<br>Rôle : production de spermatozoides et de l'hormones sexuels male ♂<br>* Le voies génitales : 2 epididymes<br>Rôle : transit et maturation des spermatozoides<br>2 caneaux defferents ou spermiductes<br>Rôle : transit des spermatozoides<br>un urètre ou urospermiducte<br>Rôle : Evacuation de sperme vers l'exterieur<br>* Les glandes annexes :<br>2 vesicules seminales<br>Rôle : sécretion d'un liquide riche en substance nutritive (fructose) dont laquel baignent les spermatozoides<br>une prostate<br>Rôle : secrète un produit d'aspect laiteux riche en enzyme</p>
+<p class="para">2 glandes cowper<br>Rôle : secrètent un liquide diluant le sperme<br>* organe de copulation<br>Le penis = La verge<br>Rôle :<br>Assure la copulation (rapport sexuel) qui aboutit à l'emission de sperme dans les voies génètales de la femme</p>
+<!-- PROOFREAD: 3962 part1 p01 — "'2 glandes cowper' (could read 'coupen'); 'genètales'" -->
+<p class="subhead t-red">II] structures et fonctions du testicule :</p>
+<p class="para">La puberté : <span dir="rtl" lang="ar">البلوغ</span><br>- parmi les manifestations de la puberté on peut citer :<br>- production de spermatozoides<br>- developpement de la musculature<br>- apparition de poils sur le pubis puis les aisselles, la face, le thorax, enfin les membres ⇒ ces caractères constituent les caractères sexuels secondaires (CSS)<br>⇒ les voies génitales, l'organe de copulation et les glandes annexes constituent les caractères sexuels primaires<br>+ steriles ≠ fertile<br>Les eunuques (hommes ayant subit une ablation totale des deux testicules) ils etaient steriles<br>La cryptorchidie est une anomalie qui affecte la descente des testicules de la cavité abdominale <span dir="rtl" lang="ar">تجويف البطن</span> vers le scrotum (ou bourses)<br>Lorsque cette descente testiculaire n'a pas lieu, les individus sont steriles car la temperature de l'abdomen empêche la production des sperms mais les caractères secondaires sont normaux</p>
+<!-- PROOFREAD: 3962 part1 p01 — "Arabic gloss under 'cavité abdominale' read as 'تجويف البطن'; 'les caractères' at bottom edge partly hidden; 'Lorsquè'" -->
+<!-- page 02 -->
+<p class="subhead t-navy">1) fonction de testicule</p>
+<p class="para">Les testicules assurent deux fonctions.<br>• La production des spermatozoides ou spermatogenèse dans le tube seminifère assurant la fertilité de l'individu<br>• Le developpement et le maintien des caractères sexuels secondaires assurant la virilité <span dir="rtl" lang="ar">الذكورة</span> de l'individu (secrète la testosterone qui assure CSS)</p>
+<!-- PROOFREAD: 3962 part1 p02 — "small Arabic gloss above 'la virilité' read as 'الذكورة'; 'dans le tube seminifère' inserted with a caret after 'spermatogenèse'" -->
+<p class="subhead t-navy">2) structures des testicules</p>
+<p class="subhead t-red">a) coupe du testicule</p>
+<!-- CROP: 3962 1 2 0.01 0.29 0.51 0.485 3962_coupe_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3962/3962_coupe_testicule.png" alt=""></figure>
+<p class="para">un testicule est formé de 200 à 300 lobules testiculaires contenant chacun de 1 à 4 tube seminifère pelotonnés, chaque tube d'une longueur de plusieurs dizaines de centimètres est un cul de sac en continuité avec le canal déferent en passant par l'epididyme</p>
+<p class="subhead t-red">b) coupe d'un tube seminifère :</p>
+<p class="para">ce coupe d seminifère montre une paroi devel ppé qui presente plusieurs types cellulaires d'une lumière reduite</p>
+<!-- PROOFREAD: 3962 part1 p02 — "part of this sentence is covered by a white patch: 'ce coupe d[…] seminifère', 'devel[…]ppé'" -->
+<p class="para">Bilan : un testicule est un ensemble de tubes seminifères qui baigne dans un tissu interstitiel</p>
+<p class="para">- Le tube seminifère est formé d'une paroi exterieure contenant plusieurs couches cellulaires disposées de façon concentrique reconnaissable par leurs tailles leurs emplacement et leurs forme : ce sont des cellules qui évoluent d'une façon centripète pour donner des spermatozoides : on parle alors de spermatogenese.</p>
+<p class="para">+ schéma d'interpretation d'une coupe de testicule</p>
+<p class="para">- Les cellules somatiques : ce sont les cellules de sertoli. elles s'étendent de la membrane basale ou enveloppe conjonctive du tube seminifère jusqu'à sa lumière avec un noyau polygonal ⇒ Ce sont des grandes cellules jouant un rôle secreteur, de soutien et de nutrition pour les cellules de la lignée germinale<br>+ Les spermatozoides se trouvent implantés dans les replis cytoplasmiques de leur membrane près de la lumière du tube</p>
+<!-- PROOFREAD: 3962 part1 p02 — "'paroi exterieure' (could be 'paroi epaisse'); 'enveloppe conjonctive' cut at the right edge ('conjoncti')" -->
+<!-- page 03 -->
+<p class="para">- Les cellules germinales, en allant de l'enveloppe conjonctive vers la lumière du tube séminifère on rencontre :<br>- Les spermatogonies à 2n ch (simple, dupliqués)<br>- Les spermatocyte I à 2n ch dupliqués<br>↓ D.R<br>- Les spermatocyte II à n ch dupliqués<br>↓ D.E<br>- Les spermatides à n ch simples<br>- Les spermatozoides à n ch simple</p>
+<p class="para">(méiose)</p>
+<!-- PROOFREAD: 3962 part1 p03 — "the word 'méiose' is written beside a brace grouping spermatocyte I → spermatides" -->
+<p class="para">* au niveau du tissu interstitiel, existent des cellules interstitielles appelées encore cellules de leydig en contact étroit avec des capillaires sanguins</p>
+<p class="subhead t-red">III] spermatogenèse ou formation des spermatozoides</p>
+<p class="subhead t-navy">1) structure de spermatozoide</p>
+<!-- CROP: 3962 1 3 0.0 0.555 0.47 0.862 3962_schema_spermatozoide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3962/3962_schema_spermatozoide.png" alt=""></figure>
+<p class="para">schéma d'un spermatozoide<br>= (spz)</p>
+<p class="para">Les spermatozoides sont des cellules sexuelles mâles differenciés ayant les caracteristiques suivants : une petite cellule, legère, mobile (pour transporter l'information génétique paternelle dans les voies genitales femelle jusqu'au gamète femelle) de forme effilée hydrodynamique formé de 3 parties principales tête, pièce intermediaire et queue</p>
+<p class="para">- La tête est formée d'un noyau haploide coiffé d'un acrosome intervenant au moment de la fecondation le tout est enveloppé par une membrane plasmique</p>
+<p class="para">- La pièce intermidiaire est formée par des mitochondries disposées en hélice autour du début du flagelle (fournissent l'energie (ATP) necessaire au deplacement.</p>
+<p class="para">- Le queue est formée d'un long flagelle.</p>
+<table>
+<tr><th>parties</th><th>constituants</th><th>Rôles</th></tr>
+<tr><td rowspan="3">Tête</td><td>noyau</td><td>contient l'information génétique paternelle sous forme de n = 23 ch simple 22 autosome + X ou Y</td></tr>
+<tr><td>Acrosome</td><td>coiffe le noyau, il assure la penetration du spermatozoide dans le gamète femelle lors de cellule oeuf.</td></tr>
+<tr><td>centriole</td><td>à l'origine des asters lors de la mitose de cellule oeuf.</td></tr>
+<tr><td>Pièce Intermidiaire</td><td>Mitochon-dries</td><td>disposées en spire autour du debut du flagelle, elle fournissent l'ATP au activités métaboliques et au mouvement du spz</td></tr>
+<tr><td>queue</td><td>long flagelle</td><td>Animé de mouvements ondulatoires, il propulse le spermatozoide vers l'avant.</td></tr>
+</table>
+<!-- PROOFREAD: 3962 part1 p03 — "'22 autosome + X ou Y' (written '+ Xou Y'); 'lors de cellule oeuf' in the Acrosome row; 'spz' read as 'sp3'" -->
+<!-- page 04 -->
+<p class="subhead t-navy">2) La spermatogenèse</p>
+<!-- CROP: 3962 1 4 0.0 0.09 1.0 0.475 3962_tableau_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3962/3962_tableau_spermatogenese.png" alt=""></figure>
+<p class="subhead t-red">phase de multiplication par mitose</p>
+<p class="para">+ - chaque spermatogonie souche (à 2n ch) subit une mitose donnant une spermatogonie souche qui reste en peripherie du tube seminifère pour assurer la conservation du stock de spermatogonie et une autre s'engage dans la multiplication par 2 ou 3 mitose</p>
+<!-- PROOFREAD: 3962 part1 p04 — "a crossed-out word before 'conservation' (written above it as the correction) is left out" -->
+<p class="subhead t-red">phase d'accroissement</p>
+<p class="para">Les spermatogonies subissent une legère augmentation de volume suite à des accumulations de reserves cytoplasmiques et une synthèse d'ADN dans le noyau on obtient ainsi des spermatocytes I 2n ch fissuré, dedoublés ou dupliqués = entier</p>
+<p class="subhead t-red">phase de maturation par meiose</p>
+<p class="para">Au cours de laquelle chaque spermatocyte I donne par DR spermatocyte II à n ch dupliqués qui par DE donnent 4 spermatides à n ch simple</p>
+<p class="subhead t-red">phase de differenciation ou spermiogenèse</p>
+<p class="para">- Au contact des cellules de sertoli.<br>chaque spermatide évolue en spermatozoide : <span class="t-red">Reduction cytoplasmique, condensation du noyau, formation de l'acrosome, de la pièce intermediaire et du flagelle. on obtient ainsi des spermatozoides à n ch simple</span></p>
+<p class="para">Conclusion :<br>chez l'homme la spermatogenèse est un phenomène continu.<br>L'homme commence à produire les sperms à partir de la puberté jusqu'à la mort sans interruption s'il est indemne de maladie qui empêche la spermatogenèse qui se deroule dans le tube seminifère.</p>
+<!-- PROOFREAD: 3962 part1 p04 — "'= entier' after 'dupliqués' uncertain" -->
+<!-- page 05 -->
+<p class="subhead t-red">IV) Regulation de la fonction reproductrice masculine :</p>
+<p class="subhead t-navy">1) Le complexe hypothalamo-hypophysaire</p>
+<p class="para">L'hypophyse est une petite glande reliée à l'hypothalamus par une tige pituitaire à la face inferieure de l'encephale, elle comprent deux parties. l'hypophyse anterieure (antéhypophyse) et l'hypophyse posterieure</p>
+<p class="para">Le document montre le complexe hypothalamo-hypophysaire</p>
+<p class="subhead t-navy">2) Rôle de l'hypophyse :</p>
+<p class="para">L'hypophyse contrôle le developpement et le maintien des testicules et le fonctionnement de cette organe qui assurent la spermatogenèse et secretion de testosterone.<br>ce contrôle se fait par l'intermediaire d'hormones la LH et la FSH ces hormones sont nommés hormones hypophysaires, gonadostimuline, gonadotrophines ou hormones gonadotropes</p>
+<p class="para">+ La <span class="t-red">LH</span> (hormone luteinisante) : est une hormones hypophysaire qui agit sur les cellule interstitiels ou cellule de leydig. stimule la secretion de la testosterone</p>
+<p class="para">+ Le <span class="t-red">FSH</span> (hormone ) : est une hormone hypophysaire qui active indirectement la spermatogenèse. En liant au recepteurs des cellules de sertoli, le FSH stimule la synthèse par ces cellules. d'une proteine <span class="t-red">l'ABP</span> indispensable à la fixation de la testosterone sur les cellules germinales ce qui active la poursuite de la spermatogenèse.</p>
+<!-- PROOFREAD: 3962 part1 p05 — "'(hormone      )' left blank in the notes; 'l'ABP' cut at the right edge" -->
+<p class="subhead t-red">Effet des gonadostimuline sur le testicule</p>
+<!-- CROP: 3962 1 5 0.475 0.5 1.0 0.945 3962_effet_gonadostimulines -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3962/3962_effet_gonadostimulines.png" alt=""></figure>
+<!-- page 06 -->
+<p class="subhead t-navy">3) Rôle de l'hypothalamus :</p>
+<p class="para">+ L'hypothalamus contrôle la secretion hypophysaire de LH et FSH par voie sanguine à travers la tige pituitaire grâce à une neurohormone = GnRH gonadolibérine secretée de façon discontinue ou pulsatile.</p>
+<p class="para">- Le GnRH se fixe sur des recepteurs des cellules de l'antéhypophyse et stimule la synthèse et la secretion par ces cellules, <span class="t-red">des gonadostimulines LH et FSH</span>.</p>
+<p class="para">- La secretion de GnRH est pulsatile a raison d'un pulse toutes les 80 min<br>- La secretion de LH et de TTT sont egalement pulsatiles avec des pics de sécretion qui sont legerement decalés dans le temps par rapport au pics de GnRH ce qui montre une relation de causalité entre les trois secretion : les pulses de GnRH induisent les pulses de LH qui entrainent à leurs tours les pulses de testosterone.</p>
+<!-- PROOFREAD: 3962 part1 p06 — "'toutes les 80 min' (8 or 9 unclear); 'TTT'" -->
+<p class="para">1pg = 10<sup>-12</sup> g<br>1ng = 10<sup>-9</sup> g</p>
+<p class="subhead t-red">V) Le retrocontrôle testiculaire</p>
+<p class="para">- Les testicules en place, freinent la secretion hypophysaire de FSH et LH : il s'agit de rétrocontrôle negatif<br>La castration bilatériale provoque la levée de cette inhibition</p>
+<p class="para">+ La testosterone exerce en permanence un effet modérateur sur l'axe hypothalamo-hypophysaire<br>Ce macanisme est rétrocontrole negatif ou retroaction negatif assure une certaine stabilité des secretions de la testosterone</p>
+<p class="para">- toute hausse du taux de testosterone par rapport aux valeurs normales accentue le freinage sur l'axe hypothalamo-hypophysa<br>Il se produit une <span class="t-red">baisse</span> de la production des GnRH et LH et par suite la secretion de testosterone par les cellules de leydig</p>
+<p class="para">- En revanche la baisse du taux de testosterone par rapport aux valeurs normales provoque <span class="t-red">une levée de l'inhibition</span> sur l'axe hypothalamo-hypophysaire. Il se produit alors une augmentation de la production de GnRH et LH ce qui stimule la secretion de testosterone par les cellules de leydig</p>
+<p class="para">. L'inhibine une hormone secretée par les cellules de sertoli, exerce un rétrocontrôle negatif sur la synthèse et la secretion de FSH<br>⇒ Cette rétrocontrôle negatif a pour but de maintenir la production des spermatozoides à une valeur normale</p>
+<!-- PROOFREAD: 3962 part1 p06 — "'hypothalamo-hypophysa' cut at the right edge; 'macanisme' as written" -->
+
+</section>
+
+</div>
+</body>
+</html>

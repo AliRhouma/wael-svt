@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Thème Reproduction Humaine - Série + Corrections</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Source non indiquée">
+<meta data-pagefind-meta="n[content]" content="3997">
+<meta data-pagefind-meta="title[content]" content="Thème Reproduction Humaine - Série + Corrections">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="chapter[content]" content="Procréation (fécondation, nidation, maîtrise)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Thème Reproduction Humaine - Série + Corrections" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Thème Reproduction Humaine - Série + Corrections</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1ZTAzkDclL0Rvu7HQvIwgV1Uf-1SpE95l/view">↗ Thème Reproduction Humaine - Série + Corrections.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1ZTAzkDclL0Rvu7HQvIwgV1Uf-1SpE95l/view">Anas Saïd · IDEAL BAC MATH(Anas Saïd) › SVT / SVT lpbt</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+<div class="exh"><span class="idx ex">Série</span><h2>Thème Reproduction Humaine - Série + Corrections</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/3997.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1ZTAzkDclL0Rvu7HQvIwgV1Uf-1SpE95l/view">↗ Thème Reproduction Humaine - Série + Corrections.pdf</a></div>
+
+
+<!-- page 01 -->
+<p class="subhead t-red"><b><u>La fonction reproductrice masculine</u></b></p>
+<p class="subhead t-navy"><b>A-&nbsp; QCM : il peut y avoir plus que deux réponses exactes</b></p>
+<p class="para"><b>1.&nbsp; Le spermatozoïde est :</b><br>
+a.&nbsp; produit par le tissu interstitiel<br>
+b.&nbsp; immobile<br>
+c.&nbsp; flagellée<br>
+d.&nbsp; haploïde</p>
+<p class="para"><b>2.&nbsp; La spermatogenèse :</b><br>
+a.&nbsp; se déroule dans les testicules<br>
+b.&nbsp; est centrifuge<br>
+c.&nbsp; est un signe de stérilité<br>
+d.&nbsp; passe par des étapes successives : multiplication ; accroissement ; maturation puis différenciation</p>
+<p class="para"><b>3.&nbsp; Les cellules de Leydig :</b><br>
+<b>a.</b>&nbsp; sont des cellules interstitielles<br>
+<b>b.</b>&nbsp; sont des cellules haploïdes<br>
+<b>c.</b>&nbsp; sont indispensables à la fonction exocrine des testicules<br>
+<b>d.</b>&nbsp; stimulées libèrent l’inhibine</p>
+<p class="para"><b>4.&nbsp; Les cellules de Sertoli remplissent les fonctions suivantes :</b><br>
+<b>a.</b>&nbsp; de soutien et nourricière pour les cellules germinales<br>
+<b>b.</b>&nbsp; la transmission des stimulations hormonales aux cellules germinales<br>
+<b>c.</b>&nbsp; la sécrétion d’une hormone intervenant dans la régulation du taux de FSH<br>
+<b>d.</b>&nbsp; la sécrétion de la testostérone</p>
+<p class="para"><b>5.&nbsp; La photo qui suit est une coupe transversale d’un testicule :</b></p>
+<table>
+<tr><td><!-- CROP: 3997 1 1 0.075 0.450 0.310 0.585 3997_p01_coupe_testicule --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p01_coupe_testicule.png" alt=""></figure></td>
+<td><b>a.</b>&nbsp; cryptorchide ou impubère<br>
+<b>b.</b>&nbsp; la zone indiquée A par un trait contient des cellules de Sertoli<br>
+<b>c.</b>&nbsp; la zone indiquée A par un trait contient les cellules de Leydig<br>
+<b>d.</b>&nbsp; l’absence de spermatozoïde s’explique par l’existence de pulses de testostérone</td></tr>
+</table>
+<p class="para"><b>6.&nbsp; La LH :</b><br>
+a.&nbsp; stimule la spermatogenèse<br>
+b.&nbsp; stimule la sécrétion de la testostérone<br>
+c.&nbsp; est sécrétée par l’hypothalamus<br>
+d.&nbsp; stimule la sécrétion de GnRH</p>
+<p class="para"><b>7.&nbsp; La FSH :</b><br>
+a.&nbsp; a une action sur les cellules de Sertoli<br>
+b.&nbsp; a une action sur les cellules interstitielles<br>
+c.&nbsp; est sécrétée par l’hypophyse<br>
+d.&nbsp; stimule la sécrétion de LH</p>
+<p class="para"><b>8.&nbsp; La testostérone est :</b><br>
+a.&nbsp; une hormone hypophysaire<br>
+b.&nbsp; une hormone testiculaire<br>
+c.&nbsp; sécrétée par les cellules de Leydig<br>
+d.&nbsp; sécrétée par les cellules de Sertoli</p>
+<p class="para"><b>9.&nbsp; La testostérone :</b><br>
+a.&nbsp; intervient dans la fabrication des spermatozoïdes par les tubes séminifères<br>
+b.&nbsp; sa sécrétion dépend de LH<br>
+c.&nbsp; sa sécrétion dépend de FSH<br>
+d.&nbsp; est une protéine hormonale</p>
+<!-- page 02 -->
+<p class="para"><b>10. L’injection massive de testostérone dans l’organisme provoquerait :</b><br>
+a.&nbsp; une augmentation des concentrations plasmiques de FSH et de LH<br>
+b.&nbsp; une diminution des concentrations plasmiques de FSH et de LH<br>
+c.&nbsp; une augmentation de la sécrétion de GnRH<br>
+d.&nbsp; une diminution de la sécrétion de GnRH</p>
+<p class="para"><b>11. La régulation du taux de testostérone chez l’adulte :</b><br>
+a.&nbsp; est le résultat d’un équilibre dynamique entre les activités des testicules et celles du complexe hypothalamo-hypophysaire<br>
+b.&nbsp; fait intervenir un rétrocontrôle négatif de l’hormone testiculaire qui stimule l’hypothalamus<br>
+c.&nbsp; a pour but d’imposer une variation cyclique à la sécrétion de testostérone<br>
+d.&nbsp; a pour but de maintenir à une certaine valeur de référence le taux de testostérone dans le sang</p>
+<p class="para"><b>12. L’inhibine :</b><br>
+<b>a.</b>&nbsp; est un stéroïde hormonal<br>
+<b>b.</b>&nbsp; est sécrétée par les cellules de Sertoli<br>
+<b>c.</b>&nbsp; intervient dans la régulation du taux de LH<br>
+<b>d.</b>&nbsp; stimule la sécrétion de l’ABP</p>
+<p class="para"><b>13. La sécrétion de GnRH chez l’adulte:</b><br>
+<b>a.</b>&nbsp; est contrôlée<br>
+<b>b.</b>&nbsp; est pulsatile<br>
+<b>c.</b>&nbsp; est continue<br>
+<b>d.</b>&nbsp; se fait dans la circulation générale</p>
+<p class="para"><b>14. La GnRH :</b><br>
+<b>a.</b>&nbsp; provoque la sécrétion de la testostérone et de l’inhibine par les testicules<br>
+<b>b.</b>&nbsp; provoque la sécrétion des gonadostimulines hypophysaires<br>
+<b>c.</b>&nbsp; est une protéine<br>
+<b>d.</b>&nbsp; a un rythme de sécrétion stable chez l’adulte</p>
+<p class="para"><b>15. L’ablation de l’hypothalamus à un animal pubère, provoquerait</b> :<br>
+<b>a.</b>&nbsp; une augmentation de la sécrétion de LH et de FSH<br>
+<b>b.</b>&nbsp; un arrêt de la sécrétion de FSH et de LH<br>
+<b>c.</b>&nbsp; un arrêt de l’activité testiculaire<br>
+<b>d.</b>&nbsp; la régression des caractères sexuels secondaires</p>
+<p class="para"><b>16. LH et FSH sont</b> :<br>
+<b>a.</b>&nbsp; des gonadolibérines<br>
+<b>b.</b>&nbsp; des gonadostimulines<br>
+<b>c.</b>&nbsp; de nature protéique<br>
+<b>d.</b>&nbsp; libérées dans la tige pituitaire</p>
+<p class="para"><b>17. La sécrétion de FSH et de LH chez l’adulte est :</b><br>
+<b>a.</b>&nbsp; régulée<br>
+<b>b.</b>&nbsp; continue et croissante<br>
+<b>c.</b>&nbsp; permise par la sécrétion pulsatile de GnRH<br>
+<b>d.</b>&nbsp; permise par la sécrétion de la testostérone</p>
+<p class="para"><b>18. La régulation hormonale de la fonction reproductrice chez l’homme :</b><br>
+<b>a.</b>&nbsp; est un mécanisme autorégulé<br>
+<b>b.</b>&nbsp; fait intervenir des hormones qui sont : la GnRH ; la LH ; la FSH ; la testostérone et l’inhibine<br>
+<b>c.</b>&nbsp; débute à la naissance<br>
+<b>d.</b>&nbsp; fait intervenir des rétrocontrôles positifs et négatifs</p>
+<p class="para"><b>19. Une hypophysectomie chez l’homme provoquerait :</b><br>
+<b>a.</b>&nbsp; une chute des sécrétions des hormones testiculaires<br>
+<b>b.</b>&nbsp; une augmentation de la concentration plasmique de testostérone<br>
+<b>c.</b>&nbsp; une chute de sécrétion de GnRH<br>
+<b>d.</b>&nbsp; une augmentation de sécrétion de GnRH</p>
+<p class="para"><b>20. L’ablation des testicules chez l’homme provoquerait :</b><br>
+<b>a.</b>&nbsp; une chute des sécrétions hormonales hypophysaires</p>
+<!-- page 03 -->
+<p class="para"><b>b.</b>&nbsp; une augmentation de sécrétion de Gn.RH<br>
+<b>c.</b>&nbsp; une régression des caractères sexuels<br>
+<b>d.</b>&nbsp; une stérilité qui peut être corrigée</p>
+<p class="subhead t-navy"><b>B-&nbsp; <u>Autres types d’exercices :</u></b></p>
+<div class="exsub">Exercice 1 :</div>
+<p class="para">Le schéma qui suit représente une coupe longitudinale d’un testicule.</p>
+<!-- CROP: 3997 1 3 0.345 0.188 0.682 0.406 3997_p03_coupe_longitudinale_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p03_coupe_longitudinale_testicule.png" alt=""></figure>
+<p class="consigne">1)&nbsp; Identifiez les éléments numérotés<br>
+2)&nbsp; Proposez des expériences avec leurs résultats qui montrent les rôles des structures 6 et 7.</p>
+<div class="exsub">Exercice 2 :</div>
+<p class="para">On propose le document ci-dessous montre le schéma d’une structure histologique qui intervient dans la fonction reproductrice masculine.</p>
+<!-- CROP: 3997 1 3 0.288 0.483 0.710 0.727 3997_p03_structure_histologique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p03_structure_histologique.png" alt=""></figure>
+<ol class="qn">
+<li>Titrez la structure histologique proposée.</li>
+<li>Identifiez les éléments numérotés.</li>
+<li>En adoptant le modèle et le nombre des chromosomes représentés dans la case A, représentez dans les cases B, C et D les chromosomes qui correspondent respectivement aux cellules 1, 3 et 4.</li>
+<li>Quels sont : le nombre et l’état des chromosomes contenus dans les cellules : 6 et 8 ?</li>
+<li>Citez les caractéristiques de l’élément 5.</li>
+<li>Certaines cellules parmi les structures cellulaires représentées assurent une fonction endocrine, lesquelles ? Nommez les hormones qu’elles produisent.</li>
+</ol>
+<div class="exsub">Exercice 3 :</div>
+<p class="para">Le schéma qui suit est celui d’un spermatozoïde.</p>
+<!-- page 04 -->
+<!-- CROP: 3997 1 4 0.325 0.038 0.665 0.188 3997_p04_spermatozoide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p04_spermatozoide.png" alt=""></figure>
+<ol class="qn">
+<li>Identifiez les éléments numérotés</li>
+<li>Précisez le rôle de chacun des éléments : 1 ; 3 ; 5 et 7</li>
+<li>Décrivez succinctement les étapes qui aboutissent à la formation des spermatozoïdes.</li>
+</ol>
+<div class="exsub">Exercice 4 :</div>
+<p class="para">On propose le schéma suivant :</p>
+<!-- CROP: 3997 1 4 0.355 0.280 0.643 0.488 3997_p04_schema_ex4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p04_schema_ex4.png" alt=""></figure>
+<ol class="qn">
+<li>Attribuez un titre au schéma proposé.</li>
+<li>Identifiez les éléments numérotés.</li>
+<li>Précisez les rôles des éléments 1 et 4.</li>
+<li>Quelle est l’importance de l’élément anatomique représenté ?</li>
+</ol>
+<div class="exsub">Exercice 5 :</div>
+<p class="para">On s’intéresse à l’étude de certains aspects de la régulation de la fonction testiculaire chez l’homme. Pour cela des expériences sur des rats qui possèdent le même mécanisme de régulation que chez l’homme ont été réalisés.<br>
+On donne les documents suivants :</p>
+<p class="para"><b>Document 1 :</b> Complexe hypothalamo-hypophysaire</p>
+<!-- CROP: 3997 1 4 0.385 0.655 0.625 0.872 3997_p04_doc1_complexe_hypothalamo_hypophysaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p04_doc1_complexe_hypothalamo_hypophysaire.png" alt=""></figure>
+<p class="para"><b>Document 2 :</b> 1<sup>ière</sup> série d’expériences</p>
+<!-- page 05 -->
+<p class="para">Expérience 1 : Après hypophysectomie d’un rat, on lui greffe une hypophyse dans un endroit loin de l’hypothalamus. L’hypophyse cesse de sécréter les gonadostimulines<br>
+Expérience 2 : Sur un autre rat, on sectionne la tige pituitaire au niveau (A-B) indiqué par le document 1 et on place au niveau de la section un papier imperméable. L’hypophyse cesse de sécréter les gonadostimulines.<br>
+Expérience 3 : L’analyse d’un milieu de culture de cellules de l’antéhypophyse, montre l’absence de gonadostimulines</p>
+<p class="para"><b>Document 3 :</b> 2<sup>ième</sup> série d’expériences</p>
+<p class="para">Expérience 4 : L’analyse d’un milieu de culture de cellules de l’antéhypophyse auquel on a ajouté des extraits hypothalamiques provenant d’un rat normal, montre la présence de gonadostimulines<br>
+Expérience 5 : L’analyse d’un milieu de culture de cellules de l’antéhypophyse auquel on a ajouté des extraits hypothalamiques provenant d’un rat castré, montre la présence de gonadostimulines en quantité plus importante que celle de l’expérience 4<br>
+Expérience 6 : L’analyse d’un milieu de culture de cellules de l’antéhypophyse auquel on a ajouté des extraits hypothalamiques provenant d’un rat auquel on a injecté une forte dose de testostérone, montre la présence de traces négligeables de gonadostimulines</p>
+<ol class="qn">
+<li>Analysez les données des documents 1 et 2, en vue de déduire la nature de la relation entre hypothalamus et hypophyse</li>
+<li>Tirez les conclusions qui se dégagent des expériences du document 3.</li>
+<li>Représentez sous forme d’un schéma fonctionnel, les relations entre le complexe hypothalamo-hypophysaire et les testicules mises en évidence.</li>
+</ol>
+<!-- page 06 -->
+<div class="exsub">Correction :</div>
+<p class="subhead t-navy"><b>A-&nbsp; <u>QCM :</u></b></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>
+<tr><td>c ; d</td><td>a ; d</td><td>a ; c</td><td>a ; b ; c</td><td>a ; b</td><td>b</td><td>a ; c</td><td>b ; c</td><td>a ; b</td><td>b ; d</td></tr>
+<tr><td><b>11</b></td><td><b>12</b></td><td><b>13</b></td><td><b>14</b></td><td><b>15</b></td><td><b>16</b></td><td><b>17</b></td><td><b>18</b></td><td><b>19</b></td><td><b>20</b></td></tr>
+<tr><td>a ; d</td><td>b</td><td>a ; b</td><td>b ; d</td><td>b ; c ; d</td><td>b ; c</td><td>a, c</td><td>a ; b</td><td>a ; d</td><td>b ; c</td></tr>
+</table>
+<p class="subhead t-navy"><b>B-&nbsp; <u>Autres types d’exercices :</u></b></p>
+<div class="exsub">Exercice 1 :</div>
+<p class="para">1.&nbsp; 1 : canal déférent ou spermiducte ; 2 : canal de l’épididyme ; 3 : épididyme ; 4 : testicule ; 5 : cloison conjonctive ; 6 : tube séminifère ; 7 : tissu interstitiel.</p>
+<p class="para">2.</p>
+<p class="para">➢&nbsp; Les tubes séminifères :<br>
+<i>Expérience :</i> Destruction sélective des tubes séminifères d’un animal adulte<br>
+<i>Résultat :</i> stérilité malgré la production de sperme<br>
+<i>Conclusion :</i> les tubes séminifères produisent les spermatozoïdes</p>
+<p class="para">➢&nbsp; Le tissu interstitiel :<br>
+<i>Expérience 1 :</i> Destruction sélective du tissu interstitiel d’un animal adulte<br>
+<i>Résultat :</i> stérilité et régression des caractères sexuels secondaires et primaires (plus de production de sperme + atrophie de l’appareil génital)<br>
+<i>Conclusion :</i> le tissu interstitiel maintient les caractères sexuels<br>
+<i>Expérience 2 :</i> injections régulières d’extraits du tissu interstitiel à l’animal de l’expérience 1<br>
+<i>Résultat :</i> Retour à la normale<br>
+<i>Conclusion :</i> le tissu interstitiel agit par voie sanguine par l’intermédiaire d’une hormone, il s’agit de la testostérone.</p>
+<div class="exsub">Exercices 2 :</div>
+<ol class="qn">
+<li>Coupe transversale d’un testicule pubère</li>
+<li>1 : spermatocyte I ; 2 : spermatogonie ; 3 : spermatocyte II ; 4 : spermatide ; 5 : spermatozoïde ; 6 : cellule de Sertoli ; 7 : vaisseau sanguin ; 8 : cellules de Leydig.</li>
+<li>
+<!-- CROP: 3997 1 6 0.318 0.600 0.680 0.720 3997_p06_tableau_chromosomes_cases -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p06_tableau_chromosomes_cases.png" alt=""></figure></li>
+<li>Les cellules de Sertoli et les cellules de Leydig sont à 46 chromosomes simples</li>
+<li>Les caractéristiques du spermatozoïde :
+<ul class="b">
+<li>il renferme très peu de cytoplasme</li>
+<li>il contient un noyau haploïde</li>
+<li>il possède une pièce intermédiaire renfermant des mitochondries qui fournissent l’énergie nécessaire aux mouvements de la queue</li>
+<li>il contient un acrosome qui renferme des enzymes lui permettant d’introduire l’information génétique à l’intérieur du gamète femelle</li>
+</ul></li>
+<li>Les cellules de Leydig qui sécrètent la testostérone et les cellules de Sertoli sécrétrices d’inhibine.</li>
+</ol>
+<div class="exsub">Exercice 3 :</div>
+<!-- page 07 -->
+<ol class="qn">
+<li>1 : acrosome ; 2 : cytoplasme (réduit) ; 3 : noyau ; 4 : membrane cytoplasmique ; 5 : mitochondrie ; 6 : microtubules ; 7 : flagelle</li>
+<li>Acrosome : renferme des enzymes permettant au spermatozoïde d’introduire l’information génétique à l’intérieur du gamète femelle ; Noyau : contient l’information génétique (n chromosomes) ; Mitochondrie : production de l’énergie (ATP) ; Flagelle : déplacement du spermatozoïde.</li>
+<li>Les étapes qui aboutissent à la formation des spermatozoïdes :
+<ul class="b">
+<li><b>multiplication :</b> les spermatogonies (2n c) se multiplient par des mitoses</li>
+<li><b>accroissement :</b> les spermatogonies qui ne se divisent plus accumulent des substances de réserves dans leur cytoplasme et deviennent des <b>spermatocytes I</b> (2n c fissurés)</li>
+<li><b>maturation ou méiose :</b></li>
+</ul>
+<ul class="dash">
+<li><b>division réductionnelle :</b> chaque spermatocyte I donne deux spermatocytes II (n c fissurés)</li>
+<li><b>division équationnelle :</b> Chaque spermatocyte II donne deux <b>spermatides</b> (n c simples)</li>
+</ul>
+<ul class="b">
+<li><b>différenciation :</b> les spermatides évoluent en spermatozoïdes (n c simples) par : réduction du cytoplasme, fusion de l’appareil de Golgi pour former l’acrosome et l’apparition de la pièce intermédiaire et du flagelle.</li>
+</ul></li>
+</ol>
+<div class="exsub">Exercice 4 :</div>
+<ol class="qn">
+<li>Le complexe hypothalamo-hypophysaire.</li>
+<li>1 : hypothalamus ou neurone de l’hypothalamus ; 2 : tige pituitaire ; 3 : hypophyse postérieure ; 4 : hypophyse antérieure ; 5 : réseau de capillaire</li>
+<li>l’hypothalamus sécrète la GnRH et l’hypophyse antérieure sécrète la FSH et la LH</li>
+<li>Le complexe hypothalamo-hypophysaire intervient dans le contrôle de l’activité des gonades</li>
+</ol>
+<div class="exsub">Exercice 5 :</div>
+<p class="para">1.<br>
+Document 1 : montre la relation vasculaire qui existe entre l’hypothalamus et l’hypophyse. L’hypothalamus semble contrôlé l’activité de l’hypophyse par voie sanguine.<br>
+Document 2 :<br>
+Expérience 1 : Le greffe de l’hypophyse loin de l’hypothalamus à un animal hypophysectomisé ne rétablit pas la sécrétion des gonadostimulines. Donc l’activité de l’hypophyse est sous la dépendance de l’hypothalamus. Ce dernier agit à courte distance.<br>
+Expérience 2 : En empêchant la circulation du sang entre l’hypopthalamus et l’hypophyse, la sécrétion des gonadostimulines s’arrêtent. Donc l’hypothalamus stimule la sécrétion des gonadostimulines hypophysaires par voie sanguine<br>
+Expérience3 : Les cellules hypophysaires mises en culture ne produisent pas les gonadostimulines. La sécrétion des gonadostimulines est sous la dépendance de l’activité de l’hypopthalamus<br>
+En conclusion : la sécrétion des gonadostimulines hypophysaires est sous la dépendance d’une neurohormone la GnRH libérée par l’hypothalamus dans les sang parcourant la tige pituitaire</p>
+<p class="para">2.<br>
+D’après les expériences 4 et 5&nbsp; on déduit que dans les conditions normales la sécrétion de GnRH est freinée. D’après l’expérience 6, la testostérone limite la sécrétion de GnRH : il s’agit d’un rétrocontrôle négatif.</p>
+<p class="para">3.</p>
+<!-- CROP: 3997 1 7 0.385 0.770 0.660 0.922 3997_p07_schema_fonctionnel_retrocontrole -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p07_schema_fonctionnel_retrocontrole.png" alt=""></figure>
+<!-- page 08 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<p class="subhead t-red"><b><u>La fonction reproductrice féminine</u></b></p>
+<p class="subhead t-navy"><b>A-&nbsp; QCM : il peut y avoir plus que deux réponses exactes</b></p>
+<p class="para"><b>21. La structure qui suit :</b></p>
+<table>
+<tr><td><!-- CROP: 3997 1 8 0.200 0.124 0.350 0.212 3997_p08_q21_structure --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p08_q21_structure.png" alt=""></figure></td>
+<td><b>a.</b>&nbsp; est un follicule secondaire<br>
+<b>b.</b>&nbsp; est constitué de cellules toutes à 2n chromosomes<br>
+<b>c.</b>&nbsp; certaines de ses cellules produisent l’oestradiol<br>
+<b>d.</b>&nbsp; s’est formée au cours de la vie fœtale</td></tr>
+</table>
+<p class="para"><b>22. Le schéma de l’ovaire qui suit :</b></p>
+<table>
+<tr><td><!-- CROP: 3997 1 8 0.163 0.228 0.404 0.345 3997_p08_q22_ovaire --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p08_q22_ovaire.png" alt=""></figure></td>
+<td><b>a.</b>&nbsp; a était réalisé sur un ovaire pubère<br>
+<b>b.</b>&nbsp; a était réalisé pendant la phase lutéale<br>
+<b>c.</b>&nbsp; a était réalisé pendant la phase pré-ovulatoire<br>
+<b>d.</b>&nbsp; montre la présence d’un follicule tertiaire</td></tr>
+</table>
+<p class="para"><b>23. La structure de l’endomètre qui suit :</b></p>
+<table>
+<tr><td><!-- CROP: 3997 1 8 0.195 0.360 0.318 0.441 3997_p08_q23_endometre --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p08_q23_endometre.png" alt=""></figure></td>
+<td><b>a.</b>&nbsp; présente un état prolifératif<br>
+<b>b.</b>&nbsp; présente un état de dentelle<br>
+<b>c.</b>&nbsp; a était réalisé pendant la phase sécrétoire<br>
+<b>d.</b>&nbsp; est un nid favorable une implantation d’un embryon</td></tr>
+</table>
+<p class="para"><b>24. Les follicules ovariens :</b><br>
+<b>a.</b>&nbsp; évoluent dans la zone médullaire de l’ovaire<br>
+<b>b.</b>&nbsp; sécrètent au cours de la phase folliculaire l’oestradiol et la progestérone<br>
+<b>c.</b>&nbsp; se transforment en corps jaune après l’ovulation<br>
+<b>d.</b>&nbsp; agissent sur le fonctionnement du reste de l’appareil génital</p>
+<p class="para"><b>25. Le gamète féminin :</b><br>
+<b>a.</b>&nbsp; est un ovocyte I<br>
+<b>b.</b>&nbsp; est un ovotide<br>
+<b>c.</b>&nbsp; est un ovocyte II<br>
+<b>d.</b>&nbsp; renferme n chromosomes dupliqués</p>
+<p class="para"><b>26. On propose le document suivant :</b></p>
+<table>
+<tr><td><!-- CROP: 3997 1 8 0.060 0.620 0.583 0.900 3997_p08_q26_mode_action_hormone --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p08_q26_mode_action_hormone.png" alt=""></figure></td>
+<td><b>a.</b>&nbsp; La cellule endocrine peut être celle qui produit FSH ou LH<br>
+<b>b.</b>&nbsp; La cellule endocrine peut être celle qui produit l’oestradiol ou la progestérone<br>
+<b>c.</b>&nbsp; Le document montre le mode d’action d’une hormone<br>
+<b>d.</b>&nbsp; L’effet biologique de l’hormone dépend uniquement de la concentration de l’hormone dans le sang</td></tr>
+</table>
+<p class="para"><b>27. Les oestrogènes sont sécrétés par :</b></p>
+<!-- page 09 -->
+<p class="para"><b>a.</b>&nbsp; l’hypothalamus<br>
+<b>b.</b>&nbsp; l’hypophyse<br>
+<b>c.</b>&nbsp; l’utérus<br>
+<b>d.</b>&nbsp; les ovaires</p>
+<p class="para"><b>28. Les oestrogènes à faible dose provoque sur le complexe hypothalamo-hypophysaire :</b><br>
+<b>a.</b>&nbsp; un rétrocontrôle négatif stimulant la sécrétion de LH<br>
+<b>b.</b>&nbsp; un rétrocontrôle positif provoquant des pics de FSH et de LH<br>
+<b>c.</b>&nbsp; un rétrocontrôle négatif freinant la sécrétion de LH<br>
+<b>d.</b>&nbsp; un rétrocontrôle négatif freinant la sécrétion de FSH</p>
+<p class="para"><b>29. A chaque période ovulatoire d’un cycle se produit :</b><br>
+<b>a.</b>&nbsp; un pic de LH qui provoque une brusque augmentation de la concentration plasmatique d’oestrogène à l’origine de l’ovulation<br>
+<b>b.</b>&nbsp; une brusque augmentation du taux plasmatique d’oestrogène provoquant les pics de FSH et de LH<br>
+<b>c.</b>&nbsp; la reprise de la méiose de l’ovocyte II<br>
+<b>d.</b>&nbsp; l’achèvement de la méiose de l’ovocyte</p>
+<p class="para"><b>30. On trouve des récepteurs spécifiques aux oestrogènes au niveau :</b><br>
+<b>a.</b>&nbsp; de l’utérus<br>
+<b>b.</b>&nbsp; des ovaires<br>
+<b>c.</b>&nbsp; du complexe hypothalamo-hypophysaire<br>
+<b>d.</b>&nbsp; uniquement dans l’utérus et le complexe hypothalamo-hypophysaire</p>
+<p class="para"><b>31. La sécrétion de GnRH :</b><br>
+<b>e.</b>&nbsp; est contrôlée chez l’adulte<br>
+<b>f.</b>&nbsp; est pulsatile<br>
+<b>g.</b>&nbsp; est continue<br>
+<b>h.</b>&nbsp; se fait dans la circulation générale</p>
+<p class="para"><b>32. La GnRH :</b><br>
+<b>e.</b>&nbsp; provoque la sécrétion des oestrogènes et de la progestérone par les ovaires<br>
+<b>f.</b>&nbsp; provoque la sécrétion des gonadostimulines hypophysaires<br>
+<b>g.</b>&nbsp; a un rythme de sécrétion maximal lors de la période post-ovulatoire<br>
+<b>h.</b>&nbsp; a un rythme de sécrétion maximal lors de la période des menstruations</p>
+<p class="para"><b>33. L’ablation de l’hypothalamus vers le 22<sup>ième</sup> jour du cycle</b> :<br>
+<b>e.</b>&nbsp; provoquerait une augmentation de la sécrétion de LH et de FSH<br>
+<b>f.</b>&nbsp; provoquerait un arrêt de la sécrétion de FSH et de LH<br>
+<b>g.</b>&nbsp; provoquerait un arrêt de l’activité ovarienne<br>
+<b>h.</b>&nbsp; est suivie de l’apparition des menstruations</p>
+<p class="para"><b>34. LH et FSH sont</b> :<br>
+<b>e.</b>&nbsp; des gonadolibérines<br>
+<b>f.</b>&nbsp; des gonadostimulines<br>
+<b>g.</b>&nbsp; de nature protéique<br>
+<b>h.</b>&nbsp; libérées dans la tige pituitaire</p>
+<p class="para"><b>35. La FSH :</b><br>
+<b>a.</b>&nbsp; stimule la maturation des follicules ovariens<br>
+<b>b.</b>&nbsp; provoque l’ovulation<br>
+<b>c.</b>&nbsp; est libérée de façon pulsatile<br>
+<b>d.</b>&nbsp; a un mode d’action identique à celui de LH</p>
+<p class="para"><b>36. La LH :</b><br>
+<b>a.</b>&nbsp; permet la croissance folliculaire<br>
+<b>b.</b>&nbsp; déclenche l’ovulation et la transformation du follicule rompu en corps jaune<br>
+<b>c.</b>&nbsp; est libérée de façon pulsatile<br>
+<b>d.</b>&nbsp; présente une fréquence et une amplitude des pulses constants au cours d’un cycle</p>
+<p class="para"><b>37. La sécrétion de FSH et de LH est :</b><br>
+<b>e.</b>&nbsp; continue et cyclique<br>
+<b>f.</b>&nbsp; pulsatile et cyclique</p>
+<!-- page 10 -->
+<p class="para"><b>g.</b>&nbsp; est permise par la sécrétion pulsatile de GnRH<br>
+<b>h.</b>&nbsp; est permise par la sécrétion des oestrogènes</p>
+<p class="para"><b>38. Le pic de LH, observé lors du 14<sup>ième</sup> jour d’un cycle de 28 jours :</b><br>
+<b>e.</b>&nbsp; provoque l’ovulation<br>
+<b>f.</b>&nbsp; résulte d’une augmentation de l’activité hypothalamique<br>
+<b>g.</b>&nbsp; est du au rétrocontrôle négatif d’une faible dose d’œstrogènes<br>
+<b>h.</b>&nbsp; est du au rétrocontrôle positif d’une dose importante d’œstrogènes</p>
+<p class="para"><b>39. Une hypophysectomie chez la femme provoquerait :</b><br>
+<b>e.</b>&nbsp; une chute des sécrétions des hormones ovariennes<br>
+<b>f.</b>&nbsp; une augmentation de la concentration plasmique d’œstrogènes et de progestérone<br>
+<b>g.</b>&nbsp; une chute de sécrétion de GnRH<br>
+<b>h.</b>&nbsp; une augmentation de sécrétion de GnRH</p>
+<p class="para"><b>40.</b></p>
+<table>
+<tr><td><p class="para">On essaie de préciser le rôle de l'œstradiol dans la sécrétion de LH. Chez une Guenon ovariectomisée, on réalise des injections d'oestradiol à partir du temps t<sub>0</sub>, leur concentration est similaire à celle du début de cycle; à partir du temps t<sub>1</sub> une seule injection très concentrée d'oestradiol est effectuée.<br>
+Grâce à des prélèvements sanguins, on suit l'évolution de la concentration sanguine de LH.<br>
+On peut déduire des graphes que:</p>
+<p class="para"><b>a.</b>&nbsp; la concentration de LH avant t<sub>0</sub> est supérieure à la normale et révèle un rétrocontrôle positif<br>
+<b>b.</b>&nbsp; entre t<sub>0</sub> et t<sub>1</sub> la diminution de LH révèle un rétrocontrôle négatif<br>
+<b>c.</b>&nbsp; au temps t<sub>1</sub>, l'augmentation brutale de LH traduit un rétrocontrôle positif de l'œstradiol sur la sécrétion de LH.<br>
+<b>d.</b>&nbsp; le temps t<sub>1</sub> est à rapprocher des sécrétions hormonales observées chez la femme au moment de l'ovulation.</p></td>
+<td><!-- CROP: 3997 1 10 0.497 0.302 0.932 0.622 3997_p10_q40_LH_oestradiol --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p10_q40_LH_oestradiol.png" alt=""></figure></td></tr>
+</table>
+<p class="subhead t-navy"><b>B-&nbsp; <u>Autre types d’exercices :</u></b></p>
+<div class="exsub">Exercice 1 :</div>
+<p class="para">Les figures ci-dessous représentent des structures ovariennes.</p>
+<!-- CROP: 3997 1 10 0.120 0.723 0.877 0.808 3997_p10_figures_1_4_structures_ovariennes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p10_figures_1_4_structures_ovariennes.png" alt=""></figure>
+<ol class="qn">
+<li>Identifiez les éléments numérotés</li>
+<li>Titrez chaque figure.</li>
+<li>Classez par ordre du déroulement, les figures représentées</li>
+<li><br>a.&nbsp; Réalisez un schéma précis, légendé et titré de l’élément 5<br>
+b.&nbsp; Citez les caractéristiques de l’élément 5<br>
+c.&nbsp; Donnez brièvement l’origine et le devenir de l’élément 5</li>
+</ol>
+<!-- page 11 -->
+<div class="exsub">Exercice 2 :</div>
+<p class="para">Le graphe ci-dessous représente les concentrations en hormones ovariennes mesurées dans le sang d’une femme au cours du temps</p>
+<!-- CROP: 3997 1 11 0.225 0.122 0.770 0.255 3997_p11_hormones_ovariennes_mars_mai -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p11_hormones_ovariennes_mars_mai.png" alt=""></figure>
+<ol class="qn">
+<li>Situez les différentes phases d’un cycle ovarien sur le graphique. Expliquez la démarche.</li>
+<li>Donnez l’origine cellulaire et les rôles des deux hormones</li>
+</ol>
+<div class="exsub">Exercice 3 :</div>
+<p class="para">On se propose d’étudier certains aspects fonctionnels du cycle utérin chez la guenon. Pour cela, on propose deux coupes transversales d’utérus de guenon réalisées chacune pendant une période bien déterminée d’un cycle sexuel.</p>
+<!-- CROP: 3997 1 11 0.238 0.383 0.855 0.682 3997_p11_coupes_uterus_fig1_fig2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p11_coupes_uterus_fig1_fig2.png" alt=""></figure>
+<ol class="qn">
+<li>Comparez les deux figures</li>
+<li>Indiquez la période du cycle sexuel qui correspond à chaque figure.</li>
+<li>Proposez des expériences avec leurs résultats qui mettent en évidence l’organe et son mode d’action contrôlant l’activité de l’utérus chez la guenon</li>
+<li>Les oestrogènes sont des hormones ovariennes qui agissent sur l’utérus. Proposez une expérience avec son résultat qui montre le mode d’action de ces hormones sur l’endomètre.</li>
+</ol>
+<div class="exsub">Exercice 4 :</div>
+<p class="para">La guenon possède un cycle sexuel comparable à celui de la femme. Les graphes ci-dessous représentent les variations des concentrations plasmatiques de progestérone, d’oestradiol et de LH observées chez une guenon durant un cycle sexuel.</p>
+<!-- page 12 -->
+<!-- CROP: 3997 1 12 0.232 0.040 0.765 0.327 3997_p12_progesterone_oestradiol_LH_guenon -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p12_progesterone_oestradiol_LH_guenon.png" alt=""></figure>
+<p class="para">On s’intéresse à l’un des déterminismes du pic de LH qui apparaît au milieu du cycle, pour cela on propose des expériences résumées dans les documents suivants :<br>
+<b>Document 1 :</b> Chaque jour du cycle à 16h, on injecte à des guenons une même dose de gonadolibérine d’origine hypothalamique (GnRH). On mesure la concentration plasmatique de LH avant, puis 10 minutes après l’injection. Les résultats obtenus sont reportés dans le tableau suivant :</p>
+<table>
+<tr><th></th><th colspan="2">Concentration de LH dans le plasma (ng.ml<sup>-1</sup>)</th></tr>
+<tr><th></th><th>Avant l’injection</th><th>10 mn après l’injection</th></tr>
+<tr><td>j - 2</td><td>2,1</td><td>4,2</td></tr>
+<tr><td>j - 1</td><td>2</td><td>4,2</td></tr>
+<tr><td>j = jour de l’ovulation</td><td>21,2</td><td>110,2</td></tr>
+<tr><td>j + 1</td><td>2</td><td>5,8</td></tr>
+</table>
+<p class="para"><b>Document 2 :</b> On effectue différentes incubations in vitro d’un même nombre de cellules hypophysaires sécrétrices de LH prélevées sur des guenons le matin de j – 1. Les incubations se déroulent en deux phases successives dans chacune des deux séries d’expériences suivantes :</p>
+<p class="para"><b>Première série d’expériences :</b><br>
+Les cellules sont incubées pendant 36h dans un milieu A contenant ou non de l’oestradiol. Après 36h, les cellules sont transférées et incubées durant 5h dans un milieu B contenant ou non de la GnRH (0,2 ng.ml<sup>-1</sup>). A la fin de l’incubation, on mesure la quantité de LH contenue dans le milieu B. Le tableau 1 ci-dessous résume les résultats.</p>
+<table>
+<tr><td><b>1<sup>ière</sup> phase :</b><br>Cellules hypophysaires incubées pendant 36h dans le milieu A, en :</td><td>absence d’oestradiol</td><td>absence d’oestradiol</td><td>présence d’oestradiol à concentration supérieure à 30 pg.ml<sup>-1</sup>.</td><td>présence d’oestradiol à concentration supérieure à 30 pg.ml<sup>-1</sup>.</td></tr>
+<tr><td><b>2<sup>ième</sup> phase :</b><br>5h dans un milieu B en :</td><td>absence de GnRH</td><td>présence de GnRH</td><td>absence de GnRH</td><td>présence de GnRH</td></tr>
+<tr><td>LH contenue dans le milieu B à la fin de l’incubation (µg)</td><td>Inférieure à 0,2</td><td>0,7</td><td>Inférieure à 0,2</td><td>3,3</td></tr>
+</table>
+<p class="para"><b>Tableau 1</b></p>
+<p class="para"><b>Deuxième série d’expériences :</b></p>
+<!-- page 13 -->
+<p class="para">Les cellules sont d’abord incubées dans un milieu A contenant de l’oestradiol pendant 1, 8, 12, 24 ou 36h. Puis, elles sont transférées et incubées pendant 5h dans un milieu B contenant 0,2 ng.ml<sup>-1</sup> de GnRH. A la fin de l’incubation, on mesure la quantité de LH contenue dans le milieu B. Le tableau 2 ci-dessous résume les résultats.</p>
+<table>
+<tr><td><b>1<sup>ière</sup> phase :</b> Durée en heures de la mise en culture des cellules hypophysaires dans un milieu A contenant de l’oestradiol à la concentration supérieure à 30 pg.ml<sup>-1</sup>.</td><td>1</td><td>8</td><td>12</td><td>18</td><td>24</td><td>36</td></tr>
+<tr><td><b>2<sup>ième</sup> phase :</b> Quantité en µg de LH obtenue à la fin de l’incubation des cellules hypophysaires placées dans un milieu B contenant la GnRH pendant 5h.</td><td>1,2</td><td>1,2</td><td>1,7</td><td>2,3</td><td>3,3</td><td>3,3</td></tr>
+</table>
+<p class="para"><b>Tableau 2</b></p>
+<ol class="qn">
+<li>Les observations faîtes sur les graphes suggèrent l’existence d’un contrôle ovarien du pic de LH. Quel est l’intérêt d’un tel contrôle ?</li>
+<li>Indiquez ce que l’on recherche au cours des expériences des documents 1 et 2 pour lesquelles vous justifierez le protocole expérimental</li>
+<li>Etablissez un bilan de vos conclusions</li>
+</ol>
+<div class="exsub">Exercice 5 :</div>
+<p class="para">La sécrétion des hormones ovariennes au cours d’un cycle sexuel chez la femme est soumise à des mécanismes régulateurs dont on cherche à élucider certains d’entre eux. Pour cela, on expérimente sur un matériel de choix : la guenon qui a un cycle sexuel comparable à celui d’une femme.</p>
+<p class="para">1.&nbsp; Au cours d’un cycle sexuel, on a dosé la LH et les hormones ovariennes dans le plasma d’une guenon normal et d’une guenon ovariectomisée. Les résultats sont représentés par les graphes des documents 1 et 2 suivants :</p>
+<table>
+<tr><th><b>Document 1 :</b> Guenon normale</th><th><b>Document 2 :</b><br>Guenon ovariectomisée</th></tr>
+<tr><td><!-- CROP: 3997 1 13 0.105 0.502 0.505 0.918 3997_p13_doc1_guenon_normale --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p13_doc1_guenon_normale.png" alt=""></figure></td>
+<td><!-- CROP: 3997 1 13 0.505 0.502 0.900 0.918 3997_p13_doc2_guenon_ovariectomisee --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p13_doc2_guenon_ovariectomisee.png" alt=""></figure></td></tr>
+</table>
+<!-- page 14 -->
+<p class="para">Sous forme d’un tableau, réalisez une analyse comparative des graphes</p>
+<p class="para">2.&nbsp; Une guenon pubère, ovariectomisée a été soumise à des expériences. Ces dernières et leurs résultats sont résumés dans le document 3 suivant :</p>
+<p class="para"><b>Document 3 :</b></p>
+<!-- CROP: 3997 1 14 0.152 0.140 0.877 0.560 3997_p14_doc3_graphes_a_b_c -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p14_doc3_graphes_a_b_c.png" alt=""></figure>
+<p class="para">a.&nbsp; Analysez les résultats dans le but&nbsp; d’établir d’une part la relation qui existe entre hypothalamus et la sécrétion de LH et d’autre part la relation qui existe entre l’oestradiol et la sécrétion de LH.<br>
+b.&nbsp; En intégrant certaines de vos connaissances, réalisez un schéma bilan fonctionnel des différentes interactions entre les différents organes mises en jeu.</p>
+<!-- page 15 -->
+<div class="exsub">Correction :</div>
+<p class="subhead t-navy"><b>A-&nbsp; <u>QCM :</u></b></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>
+<tr><td>b, c</td><td>a, c, d</td><td>b, c, d</td><td>c, d</td><td>c, d</td><td>a, c</td><td>d</td><td>c, d</td><td>b</td><td>a, c</td></tr>
+<tr><td><b>11</b></td><td><b>12</b></td><td><b>13</b></td><td><b>14</b></td><td><b>15</b></td><td><b>16</b></td><td><b>17</b></td><td><b>18</b></td><td><b>19</b></td><td><b>20</b></td></tr>
+<tr><td>a, b</td><td>b</td><td>b, c, d</td><td>b, c</td><td>a, c, d</td><td>b, c</td><td>b, c</td><td>a, b, d</td><td>a, d</td><td>b, c, d</td></tr>
+</table>
+<p class="subhead t-navy"><b>B-&nbsp; <u>Autres types d’exercices :</u></b></p>
+<div class="exsub">Exercice 1 :</div>
+<ol class="qn">
+<li>1 : cavité folliculaire (ou antrum) ; 2 : thèques ; 3 : ovocyte I ; 4 : granulosa ; 5 : ovocyte II ; 6 : follicule rompu</li>
+<li>Figure 1 : ovulation ; Figure 2 : follicule mûr ; Figure 3 : corps jaune ; Figure 4 : follicule tertiaire</li>
+<li>Classement : Figure : 4 ; Figure : 2 ; Figure : 1 ; Figure : 3</li>
+<li></li>
+</ol>
+<p class="para">a.&nbsp; Schéma d’un ovocyte II bloqué en métaphase II</p>
+<!-- CROP: 3997 1 15 0.085 0.340 0.850 0.482 3997_p15_ovocyte_II_metaphase_II -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p15_ovocyte_II_metaphase_II.png" alt=""></figure>
+<p class="para">b.&nbsp; Les caractéristiques de l’ovocyte II : cytoplasme abondant riche en substances de réserves qui assurent la survie des cellules issues des mitoses de la cellule œuf avant la nidation ; un noyau haploïde qui rétablie la diploïdie à la fécondation<br>
+c.&nbsp; Origine de l’ovocyte II : ovocyte I qui a subit une division réductionnelle<br>
+Devenir de l’ovocyte II : s’il y fécondation, il achève la division équationnelle pour donner un ovotide et un 2<sup>ième</sup> globule polaire. Dans le cas d’une non fécondation, il dégénère 24h après l’ovulation.</p>
+<div class="exsub">Exercice 2 :</div>
+<ol class="qn">
+<li>Phase folliculaire : son début est marqué par l’apparition des règles et durant toute la phase la progestérone est absente. Par contre l’oestradiol durant les 6 premiers jours est faible puis son taux plasmatique augmente présentant un pic entre le 12<sup>ième</sup> et le 13<sup>ième</sup> jours ; Phase lutéale : Après ovulation apparition de la progestérone qui&nbsp; présente un taux plasmatique croissant atteignant un pic vers le 21<sup>ième</sup> jours puis il diminue et s’annule à la fin de cette phase. L’oestradiol présente un pic de moindre importance que le premier au 21<sup>ième</sup> jour.</li>
+</ol>
+<!-- page 16 -->
+<!-- CROP: 3997 1 16 0.188 0.046 0.842 0.298 3997_p16_phases_cycle_ovarien -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p16_phases_cycle_ovarien.png" alt=""></figure>
+<p class="para">2.</p>
+<table>
+<tr><th></th><th>Oestradiol</th><th>Progestérone</th></tr>
+<tr><td>Origine</td><td>Thèque interne et granulosa des follicules en croissance.<br>Cellules thécales du corps jaune</td><td>Cellules lutéales du corps jaune</td></tr>
+<tr><td>Rôles</td><td><b>A la puberté :</b> il développe les caractères sexuels secondaires féminins<br>
+<b>A chaque cycle de la puberté à la ménopause :</b><br>
+&nbsp;il développe la muqueuse utérine et la sensibilise à l’action de la progestérone parallèlement il contracte le myomètre, augmente la filance de la glaire cervicale et il maintient basse la température interne du corps (36,5°C).<br>
+Il intervient dans la régulation de l’activité du cycle sexuel en exerçant à faible dose un rétrocontrôle négatif et à forte dose un rétrocontrôle positif sur la sécrétion des gonadostimulines</td>
+<td>Elle fait évoluer l’endomètre en dentelle utérine, relâche le myomètre (silence utérin), diminue la filance de la glaire cervicale et augmente la température interne du corps (37°C).<br>
+Il intervient dans la régulation de l’activité du cycle sexuel en exerçant rétrocontrôle négatif sur la sécrétion des gonadostimulines</td></tr>
+</table>
+<div class="exsub">Exercice 3 :</div>
+<ol class="qn">
+<li>Figure 1 : l’utérus ayant un diamètre et une lumière&nbsp; réduit donc myomètre est contracté ; la muqueuse utérine est peu développée avec présence de glandes, de vaisseaux sanguins non développés ; Figure 2 : l’utérus ayant un diamètre et une lumière plus importants&nbsp; donc le myomètre est relâché ; la muqueuse utérine présente des glandes et des vaisseaux sanguins développés présentant un aspect de dentelle.</li>
+<li>Figure 1 : période postmenstruelle ; Figure 2 : période prémenstruelle.</li>
+<li></li>
+</ol>
+<table>
+<tr><th>Expériences</th><th>Résultats</th><th>Conclusions</th></tr>
+<tr><td>1 Castration d’une guenon pubère</td><td>Disparition du cycle utérin et atrophie de l’utérus</td><td>Les ovaires contrôlent le développement et le cycle de l’utérus.</td></tr>
+<!-- page 17 -->
+<tr><td>2 Greffe d’un ovaire en un endroit quelconque du corps à la guenon précédente</td><td>L’utérus reprend son poids et son activité cyclique</td><td>Les ovaires contrôlent le développement et l’activité cyclique de l’utérus par voies sanguine par l’intermédiaire d’hormones</td></tr>
+</table>
+<p class="para">4.</p>
+<table>
+<tr><th>Expérience</th><th>Résultat</th><th>Conclusion</th></tr>
+<tr><td>On injecte à une guenon castrée des oestrogènes marqués (radioactives).</td><td>La radioactivité s’accumule dans les cellules de la muqueuse utérine.</td><td>Les oestrogènes agissent par voie sanguine et se fixent sur des récepteurs situés à l’intérieur des cellules de l’endomètre pour induire leurs effets biologiques. Ces cellules sont la cible des oestrogènes.</td></tr>
+</table>
+<div class="exsub">Exercice 4 :</div>
+<p class="para">1.&nbsp; Le pic de LH, encore appelé décharge ovulante, déclenche l’ovulation et la mise en route de la sécrétion de progestérone. L’ovulation sépare la phase folliculaire de la phase du corps jaune.</p>
+<p class="para">2.&nbsp; <b>Document 1 :</b> O recherche l’action de la GnRH sur la sécrétion de LH hypophysaire dans le but de savoir si la GnRH détermine le pic de LH au jour j. Les expériences sont faites in vivo chaque jour du cycle ; on mesure les concentrations de LH «témoin » avant l’injection puis 10 minutes après les réponses.<br>
+<i>Les constats</i> : La GnRH agit par voie sanguine ; les cellules hypophysaires sécrétrices de LH sont ses cellules cibles. Elles répondent par une sécrétion plus élevée de LH. Mais, pour une même dose injectée, donc un même message, ces cellules hypophysaires ne délivrent pas la même réponse suivant les jours du cycle.<br>
+Au jour j, ovulation, la concentration de LH est multipliée par 10 avant l’injection environ 27 fois après l’injection. Au jour j<sub>1</sub>, les concentrations de LH sont voisines de celles du jour j – 1.<br>
+Conclusion : Comme le montrent les concentrations plasmatiques de LH avant et après l’injection de GnRH, les cellules hypophysaires sécrétrices de LH répondent à la stimulation de GnRH par une sécrétion de LH. Les résultats du jour j permettent de penser qu’elles intègrent, ce jour-là, une ou d’autres informations. Parmi ces informations, le pic d’oestradiol pourrait intervenir.</p>
+<p class="para"><b>Document 2 :</b><br>
+<i>1<sup>ière</sup> série d’expériences</i> : est destinée à tester, in vitro, les rôles respectifs ou le rôle conjoint d’une concentration importante d’oestradiol et de GnRH sur les sécrétions de LH des cellules hypophysaires sécrétrices à la fin du jour j<br>
+Compte tenu des incubations, les cellules sont prélevées au jour j – 1. Les doses d’oestradiol utilisées sont voisines de celles du pic d’oestradiol. Le temps d’incubation avec l’oestradiol est long 36h.<br>
+Une expérience témoin (1) est réalisée sans oestradiol, ni GnRH. La sécrétion de LH est faible et inférieure à 0,2 µg. Avec GnRH seule en (2), la sécrétion de LH est stimulée : 0,7 µg. L’oestradiol seul en (3) ne stimule pas la sécrétion ; les résultats sont les mêmes qu’en (1). En présence d’oestradiol et de GnRH, la sécrétion de LH est importante : 16 fois plus élevée qu’en (1).<br>
+Conclusion : L’effet stimulant de la GnRH sur les cellules hypophysaires sécrétrices de LH est renforcé par la présence d’oestradiol. On pourrait dire encore que les cellules hypophysaires sont sensibilisées à l’action de la GnRH par des concentrations élevées d’oestradiol.<br>
+<i>2<sup>ième</sup> série d’expériences</i> :<br>
+Les expériences sont réalisées pour déterminer la durée de l’incubation des cellules hypophysaires sécrétrices de LH dans le milieu A, en vue d’une sécrétion maximale de LH. Pour chaque expérience, les cellules hypophysaires prélevées le jour j – 1 sont incubées dans le milieu A, un temps + ou – long : 1, 8, 12, 18, 24, 36 heures, puis placées dans le milieu B. La concentration de LH contenue dans le milieu B est mesurée après 5h dans ce même milieu. Elle est maximale lorsque l’incubation dans le milieu A est égale ou supérieure à 24h.</p>
+<p class="para">3.&nbsp; Les études expérimentales montrent que les cellules hypophysaires sécrétrices de LH sont sensibilisées à la stimulation de GnRH par l’oestradiol à concentration voisine de celle du pic, maintenue pendant 24h. Ces résultats vont dans le sens de la confirmation d’un contrôle ovarien du pic de LH au jour j (ovulation).</p>
+<!-- page 18 -->
+<div class="exsub">Exercice 5 :</div>
+<p class="para">1.</p>
+<table>
+<tr><th>Hormones</th><th><b>Document 1 :</b> Guenon normale</th><th><b>Document 2 :</b> Guenon ovariectomisée</th></tr>
+<tr><td>Oestrogènes</td><td>Durant les 8 premiers jours le taux plasmatique = 120 pg.ml<sup>-1</sup>puis il croît pour atteindre un maximum = 550 pg.ml<sup>-1</sup> au 12<sup>ième</sup> jour et revient à sa valeur initiale au 14<sup>ième</sup> jour. Puis, il réaugmente et retrouve la valeur de 450 pg.ml<sup>-1</sup> au 21<sup>ième</sup> jour et il diminue pour retrouver sa valeur initiale au 28<sup>ième</sup> jour.</td><td>Taux négligeable durant toute la période des mesures</td></tr>
+<tr><td>Progestérone</td><td>Absente durant la première moitié du cycle. Elle apparaît au 14<sup>ième</sup> jour présentant un taux croissant qui atteint 20 pg.ml<sup>-1</sup> au 21<sup>ième</sup> jour puis il diminue pour s’annuler à la fin du cycle</td><td>Taux négligeables durant toute la période des mesures</td></tr>
+<tr><td>LH</td><td>Présente un pic au 14<sup>ième</sup> jour qui atteint 15 ng.ml<sup>-1</sup> et de part et d’autre de cette période son taux plasmatique = 5 ng.ml<sup>-1</sup>.</td><td>Taux élevé presque constant = 15 ng. ml<sup>-1</sup></td></tr>
+</table>
+<p class="para">2. a. En absence d’ovaires le taux plasmatique de LH est élevé. Donc les ovaires freinent la sécrétion de LH.</p>
+<table>
+<tr><th>Graphe a</th><th>Graphe b</th><th>Graphe c</th></tr>
+<tr><td>Avant la lésion de l’hypothalamus le taux plasmatique de LH = 30 ng.ml<sup>-1</sup>. Après la lésion de l’hypothalamus le taux plasmatique de LH diminue rapidement et s’annule. Donc l’intégrité de l’hypothalamus est indispensable à la sécrétion de LH, il la stimule.</td>
+<td>Une perfusion discontinue de GnRH fait passer le taux plasmatique de LH de 5 ng.ml<sup>-1</sup> à 15 ng.ml<sup>-1</sup>. Alors qu’une perfusion continue est d’une baisse du taux plasmatique de LH. Donc l’hypothalamus par l’intermédiaire de la GnRH libérée de façon discontinue (pulsatile) stimule la sécrétion de LH.</td>
+<td>La perfusion discontinue de GnRH maintient stable et élevée la sécrétion de LH. L’injection d’une faible dose d’oestradiol fait passer le taux plasmatique de LH de 15 ng.ml<sup>-1</sup> à 8 ng.ml<sup>-1</sup> alors qu’une forte dose d’oestradiol fait passer le taux plasmatique 8 ng.ml<sup>-1</sup> à 25 ng.ml<sup>-1</sup>. Donc l’oestradiol à faible dose exerce un rétrocontrôle (–) sur la sécrétion de LH et à forte dose il exerce un rétrocontrôle (+) sur la sécrétion de LH.</td></tr>
+</table>
+<p class="para">Conclusion : l’hypothalamus stimule la sécrétion de LH hypophysaire par l’intermédiaire d’une neurohormone libérée de façon pulsatile.<br>
+Les ovaires par l’intermédiaire d’oestrogènes exercent un rétrocontrôle (-) à faible dose sur la sécrétion de LH et un rétrocontrôle (+) à forte dose sur la sécrétion de LH.<br>
+b.</p>
+<!-- CROP: 3997 1 18 0.272 0.674 0.727 0.917 3997_p18_schema_bilan_retrocontroles_ovaires -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p18_schema_bilan_retrocontroles_ovaires.png" alt=""></figure>
+<!-- page 19 -->
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<p class="subhead t-red"><b><u>La fécondation</u></b></p>
+<p class="subhead t-navy"><b>A-&nbsp; <u>QCM :</u> il peut y avoir plus que deux réponses exactes</b></p>
+<p class="para"><b>1.&nbsp; La fécondation :</b><br>
+<b>a.</b>&nbsp; permet l’achèvement de la deuxième division méiotique de l’ovocyte<br>
+<b>b.</b>&nbsp; permet à l’ovocyte de réaliser une division symétrique<br>
+<b>c.</b>&nbsp; augmente la durée de vie du spermatozoïde<br>
+<b>d.</b>&nbsp; nécessite une exocytose du contenu de l'acrosome pour permettre au spermatozoïde la traversé de la zone pellucide</p>
+<p class="para"><b>2.&nbsp; La période fertile ou de fécondabilité :</b><br>
+<b>a.</b>&nbsp; c’est une période autour de l’ovulation<br>
+<b>b.</b>&nbsp; peut être au milieu de la période lutéale<br>
+<b>c.</b>&nbsp; peut être dans les 24 h qui suivent l’ovulation<br>
+<b>d.</b>&nbsp; à une durée de 5 jours pour un cycle de 28 jours</p>
+<p class="para"><b>3.&nbsp; La glaire cervicale :</b><br>
+<b>a.</b>&nbsp; sépare les spermatozoïdes du liquide séminal<br>
+<b>b.</b>&nbsp; se laisse traverser par les spermatozoïdes normaux mobile au début de la phase folliculaire<br>
+<b>c.</b>&nbsp; élimine des spermatozoïdes à la période de fécondabilité<br>
+<b>d.</b>&nbsp; démasque le pouvoir fécondant des spermatozoïdes</p>
+<p class="para"><b>4.&nbsp; Pour que les spermatozoïdes pénètrent l’ovocyte :</b><br>
+<b>a.</b>&nbsp; ils doivent s’introduire entre les cellules de la corona radiata<br>
+<b>b.</b>&nbsp; il y a intervention d’enzymes libérées par l’ovocyte<br>
+<b>c.</b>&nbsp; ils doivent subir la réaction acrosomique pour traverser la zone pellucide<br>
+<b>d.</b>&nbsp; ils doivent contenir la même information génétique que celle de l’ovocyte</p>
+<p class="para"><b>5.&nbsp; La réaction acrosomique :</b><br>
+<b>a.</b>&nbsp; consiste en une libération d’enzymes contenues dans les granules corticaux de l’ovocyte<br>
+<b>b.</b>&nbsp; active la mobilité des spermatozoïdes pour rencontrer l’ovocyte<br>
+<b>c.</b>&nbsp; consiste en un éclatement cellulaire<br>
+<b>d.</b>&nbsp; consiste en une libération d’enzymes par les spermatozoïdes leur permettant la traversée de la zone pellucide</p>
+<p class="para"><b>6.&nbsp; L’entrée du spermatozoïde dans l’ovocyte :</b><br>
+<b>a.</b>&nbsp; déclenche une réaction corticale qui modifie la zone pellucide<br>
+<b>b.</b>&nbsp; entraîne l’achèvement de la méiose de l’ovocyte qui donne un ovotide et le 2<sup>ième</sup> globule polaire<br>
+<b>c.</b>&nbsp; nécessite une reconnaissance entre les gamètes d’espèces différentes pour avoir lieu<br>
+<b>d.</b>&nbsp; à lieu au 1/3 supérieur ou externe de la trompe de Fallope</p>
+<p class="para"><b>7.&nbsp; Au cours de la fécondation :</b><br>
+<b>a.</b>&nbsp; il y a une fusion des chromosomes d’origine paternelle et d’origine maternelle<br>
+<b>b.</b>&nbsp; les spermatozoïdes porteurs d’un chromosome X ont plus de chance de féconder un ovule que ceux porteurs du chromosomes Y<br>
+<b>c.</b>&nbsp; le sexe du nouvel individu est déterminé par le chromosome sexuel apporté par l’ovule<br>
+<b>d.</b>&nbsp; Les informations génétiques apportées par le spermatozoïde et l’ovule sont identiques</p>
+<p class="para"><b>8.&nbsp; En cas de fécondation :</b><br>
+<b>a.</b>&nbsp; le corps jaune se maintient développé<br>
+<b>b.</b>&nbsp; le taux d’oestradiol et de progestérone diminue<br>
+<b>c.</b>&nbsp; le cycle ovarien s’arrête<br>
+<b>d.</b>&nbsp; la muqueuse utérine dégénère</p>
+<p class="para"><b>9.&nbsp; La pilule contraceptive combinée :</b><br>
+<b>a.</b>&nbsp; contient uniquement des oestrogènes<br>
+<b>b.</b>&nbsp; inhibe la sécrétion des gonadostimulines<br>
+<b>c.</b>&nbsp; provoque la menstruation<br>
+<b>d.</b>&nbsp; développe les follicules ovariens</p>
+<!-- page 20 -->
+<p class="para"><b>10. La pilule combinée :</b><br>
+<b>a.</b>&nbsp; inhibe le fonctionnement du complexe hypothalamo-hypophysaire<br>
+<b>b.</b>&nbsp; active les ovaires<br>
+<b>c.</b>&nbsp; permet une interruption volontaire de la grossesse<br>
+<b>d.</b>&nbsp; permet un développement de l’endomètre impropre à une nidation</p>
+<p class="para"><b>11. La pilule combinée a pour effet :</b><br>
+<b>a.</b>&nbsp; d’empêcher l’ovulation<br>
+<b>b.</b>&nbsp; de favoriser la nidation<br>
+<b>c.</b>&nbsp; de stimuler la folliculogenèse<br>
+<b>d.</b>&nbsp; de stimuler la sécrétion des hormones ovariennes</p>
+<p class="para"><b>12. Au moment de la fécondation :</b><br>
+<b>a.</b>&nbsp; l’ovocyte II termine la division réductionnelle<br>
+<b>b.</b>&nbsp; l’ovocyte II termine la division équationnelle<br>
+<b>c.</b>&nbsp; il y a émission du premier globule polaire<br>
+<b>d.</b>&nbsp; il y a rétablissement de la diploïdie de l’espèce</p>
+<p class="para"><b>13. Le maintien de la grossesse nécessite l’intervention :</b><br>
+<b>a.</b>&nbsp; du complexe hypothalamo-hypophysaire<br>
+<b>b.</b>&nbsp; d’un mécanisme qui s’oppose à la destruction de l’endomètre<br>
+<b>c.</b>&nbsp; du blastocyste, des ovaires et du placenta<br>
+<b>d.</b>&nbsp; d’hormones : HCG ; oestrogènes et progestérone</p>
+<p class="para"><b>14. La FIVETE :</b><br>
+<b>a.</b>&nbsp; est une technique médicale destinée à limiter la procréation<br>
+<b>b.</b>&nbsp; permet d’obtenir une grossesse dans le cas d’une stérilité qui touche un des deux conjoints<br>
+<b>c.</b>&nbsp; ses étapes successives sont : prélèvement et traitement des spermatozoïdes ; prélèvement d’ovocytes à partir de follicules qui ont atteint leur stade de maturité ; insémination des ovocytes par les spermatozoïdes ; culture d’embryons puis transfert de quelques embryons dans l’utérus<br>
+<b>d.</b>&nbsp; sa pratique nécessite des connaissances sur les mécanismes de la régulation du taux des hormones sexuelles féminines</p>
+<p class="para"><b>15. La figure qui suit :</b></p>
+<table>
+<tr><td><!-- CROP: 3997 1 20 0.083 0.533 0.390 0.684 3997_p20_q15_figure --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p20_q15_figure.png" alt=""></figure></td>
+<td><b>a.</b>&nbsp; montre une réaction acrosomique<br>
+<b>b.</b>&nbsp; montre une réaction corticale<br>
+<b>c.</b>&nbsp; a lieu après la fin de la division équationnelle de l’ovocyte<br>
+<b>d.</b>&nbsp; a lieu avant l’entée du spermatozoïde dans l’ovocyte</td></tr>
+</table>
+<p class="para"><b>16. La figure qui suit :</b></p>
+<table>
+<tr><td><!-- CROP: 3997 1 20 0.172 0.698 0.308 0.788 3997_p20_q16_photo --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p20_q16_photo.png" alt=""></figure></td>
+<td><b>a.</b>&nbsp; montre un ovocyte II et un 1<sup>ier</sup> globule polaire<br>
+<b>b.</b>&nbsp; est une cellule œuf<br>
+<b>c.</b>&nbsp; montre un ovotide et un 2<sup>ième</sup> globule polaire<br>
+<b>d.</b>&nbsp; a était obtenue après la première mitose de la cellule œuf</td></tr>
+</table>
+<p class="para"><b><i>17. La figure qui suit est :</i></b></p>
+<table>
+<tr><td><!-- CROP: 3997 1 20 0.143 0.802 0.294 0.900 3997_p20_q17_figure --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p20_q17_figure.png" alt=""></figure></td>
+<td><b>a.</b>&nbsp; un ovocyte I en division réductionnelle<br>
+<b>b.</b>&nbsp; un ovocyte II en division équationnelle<br>
+<b>c.</b>&nbsp; un ovocyte II qui a achevé la division la division équationnelle<br>
+<b>d.</b>&nbsp; une cellule œuf en mitose</td></tr>
+</table>
+<p class="para"><b>18. La fécondation nécessite :</b></p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+
+<!-- page 21 -->
+<p class="para"><b>a.</b>&nbsp; la capacitation de l’ovocyte<br>
+<b>b.</b>&nbsp; une maturation de l’ovocyte<br>
+<b>c.</b>&nbsp; une interaction gamétique<br>
+<b>d.</b>&nbsp; un mucus cervical produit au niveau du col de l’utérus</p>
+<p class="para"><b>19. La capacitation :</b><br>
+<b>a.</b>&nbsp; est un ensemble de modifications physiologiques subi par le spermatozoïde dans les voies génitales féminines<br>
+<b>b.</b>&nbsp; est un ensemble de modifications morphologique subi par le spermatozoïde dans les voies génitales féminines<br>
+<b>c.</b>&nbsp; rend capable le spermatozoïde de se fixer à la zone pellucide et de réaliser la réaction acrosomique<br>
+<b>d.</b>&nbsp; a lieu dans l’épididyme</p>
+<p class="para"><b>20. La réaction corticale :</b><br>
+<b>a.</b>&nbsp; est l’exocytose des granules corticaux, et la libération de leur contenu<br>
+<b>b.</b>&nbsp; aboutit à la modification de la membrane de l’ovocyte et de la zone pellucide, favorisant la pénétration d’autres spermatozoïdes<br>
+<b>c.</b>&nbsp; favorise la monospermie<br>
+<b>d.</b>&nbsp; a lieu dans l’ovaire</p>
+<p class="subhead t-navy"><b>B- Autres types d’exercices :</b></p>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 1 :</div>
+<p class="para">Des schémas d’observations microscopiques d’une fécondation entre gamètes humains ont été réalisé et sont représentés dans les figures qui suivent :</p>
+<table>
+<tr><th>Figure 1</th><th>Figure 2</th><th>Figure 3</th></tr>
+<tr>
+<td><!-- CROP: 3997 1 21 0.148 0.507 0.380 0.686 3997_p21_fig1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p21_fig1.png" alt=""></figure></td>
+<td><!-- CROP: 3997 1 21 0.380 0.507 0.613 0.686 3997_p21_fig2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p21_fig2.png" alt=""></figure></td>
+<td><!-- CROP: 3997 1 21 0.613 0.507 0.852 0.686 3997_p21_fig3 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p21_fig3.png" alt=""></figure></td>
+</tr>
+<tr><th>Figure 4</th><th>Figure 5</th><th>Figure 6</th></tr>
+<tr>
+<td><!-- CROP: 3997 1 21 0.148 0.708 0.380 0.866 3997_p21_fig4 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p21_fig4.png" alt=""></figure></td>
+<td><!-- CROP: 3997 1 21 0.380 0.708 0.613 0.866 3997_p21_fig5 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p21_fig5.png" alt=""></figure></td>
+<td><!-- CROP: 3997 1 21 0.613 0.708 0.852 0.866 3997_p21_fig6 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p21_fig6.png" alt=""></figure></td>
+</tr>
+</table>
+<ol class="qn">
+<li>Identifiez les éléments numérotés et titrez chaque figure</li>
+<li>Réalisez un classement des figures d’après l’ordre du déroulement du phénomène qu’elles représentent</li>
+</ol>
+<!-- page 22 -->
+<ol class="qn" start="3">
+<li>Expliquez le passage d’une figure à la suivante</li>
+<li>Donnez le nombre de chromosomes pour les éléments : 3 ; 4 ; 7 ; 8 ; 9</li>
+</ol>
+<div class="exsub">Exercice 2 :</div>
+<p class="para">Dans certains cas de stérilité humaine, la FIVETE est préconisée.</p>
+<ol class="qn">
+<li>Donnez les étapes de la FIVETE.</li>
+</ol>
+<p class="para">Les clichés qui suivent, classés de façon ordonnée, ont étaient réalisés lors d’une FIVETE.</p>
+<p class="para"><b>Cliché 1</b></p>
+<!-- CROP: 3997 1 22 0.128 0.218 0.333 0.362 3997_p22_cliche1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p22_cliche1.png" alt=""></figure>
+<p class="para"><b>Cliché 2</b></p>
+<!-- CROP: 3997 1 22 0.338 0.218 0.524 0.362 3997_p22_cliche2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p22_cliche2.png" alt=""></figure>
+<p class="para"><b>Cliché 3</b></p>
+<!-- CROP: 3997 1 22 0.534 0.218 0.882 0.364 3997_p22_cliche3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p22_cliche3.png" alt=""></figure>
+<ol class="qn" start="2">
+<li>Nommez la structure a</li>
+<li>En utilisant vos connaissances décrivez le phénomène représenté</li>
+</ol>
+<p class="para">Pour comprendre une des conditions de réalisation du phénomène représenté par les clichés, des expériences ont été réalisées et sont résumées ci-après :</p>
+<table>
+<tr><td rowspan="2">Expériences</td><td>1<br>Spermatozoïdes capacités + Ovocyte</td><td>2<br>Spermatozoïdes capacités + fragments de la structure (a) puis on ajoute des ovocytes.</td><td>3<br>Spermatozoïdes capacités + fragments de la structure (a) provenant d’ovocyte fécondé</td></tr>
+<tr>
+<td><!-- CROP: 3997 1 22 0.310 0.524 0.392 0.695 3997_p22_exp1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p22_exp1.png" alt=""></figure></td>
+<td><!-- CROP: 3997 1 22 0.450 0.583 0.632 0.752 3997_p22_exp2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p22_exp2.png" alt=""></figure></td>
+<td><!-- CROP: 3997 1 22 0.648 0.583 0.830 0.752 3997_p22_exp3 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p22_exp3.png" alt=""></figure></td>
+</tr>
+<tr><td>Résultats</td><td>Fécondation si les gamètes proviennent de la même espèce</td><td>Pas de fécondation</td><td>Fécondation</td></tr>
+</table>
+<ol class="qn" start="4">
+<li>Interprétez les résultats des expériences 1 et 2.</li>
+<li>Expliquez le résultat de l’expérience 3</li>
+</ol>
+<div class="exsub">Exercice 3 :</div>
+<!-- page 23 -->
+<p class="para">On veut préciser quelques conditions de la fécondation. Pour cela on propose les documents suivants :</p>
+<p class="para"><b>Document 1 :</b> Vitesse de progression des spermatozoïdes dans la glaire cervicale durant un cycle :</p>
+<!-- CROP: 3997 1 23 0.236 0.134 0.762 0.382 3997_p23_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p23_doc1.png" alt=""></figure>
+<ol class="qn">
+<li>Quelles informations se dégagent de l’analyse du document 1 ?</li>
+<li>A partir de vos connaissances, citez d’autres conditions nécessaires à la fécondation.</li>
+</ol>
+<div class="exsub">Exercice 4 :</div>
+<p class="para">Le schéma ci-dessous résume les principales étapes de la fécondation.</p>
+<!-- CROP: 3997 1 23 0.236 0.520 0.750 0.853 3997_p23_ex4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p23_ex4.png" alt=""></figure>
+<ol class="qn">
+<li>Rappelez les conditions de l’ovulation, de la fécondation et de la nidation</li>
+<li>Identifiez la légende : a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p et q.</li>
+<li>Décrivez les étapes : 1, 2, 3, 4 et 5</li>
+</ol>
+<!-- page 24 -->
+<div class="exsub">Exercice 5 :</div>
+<p class="para">On s’intéresse aux effets sur les sécrétions hormonales ovariennes et hypophysaires de la prise d’un contraceptif oral normodosé (pilule contenant un œstrogène et un progestatif) par une femme. Pour cela, on a réalisé des dosages plasmatiques des hormones au cours d’un cycle sans pilule et au cours de deux cycles successifs au cours desquels il y a eu prise quotidienne d’une pilule combiné normodosée pendant 21 jours. Les résultats sont consignés dans les graphes qui suivent :</p>
+<!-- CROP: 3997 1 24 0.152 0.210 0.848 0.526 3997_p24_graphes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p24_graphes.png" alt=""></figure>
+<ol class="qn">
+<li>Comparez les variations hormonales enregistrées lors du cycle normal et lors du cycle sous pilule.</li>
+<li>Expliquez les différences constatées</li>
+<li>Expliquez l’apparition des règles quelques jours après l’arrêt de la prise des pilules.</li>
+<li>Réalisez un schéma bilan fonctionnel qui montre les niveaux d’action de la pilule combinée étudiée.</li>
+</ol>
+<!-- page 25 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+
+<p class="subhead t-red"><b><u>Correction</u></b></p>
+<p class="subhead t-navy"><b>A- QCM</b></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>
+<tr><td>a, d</td><td>a, c, d</td><td>a, c, d</td><td>a, c</td><td>d</td><td>a, b, d</td><td>a</td><td>a, c</td><td>b</td><td>a, d</td></tr>
+<tr><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th></tr>
+<tr><td>a</td><td>b, d</td><td>b, c, d</td><td>b, c, d</td><td>b</td><td>d</td><td>d</td><td>b, c, d</td><td>a, c</td><td>a, c</td></tr>
+</table>
+<p class="subhead t-navy"><b>B- Autres types d’exercices :</b></p>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 1 :</div>
+<p class="para">1.</p>
+<table>
+<tr><td>Figures</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+<tr><td>Titres</td><td>Reprise de la division équationnelle de l’ovocyte II</td><td>Cellule œuf en métaphase de mitose</td><td>Rencontre entre spermatozoïde et ovocyte II</td><td>Ovotide</td><td>Spermatozoïde dans l’espace périovocytaire</td><td>Cellule oeuf</td></tr>
+<tr><td>Légende</td><td colspan="6">1 : espace périovocytaire ; 2 : 2<sup>ième</sup> globule polaire en formation ; 3 : 1<sup>ier</sup> globule polaire ; 4 : spermatozoïde ; 5 : granules corticaux ; 6 : zone pellucide ; 7 : cellules folliculaires de la corona radiata ; 8 : pronucléus mâle ; 9 : pronucléus femelle ; 10 : spermaster ; 11 : globules polaires ; 12 : fusion des deux noyaux</td></tr>
+</table>
+<p class="para">2. Classement des figures :</p>
+<table>
+<tr><td>Figures</td><td>3</td><td>5</td><td>1</td><td>4</td><td>6</td><td>2</td></tr>
+<tr><td>Ordre</td><td>1<sup>ière</sup></td><td>2<sup>ième</sup></td><td>3<sup>ième</sup></td><td>4<sup>ième</sup></td><td>5<sup>ième</sup></td><td>6<sup>ième</sup></td></tr>
+</table>
+<p class="para">3.</p>
+<table>
+<tr><td>Fig3 à fig5</td><td>Une fois le spermatozoïde est fixé sur la zone pellucide, il libère les enzymes de l’acrosome qui liquéfie la zone pellucide lui permettant de progresser et d’atteindre l’espace périovocytaire</td></tr>
+<tr><td>Fig5 à Fig1</td><td>Le spermatozoïde passe dans le cytoplasme de l’ovocyte déclenche d’une part une réaction corticale pour empêcher la polyspermie et d’autre part la reprise de la division équationnelle de l’ovocyte</td></tr>
+<tr><td>Fig1 à Fig4</td><td>Achèvement de la méiose avec émission du 2<sup>ième</sup> globule polaire et obtention d’un ovotide</td></tr>
+<tr><td>Fig4 à Fig6</td><td>Rapprochement et fusion des pronucléï. On obtient une cellule oeuf</td></tr>
+<tr><td>Fig6 à Fig2</td><td>La cellule œuf entre en mitose</td></tr>
+</table>
+<p class="para">4.</p>
+<table>
+<tr><td>Eléments</td><td>3</td><td>4</td><td>7</td><td>8</td><td>9</td></tr>
+<tr><td>Nombre de chromosomes</td><td>23</td><td>23</td><td>46</td><td>23</td><td>23</td></tr>
+</table>
+<div class="exsub">Exercice 2 :</div>
+<ol class="qn">
+<li>Les étapes de la FIVETE :</li>
+</ol>
+<ul class="b">
+<li>L’obtention des gamètes : Chez l’homme, après prélèvement, les spermatozoïdes subissent un traitement pour devenir fécondants (capacitation). Chez la femme, on déclenche une hyperstimulation folliculaire (FSH) et une induction de l’ovulation (HCG), lorsque les follicules ovariens ont atteint leur stade de maturité les ovocytes sont prélevés par ponction dans les ovaires.</li>
+</ul>
+<!-- page 26 -->
+<ul class="b">
+<li>La fécondation in vitro : On procédé à l’insémination des ovocytes par les spermatozoïdes, puis les embryons sont cultivés.</li>
+<li>Le transfert dans l’utérus : Un petit nombre (2, 3) d’embryons est transféré dans l’utérus maternel préparé ; les autres sont conservés par le froid.</li>
+</ul>
+<ol class="qn" start="2">
+<li>Structure a = zone pellucide</li>
+<li>Le spermatozoïde au contact de la zone pellucide libère le contenu enzymatique de son acrosome qui liquéfie localement la zone pellucide lui permettant sa traversée en direction de l’ovocyte.</li>
+<li>Expérience 1 : la fécondation a lieu que si les spermatozoïdes capacités et les ovocytes sont de la même espèce. En effet, il existe une reconnaissance entre les gamètes de la même espèce ce qui permet la fécondation.<br>
+Expérience 2 : Il n’y a pas eu de fécondation. Les spermatozoïdes capacités se sont liés aux récepteurs se trouvant à la surface des fragments de la zone pellucide. La fécondation débute par une reconnaissance entre des glycoprotéines membranaires du spermatozoïde et des récepteurs qui leur sont spécifiques situés sur la zone pellucide.</li>
+<li>Expérience 3 : Les fragments de la zone pellucide provenant d’un ovocyte fécondé ne portent pas de récepteur. En effet ces derniers ont été détruits lors de la réaction corticale pour empêcher la polyspermie. Donc les spermatozoïdes sont restés libres et par suite ils ont pu féconder les ovocytes ajoutés au milieu.</li>
+</ol>
+<div class="exsub">Exercice 3 :</div>
+<ol class="qn">
+<li>La glaire cervicale présente un volume maximal au milieu du cycle ave un état lâche ce qui augmente la vitesse de progression des spermatozoïdes qui passe de 0 à 40mm/15mn. Au milieu du cycle la glaire cervicale rend les spermatozoïdes très hyperactifs.</li>
+<li>Autres conditions nécessaires à al fécondation : Un sperme normal  (volume entre 3 et 4 ml par éjaculation, pH alcalin, une tératospermie inférieur à 40%) ; Spermatozoïdes capacités ; Conduits génitaux féminins normaux (trompes non bouchées, absence d’infection ……) ; Rapport sexuel dans la période de fécondité ; Ovocyte mature en métaphase II ; Sécrétions vaginales</li>
+</ol>
+<div class="exsub">Exercice 4 :</div>
+<ol class="qn">
+<li>Les conditions de réalisation :
+<ul class="b">
+<li>de l’ovulation : Un follicule mûr libérant une forte dose d’oestradiol qui exerce un rétrocontrôle positif sur l’activité du complexe hypothalamo-hypophysaire d’ou une décharge ovulante = pic de LH responsable de l’ovulation</li>
+<li>de la fécondation : Un sperme normal  (volume entre 3 et 4 ml par éjaculation, pH alcalin, une tératospermie inférieur à 40%) ; Spermatozoïdes capacités ; Conduits génitaux féminins normaux (trompes non bouchées, absence d’infection ……) ; Une glaire cervicale abondante et lâche ; Rapport sexuel dans la période de fécondité ; Ovocyte mature en métaphase II ; Sécrétions vaginales pas trop acide.</li>
+<li>de la nidation : La présence : d’un embryon, d’une dentelle utérine fonctionnelle et d’un myomètre relâché.</li>
+</ul></li>
+<li>Légende :</li>
+</ol>
+<p class="para">a : cellules folliculaires ; b : 1<sup>ier</sup> globule polaire ; c : espace périovocytaire ; d : matériel nucléaire en division ; e : zone pellucide ; f : granules corticaux ; g : spermatozoïdes ; h :
+<!-- page 27 -->
+exocytose des granules corticaux ; i : matériel nucléaire en anaphase II ; j : espace périovocytaire ; k : cytoplasme de l’ovotide ; l : pronucléus mâle ; m : pronucléus femelle ; n : 2<sup>ième</sup> globule polaire ; o : noyaux de la cellule œuf ; p : corona radiata rétractée ; q : globules polaires</p>
+<ol class="qn" start="3">
+<li>Etapes :</li>
+</ol>
+<table>
+<tr><td>1</td><td>Au moment de l’ovulation, l’ovocyte II est expulsé avec une couronne de cellules folliculaires (corona radiata). La méiose est bloquée en métaphaseII.</td></tr>
+<tr><td>2</td><td>Au contact des spaermatozoïdes les pédoncules des cellules follicullaires se rétractent.</td></tr>
+<tr><td>3</td><td>Après avoir traversé la zone pellucide et l’espace périovocytaire, le spermatozoïde pénètre dans l’ovocyte et reprise de la division équationnelle.</td></tr>
+<tr><td>4</td><td>A La fin de la division équationnelle, on obtient l’ovotide avec l’émission du 2<sup>ième</sup> globule polaire. Les pronucléi se rapprochent</td></tr>
+<tr><td>5</td><td>La fusion des pronucléi mâle et femelle termine le processus de la fécondation</td></tr>
+</table>
+<div class="exsub">Exercice 5 :</div>
+<ol class="qn">
+<li>Etude comparative :</li>
+</ol>
+<table>
+<tr><th>Hormones</th><th>Cycle normal</th><th>Cycle sous pilule</th></tr>
+<tr><td>Oestradiol</td><td>Durant les 7 premiers jours, le taux plasmatique est à peu près égal à 40pg.<sup>ml-</sup>1, puis il augmente atteignant 140 pg.ml<sup>-</sup>1 au 13<sup>ième</sup> jour par la suite, il diminue et retrouve la valeur de 60 pg.ml<sup>-1</sup> au 17<sup>ième</sup> jour, puis il réaugmente et atteint 110 pg.ml<sup>-1</sup> au 21<sup>ième</sup> jour et enfin il diminue atteignant sa valeur initiale au 28<sup>ième</sup> jour.</td><td>Presque stable = 50 pg.ml<sup>-1</sup></td></tr>
+<tr><td>Progestérone</td><td>Absente durant la première moitié du cycle. Elle apparaît à partir du 16<sup>ième</sup> jour avec un taux croissant qui atteint 21 ng.ml<sup>-1</sup> le 21<sup>ième</sup> jour, puis il diminue et s’annule à la fin du cycle.</td><td>Absente</td></tr>
+<tr><td>FSH</td><td>Du 1<sup>ier</sup> au 6<sup>ième</sup> jour du cycle le taux passe de 18 mui.ml<sup>-1</sup> à 28 mui.ml<sup>-1</sup> puis il diminue et réaugmente brusquement le 14<sup>ième</sup> jour et enfin il diminue et se stabilise à 13 mui.ml<sup>-1</sup> durant la 2<sup>ième</sup> moitié du cycle.</td><td>Taux faible stable à 13 mui.ml<sup>-1</sup></td></tr>
+<tr><td>LH</td><td>Présente une décharge brutale : un pic dépassant 60 mui.ml<sup>-1</sup> le 14<sup>ième</sup> jour et de part et d’autre e cette période son taux est maintenu faible à 13 mui.ml<sup>-1</sup></td><td>Taux faible stable à 13 mui.ml<sup>-1</sup></td></tr>
+</table>
+<ol class="qn" start="2">
+<li>Durant le cycle normal, les hormones hypophysaires stimulent la sécrétion des hormones ovariennes. A leur tour les hormones ovariennes exercent des rétrocontrôles positif et négatif sur la sécrétion des gonadostimulines. D’où la variation cyclique.<br>
+Les hormones apportées par les pilules exercent un rétrocontrôle négatif sur la sécrétion des gonadostimulines d’ou leur taux plasmatique bas et donc il n’y a plus d’ovulation et par conséquent il n’y a plus de progestérone.</li>
+<li>Durant la période de la prise des pilules l’endomètre se développe anormalement sous l’action des hormones exogènes. L’arrêt de la prise de la pilule entraîne une chute du taux plasmatique des hormones apportées par ces dernières d’ou déchirement de l’endomètre et par la suite apparition des règles.</li>
+</ol>
+<!-- page 28 -->
+<p class="para">4.</p>
+<p class="para"><b>Niveaux d’action de la pilule combinée oestro-progestative</b></p>
+<!-- CROP: 3997 1 28 0.248 0.085 0.752 0.444 3997_p28_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3997/3997_p28_schema.png" alt=""></figure>
+
+</section>
+
+</div>
+</body>
+</html>

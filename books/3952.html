@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Théme 1_Reproduction humaine et santé — série</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="3952">
+<meta data-pagefind-meta="title[content]" content="Théme 1_Reproduction humaine et santé — série">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="chapter[content]" content="Procréation (fécondation, nidation, maîtrise)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Théme 1_Reproduction humaine et santé — série" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Théme 1_Reproduction humaine et santé — série</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com · 73.832.000</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/19-PC6Lgh_Fbdmvh5hXFlEIXKvS6ai-ea/view">↗ série 1.pdf</a> <a href="https://drive.google.com/file/d/1riAziVm_JVvzCNxaFhMrnit7DUehM_G9/view">↗ série 3.pdf</a> <a href="https://drive.google.com/file/d/1ECZDKJGEE1n86hrUlSjdfFV89QY07NiC/view">↗ série 5.pdf</a> <a href="https://drive.google.com/file/d/1tF9Har9qVwlqavvlMoJO-QC1ziuWzvqr/view">↗ corrigé série 5.pdf</a> <a href="https://drive.google.com/file/d/1_XCFmBfoEkG0jHOQJPKhixbfV5fmhNj2/view">↗ série 6.pdf</a> <a href="https://drive.google.com/file/d/1WojUmTtjzokEln2680BtjZ3HT1rMdQaa/view">↗ corrigé série 6.pdf</a> <a href="https://drive.google.com/file/d/1eb1GkAf6IBZ6LWsKEcwmjCbu7d9JkxDf/view">↗ série 7.pdf</a> <a href="https://drive.google.com/file/d/1h2kFdtlel0sIpl7A9zuO5MmKWKzR3xOJ/view">↗ corrigé série 7.pdf</a> <a href="https://drive.google.com/file/d/1ZOAc_BJ4gHi-o6aP-hrEfoDSIFvKdkNs/view">↗ série 8.pdf</a> <a href="https://drive.google.com/file/d/1HprGocoKoWY1qKXvEVLBxBjYzPkNRq8r/view">↗ série 9.pdf</a> <a href="https://drive.google.com/file/d/1YGd2qaEkuTtAbJ2f3Jg1EEcmnwL0pWRw/view">↗ corrigé série 9.pdf</a> <a href="https://drive.google.com/file/d/1zc9sxc90WEPQR46pYaYbIOx89azXc9Hb/view">↗ série 10.pdf</a> <a href="https://drive.google.com/file/d/1evxn2aU9Gc9SKRo0710fZBgumWB4PK3T/view">↗ corrigé série 10.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (47)</b><ul><li><a href="https://drive.google.com/file/d/19-PC6Lgh_Fbdmvh5hXFlEIXKvS6ai-ea/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1TcnzZydF5XebD-PZjt2Y43qBAtfKOid2/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/12KrIrXMdvyqWwGgBPS8MEbjfMoFhJ0hh/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1qRrXnoz3lL7EDNqWQwWUy_3d5WQWrkqm/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1T3S_c99hLvM68Cb0BJ1qbIjJmXNosGIy/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1XSUvUOpIaV_L_uVSgZLb36zOVLotyXbg/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/177UVE0Ear97W7rHYBz9tyv2LFaQ67A5M/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1WOpCFpFXlNpVEwDcx9hKdK0-APyWZ2Bk/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/15Kse_WWKJYfRTs7OCajTfLGH5Lqz0WMS/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1riAziVm_JVvzCNxaFhMrnit7DUehM_G9/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/19MFHE-mv4H_m7Rh7trS3QCJTfcV1760R/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1_jAwOsldK5YCy7gc9w4ydWX12fCSIvcC/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1ECZDKJGEE1n86hrUlSjdfFV89QY07NiC/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1rHesyBvaxMMjLCN52o3LKc_FibaQ1839/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1v55Snt4WXniH7koCGk-bKy-JNo0w0B_0/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1tF9Har9qVwlqavvlMoJO-QC1ziuWzvqr/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1QgG5bjKdEZyJXCVxeXWKGjuCDdJ8WJA0/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1GAQMK35jBaBqEmtghrF8uefIkP3U1x6g/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1YZDNfo6uv51I38im3hFCZyn0p-Hewbcm/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/11x9LUBN8FycPFJZuchK2wbRqzOjtFqwO/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1KvNF40so-P3E33UnOIqAgFBHToxq97K1/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1_XCFmBfoEkG0jHOQJPKhixbfV5fmhNj2/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1ZPTsMaK-dqs_09lAmoE1NhVW_M1W4-BJ/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/16j_m7EbkTQb1Z9DOg3A71g9H40c5YpEM/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1WojUmTtjzokEln2680BtjZ3HT1rMdQaa/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1Njeef5pfvmF8Oz6cZ4WhkPbJRRL_Q55c/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/12R8PQ4s-AzrB073oDMiA_YnCLR75LM29/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1eb1GkAf6IBZ6LWsKEcwmjCbu7d9JkxDf/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1tn4AXyLraZkS6rU4MLUou6cO4JqvsQ0E/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/19dMH5qxMYvAeUfzwiGlqQ07SThpoRYri/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1h2kFdtlel0sIpl7A9zuO5MmKWKzR3xOJ/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1x_3oAj7jJUxBjX2uxkZ2VCfiBmQjTbXq/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1kP8ANznBi4O-jyaZKWrJmZMeMu7abTq5/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1ZOAc_BJ4gHi-o6aP-hrEfoDSIFvKdkNs/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1uhcyVZ1Bh9tZxHCDysXBSwLdf9uI8H4e/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1SNthkV5kZNDpYcIi6NdppI1g4rDqNrIk/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1HprGocoKoWY1qKXvEVLBxBjYzPkNRq8r/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1dL20c7ZeVeva3n8drYg8UUjBPlvmFp64/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1jRwHk2SpR011NCIcCWjxgC9K5Z3Udai1/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1YGd2qaEkuTtAbJ2f3Jg1EEcmnwL0pWRw/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1POYcLNVqVi8yHc9x2NYJx80xpAyNOWfy/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1sy3aSsBPxrGZTs92X0ogPnTFv7k3Njfj/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1zc9sxc90WEPQR46pYaYbIOx89azXc9Hb/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1FB6lltwHDIqrhZPvYHYS2yhYWutC1nna/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1evxn2aU9Gc9SKRo0710fZBgumWB4PK3T/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1qk1dGeJ9O2r9oFeYjjWd7THPzfoU7DcW/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Théme 1_Reproduction humaine et santé</a></li><li><a href="https://drive.google.com/file/d/1jv4nsvnSMtUaftw43C-G8W0arw8eVzyL/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Théme 1_Reproduction humaine et santé</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+<!-- SOURCE: Taki Academy · www.takiacademy.com · 73.832.000 -->
+<!-- NOTE: branch address list printed on the cover (Sousse (Khezama - Sahloul) Nabeul / Sfax / Bardo / Menzah El Aouina Ezzahra / CUN / Bizerte / Gafsa / Kairouan / Medenine / Kébili / Monastir Gabes / Djerba) is school contact furniture — kept here only, not in the body -->
+<div class="exh"><span class="idx ex">Série</span><h2>Théme 1_Reproduction humaine et santé</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/3952.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com · 73.832.000</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/19-PC6Lgh_Fbdmvh5hXFlEIXKvS6ai-ea/view">↗ série 1.pdf</a> <a href="https://drive.google.com/file/d/1riAziVm_JVvzCNxaFhMrnit7DUehM_G9/view">↗ série 3.pdf</a> <a href="https://drive.google.com/file/d/1ECZDKJGEE1n86hrUlSjdfFV89QY07NiC/view">↗ série 5.pdf</a> <a href="https://drive.google.com/file/d/1tF9Har9qVwlqavvlMoJO-QC1ziuWzvqr/view">↗ corrigé série 5.pdf</a> <a href="https://drive.google.com/file/d/1_XCFmBfoEkG0jHOQJPKhixbfV5fmhNj2/view">↗ série 6.pdf</a> <a href="https://drive.google.com/file/d/1WojUmTtjzokEln2680BtjZ3HT1rMdQaa/view">↗ corrigé série 6.pdf</a> <a href="https://drive.google.com/file/d/1eb1GkAf6IBZ6LWsKEcwmjCbu7d9JkxDf/view">↗ série 7.pdf</a> <a href="https://drive.google.com/file/d/1h2kFdtlel0sIpl7A9zuO5MmKWKzR3xOJ/view">↗ corrigé série 7.pdf</a> <a href="https://drive.google.com/file/d/1ZOAc_BJ4gHi-o6aP-hrEfoDSIFvKdkNs/view">↗ série 8.pdf</a> <a href="https://drive.google.com/file/d/1HprGocoKoWY1qKXvEVLBxBjYzPkNRq8r/view">↗ série 9.pdf</a> <a href="https://drive.google.com/file/d/1YGd2qaEkuTtAbJ2f3Jg1EEcmnwL0pWRw/view">↗ corrigé série 9.pdf</a> <a href="https://drive.google.com/file/d/1zc9sxc90WEPQR46pYaYbIOx89azXc9Hb/view">↗ série 10.pdf</a> <a href="https://drive.google.com/file/d/1evxn2aU9Gc9SKRo0710fZBgumWB4PK3T/view">↗ corrigé série 10.pdf</a></div>
+<div class="exsub">série 1</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="para">Bac Sc Exp (Top 50 – Gr 1 )</p>
+<p class="subhead t-navy"><b><u>Série 1 : La fonction reproductrice chez l’homme</u></b></p>
+<p class="para"><span class="t-gold">Lundi&nbsp;&nbsp; 12/09/2022</span></p>
+<!-- page 02 -->
+<div class="exsub">Exercice 1 · 50 min · 07 pts</div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes.<br>Reportez sur votre copie, le numéro de chaque item et indiquez la (ou les) lettre(s) correspondant(s) à la (ou aux) réponse(s) exacte(s).</p>
+<p class="consigne"><b>Toute réponse fausse annule la note attribuée à l’item considéré.</b></p>
+<p class="para"><span class="t-blue"><b>1) Parmi les cellules du tube séminifère qui ont une fonction exocrine, on peut citer les :</b></span></p>
+<p class="para"><b>a-</b> spermatides,<br><b>b-</b> cellules de Leydig,<br><b>c-</b> cellules de Sertoli,<br><b>d-</b> spermatozoïdes.</p>
+<p class="para"><span class="t-blue"><b>2) Le spermatocyte du premier ordre est une cellule :</b></span></p>
+<p class="para"><b>a-</b> diploïde,<br><b>b-</b> qui résultat de la première division de la méiose,<br><b>c-</b> à noyau excentrique,<br><b>d-</b> mobile.</p>
+<p class="para"><span class="t-blue"><b>3) Les cellules hypothalamiques sécrétrices de GnRH sont activées à la suite d’une :</b></span></p>
+<p class="para"><b>a-</b> élévation de sécrétion d’inhibine,<br><b>b-</b> chute de sécrétion de testostérone,<br><b>c-</b> élévation de sécrétion d’ABP,<br><b>d-</b> chute de sécrétion FSH.</p>
+<p class="para"><span class="t-blue"><b>4) Chez l’homme, les cellules de Leydig :</b></span></p>
+<p class="para"><b>a-</b> ont des récepteurs spécifiques à l’inhibine,<br><b>b-</b> présentent des récepteurs à la testostérone,<br><b>c-</b> synthétisent et sécrètent l’ABP,<br><b>d-</b> interviennent dans la régulation de la spermatogenèse.</p>
+<p class="para"><span class="t-blue"><b>5) La castration bilatérale d’un mâle pubère entraîne une augmentation du taux plasmatique de :</b></span></p>
+<p class="para"><b>a-</b> l’inhibine,<br><b>b-</b> la LH,<br><b>c-</b> la FSH,<br><b>d-</b> l’ABP.</p>
+<p class="para"><span class="t-blue"><b>6) Les tubes séminifères d’un homme sain :</b></span></p>
+<p class="para"><b>a-</b> ont une double fonction,<br><b>b-</b> contiennent des cellules somatiques,<br><b>c-</b> sont des structures cibles de la GnRH,<br><b>d-</b> sont activés par la LH.</p>
+<p class="para"><span class="t-blue"><b>7) Greffé sous la peau du cou, le testicule d’un rat hypophysectomisé et castré assure :</b></span></p>
+<p class="para"><b>a-</b> la restauration des caractères sexuels masculins,<br><b>b-</b> le développement du tractus génital,<br><b>c-</b> le rétablissement de la fertilité,<br><b>d-</b> une augmentation du taux sanguin des gonadotrophines.</p>
+<!-- page 03 -->
+<p class="para"><span class="t-blue"><b>8) Parmi les effets physiologiques suivant, quels sont ceux qui sont déclenchés par le complexe Testostérone-ABP chez l’homme :</b></span></p>
+<p class="para"><b>a-</b> développement des caractères sexuels secondaires à la puberté,<br><b>b-</b> stimulation de la sécrétion de gonadostimulines,<br><b>c-</b> activation de la spermatogenèse,<br><b>d-</b> développement des cellules de Sertoli.</p>
+<p class="para"><span class="t-blue"><b>9) Injectée à forte dose chez un mâle castré, l’ABP n’entraîne aucun effet car :</b></span></p>
+<p class="para"><b>a-</b> la spermatogenèse est bloquée,<br><b>b-</b> les caractères sexuels secondaires sont régressés,<br><b>c-</b> il y a augmentation du taux de testostérone,<br><b>d-</b> l’organe cible est absent.</p>
+<p class="para"><span class="t-blue"><b>10) Chez l'homme, une forte dose de testostérone provoque une :</b></span></p>
+<p class="para"><b>a-</b> activation des cellules de Leydig,<br><b>b-</b> faible sécrétion de LH,<br><b>c-</b> hypersécrétion de GnRH,<br><b>d-</b> sécrétion importante d’inhibine.</p>
+<p class="para"><span class="t-blue"><b>11) Un rat ayant subi la lésion de son hypothalamus, reçoit, en perfusion continue, du sérum contenant des extraits hypothalamiques. On constatera :</b></span></p>
+<p class="para"><b>a-</b> l'hypertrophie de l'hypophyse,<br><b>b-</b> aucune réponse de l'hypophyse,<br><b>c-</b> reprise de sécrétion des gonadotrophines,<br><b>d-</b> la réduction de l'activité de l'hypophyse.</p>
+<p class="para"><span class="t-blue"><b>12) Chez un rat adulte, on enlève l’hypophyse puis on la greffe à un endroit quelconque chez ce même animal. On constate que :</b></span></p>
+<p class="para"><b>a-</b> l’hypophyse continue à sécréter des gonadostimulines,<br><b>b-</b> l'hypophyse cesse de sécréter des gonadotrophines,<br><b>c-</b> l’animal reste stérile,<br><b>d-</b> la fonction endocrine testiculaire est restaurée.</p>
+<p class="para"><span class="t-blue"><b>13) Une baisse importante du taux plasmatique de testostérone au-dessous de la valeur de référence :</b></span></p>
+<p class="para"><b>a-</b> accentue le freinage sur le complexe hypothalamo-hypophysaire,<br><b>b-</b> provoque une diminution&nbsp; de la sécrétion de la LH,<br><b>c-</b> est suivie d'une augmentation de la fréquence des pulses de GnRH,<br><b>d-</b> induit une levée de l’inhibition sur l’axe hypothalamo-hypophysaire.</p>
+<p class="para"><span class="t-blue"><b>14) Le document ci-contre correspond à un type de cellules qui existent dans la paroi du tube séminifère au cours d’une phase de la spermatogenèse. Il s'agit :</b></span></p>
+<!-- CROP: 3952 1 3 0.795 0.660 0.930 0.790 3952_s1_qcm14_cellule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s1_qcm14_cellule.png" alt=""></figure>
+<p class="para"><b>a-</b> d'une spermatogonie à 2n = 4, au cours de l’anaphase de la mitose,<br><b>b-</b> d'une spermatogonie à 2n = 6 au cours de la prophase de la mitose,<br><b>c-</b> d'un spermatocyte I à 2n = 4 au cours de l‘anaphase de la division réductionnelle,<br><b>d-</b> d'un spermatocyte II à 2n = 6 au cours de l‘anaphase de la division équationnelle.</p>
+<!-- page 04 -->
+<div class="exsub">Exercice 2 · 30 min · 05 pts</div>
+<p class="para">On se propose d’étudier les relations entre le testicule et le complexe hypothalamo-hypophysaire.<br>Deux rats A et B, ayant atteint l’âge de puberté, et n’ayant aucun problème anatomique au niveau de leurs tractus génitaux, souffrent chacun d’une seule anomalie de reproduction.<br>Pour comprendre les causes de leurs anomalies, on réalise les expériences suivantes :</p>
+<p class="para"><span class="t-blue"><i>Expérience 1 :</i></span> L’analyse du liquide extrait dans l’épididyme des 2 rats montre l’absence totale des spermatozoïdes chez A et leur présence en très faible nombre chez le rat B.</p>
+<p class="para">1) Quelle conclusion vous apporte l’analyse de ces résultats concernant la fonction de reproduction chez les deux rats.</p>
+<p class="para"><span class="t-blue"><i>Expérience 2 :</i></span> Le document 1 montre le résultat de dosage de la testostérone chez les deux rats et celui d’un rat témoin.</p>
+<!-- CROP: 3952 1 4 0.270 0.343 0.776 0.537 3952_s1_ex2_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s1_ex2_doc1.png" alt=""></figure>
+<p class="para">Document 1</p>
+<p class="para">2) Comparez les résultats de dosages par rapport au rat témoin.<br>3) Montrez que ces résultats sont en accord avec les anomalies des rats A et B mentionnées dans l’expérience 1.<br>4) Emettez 3 hypothèses communes sur les origines probables des anomalies de sécrétion de la testostérone.</p>
+<p class="para"><span class="t-blue"><i>Expérience 3 :</i></span> Pour tester la validité de ces hypothèses, on pratique chez ces deux rats des injections d’une hormone H1. Ces injections permettent de corriger la sécrétion de testostérone chez le rat A seulement.</p>
+<p class="para">5) Précisez, en justifiant la réponse :<br>&nbsp;&nbsp;&nbsp;a- le nom de l’hormone H1.<br>&nbsp;&nbsp;&nbsp;b- la ou les hypothèses encore valables pour chacun de ces rats.<br>6) Représentez dans un système d’axes identique à celui du document 1, le profil de sécrétion de cette hormone H1 chez le rat B. Justifiez votre représentation.</p>
+<p class="para"><span class="t-blue"><i>Expérience 4 :</i></span> Des microdosages de GnRH dans la circulation sanguine de la tige pituitaire du rat A, du rat B et d’un rat témoin ont permis de tracer les graphes du document 2 suivant :</p>
+<!-- page 05 -->
+<!-- CROP: 3952 1 5 0.065 0.073 0.490 0.244 3952_s1_ex2_doc2a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s1_ex2_doc2a.png" alt=""></figure>
+<p class="para">Document 2a :&nbsp; rats A et B</p>
+<!-- CROP: 3952 1 5 0.493 0.073 0.935 0.244 3952_s1_ex2_doc2b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s1_ex2_doc2b.png" alt=""></figure>
+<p class="para">Document 2b :&nbsp; rat témoin</p>
+<p class="para">Document 2</p>
+<p class="para">7) Exploitez ces graphes en vue de préciser la cause de l’anomalie de chacun des rats.<br>8) Seulement, à partir des résultats de ces expériences, établissez un schéma bilan fonctionnel montrant la régulation de la sécrétion de testostérone.</p>
+
+
+<div class="exsub">série 3</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="para">Bac Sc Exp (Top 50 – Gr 1 )</p>
+<p class="subhead t-navy"><b><u>Série 3 : La fonction reproductrice chez l’homme</u></b></p>
+<p class="para"><span class="t-gold">Lundi 26/09/2022</span></p>
+<!-- page 02 -->
+<!-- NOTE: highlighter marks and a handwritten circle with "2n= 6" written on top of the printed text on this page are left out -->
+<div class="exsub">Exercice 1 · 35 min · 04 pts</div>
+<p class="para">Le document 1 suivant est un schéma d’interprétation d’une coupe d’un organe reproducteur d’un animal pubère.</p>
+<!-- CROP: 3952 2 2 0.210 0.190 0.835 0.437 3952_s3_ex1_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s3_ex1_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para"><b>1)</b> légendez sur votre copie ce document 1.<br><b>2)</b> Les cellules A, B et C sont en état de division.<br>Reconnaissez ces cellules et indiquez pour chacune d’elles, la phase correspondante de la division et l’étape de la spermatogenèse.<br><b>3)</b> Le document 2 montre trois caryotypes de cellules existant dans les tubes séminifères. Pour la simplification du caryotype, on n’a considéré que 3 paires de chromosomes.</p>
+<!-- CROP: 3952 2 2 0.145 0.603 0.370 0.726 3952_s3_ex1_caryotype1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s3_ex1_caryotype1.png" alt=""></figure>
+<p class="para"><b>Caryotype 1</b></p>
+<!-- CROP: 3952 2 2 0.370 0.603 0.605 0.726 3952_s3_ex1_caryotype2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s3_ex1_caryotype2.png" alt=""></figure>
+<p class="para"><b>Caryotype 2</b></p>
+<!-- CROP: 3952 2 2 0.605 0.603 0.855 0.726 3952_s3_ex1_caryotype3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s3_ex1_caryotype3.png" alt=""></figure>
+<p class="para"><b>Caryotype 3</b></p>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>a)</b>&nbsp; Indiquez à quelle (s) cellule (s) correspond chacun des caryotypes ? Justifiez la réponse.<br><b>b)</b>&nbsp;&nbsp; Faites les schémas des cellules ayant le caryotype 3 pendant leurs anaphases.</p>
+<!-- page 03 -->
+<!-- NOTE: a handwritten note "b-f-a-d-e-c" above Exercice 2 and highlighter marks on this page are left out (annotations on a printed page) -->
+<div class="exsub">Exercice 2 · 40 min · 05 pts</div>
+<p class="para">Les figures du document 1 de la feuille annexe, représente en désordre, certaines phases de divisions subies par une cellule germinale au cours d’une étape de la gametogenese.<br>Pour simplifier l’étude des phases, on a volontairement représenté deux paires de chromosomes, une paire d’autosomes et une paire de chromosomes sexuelles.<br><b>1)</b> Précisez, en justifiant votre réponse, cette gamétogenèse.<br><b>2)</b> Légendez sur la feuille annexe, le document 1.<br><b>3)</b> Mettez ces phases dans leur ordre chronologique.<br><b>4)</b> Complétez le tableau de la feuille annexe.</p>
+<div class="exsub">Exercice 3 · 65 min · 08 pts</div>
+<p class="para">En vue de préciser le mécanisme de la spermatogenèse, on a réalisé les séries des expériences suivantes :</p>
+<p class="subhead t-navy"><span class="t-blue"><b><u>Première série d’expériences :</u></b></span></p>
+<p class="para">Des cellules isolées et purifiées à partir des gonades mâles sont cultivées dans différentes conditions expérimentales.<br>Dans le tableau suivant sont consignés les expériences réalisées dans différents milieux de cultures ainsi que les résultats obtenus.</p>
+<table>
+<tr><th></th><th><u>Milieu 1</u><br>Contenant des cellules X</th><th><u>Milieu 2</u><br>Contenant des cellules Y</th><th><u>Milieu 3</u><br>Contenant des cellules Z</th><th><u>Milieu 4</u><br>Contenant des cellules X et Y</th></tr>
+<tr><td><b>Addition de la FSH</b></td><td>- Développement des cellules <b>X</b><br>- Apparition des substances chimiques <b>S1</b> et <b>S2</b></td><td>Aucun effet</td><td>Aucun effet</td><td>- Développement des cellules <b>X</b> et développement partiel des cellules <b>Y</b><br>- Apparition des substances chimiques <b>S1</b> et <b>S2</b></td></tr>
+<tr><td><b>Addition de la LH</b></td><td>Aucun effet</td><td>Aucun effet</td><td>Développement des cellules <b>Z</b> Apparition d'une substance chimique <b>S3</b></td><td>Aucun effet</td></tr>
+</table>
+<p class="para"><b>1)</b> Analysez ces résultats en vue :</p>
+<ul class="b">
+<li>de préciser les noms des cellules X, Y et Z.</li>
+<li>de reconnaitre les noms possibles des substances S1, S2 et S3.</li>
+<li>d’expliquer les effets de la LH et de la FSH.</li>
+</ul>
+<p class="subhead t-navy"><span class="t-blue"><b><u>Deuxième série d'expériences :</u></b></span></p>
+<p class="para">En vue de préciser les interactions cellulaires, on réalise la co-culture des cellules X et Y dans différentes conditions expérimentales. Le document 1 suivant présente le protocole expérimental utilisé et les résultats obtenus.</p>
+<!-- page 04 -->
+<!-- NOTE: handwritten annotations written over Document 1 and Document 2 (e.g. "S3 = TTT", "S1 = ABP ou inhibine", "H1 LH FSH", "inhibine") and highlighter marks on the questions are left out of the text (they remain visible inside the crops) -->
+<!-- CROP: 3952 2 4 0.050 0.087 0.950 0.290 3952_s3_ex3_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s3_ex3_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para"><b>2)</b> Analysez ces résultats en vue :</p>
+<ul class="b">
+<li>d’identifier les substances chimiques S1 et S2.</li>
+<li>de préciser les effets de chacune de ces substances sur leurs cellules cibles.</li>
+</ul>
+<p class="subhead t-navy"><span class="t-blue"><b><u>Troisième série expériences</u></b></span></p>
+<p class="para">On suit chez des souris normales, la variation des taux plasmatiques de LH, de FSH et d’une hormone <b>H1</b>, avant et après l'injection des substances chimiques S2 et S3 (document 2).</p>
+<!-- CROP: 3952 2 4 0.060 0.505 0.935 0.660 3952_s3_ex3_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s3_ex3_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>3)</b> Analysez ces résultats en vue :</p>
+<ul class="b">
+<li>d’identifier l’hormone H1.</li>
+<li>de préciser les actions des substances S2 et S3.</li>
+</ul>
+<p class="para"><b>4)</b> A partir des informations précédentes et en utilisant vos connaissances expliquez, schéma à l'appui, le mécanisme régulateur de la spermatogénèse</p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">série 5</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="para">Bac Sc Exp (Top 50 – Gr 1 )</p>
+<p class="subhead t-navy"><b><u>Série 5 : La fonction reproductrice chez la femme</u></b></p>
+<p class="para"><span class="t-gold">Lundi 10/10/2022</span></p>
+<!-- page 02 -->
+<div class="exsub">Exercice 1 · 35 min · 04 pts</div>
+<p class="para">Le document 1 suivant est un schéma d’interprétation d’une coupe d’un ovaire montrant des structures observées à différents moments du cycle ovarien chez une femme ayant des cycles réguliers de 30 jours.</p>
+<!-- CROP: 3952 3 2 0.180 0.197 0.900 0.434 3952_s5_ex1_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s5_ex1_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para"><b>1)</b> Reconnaissez les structures numérotées de 1 à 8.<br><b>2)</b> Placez ces structures dans l’ordre chronologique de leur évolution.<br><b>3)</b> Nommez l’évènement <b>A</b> et précisez, en justifiant la réponse, son moment chez cette femme.<br><b>4) a)</b> Identifiez l’élément B.<br>&nbsp;&nbsp;&nbsp;<b>b</b>) Faites un schéma d’interprétation soigné et annoté de cet élément (en prenant 2n = 6).<br><b>5)</b> Précisez, parmi les structures représentées dans le document 1, celles qui s’observent simultanément :<br>&nbsp;&nbsp;&nbsp;<b>a)</b> entre les jours J<b>1</b> et J<b>5</b>,<br>&nbsp;&nbsp;&nbsp;<b>b)</b> entre les jours J<b>14</b> et J<b>15</b>.</p>
+<div class="exsub">Exercice 2 · 35 min · 04 pts</div>
+<p class="para">On se propose d’étudier certains aspects de la gamétogenèse chez l’espèce humaine</p>
+<p class="para"><b>1)</b> Le document 1 représente respectivement le schéma d’une structure X où se déroule totalement la gamétogenèse chez le garçon et celui d’une structure Y où se déroule en partie la gamétogenèse chez la fille.</p>
+<!-- page 03 -->
+<!-- NOTE: coloured highlight frames drawn over Document 2 and over the sentence below it are annotations on top of the printed page — left out of the text (still visible inside the crop) -->
+<!-- CROP: 3952 3 3 0.140 0.068 0.845 0.258 3952_s5_ex2_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s5_ex2_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para"><b>a-</b> Annotez le document 1 en indiquant le nom des éléments numérotés de 1 à 10.<br><b>b-</b> Identifiez les structures X et Y.<br><b>c-</b> Le garçon est-il pubère ou impubère ? Justifiez votre réponse.<br><b>2)</b> Faites un schéma légendé du gamète émis par la structure Y du document 1 au moment de l’ovulation.<br><b>3)</b> Le document 2 représente l’évolution de la quantité d’ADN dans le noyau d’une cellule germinale au cours de la gamétogenèse chez une fille.</p>
+<!-- CROP: 3952 3 3 0.140 0.455 0.895 0.735 3952_s5_ex2_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s5_ex2_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para">Sachant que juste après le moment M2 se déroule un évènement E1 et juste avant le moment M3 se déroule un évènement E2<br><b>a-</b> Nommez :<br>- les périodes T1, T2 et T3.<br>- les évènements E1 et E2.<br>- les étapes A, B, C et D de la gamétogenèse chez la fille.<br><b>b-</b> Indiquez le stade de division de la cellule 1 figurant dans la structure Y représentée dans le document 1.</p>
+<!-- page 04 -->
+<!-- NOTE: a highlighter mark on "souffre." is left out -->
+<p class="para"><b>c-</b> Nommez les cellules germinales pour chacun des moments M1, M2 et M3 indiqués sur le graphe du document 2 et représentez l’anaphase de ces cellules (pour simplifier on prend 2n = 4)<br><b>4)</b> Comparez l’étape D de la gamétogenèse chez le garçon et chez la fille.</p>
+<div class="exsub">Exercice 3 · 60 min · 07 pts</div>
+<p class="para">Le document 1 suivant donne les résultats des dosages des deux hormones ovariennes chez les trois femmes <b>A</b>, <b>B</b> et <b>C</b>.</p>
+<!-- CROP: 3952 3 4 0.075 0.273 0.522 0.497 3952_s5_ex3_doc1_mmeB -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s5_ex3_doc1_mmeB.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>Mme B</b></span></p>
+<!-- CROP: 3952 3 4 0.523 0.273 0.970 0.497 3952_s5_ex3_doc1_mmeAC -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s5_ex3_doc1_mmeAC.png" alt=""></figure>
+<p class="para"><span class="t-blue">Mme A et C</span></p>
+<p class="para"><b>Document 1</b></p>
+<p class="para"><b>a)</b> Analysez les résultats de ces dosages en précisant l’état de chaque femme.<br><b>b)</b> Proposez trois hypothèses pour expliquer la stérilité de chaque femme qui en souffre.<br><b>3)</b> Pour plus de précisions le gynécologue réalise un dosage de créatinine dans les urines des trois femmes. Les valeurs sont indiquées sur le document 3 suivant.</p>
+<!-- CROP: 3952 3 4 0.235 0.692 0.750 0.903 3952_s5_ex3_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s5_ex3_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<!-- page 05 -->
+<!-- NOTE: highlighter marks, a yellow frame around the first paragraph, a handwritten "3" over "4" in "document 4" and handwritten pink annotations on Document 3 (circled numbers, "F.mp", "Fsr faible dose", etc.) are left out of the text (the figure annotations remain visible inside the crop) -->
+<p class="para">La créatinine est une substance qui provient de la décomposition d’une hormone protéique impliquée dans la régulation de la fonction reproductrice humaine et qui est éliminée dans les urines.</p>
+<p class="para"><b>a-</b> Reconnaissez cette hormone. Justifiez votre réponse.<br><b>b-</b> Quelle précision apporte l’analyse de ces résultats concernant les femmes qui souffrent de problème de procréation ?<br><b>4)</b> L’échographie a montré que l’une des femmes souffrantes possède des ovaires normaux. Quelle est cette femme ? Justifiez.<br><b>5)</b> Le médecin propose à cette femme un traitement au clomifène : un médicament analogue structural des œstrogènes. Ce médicament inhibe l’action des œstrogènes en se fixant sur les récepteurs des neurones (cellules nerveuses) hypothalamiques.<br>L’effet du traitement sur les secrétions hormonales de cette femme est représenté dans le document 3.</p>
+<!-- CROP: 3952 3 5 0.085 0.352 0.977 0.563 3952_s5_ex3_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s5_ex3_doc3.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<div class="data"><p><b>d</b> : début du traitement<br><b>f</b> : fin du traitement</p></div>
+<p class="para">Analysez les courbes du document 4 en vue de préciser :</p>
+<ul class="dash">
+<li>la conséquence du traitement médical au clomifène,</li>
+<li>le mécanisme d’action de ce médicament.</li>
+</ul>
+
+
+<div class="exsub">corrigé série 5</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="para">Bac Sc Exp (Top 50 _ Gr 1 )</p>
+<p class="subhead t-navy"><b>Correction de la série 5 : La <u>reproduction féminine</u></b></p>
+<p class="para"><span class="t-gold">Lundi&nbsp;&nbsp; 10/10/2022</span></p>
+<!-- page 02 -->
+<div class="exsub">Exercice 1 · 35 min · 04 pts</div>
+<p class="para"><b>1)</b> Légende</p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+<tr><td>Follicule tertiaire ou cavitaire</td><td>Follicule primordial</td><td>Corps jaune développé</td><td>Follicule primaire</td><td>Follicule rompu</td><td>Follicule mûr</td><td>corps jaune dégénéré ou blanc</td><td>Follicule secondaire</td></tr>
+</table>
+<p class="para"><b>2)</b> L’ordre chronologique : 2 – 4 – 8 – 1 – 6 – 5 – 3 – 7<br><b>3)</b> L’évènement A est l’ovulation.<br>Cette femme a un cycle de 30 jours, puisque l’ovulation se déroule 14 jours avant la fin du cycle alors le moment de l’ovulation est 30 – 14 = 16<sup>ème</sup> jour du cycle.<br><b>4) a)</b> L’élément B est l’ovocyte II car c’est la structure expulsée&nbsp; au moment de l’ovulation.<br><b>b)</b> schéma de l’ovocyte II ( on exige 3 chromosomes au niveau du matériel nucléaire : voir cours<br><b>5)a)</b> Entre le J1 et J5, on peut observer des follicules primordiaux, primaires, secondaires et tertiaires.<br><b>b)</b> Entre le J14 et J15, on peut observer des follicules primordiaux, primaires, secondaires et follicule mûr<span class="t-red">.</span></p>
+<div class="exsub">Exercice 2 · 35 min · 04 pts</div>
+<p class="para"><b>1)&nbsp; a-</b></p>
+<p class="para">1-spermatogonie<br>2- spermatocyte I<br>3-spermatocyte II<br>4-spermatide<br>5- spermatozoïde<br>6- cellule de Sertoli<br>7- thèque externe<br>8- thèque interne<br>9- granulosa<br>10- antrum (cavité folliculaire)</p>
+<p class="para">b-</p>
+<table>
+<tr><th>Structure</th><th>Nom</th><th>Justification</th></tr>
+<tr><td>X</td><td>Tube séminifère</td><td>Présence des cellules germinale et des cellules de Sertoli.</td></tr>
+<tr><td>Y</td><td>Follicule mur</td><td>Présence d’une grande cavité folliculaire et des thèques ainsi que la présence de la granulosa.</td></tr>
+</table>
+<p class="para"><b>c-</b> le tube séminifère du garçon renferme des spermatozoïdes, indice de</p>
+<!-- page 03 -->
+<p class="para">déclenchement de la spermatogenèse ; donc le garçon est pubère.</p>
+<p class="para">2)</p>
+<!-- CROP: 3952 4 3 0.145 0.110 0.910 0.383 3952_c5_ex2_gamete_femelle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_c5_ex2_gamete_femelle.png" alt=""></figure>
+<p class="para"><b>3)</b><br><b>a-</b><br>E1 : ovulation<br>E2 : fécondation<br>T1 : vie fœtale<br>T2 : enfance<br>T3 : puberté<br>A- multiplication<br>B- début d’accroissement et de maturation<br>C- poursuite d’accroissement<br>D- poursuite de maturation<br><b>b-</b> la cellule 1 est en prophase I<br>c-</p>
+<table>
+<tr><th><span class="t-blue">Moments</span></th><th><span class="t-blue">Noms des cellules</span></th><th><span class="t-blue">Schémas des cellules en anaphase</span></th></tr>
+<tr><td>M1</td><td>Ovogonie</td><td>Anaphase d’une mitose (dans chaque pole de la cellule il y a un lot de 4 chromosomes à une chromatide chacun)</td></tr>
+<tr><td>M2</td><td>Ovocyte I</td><td>Anaphase de la division réductionnelle (migration excentrique de deux lots de chromosome + chaque lot renferme 2chromosomes entiers)</td></tr>
+<tr><td>M3</td><td>Ovocyte II</td><td>Anaphase de la division équationnelle (migration excentrique&nbsp; de deux lots de chromosomes + chaque lot renferme 2 chromosomes simples</td></tr>
+</table>
+<p class="para">4)</p>
+<!-- page 04 -->
+<table>
+<tr><th><span class="t-blue">Phase de maturation</span></th><th><span class="t-blue">Spermatogenèse</span></th><th><span class="t-blue">Ovogenèse</span></th></tr>
+<tr><td><b><span class="t-blue">Similitudes</span></b></td><td colspan="2"><ul class="b"><li>se fait par méiose.</li><li>donne des cellules haploïdes.</li></ul></td></tr>
+<tr><td rowspan="5"><b><span class="t-blue">Différences</span></b></td><td>Débute dès la puberté</td><td>Débute dès la vie fœtale</td></tr>
+<tr><td>Se déroule totalement dans les testicules</td><td>Débute dans les ovaires et s’achève dans les trompes.</td></tr>
+<tr><td>Achèvement incoordonné par la fécondation.</td><td>Achèvement coordonné par la fécondation.</td></tr>
+<tr><td>Méiose continue</td><td>Méiose discontinue (caractérisée par deux blocages en prophase I et en métaphase II.</td></tr>
+<tr><td>Etranglement cytoplasmique équatorial qui donne des cellules de taille égale.</td><td>Etranglement cytoplasmique excentrique qui donne des cellules de taille inégale.</td></tr>
+</table>
+<div class="exsub">Exercice 3 · 60 min · 07 pts</div>
+<table>
+<tr><th><span class="t-blue">Analyse</span></th><th><span class="t-blue">Conclusion</span></th></tr>
+<tr><td><b>Mme B</b> :<br><b>Oestrogènes</b> : sécrétion durant le cycle de 28 jours avec un 1<sup>er</sup> pic important préovulatoire de 250 pg/ mL et un 2<sup>ème</sup> pic moins important de 100 pg/ mL postovulatoire le jour 21 du cycle.<br><b>Progestérone</b> : taux faible durant la phase préovulatoire (j<sub>o</sub> au j<sub>14</sub>) puis ce taux augmente durant la 2<sup>ème</sup> phase du j 14 au j 28. Ce taux atteint un pic de 16 pg/ml le jour 21 du cycle.</td><td>La sécrétion hormonale de Mme B est <span class="t-red"><b><u>cyclique</u></b></span> et <span class="t-red"><b><u>normale</u></b></span>.</td></tr>
+<tr><td><b>Mme A</b> et <b>Mme C</b> :<br>Taux d’œstrogènes et de progestérone faible&nbsp; et constantes durant la période de dosage sans variation cyclique.</td><td>Ces deux femmes <b>A</b> et <b>C</b> ont un problème de sécrétion des hormones ovariennes.</td></tr>
+</table>
+<p class="para">b) Les causes possibles de stérilité&nbsp; de Mme A et Mme C :<br>&nbsp;&nbsp;- <b>Hypothèse 1</b> : disfonctionnement hypothalamique.<br>&nbsp;&nbsp;- <b>Hypothèse 2</b> : disfonctionnement hypophysaire.<br>&nbsp;&nbsp;- <b>Hypothèse 3</b> : disfonctionnement ovarien.<br>3) a) La femme B normale présente un pic important de créatinine le jour 14 du cycle donc cette femme produit une forte dose (pic important de l’hormone recherchée le jour 14 du cycle) par suite l’hormone recherchée est la LH.<br>b)</p>
+<!-- page 05 -->
+<table>
+<tr><th><span class="t-blue">Analyse</span></th><th><span class="t-blue">Conclusion</span></th></tr>
+<tr><td><b>Mme A</b> :La secrétion de LH est très faible et constante (1 pg/mL) durant 30 jours.</td><td><b>Mme A</b> présente un problème au niveau de l’hypophyse et/ou de l’hypothalamus.</td></tr>
+<tr><td><b>Mme C</b> : La secrétion de LH est très élevées et constante (22 pg/mL) durant 30 jours.</td><td><b>Mme C</b> ne présente pas de problème au niveau de l’hypophyse et de l’hypothalamus.<br>Elle est ménopausée ou disfonctionnement ovarien.&nbsp; .</td></tr>
+</table>
+<p class="para">4) Le problème de Mme <b>A</b> étant d’ordre hypothalamo-hypophysaire puisque ses ovaires sont normaux ce qui confirme notre réponse à la question précédente.<br>5) Le traitement par le Clomifène provoque l’augmentation de sécrétion de LH et FSH (pic au milieu de la période de traitement entre d et f). La conséquence du pic de FSH est une croissance folliculaire, d’où un pic des œstrogènes le jour 12 du cycle. Ce pic exerce un RC(+) sur l’axe hypothalamo-hypophysaire d’où le&nbsp; pic de LH et FSH du 14<sup>ème</sup>&nbsp; jour du cycle. Le pic de LH entraîne l’ovulation et le cycle de cette femme devient normale puisque la sécrétion des hormones ovariennes (oestrogènes et progestérone) redevient identique à celle de femme normale (Mme B).<br>Pendant la période du traitement, le clomifène occupe les sites de fixation des œstrogènes sur le neurones hypothalamiques empêchant ainsi l’action d’une faible dose de cette hormone sur l’hypothalamus par un RC(-). D’où une levée de l’inhibition sur l’hypothalamus et par coséquent une augmentation de sécrétion de GnRH, ce qui stimule la sécrétion de FSH. Le pic de FSH déclenche la croissance folliculaire. L’arrêt de prise de clomifène libère les sites de fixation de l’œstradiol mais en même temps, le taux d’œstradiol augmente avec le croissance folliculaire (follicule mûr) et atteint un pic le jour 12 du cycle qui, par RC (+), entraine les pics de LH et de FSH d’où l’ovulation le jour 14 du cycle. Ainsi le problème du couple <b>A</b> est résolu étant donné que le sperme de Mr <b>A</b> est normal.</p>
+
+
+<div class="exsub">série 6</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="para">Bac Sc Exp (Top 50 – Gr 1 )</p>
+<p class="subhead t-navy"><b><u>Série 6 : La fonction reproductrice chez la femme</u></b></p>
+<p class="para"><span class="t-gold">Lundi 17/10/2022</span></p>
+<!-- page 02 -->
+<div class="exsub">Exercice 1 · 60 min · 07 pts</div>
+<p class="para">On se propose d’étudier quelques aspects de la reproduction chez la femme.<br>Les ovaires sécrètent deux hormones ovariennes H<sub>1</sub> et H<sub>2</sub>. Le graphe du document 1 de la feuille annexe à rendre, représente la variation du taux sanguin d'une hormone ovarienne H<sub>1</sub> dosée chez une femme X qui présente un cycle de 28 jours, pendant une période allant du 1<sup>er</sup> Janvier jusqu'au 28 janvier.<br>En vous basant sur vos connaissances et en vous limitant à l'intervalle de temps indiqué sur ce graphe.</p>
+<!-- PROOFREAD: 3952 part5 p02 — "document l (a)": the printed character after "document" looks like a lowercase l rather than 1 -->
+<p class="para">1)&nbsp; Identifiez l'hormone H<sub>1</sub>. Donnez son rôle sur les organes cibles.<br>2)&nbsp; Complétez le document l (a) en représentant chez cette femme, la variation du taux sanguin de l'autre hormone H<sub>2</sub> que vous nommez.<br>3)&nbsp; Précisez, en justifiant votre réponse la ou les date(s) qui correspond (ent) :<br>&nbsp;&nbsp;a-&nbsp; au début de menstruation<br>&nbsp;&nbsp;b-&nbsp; à une ovulation et expliquez le déterminisme hormonal de cette ovulation.<br>4)&nbsp; Représentez à l'aide de schémas annotés, les structures ovariennes qui correspondent aux jours :&nbsp; 1<sup>er</sup> Janvier, 10 Janvier et 20 Janvier sur le document 1 (b)<br>5)&nbsp; Représentez, sur la feuille à rendre document 1 (c) l'évolution de l'endomètre de cette femme, en coupe longitudinale, durant la période située entre 1<sup>er</sup> Janvier et le 28 Janvier.<br>6)&nbsp; Complétez le tableau du document 2 de la feuille annexe, en précisant le type de rétrocontrôle exercé par les ovaires de cette femme sur son axe hypothalamo-hypophysaire aux dates indiquées.</p>
+<!-- page 03 -->
+<!-- CROP: 3952 5 3 0.090 0.068 0.935 0.852 3952_s6_ex1_doc1_annexe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s6_ex1_doc1_annexe.png" alt=""></figure>
+<p class="para"><b><u>Document 1</u></b></p>
+<!-- page 04 -->
+<table>
+<tr><th><span class="t-red">Date</span></th><th><span class="t-red">Type de rétrocontrôle</span></th><th><span class="t-red">Justifications</span></th></tr>
+<tr><td><span class="t-blue"><b>1<sup>er</sup> Janvier</b></span></td><td>……………………..<br>……………………...</td><td>…………………………………………<br>…………………………………………<br>…………………………………………<br>…………………………………………..</td></tr>
+<tr><td><span class="t-blue"><b>8 Janvier</b></span></td><td>……………………..<br>……………………...</td><td>…………………………………………<br>…………………………………………<br>…………………………………………<br>………………………………………..</td></tr>
+<tr><td><span class="t-blue"><b>22 Janvier</b></span></td><td>……………………..<br>……………………...</td><td>…………………………………………<br>…………………………………………<br>…………………………………………<br>…………………………………………..</td></tr>
+</table>
+<p class="para"><b><u>Document 2</u></b></p>
+<div class="exsub">Exercice 2 · 80 min · 09 pts</div>
+<p class="para">Une étude récente faite dans la région de Californie aux états unis, a montré, dans certaines régions, des filles de 8 ans qui présentent une puberté précoce.<br>Pour savoir la cause principale de cette puberté précoce, certaines filles ont accepté de faire des observations, expériences et analyses sanguines.</p>
+<p class="subhead t-navy"><span class="t-blue"><b>Analyse (1)</b></span></p>
+<p class="para">On a déterminé l’évolution de la masse l’utérus et de l’ovaire au cours des 20 premières années chez les filles normales (document 1) et chez les filles à puberté précoce (document 2).</p>
+<!-- CROP: 3952 5 4 0.075 0.640 0.500 0.873 3952_s6_ex2_an1_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s6_ex2_an1_doc1.png" alt=""></figure>
+<p class="para">Document 1</p>
+<!-- CROP: 3952 5 4 0.500 0.640 0.932 0.873 3952_s6_ex2_an1_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s6_ex2_an1_doc2.png" alt=""></figure>
+<p class="para">Document 2</p>
+<!-- page 05 -->
+<p class="para"><b>1)</b> A partir d’une analyse comparée des résultats des deux documents 1 et 2 :<br>&nbsp;&nbsp;- de préciser l’âge normal de l’apparition de la puberté.<br>&nbsp;&nbsp;- proposez une cause possible qui peut être à l’origine de cette différence observée.</p>
+<p class="subhead t-navy"><span class="t-blue"><b>Analyse (2)</b></span></p>
+<p class="para">Le document 3 montre l’évolution de la concentration sanguine moyenne d’une hormone H1 responsable de l’apparition de la puberté chez la fille normale et celle à puberté précoce, au cours des 20 premières années.</p>
+<!-- CROP: 3952 5 5 0.205 0.208 0.775 0.428 3952_s6_ex2_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s6_ex2_doc3.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para"><b>2)</b> Identifiez cette hormone H1.<br><b>3)</b> Analysez les résultats du document 3 en vue d’indiquer si ces résultats expliquent les données du document 2.<br><b>4)</b> Proposez une autre cause qui pourrait être à l’origine de ces résultats.</p>
+<p class="subhead t-navy"><span class="t-blue"><b>Analyse (3)</b></span></p>
+<p class="para">Le document 4 montre l’évolution de la concentration sanguine des hormones ovariennes H1 et H2 chez ces filles à puberté précoce à partir de l’âge de 12 ans.</p>
+<!-- CROP: 3952 5 5 0.235 0.603 0.775 0.790 3952_s6_ex2_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s6_ex2_doc4.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para"><b>5)</b> A partir de l’analyse de ces variations :<br>&nbsp;- identifiez l’hormone H2.<br>&nbsp;- précisez l’état physiologique de ces filles.</p>
+<!-- page 06 -->
+<p class="subhead t-navy"><span class="t-blue"><b>Analyse (4)</b></span></p>
+<p class="para">Une enquête a été faite auprès de ces filles et a montré qu’elles sont contaminées pendant leur enfance par un composant chimique appelé <b>phtalate</b>.<br>Le phtalate est un plastifiant utilisé dans la fabrication de certains types de jouets souples pour enfants, de produits cosmétiques et d’emballages alimentaires comme les bouteilles d’eau.<br>Pour comprendre le mode d’action de ce composant, les chercheurs ont déterminé le modèle de la structure de l’hormone H1 (document 5a) et du phtalate (document 5b)._</p>
+<!-- CROP: 3952 5 6 0.155 0.240 0.522 0.447 3952_s6_ex2_doc5a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s6_ex2_doc5a.png" alt=""></figure>
+<p class="para"><b>Document 5a</b></p>
+<!-- CROP: 3952 5 6 0.522 0.240 0.848 0.447 3952_s6_ex2_doc5b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_s6_ex2_doc5b.png" alt=""></figure>
+<p class="para"><b>Document 5b</b></p>
+<p class="para"><b>6)</b> Quelle conclusion pouvez-vous tirer de la comparaison de ces deux structures moléculaires ?</p>
+<p class="subhead t-navy"><span class="t-blue"><b>Expérience (5)</b></span></p>
+<p class="para">Des cellules de la muqueuse utérine d’une guenon, sont mises en culture dans trois milieux nutritifs.</p>
+<table>
+<tr><th><b>Milieu nutritif 1</b><br>additionné de<br>H1 radioactive</th><th><b>Milieu nutritif 2</b><br>additionné de<br>Phtalate radioactif</th><th><b>Milieu nutritif 3</b><br>additionné de<br>Phtalate non radioactif+<br>H1 radioactive</th></tr>
+<tr><td>La radioactivité s’est localisée au niveau des noyaux de ces cellules.</td><td>La radioactivité s’est localisée au niveau des noyaux de ces cellules.</td><td>La radioactivité s’est localisée au niveau des cytoplasmes de ces cellules.</td></tr>
+</table>
+<p class="para"><b>7)</b><br><b>a-</b> A partir de l’analyse de ces expériences et en faisant appel à vos connaissances, expliquez le mode d’action du phtalate.<br><b>b-</b> Donnez alors la cause principale de l’apparition de la puberté précoce chez ces filles.</p>
+<!-- page 07 -->
+<p class="subhead t-navy"><span class="t-blue"><b>Observations (6)</b></span></p>
+<p class="para">Cette enquête a pu montrer, chez ces filles, que le risque d’avoir le cancer de sein après l’âge de 30 ans, a considérablement augmenté (le double).</p>
+<p class="para"><b>8) a-</b> Certains chercheurs appellent le phtalate par le nom de "perturbateur endocrinien".<br>&nbsp;&nbsp;&nbsp;&nbsp;Justifiez cette appellation.<br>&nbsp;&nbsp;<b>b-</b> A partir des tous ce qui précède, proposez une explication logique de cette augmentation de risque de cancer de sein.</p>
+
+
+<div class="exsub">corrigé série 6</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 _ Gr 1 )</p>
+<p class="subhead t-red"><b>Correction de la série 6 : La reproduction féminine</b></p>
+<p class="para"><span class="t-gold">Lundi  17/10/2022</span></p>
+<!-- NOTE: cover-page Taki Academy branches list, website and phone number not transcribed — publisher header/footer furniture -->
+<!-- page 02 -->
+<div class="exsub">Exercice 1 &nbsp; 60 min &nbsp; 07 pts</div>
+<ol class="qn">
+<li>H1 : oestradiol car il est present le long du cycle et décrit 2 pics  dont les effets sont :</li>
+</ol>
+<table>
+<tr><th><span class="t-red"><i><b>hormones</b></i></span></th><th><span class="t-red"><i><b>Structure cible</b></i></span></th><th><span class="t-red"><i><b>Effets biologiques</b></i></span></th></tr>
+<tr><td><span class="t-red"><i><u>œstrogènes</u></i></span></td><td>-l’endomètre<br><br><br>-le myomètre<br>-col de l’utérus<br>-Structure responsables des caractères sexuelles<br>- structure responsable de la régulation de température (thermostat)<br>-complexe (H.H)</td><td>-Prolifération de l’endomètre<br>-sensibilise les cellules de l’endomètre à l’action intérieur de la progestérone.<br>-stimule la contraction de myomètre<br>-il assure une sécrétion abondante et filante de la glaire cervicale au cours de l’ovulation<br>-développement et maintien du (CSII).<br><br>- baisse de la température corporelle inférieure à 37 °c.<br><br>RC(-) à faible dose d’œstrogène et RC(+) à forte dose</td></tr>
+</table>
+<p class="para">2)</p>
+<p class="para">a- début de menstruation : le 16 janvier car il y a annulation du taux de progestérone (après le pic) et minimum d’oestradiolaprés le 2<sup>ème</sup> pic et aussi 14 jours après l’ovulation.</p>
+<p class="para">b- L’ovulation : le 2 janvier car la phase post ovulatoire est toujours  constante de 14 jours donc 16 janvier – 14 = 2 janvier<br>(aussi 2 jours après le pic d’oestradiol)<br>2 jours avant l’ovulation, une forte dose d’oestradiolexerce un RC(+) d’où un pic de FSH et surtout de LH (24 heures avant l’ovulation) qui déclenche l’ovulation.</p>
+<p class="para">3)  + 5) voir graphe</p>
+<!-- page 03 -->
+<!-- CROP: 3952 6 3 0.135 0.068 0.862 0.260 3952_p6_03_graphe_a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p6_03_graphe_a.png" alt=""></figure>
+<!-- CROP: 3952 6 3 0.135 0.255 0.862 0.457 3952_p6_03_ovaire_b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p6_03_ovaire_b.png" alt=""></figure>
+<!-- CROP: 3952 6 3 0.135 0.453 0.862 0.588 3952_p6_03_endometre_c -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p6_03_endometre_c.png" alt=""></figure>
+<p class="para">6)</p>
+<table>
+<tr><th><span class="t-red"><b>Date</b></span></th><th><span class="t-red"><b>Type de rétrocontrôle</b></span></th><th><span class="t-red"><b>Justifications</b></span></th></tr>
+<tr><td>1<sup>er</sup> Janvier</td><td>RC(+)</td><td>F.mûr secrète une forte dose d’œstradiol qui stimule le complexe H-H d’où un CHH d’où un RC(+)</td></tr>
+<tr><td>8 Janvier</td><td>RC(-)</td><td>Le corps jaune secrète l’œstrogène et la progestérone qui exerce un effet inhibiteur par (RC-) sur le CHH.</td></tr>
+<tr><td>22 Janvier</td><td>RC(-)</td><td>Le F.III secrète une faible dose qui inhibe les sécrétions se FSH et LH par RC(-)</td></tr>
+</table>
+<!-- page 04 -->
+<div class="exsub">Exercice 2 &nbsp; 35 min &nbsp; 04 pts</div>
+<p class="para"><b>1)</b></p>
+<table>
+<tr><th></th><th>Analyse comparée</th><th>Conclusion</th></tr>
+<tr><td>Fille normale</td><td><b>[0 à 11 ans]</b><br>La masse des ovaires augmente lentement pour atteindre 2,5 g et de même pour l’utérus 5g.<br><b>[11 à 14 ans]</b><br>On constate une poussée de croissance des ovaires dont la masse passe de 2,5 à 7g. En parallèle, on observe une poussée de croissance de l’utérus dont la masse passe de 5 à 35g<br><b>Après 14 ans</b><br>La masse des ovaires se stabilise à 7,5g<br>La masse de l’ovaire  se stabilise à 8 g et de même pour l’utérus continue qui se stabilise à 45g à partir de 18 ans</td><td>L’âge de la puberté chez la fille normale est entre 12 et 14 ans</td></tr>
+<tr><td>Fille à puberté précoce</td><td><b>[0 à 7 ans]</b><br>La masse des ovaires augmente lentement pour atteindre 2g avant l’âge du développement ovarien chez la fille normale et assi pour l’utérus qui atteint 5g.<br><b>[7 à 10 ans]</b><br>On constate une poussée de croissance des ovaires dont la masse passe de 2 à 7g. En parallèle on observe une poussée de croissance de l’utérus dont la masse passe de 10 à 35g.<br><b>Après 12 ans</b><br>La masse des ovaires se stabilise à 7,5g<br>La masse de l’utérus continue sa croissance et stabilise à 45g à partir de 14 ans avant 4 ans de celle observée chez la fille normale.</td><td>- L’âge de la puberté chez la fille à puberté précoce est entre 8 et 10 ans.<br>- La cause à l’origine de cette différence d’âge de la puberté peut être un développement précoce des ovaires qui fournissent les hormones nécessaires au développement de l’utérus et l’apparition des premières règles donc de la puberté.</td></tr>
+</table>
+<p class="para"><b>2)</b><br>L’hormone responsable de l’apparition de la puberté est l’œstradiol. Donc <b>H1 est l’œstradiol</b>.</p>
+<p class="para"><b>3)</b></p>
+<table>
+<tr><th>Analyse</th><th>Déduction</th></tr>
+<tr><td><b>De 1 à 10 ans</b><br>La concentration de H1 est faible et constante ne dépasse pas 10 ng/ml.<br><b>De 10 à 14 ans</b><br>La concentration de H1 augmente pour atteindre 80 ng/ml.<br><b>Après 14 ans</b><br>La concentration de H1 diminue légèrement puis se stabilise à 70 ng/ml.</td><td>Les données du document 2 montre que l’augmentation de la masse des ovaires et de l’utérus commence à partir 8 ans alors que l’augmentation de la concentration de H1=œstradiol commence à partir de 10 ans or pour assurer une augmentation de la masse de l’utérus il faut une sécrétion de l’hormone H1 à partir de l’âge de 8 ans d’où ces résultats du document 3 n’expliquent pas les données du document 2.</td></tr>
+</table>
+<p class="para"><b>4)</b></p>
+<!-- page 05 -->
+<p class="para">La cause possible de ces différences peut être une autre source d’œstradiol, autre que l’ovaire.</p>
+<p class="para"><b>5)</b></p>
+<table>
+<tr><th>Analyse</th><th>Conclusion</th></tr>
+<tr><td>L’hormone H1 est sécrétée durant les 28 jours avec deux pics :<br>- un pic majeur le jours 12 de 300 pg/ml<br>- un pic mineur le jour 21 de 150pg/ml.</td><td>La sécrétion de H1 suit la même allure que celle de l’œstradiol dans un cycle normal ce qui confirme que H1 est l’œstradiol.</td></tr>
+<tr><td>L’hormone H2 est absente du jour 1 jusqu’au jour 13, elle commence à être sécrétée à partir du 14 au jour 28 avec un seul pic le jour 21 de 26ng/ml.</td><td>- H2 est la progestérone.<br>- Ces deux hormones ont la même allure de sécrétion que celle d’un cycle normal d’où l’état physiologique est celui d’une fille à activité cyclique normale.</td></tr>
+</table>
+<p class="para"><b>6)</b><br>L’œstradiol et le phtalate sont deux molécules organiques qui ont une composition très proche de leur site actif.<br>On peut conclure que le phtalate est un analogue structural de l’œstradiol.</p>
+<p class="para"><b>7)a-</b></p>
+<table>
+<tr><th>Milieu</th><th>Analyse</th><th>Conclusion</th></tr>
+<tr><td><b>1</b></td><td>Si on ajoute du l’œstradiol radioactif à des cellules de la muqueuse utérine, la radioactivité se localise dans le noyau.</td><td>L’œstradiol pénètre dans le cytoplasme se fixe à son récepteur spécifique qui le transporte vers le noyau ce qui explique la radioactivité dans le noyau.</td></tr>
+<tr><td><b>2</b></td><td>Si on ajoute du phtalate radioactif à des cellules de la muqueuse utérine, la radioactivité se localise dans le noyau.</td><td>Le phtalate possède des récepteurs spécifiques dans le noyau ce qui explique sa concentration dans le noyau.</td></tr>
+<tr><td><b>3</b></td><td>Si on ajoute le phtalate non radioactif et l’œstradiol radioactif à des cellules de la muqueuse utérine, la radioactivité se concentre dans le cytoplasme.</td><td>En présence du phtalate, l’œstradiol ne peut pas se fixer sur ses récepteurs spécifiques et ne peut pas pénétrer dans le noyau, il reste dans le cytoplasme.</td></tr>
+</table>
+<p class="para"><b>Mode d’action du phtalate</b> :<br>Le phtalate, étant un analogue structural de l’œstradiol, pénètre dans la cellule cible, se fixe aux récepteurs cytoplasmiques spécifiques de l’œstradiol qui le transportent vers le noyau. Ainsi le phtalate mime le rôle de l’œstradiol dans les cellules de la muqueuse utérine, il est un analogue structural et fonctionnel de l’œstradiol. Il paraît que les récepteurs cytoplasmiques de l’œstradiol ont plus d’affinité pour le phtalate que pour l’œstradiol, peut-être à cause de sa configuration spatiale ou de sa masse moléculaire inférieure à celle de l’œstradiol.</p>
+<p class="para"><b>b-</b><br>La cause principale de l’apparition d’une puberté précoce chez ces filles est une contamination à forte concentration par le phtalate qui joue le rôle des œstrogènes et provoque une puberté précoce chez elles.</p>
+<p class="para"><b>8) a-</b><br>Le phtalate joue le même rôle que les œstrogènes à n’importe quel moment de la vie</p>
+<!-- page 06 -->
+<p class="para">de la fille et son origine est exogène (externe) ainsi il perturbe l’équilibre hormonale de la fille d’où l’appellation perturbateur endocrinien.</p>
+<p class="para"><b>b-</b><br>La présence du phtalate à forte concentration en plus de l’œstradiol naturellement secrété par ses ovaires, ces filles présentent une hypersécrétion de cette molécule. Puisque le phtalate est une molécule chimique, il ne se détache pas facilement des récepteurs à œstradiol ce qui provoque une activité anormalement élevée des cellules des seins.<br>Cette hyperactivité peut expliquer l’augmentation du risque d’apparition du cancer du sein à l’âge précoce chez ces filles.</p>
+
+
+<div class="exsub">série 7</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 – Gr 1 )</p>
+<p class="subhead t-red"><b>Série 7 : La fonction reproductrice chez la femme</b></p>
+<p class="para"><span class="t-gold">Lundi 24/10/2022</span></p>
+<!-- NOTE: cover-page Taki Academy branches list, website and phone number not transcribed — publisher header/footer furniture -->
+<!-- page 02 -->
+<!-- NOTE: handwritten annotations (green margin sketch with labels, yellow highlight boxes, blue pen marks on the graph) on top of the printed page are left out -->
+<div class="exsub">Exercice 1 &nbsp; 60 min &nbsp; 07 pts</div>
+<p class="para"><b>I)</b> le document 1 représente le moment de l’ovulation pour madame «X ».</p>
+<!-- CROP: 3952 7 2 0.300 0.155 0.860 0.333 3952_p7_02_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p7_02_doc1.png" alt=""></figure>
+<p class="para">Document 1</p>
+<p class="para">1) Complétez la légende du document 1.<br>2) Prévoir les transformations que vont subir les éléments 3, 5 et 6<br>a) s’il y’a fécondation.<br>b) s’il n’y a pas fécondation.<br>3) On pratique une ablation de l’élément 8.<br>Donnez les conséquences de cette ablation :<br>a) sur l’ensemble du cycle sexuel (hormonal, ovarien et utérin).<br>b) sur l’évolution de l’élément 7 ( en cas de fécondation).</p>
+<p class="para"><b>II)</b> On dose chez une femme le taux des hormones ovariennes, les résultats des dosages sont indiqués sur le graphe du document 2</p>
+<!-- CROP: 3952 7 2 0.225 0.577 0.855 0.822 3952_p7_02_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p7_02_doc2.png" alt=""></figure>
+<p class="para">Document 1</p>
+<p class="para">1) Identifiez chaque hormone.<br> 2) La sécrétion de ces hormones semble anormale chez cette femme, donnez une justification.</p>
+<!-- page 03 -->
+<p class="para"> 3) Pour expliquer l’origine et les conséquences d’une telle sécrétion, on peut formuler plusieurs hypothèses :</p>
+<ul class="b">
+<li><span class="t-blue"><b>Hypothèse 1</b></span> : Il s’agit d’une femme ménopausée.</li>
+<li><span class="t-blue"><b>Hypothèse 2</b></span> : Dans l’ovaire de cette femme, on n’observe pas d’ovulation.</li>
+<li><span class="t-blue"><b>Hypothèse 3</b></span> : Cette femme aura des règles dès le 24<sup>ème</sup> jours.</li>
+<li><span class="t-blue"><b>Hypothèse 4</b></span> : Une sécrétion insuffisante de FSH au début du cycle est à l’origine de cette sécrétion anormale d’hormones ovariennes.</li>
+</ul>
+<p class="para">Relevez le numéro de chaque hypothèse, dites si elle est correcte ou incorrecte, justifiez clairement chacune de vos réponses.<br>4) Pour vérifier l’une de ces hypothèses, on injecte à cette femme l’hormone 1 rendue fluorescente. La fluorescence se localise entre autres au niveau de l’axe hypothalamo-hypophysaire.<br>Quelles conclusions vous apportent ces informations.<br>5) Proposez un traitement que le médecin pourrait adopter pour résoudre le problème de cette femme. Expliquez votre choix.</p>
+<p class="para"><b>III)</b> Une guenon ovariectomisée reçoit pendant des périodes de 15 J des injections d'hormones selon des dosages de compositions différentes ; pour chaque période, le taux moyen de FSH et de<br>LH est mesuré (voir tableau 1)</p>
+<table>
+<tr><th colspan="2">Caractéristiques des injections</th><th colspan="2">Dosage plasmatique</th><th></th></tr>
+<tr><th>Composition</th><th>Taux plasmatique en pg/ml</th><th>De FSH en mg/ml</th><th>De LH en mg/ml</th><th>Période</th></tr>
+<tr><td><b>Œstrogènes<br>Progestérone</b></td><td>0<br>0</td><td>15</td><td>50</td><td>1</td></tr>
+<tr><td><b>Œstrogènes<br>Progestérone</b></td><td>70<br>0</td><td>6</td><td>4</td><td>2</td></tr>
+<tr><td><b>Œstrogènes<br>Progestérone</b></td><td>300<br>0</td><td>12</td><td>40</td><td>3</td></tr>
+<tr><td><b>Œstrogènes<br>Progestérone</b></td><td>300<br>4</td><td>&lt; 4</td><td>&lt; 3</td><td>4</td></tr>
+</table>
+<ol class="qn">
+<li>À partir d'une analyse comparée de ces résultats, déduisez le rôle des hormones ovariennes sur les sécrétions hypophysaires.</li>
+</ol>
+<!-- page 04 -->
+<!-- NOTE: yellow and green highlighter marks on the printed text and table are left out -->
+<p class="para">2)  les avortements spontanés précoces sont liés dans certains cas à une insuffisance hormonale particulièrement au moment de la fécondation.<br>On a constaté que chez 35% des femmes enceintes victimes d'un avortement spontané dans les douze premières semaines suivant la fécondation, le taux de progestérone plasmatique ne dépasse pas 10 ng/ml.<br>En se basant sur l'analyse du tableau 2 résultats de mesures pratiquées chez des femmes ayant menées des grossesses jusqu'à l'accouchement, expliquez la cause des avortements spontanés cités précédemment.</p>
+<table>
+<tr><th>Tableau 2</th><th><span class="t-blue"><b>Progestérone plasmatique ng/ml</b></span></th></tr>
+<tr><td>Phase folliculaire</td><td>0<br>3-20</td></tr>
+<tr><td>Phase lutéale<br>4<sup>ème</sup> semaine<br>10<sup>ème</sup> semaine<br>14<sup>ème</sup> semaine<br>18<sup>ème</sup> semaine<br>22<sup>ème</sup> semaine<br>26<sup>ème</sup> semaine<br>30<sup>ème</sup> semaine<br>34<sup>ème</sup> semaine<br>38<sup>ème</sup> semaine<br>40-42<sup>ème</sup> semaine</td><td><br>20<br>26<br>41<br>45<br>50<br>60<br>80<br>100<br>120<br>160</td></tr>
+</table>
+
+
+<div class="exsub">corrigé série 7</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 _ Gr 1 )</p>
+<p class="subhead t-red"><b>Correction de la série 7’ : La reproduction féminine</b></p>
+<p class="para"><span class="t-gold">Lundi  24/10/2022</span></p>
+<!-- NOTE: cover-page Taki Academy branches list, website and phone number not transcribed — publisher header/footer furniture -->
+<!-- page 02 -->
+<!-- NOTE: Word review-comment balloon in the margin ("Commenté [SBK1]:", empty) and its highlight are left out -->
+<div class="exsub">Exercice 1 &nbsp; 60 min &nbsp; 07 pts</div>
+<p class="para">I)<br>1)</p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+<tr><td>Thèque externe</td><td>Thèque interne</td><td>Granulosa</td><td>Liquide folliculaire</td><td>Matériel génétique bloqué en métaphase II</td><td>Granule corticale</td><td>Ovocyte II bloqué en métaphase II</td><td>Follicule rompu</td></tr>
+</table>
+<p class="para">2)</p>
+<table>
+<tr><th><span class="t-blue"><b>Éléments</b></span></th><th>a-<br><span class="t-blue"><b>En cas de fécondation</b></span></th><th>b-<br><span class="t-blue"><b>En absence de fécondation</b></span></th></tr>
+<tr><td><span class="t-blue"><b>3</b></span></td><td colspan="2">Les cellules folliculaires se charge en pigments jaune, lutéine, et deviennent des cellules lutéiniques formant le corps jaune qui :</td></tr>
+<tr><td></td><td>Persiste durant les 11 premières semaines de la grossesse et devient un corps jaune gestatif.</td><td>Régresse suite a la chute du taux de FSH et LH à la fin du cycle</td></tr>
+<tr><td><span class="t-blue"><b>5</b></span></td><td>Achèvement de la DE et formation de deux cellules inégales ovotide de GP2.</td><td>Dégénère 48 heures après l’ovulation.</td></tr>
+<tr><td><span class="t-blue"><b>6</b></span></td><td>Réaction corticale : les granules corticaux libèrent leurs contenus enzymatiques dans l’espace péri-ovocytaire à fin d’hydrolyser les récepteurs de la zone pellucide d’où la monospermie.</td><td>Dégénère</td></tr>
+</table>
+<p class="para">3)</p>
+<p class="para">a- L’ablation du follicule rompu empéche la formation du corps jaune et par la suite :</p>
+<ul class="b">
+<li>Interruption du cycle ovarien : <b>pas de phase post-ovulatoire</b> (cycle ovarien).</li>
+<li>L’absence de corps jaune est suivit d’une <b>chute des taux d’oestrogène et progesterone</b> et par la suite une levée de l’inhibition donc <b>hypersecretion des gonadostimulines</b> (cycle hormonal).</li>
+<li>Arret de la proliferation de l’endometre et absence de la dentelle uterine et par la suite absence de la phase</li>
+</ul>
+<!-- page 03 -->
+<p class="para">prémenstruelle avec une menstruation précoce juste après l’ovulation (cycle utérin).</p>
+<p class="para">b- En cas de fécondation l’ovocyte II évolue en cellule œuf puis embryon mais pas de nidation et par la suite avortement.</p>
+<p class="para">II)</p>
+<ol class="qn">
+<li>L’hormone 1 existe chez cette femme et présente un seul pic de sécrétion dans la première partie du cycle, en plus elle n’est pas nulle. Donc l’hormone 1 est l’œstrogène. L’hormone 2 n’est pas secrétée durant 25 jours qu’à des doses très faibles et constantes. C’est la progestérone.</li>
+</ol>
+<p class="para">2)</p>
+<table>
+<tr><th><span class="t-blue"><b>Analyse</b></span></th><th><span class="t-blue"><b>Conclusion</b></span></th></tr>
+<tr><td>Hormone 1 = œstrogène Le document 1 montre durant les 5 premiers jour une sécrétion très faible d’œstrogène ensuite un pic vers le jour 14 puis elle diminue pour rejoindre sa valeur initiale le jour 20.<br>Hormone 2 = progestérone<br>Durant 25 jours, la sécrétion de progestérone est très faible et constante</td><td>L’absence du 2<sup>ème</sup> pic d’œstrogène ainsi que l’absence de sécrétion de progestérone ne peut être expliqué que par l’absence de l’ovulation chez cette femme.</td></tr>
+</table>
+<p class="para">3)</p>
+<ul class="b">
+<li>Hypothèse 1 est rejetée, si la femme était ménopausée, la sécrétion d’œstrogène sera faible et constante comme celle de la progestérone.</li>
+<li>Hypothèse 2 est retenue car la présence d’œstrogène avec l’absence de progestérone s’explique par l’absence de l’ovulation.</li>
+<li>Hypothèse 3 est retenue, car l’œstrogène chute le jour 19 donc le lendemain apparaissent les menstruations.</li>
+<li>Hypothèse 4 est rejetée, cette femme présente une sécrétion d’œstrogène, la son hypophyse secrète la FSH à l’origine de croissance des follicules qui secrètent les œstrogènes.</li>
+</ul>
+<p class="para">4) Lorsqu’on on injecte à cette femme l’œstrogène fluorescente. La fluorescence se localise entre autres au niveau de l’axe hypothalamo-hypophysaire. Ceci veut dire que l’œstrogène s’est fixée sur les récepteurs spécifiques de l‘axe hypothalamo-hypophysaire, donc il s’agit d’œstrogène normale. Mais il n’y a pas d’ovulation ceci est rendu au fait que l’hypophyse ne secrète pas la LH en réponse au RC (+) exercé par le forte dose d’œstrogène du jour 14. L’absence de pic de LH provoque l’absence de sécrétion de progestérone.</p>
+<p class="para"> 5) La présence de pic d’œstrogène indique la présence de follicule mûr. Alors le médecin peut injecter à cette femme une forte dose de LH lorsque son</p>
+<!-- page 04 -->
+<p class="para">ovaire montre un follicule mûr. Ainsi il déclenche l’ovulation et le cycle hormonal reprend.<br>III)<br>1)</p>
+<table>
+<tr><th><span class="t-blue"><b>Analyse</b></span></th><th><span class="t-blue"><b>conclusion</b></span></th></tr>
+<tr><td>Période 1 : femelle ovariectomisée et le taux d’oestrogène et de progestérone est nulle alors que les taux de FSH est de 15 mg/ml et de LH est de 50 mg/ml</td><td>En absence de RC(-) il y a une hypersécretion de FSH et surtout de LH.</td></tr>
+<tr><td>Période 2 : injection de 70 pg/ml d’oestrogène (inferieur à 300 pg/ml de la période 3) provoque une diminution du taux de FSH de 15 mg/ml à 6 pg/ml et surtout LH 50 mg/ml.</td><td><b>Une faible dose d’oestradiol</b> inhibe la sécrétion de FSH et surtout de LH par <b>RC (-).</b></td></tr>
+<tr><td>Période 3 : Injection d’une forte dose d’oestradiol de 300 pg/ml (&gt; à 70 pg/ml de la période 2) provoque une augmentation de FSH à 12 mg/ml et surtout de LH à 40 mg/ml.</td><td><b>Une forte dose d’oestradiol</b> stimule la sécrétion des gonadostimulines par <b>RC (+).</b></td></tr>
+<tr><td>Période 4 : Suite à l’injection combinée d’oestrogène de 300 pg/ml et de progestérone de 4 pg/ml provoque une diminution importante de FSH (&lt; 4 mg/m) et surtout de LH (&lt; 3 pg/ml)</td><td><b>L’oestrogène et la progestérone</b> exercent un <b>RC (-)</b> sur les sécrétion de FSH et surtout de LH.</td></tr>
+</table>
+<p class="para">2) Chez la femme enceinte et normal, le taux de progestérone augmente proportionnellement  avec la progression de la grossesse de 20 ng/ml  à la 4<sup>ème</sup> semaines de la grossesse à 160 ng/ml pour la période allant entre la 40<sup>ème</sup> semaine et la 42<sup>ème</sup> semaines de la grossesse par contre chez les femmes enceintes victimes d'un avortement spontané, le taux de progestérone ne dépasse pas les 10 ng/ml durant les 12 premières semaines, qui doit être 40 ng/ml, donc il y a un problème de nidation (absence de dentelle utérine normale de l’endomètre et aussi absence de silence utérin)</p>
+
+
+<div class="exsub">série 8</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 – Gr 1 )</p>
+<p class="subhead t-red"><b>Série 8 : La fonction reproductrice chez la femme + procréation</b></p>
+<p class="para"><span class="t-gold">Lundi 31/10/2022</span></p>
+<!-- NOTE: cover-page Taki Academy branches list, website and phone number not transcribed — publisher header/footer furniture -->
+<!-- page 02 -->
+<!-- NOTE: yellow highlighter marks on the printed text and on Document 1 are left out -->
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 1 &nbsp; 60 min &nbsp; 07 pts</div>
+<p class="para">Le document 1 présente schématiquement un événement qui peut se dérouler dans les voies génitales de la femme dont le cycle sexuel est de 28 jours.</p>
+<!-- CROP: 3952 9 2 0.262 0.170 0.742 0.384 3952_p9_02_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_02_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para"><b>1) a-</b>  Reconnaissez la structure  <b>F</b> et  les cellules <b>T</b> ?<br><b>b-</b>  Précisez de quel événement s’agit-il ? Justifiez.<br><b>c-</b>  A quel moment du cycle utérin, cet événement pourrait-il exister.</p>
+<p class="para"><b>2)</b> Les cellules <b>T</b>, présentent une double fonction.<br><b>a-</b> Indiquez leur fonction exocrine et son importance.<br><b>b-</b> Expliquez comment la fonction endocrine  est à l’origine d’une modification de l’activité cyclique de l’appareil reproducteur de la femme.</p>
+<p class="para"><b>3)</b> Le document 2 montre l’équipement chromosomique simplifié d’une cellule embryonnaire. On a volontairement réduit le nombre de chromosomes à 2n=6.</p>
+<!-- CROP: 3952 9 2 0.354 0.607 0.708 0.812 3952_p9_02_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_02_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>a-</b> Précisez le sexe de l’embryon. Justifiez ?<br><b>b-</b> Schématisez les garnitures chromosomiques des gamètes à l’origine de cet embryon ainsi que celle des deux globules polaires.</p>
+<!-- page 03 -->
+<!-- NOTE: highlighter, a pink circle and a handwritten margin "5)" before "Le graphe suivant" are left out; the letters e and f after the printed "Figure" captions are handwritten into the blanks and kept -->
+
+
+<div class="exsub">Exercice 2 &nbsp; 60 min &nbsp; 07 pts</div>
+<p class="para">Les figures a, b, c, d, e et f  du document 1, représentent quelques aspects d’un phénomène qui se déroule dans les trompes chez la femelle.</p>
+<!-- CROP: 3952 9 3 0.088 0.185 0.341 0.367 3952_p9_03_fig_a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_03_fig_a.png" alt=""></figure>
+<p class="para">Figure a</p>
+<!-- CROP: 3952 9 3 0.343 0.185 0.627 0.367 3952_p9_03_fig_b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_03_fig_b.png" alt=""></figure>
+<p class="para">Figure b</p>
+<!-- CROP: 3952 9 3 0.629 0.185 0.916 0.367 3952_p9_03_fig_c -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_03_fig_c.png" alt=""></figure>
+<p class="para">Figure c</p>
+<!-- CROP: 3952 9 3 0.088 0.387 0.341 0.569 3952_p9_03_fig_d -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_03_fig_d.png" alt=""></figure>
+<p class="para">Figure d</p>
+<!-- CROP: 3952 9 3 0.343 0.387 0.627 0.569 3952_p9_03_fig_e -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_03_fig_e.png" alt=""></figure>
+<p class="para">Figure e</p>
+<!-- CROP: 3952 9 3 0.629 0.387 0.916 0.569 3952_p9_03_fig_f -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_03_fig_f.png" alt=""></figure>
+<p class="para">Figure f</p>
+<p class="para"><b><u>Document 1</u></b></p>
+<ol class="qn">
+<li>Nommer le phénomène illustré par les figures ci-dessus.</li>
+<li>Citer trois conditions nécessaires à son accomplissement.</li>
+<li>a- Identifiez les structures désignées par des flèches numérotées de 1à 10.<br>b- Donnez un titre à chacune des figures a, b, c, d, e et f.</li>
+<li>Citez les transformations que subit la cellule de l’étape <b>b</b> pour donner celle de l’étape <b>c</b>.</li>
+</ol>
+<p class="para"> Le graphe suivant, exprime l’évolution de la quantité d’ADN totale que contient la cellule représentée par les figures précédentes.</p>
+<!-- page 04 -->
+<!-- NOTE: yellow highlight boxes (on the "Règles" labels of Document 2 and on a phrase of question 3) are left out -->
+<!-- CROP: 3952 9 4 0.140 0.070 0.860 0.273 3952_p9_04_doc2_adn -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_04_doc2_adn.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para">Expliquez brièvement le tracé en faisant correspondre ses différents segments aux états de la cellule représentée dans les figures a, b, c, d, e et f.</p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">Exercice 3 &nbsp; 60 min &nbsp; 07 pts</div>
+<p class="para">On se propose d’étudier quelques aspects de la reproduction féminine.<br><b>A]</b> Le document 1 montre l’évolution de la sécrétion de 3 hormones <b>H<sub>1</sub></b>, <b>H<sub>2</sub></b> et <b>H<sub>3</sub></b> chez une femme <b>F<sub>1</sub></b>.<br>Le document 2 montre l’évolution de la sécrétion des mêmes hormones <b>H<sub>1</sub></b> et <b>H<sub>2</sub></b> chez une autre femme <b>F<sub>2</sub></b>.</p>
+<!-- CROP: 3952 9 4 0.056 0.530 0.558 0.726 3952_p9_04_doc1_femmeF1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_04_doc1_femmeF1.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>Document 1 (femme F1)</b></span></p>
+<!-- CROP: 3952 9 4 0.558 0.530 0.992 0.726 3952_p9_04_doc2_femmeF2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_04_doc2_femmeF2.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>Document 2 (femme F2)</b></span></p>
+<p class="para"><b>1)</b> Nommez les évènements <b>E<sub>1</sub></b>, <b>E<sub>2</sub></b> et <b>E<sub>3</sub></b> mentionnés par des flèches dans le document 1 chez la femme <b>F<sub>1</sub></b>.<br><b>2)</b> En justifiant la réponse, reconnaissez les hormones <b>H<sub>1</sub></b>, <b>H<sub>2</sub></b> et <b>H<sub>3</sub></b>.<br><b>3)</b> Sachant que la femme <b>F<sub>2</sub></b> ne souffre d’aucun problème de stérilité, quelle hypothèse proposez – vous pour expliquer ses profils de sécrétion de <b>H<sub>1</sub></b> et <b>H<sub>2</sub></b> ? Justifiez – vous.<br><b>4)</b> À partir de vos connaissances, comparez l’état de développement de l’endomètre chez les deux femmes aux moments mentionnés par des flèches sur les deux documents (moment1 et moment 2). Justifiez les différences.</p>
+<!-- PROOFREAD: 3952 part9 p04 — "femme F₂" in question 3: the subscript is partly hidden by a highlight box -->
+<!-- page 05 -->
+<!-- NOTE: handwritten annotations (colouring and "blastocèle" / "bouton embryonnaire" written on Structure A, "progestérone" over the Document 4 axis, highlight boxes) are left out of the text; they remain visible inside the crops -->
+<p class="para"><b>B]</b> Le document 3 suivant montre deux structures <b>A</b> et <b>B</b> observables à deux périodes de temps différentes dans les voies génitales de la femme <b>F<sub>1</sub></b>.</p>
+<!-- CROP: 3952 9 5 0.142 0.126 0.489 0.272 3952_p9_05_structure_A -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_05_structure_A.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b><u>Structure A</u></b></span></p>
+<!-- CROP: 3952 9 5 0.490 0.126 0.858 0.272 3952_p9_05_structure_B -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_05_structure_B.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b><u>Structure B</u></b></span></p>
+<p class="para"><span class="t-blue"><b><u>Document 3</u></b></span></p>
+<p class="para"><b>1)</b> Identifiez les structures <b>A</b> et <b>B</b> et complétez leurs légendes.<br><b>2)</b> À quels jours approximatifs du document 1 se situe chacune de ces structures ? Justifiez – vous en mettant en relation les deux structures.<br><b>3)</b> Afin de déterminer le rôle de certaines cellules de la structure <b>A</b>, on réalise l’expérience suivante :<br>On injecte à une guenon vers la fin de son cycle, un filtrat purifié du broyat de plusieurs cellules n°1 et on dose le taux de l’hormone <b>H<sub>2</sub></b> chez cette guenon. On obtient le tracé du document 4 suivant :</p>
+<!-- CROP: 3952 9 5 0.177 0.486 0.858 0.660 3952_p9_05_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p9_05_doc4.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>Document 4</b></span></p>
+<p class="para">  Analysez la courbe du document 4 en vue d'expliquer le profil de <b>H<sub>2</sub></b> après l’injection.<br><b>4)</b> En intégrant l’ensemble des informations, et en faisant appel à certaines de vos connaissances, faites un schéma fonctionnel montrant les interactions hormonales entre les organes suivants :<br>"Complexe hypothalamo - hypophysaire" -  "Structure <b>A</b>" - "Ovaires" -  "Utérus (endomètre + myomètre)" et ce dans les jours qui suivent le moment 1 du document 1.</p>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">série 9</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 – Gr 1 )</p>
+<p class="subhead t-red"><b>Série 9 : La procréation</b></p>
+<p class="para"><span class="t-gold">Lundi 07/11/2022</span></p>
+<!-- NOTE: cover-page Taki Academy branches list, website and phone number not transcribed — publisher header/footer furniture -->
+<!-- page 02 -->
+<div class="exsub">Exercice 1 &nbsp; 34 min &nbsp; 04 pts</div>
+<p class="para">   Deux phénomènes importants caractérisent la reproduction sexuée chez l'espèce humaine :<br>la méiose et la fécondation.<br><b>1) a)</b> Qu'est-ce que la fécondation ?<br><b>b)</b> Donnez quatre conditions indispensables à la réalisation de la fécondation.<br><b>2)</b> Expliquez le mécanisme qui assure la monospermie lors de la fécondation.<br><b>3)</b> Expliquez, schémas à l'appui, comment la méiose conduit à la diversité des gamètes par le jeu du<br>brassage interchromosomique. Pour simplifier, prenez 2n = 4.</p>
+<div class="exsub">Exercice 2 &nbsp; 40 min &nbsp; 06 pts</div>
+<p class="para">I- Le document 1 montre une structure observée au cours d’une étape de la fécondation dans les voies génitales d’une femme pendant les jours qui suivent l’ovulation. Le document 2 montre une structure B développée entre le fœtus et sa mère.</p>
+<!-- CROP: 3952 10 2 0.141 0.470 0.493 0.641 3952_p10_02_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p10_02_doc1.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>Document 1</b></span></p>
+<!-- CROP: 3952 10 2 0.493 0.470 0.858 0.641 3952_p10_02_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p10_02_doc2.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>Document 2</b></span></p>
+<p class="para"><b>1)</b> Reconnaissez l’étape présentée par le document1 ainsi que la structure B du document 2.<br><b>2)</b> Reproduisez et complétez, sur votre copie, le tableau suivant :</p>
+<table>
+<tr><th>Période</th><th>Structures productrices d’hormones</th><th>Hormones produites</th><th>Effets essentiels sur les organes cibles</th></tr>
+<tr><td><b>2 jours après la fécondation</b></td><td></td><td></td><td></td></tr>
+<tr><td rowspan="2"><b>7<sup>ème</sup> jour de fécondation à la 11<sup>ème</sup> semaine de grossesse</b></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td></tr>
+<tr><td><b>11<sup>ème</sup> semaine à la fin de la grossesse.</b></td><td></td><td></td><td></td></tr>
+</table>
+<!-- page 03 -->
+<p class="para">II- La fécondation in vitro et le transfert d’embryon (FIVETE) est une technique de procréation médicalement assistée (PMA) qui manipule les gamètes au laboratoire. Le document ci-dessous représente dans le désordre les étapes de cette manipulation :</p>
+<!-- CROP: 3952 10 3 0.090 0.122 0.920 0.398 3952_p10_03_doc3_fivete -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p10_03_doc3_fivete.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>Document 3</b></span></p>
+<ol class="qn">
+<li>a-Titrez les schémas du document 3.<br>b- Classez par ordre chronologique les schémas du document 3.</li>
+<li>Parmi les étapes de la FIVETE on note, Traitement du sperme : le sperme est recueilli dans une éprouvette stérile pour subir un traitement.<br>a-  Dans quel but ce traitement est-il réalisé ?<br>b-  Y’a-t-il une date précise pour recueillir le sperme ? justifiez</li>
+<li>Précisez les stérilités masculine et féminine dans lesquelles on pratique cette technique.</li>
+</ol>
+<div class="exsub">Exercice 3 &nbsp; 60 min &nbsp; 07 pts</div>
+<p class="para"> On cherche à déterminer l’origine de deux hormones analogues H1 et H2 et à préciser leurs rôles dans la fonction reproductrice chez la femme. Plusieurs documents sont alors fournis.<br><b>1)</b> Le document 1, montre le taux plasmique de la progestérone chez la femme dans trois situations différentes :<br> - Femme F1 normale sans grossesse.<br> - Femme F2 à qui on a injecté l’hormone H1 radioactive du 21<sup>ème</sup>  au 28<sup>ème</sup> jour du cycle.<br> - Femme F3 enceinte.</p>
+<!-- page 04 -->
+<!-- CROP: 3952 10 4 0.141 0.070 0.860 0.305 3952_p10_04_doc1_progesterone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p10_04_doc1_progesterone.png" alt=""></figure>
+<p class="para">Document 1</p>
+<p class="para"><b>a-</b> Attribuez à chaque femme, le tracé qui correspond à sa situation.<br><b>b-</b> Décrivez la variation du taux plasmique de la progestérone chez les trois femmes, pendant la phase post-ovulatoire, en tenant compte de leur situation, afin :<br>- de déduire le rôle de l’hormone H1.<br>- d’expliquer le déterminisme de la menstruation.</p>
+<p class="para"><b>2-</b> Le document 2, montre des coupes d’ovaire et d’utérus pouvant être présentées par la femme F2. La granulation observée dans la coupe d’ovaire, représente la radioactivité.</p>
+<!-- CROP: 3952 10 4 0.067 0.533 0.457 0.689 3952_p10_04_coupe_ovaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p10_04_coupe_ovaire.png" alt=""></figure>
+<p class="para"><b>Coupe d’ovaire</b></p>
+<!-- CROP: 3952 10 4 0.457 0.533 0.682 0.689 3952_p10_04_uterus_j21 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p10_04_uterus_j21.png" alt=""></figure>
+<p class="para"><b>Coupe d’utérus au jours 21</b></p>
+<!-- CROP: 3952 10 4 0.682 0.533 0.953 0.689 3952_p10_04_uterus_j28 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p10_04_uterus_j28.png" alt=""></figure>
+<p class="para"><b>Coupe d’utérus au jour 28</b></p>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>a-</b> Exploitez les données du document 2 afin de préciser le niveau d’action de l’hormone H1.<br><b>b-</b> Mettez en relation les données des documents 1 et 2 afin d’expliquer dans l’intervalle de temps   [21, 28], les modifications hormonales et anatomiques constatées chez la femme F2.<br><b>c-</b> Proposez deux hypothèses possibles relatives au nom de l’hormone H1.</p>
+<!-- page 05 -->
+<p class="para"><b>3-</b> Afin de confirmer l’une des hypothèses proposées, on étudie les taux plasmatiques des hormones H1 et H2 qui ont été effectués chez la femme F3 au cours de son cycle avec grossesse.<br>Le document 3, montre les résultats obtenus.</p>
+<!-- CROP: 3952 10 5 0.141 0.140 0.860 0.372 3952_p10_05_doc3_H1_H2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p10_05_doc3_H1_H2.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para"><b>a-</b> À partir de l’étude du document 3 et en intégrant vos connaissances, identifiez les hormones H1 et H2 et précisez leur origine. Quelle hypothèse est-elle confirmée ?<br><b>b-</b> À partir des données précédentes et de vos connaissances, donnez une explication à la variation du taux de l’hormone H1 dosée chez la femme F3 dans l’intervalle de temps [-2, 12].<br><b>4-</b> En se basant sur toutes les déductions précédentes, établissez dans l’intervalle de temps [-2, 12], un schéma qui montre les liens fonctionnels existant entre les organes et les hormones (H1, H2 et progestérone) qui sont mis en jeu chez la femme F3 pour maintenir la grossesse.</p>
+
+
+<div class="exsub">corrigé série 9</div>
+<!-- NOTE: entirely handwritten correction — transcribed as best reading -->
+<!-- page 01 -->
+<div class="exsub"><span class="t-red">Exercice 1</span></div>
+<p class="para"><span class="t-red">1) a)</span> Fecondation est la rencontre et la fusion des g<sup>tes</sup> ♂ et ♀, il en resulte un oeuf (zygote) origine d'un nouvel être vivant</p>
+<p class="para"><span class="t-red">b)</span> Les conditions de la fecondation :</p>
+<ul class="b">
+<li>Sperme normal pour qu'il soit fecondant (pH alcalin 7,.., nb de Spz ≥ 60 millions/ml, visqueux, blanchatre, mobilite des spz &gt; 52%..)</li>
+<li>Rapport sexuel durant la periode de fecondité (3 jours avant l'ovulation et 2 jours après)</li>
+<li>voies génital féminine sain et permeable aux spermatozoïd</li>
+<li>Sécrétion vaginal pas trops acide</li>
+<li>glaire cervical filante à maillage lâche, permeable aux spz</li>
+<li>Spermatozoïde capacité</li>
+</ul>
+<p class="para"><span class="t-red">2) Monospermie</span> est assurée par la <span class="t-red">Réaction corticale</span> : suite à la penetration du spermatozoïd dans le cytoplasme de l'ovocyte, les granules corticaux expulsent leurs contenu par exocytose dans l'espace periovocytaire d'où hydrolyse des recepteur de la zone pellucide, specifique aux spermatozoïdes</p>
+<!-- page 02 -->
+<p class="para"><span class="t-red">3)</span> 2n = 4</p>
+<p class="para">Brassage interchromosomique est un brassage obligatoire est à l'origine de la diversité des gamètes qui s'effectue en <span class="t-red">anaphase I</span> <span class="t-green">: migration aléatoire (au hasard) des chromosomes vers les 2 pôles opposés de la c</span></p>
+<p class="para">2n = 4 ⇒ 2<sup>n</sup> = 2<sup>2</sup> = 4 gametes génétiquement differents</p>
+<!-- CROP: 3952 11 2 0.05 0.36 0.995 0.83 3952_p11_02_brassage_interchromosomique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p11_02_brassage_interchromosomique.png" alt=""></figure>
+<!-- page 03 -->
+<div class="exsub"><span class="t-red">Exercice 2</span></div>
+<p class="para"><span class="t-red">I)</span></p>
+<p class="para"><span class="t-red">1)</span> Doc 1 : Caryogamie (fusion des 2 pronucléi</p>
+<p class="para">Doc 2 : structure B = placenta</p>
+<p class="para"><span class="t-red">2)</span></p>
+<table>
+<tr><th>Période</th><th>Structures productrices d'hormones</th><th>Hormones produites</th><th>Effets essentiels sur les organes cibles</th></tr>
+<tr><td>2 jours après la fécondation</td><td>corps jaune</td><td><span class="t-red">- ostradiol</span><br>+<br><span class="t-green">- progesterone</span></td><td><span class="t-red">- formation de la dentelle uterine</span><br><span class="t-green">- silence uterin</span><br>- RC (-) sur CHH</td></tr>
+<tr><td rowspan="2">7<sup>ème</sup> jour de fécondation à la 11<sup>ème</sup> semaine de grossesse</td><td>Trophoblaste</td><td>HCG</td><td>.Maintien du CJ à production d'oes + progesterone</td></tr>
+<tr><td>corps jaune gestatif</td><td><span class="t-red">-oestradiol</span><br>+<br><span class="t-green">-progesterone</span></td><td><span class="t-red">- maintien de la dentelle uter</span><br><span class="t-green">-maintien du silence</span><br>- RC (-) sur CHH</td></tr>
+<tr><td>11<sup>ème</sup> semaine à la fin de la grossesse.</td><td>placenta</td><td><span class="t-red">- oestradiol</span><br>+<br><span class="t-green">-progesterone</span></td><td><span class="t-red">- maintien de la dentelle uterin</span><br><span class="t-green">-maintien du silenc</span><br>- RC (-) sur CHH</td></tr>
+</table>
+<!-- PROOFREAD: 3952 part11 p03 — "Maintien du CJ à production d'oes" handwriting doubtful -->
+<p class="para"><span class="t-red">II)</span></p>
+<p class="para"><span class="t-red">1) a)</span></p>
+<p class="para">a- Maintien en culture pendant 48h : embryon stade 4 c</p>
+<p class="para">b- Transfert des embryons stade 4 c à l'aide d'un catheter dans la cavité uterine</p>
+<p class="para">c- Prélevement des ovocytes par ponction folliculaire</p>
+<!-- page 04 -->
+<p class="para">d- Traitement des spermatozoïdes</p>
+<p class="para">e- Mise en contact des gametes ♂ et ♀ pour une temperature de 37°c</p>
+<p class="para"><span class="t-red">b)</span> ordre : c – d – e – a – b</p>
+<p class="para"><span class="t-red">2) a)</span> L'objectif du traitement est la capacitation et la sélection des spermatozoïde.</p>
+<p class="para"><span class="t-red">b)</span> On recueille des spz se fait en parallèle avec le prelèvement des ovocytes vue que la durée de vie du spz est 3 j (durée de vie limité)</p>
+<p class="para"><span class="t-red">3)</span> • sterilité masculine : oligospermie : nb de spz &lt; 60 millions /ml</p>
+<p class="para">• Sterilité féminine :</p>
+<p class="para">→ sterilité immunologique : presence d'anticorps anti-spermatozoïd</p>
+<p class="para">→ obstruction bilaterale des trompes</p>
+<!-- page 05 -->
+<div class="exsub"><span class="t-red">Exercice 3</span></div>
+<p class="para"><span class="t-red">1) a)</span> F<sub>1</sub> → Tracé 3</p>
+<p class="para">F<sub>2</sub> : → Tracé 2</p>
+<p class="para">F<sub>3</sub> : → Tracé 1</p>
+<p class="para"><span class="t-red">b)</span></p>
+<table>
+<tr><th><span class="t-red">Analyse</span></th><th><span class="t-red">Conclusion</span></th></tr>
+<tr><td>.F<sub>1</sub> : le taux de progesterone décrit un pic le jour 21 puis chute et s'annule le jour 28 début des regles</td><td></td></tr>
+<tr><td>.F<sub>2</sub> : le taux de progesterone décrit aussi un pic le jour 28 puis chute et s'annule le jour 42 sachant qu'on a injecté H<sub>1</sub> (hormone du 21 jour au 28 jour du cycle. début des regles</td><td>H<sub>1</sub> : injecté entre J21 → J28 assure l'augmentation du de progesterone<br>– La menstruation = destruction partielle 4/5 de l'endomètre proliféré suite à la chute du taux des hormones ovarienne type progesterone comme chez les 2 femme F<sub>1</sub> et F<sub>2</sub></td></tr>
+<tr><td>.F<sub>3</sub> : le taux de progesterone continue à augmenter sans qu'il s'annule avec absence de regles</td><td></td></tr>
+</table>
+<!-- page 06 -->
+<p class="para"><span class="t-red">2) a)</span></p>
+<table>
+<tr><th><span class="t-red">Analyse</span></th><th><span class="t-red">Conclusion</span></th></tr>
+<tr><td>– La radioactivité (H<sub>1</sub>) s'observe au niveau du Corps jaune, evolué<br>– L'action du H<sub>1</sub> (radioactive) assure un développement de l'utérus : dentelle uterine plus développé et endomètre plus proliferer</td><td>l'hormone H<sub>1</sub> agit sur le maintien du corps jaune secreteur des hormones ovariennes assurant le développement de l'uterus</td></tr>
+</table>
+<p class="para"><span class="t-red">b)</span> H<sub>1</sub> agit sur le corps jaune qui se développe et secrète des hormones ovarienne ostrogène et progestèrone. qui agissent sur l'utérus provoquant :</p>
+<p class="para">– proliferation de l'endomètre</p>
+<p class="para">– formation des glandes en tube sinueuses et sangneuse (secretrice d'un mucus riche en glycogene) :</p>
+<p class="para">. Vs (arteriole) spiralisés</p>
+<p class="para">⇒ Dentelle uterine.</p>
+<p class="para"><span class="t-red">c)</span> hyp 1 : H<sub>1</sub> = HCG</p>
+<p class="para">hyp 2 H<sub>1</sub> = LH</p>
+<!-- page 07 -->
+<!-- ROTATE: 3952 part11 p07 180 -->
+<p class="para"><span class="t-red">3) a)</span></p>
+<table>
+<tr><th><span class="t-red">Analyse</span></th><th><span class="t-red">Conclusion</span></th></tr>
+<tr><td>H<sub>1</sub> : absent durant la periode allant du jour -4 au jour 7 puis augmente à partir du jour 7 après la fecondation</td><td>H<sub>1</sub> = HCG</td></tr>
+<tr><td>H<sub>2</sub> : presente un pic le jour -2 puis demeure est presque nul.</td><td>H<sub>2</sub> = LH<br><br>⇒ hyp 1 est confirmeé</td></tr>
+</table>
+<p class="para"><span class="t-red">b)</span> F<sub>3</sub> = femme enceinte, 7 jours après la fecondation, jour de la nidation, la formation du trophoblaste sécrete la HCG (≃ LH) ce qui empeche la regression du corps jaune qui continue la sécretion d'oestrogène + progesterone ce qui explique l'état de la femme F<sub>3</sub> dans l'intervalle du temps [–2, 12]</p>
+<!-- page 08 -->
+<p class="para"><span class="t-red">4)</span> [–2 , 12]</p>
+<!-- CROP: 3952 11 8 0.08 0.125 0.985 0.485 3952_p11_08_schema_HCG_corps_jaune -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p11_08_schema_HCG_corps_jaune.png" alt=""></figure>
+<p class="para">End</p>
+<p class="para"><u>SBK</u></p>
+<!-- PROOFREAD: 3952 part11 p08 — "SBK" handwritten signature, reading doubtful -->
+
+
+<div class="exsub">série 10</div>
+<!-- page 01 -->
+<!-- NOTE: cover page publisher block (logo, branch list, website, phone) not transcribed — publisher furniture / source -->
+<p class="subhead t-navy">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 – Gr 1 )</p>
+<p class="subhead t-navy"><b>Série 10 : La procreation</b></p>
+<p class="para"><span class="t-gold">Lundi 14/11/2022</span></p>
+<!-- page 02 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">Exercice 1 · 40 min · 05 pts</div>
+<p class="para">Chez la femme, la régulation du fonctionnement de l'ovaire est assurée par des interactions hormonales.</p>
+<p class="para">Cependant, des facteurs naturels ou artificiels peuvent modifier de telles interactions.</p>
+<p class="consigne">Expliquez, schémas à l'appui,</p>
+<ol class="qn">
+<li>les interactions hormonales au cours des différentes phases du cycle ovarien.</li>
+<li>les modifications de ces interactions dans le cas :
+<p class="para">a- d'un début grossesse ;</p>
+<p class="para">b- de quelques mois avant l'accouchement.</p>
+<p class="para">c- d'une ménopause.</p>
+<p class="para">d- d'une prise de pilule oestro-progestative.</p></li>
+</ol>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 2 · 40 min · 05 pts</div>
+<p class="para"><b>I)</b> La figure 1 du document 1 illustre un stade de l'ovogenèse chez la femme et la figure 2 représente une étape de la fécondation, on réduit le nombre des chromosomes à 2n = 4.</p>
+<!-- CROP: 3952 12 2 0.145 0.452 0.508 0.632 3952_p12_02_doc1_fig1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p12_02_doc1_fig1.png" alt=""></figure>
+<p class="para"><b>Figure 1</b></p>
+<!-- CROP: 3952 12 2 0.508 0.452 0.86 0.632 3952_p12_02_doc1_fig2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p12_02_doc1_fig2.png" alt=""></figure>
+<p class="para"><b>Figure 2</b></p>
+<p class="para"><b>Document 1</b></p>
+<ol class="qn">
+<li>Légendez le document 1 en écrivant les noms correspondant aux structures numérotées de 1 à 8 et titrez les deux figures.</li>
+<li>Expliquez le rôle des éléments n°3 dans la fécondation.</li>
+<li>Représentez les garnitures chromosomiques (formes et aspects des chromosomes) certaines ou possibles des éléments 5,6 et 7 du document 1. (en respectant les représentations chromosomiques de la figure 1).</li>
+<li>Selon François Jakob « <b>la sexualité est considérée comme une machine à faire du différent</b> »</li>
+</ol>
+<p class="para">a) Nommez les phénomènes de la reproduction sexuée illustrés par le document 1.</p>
+<p class="para">b) Expliquez comment ces phénomènes justifient la citation de François Jakob .</p>
+<!-- page 03 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<p class="para"><b>II)</b> Le document 2a ci-dessous représente le calendrier des cycles sexuels d'une femme ayant un cycle de 26 jours et le document 2b représente une structure ovarienne.</p>
+<!-- CROP: 3952 12 3 0.1 0.13 0.708 0.318 3952_p12_03_doc2a_calendrier -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p12_03_doc2a_calendrier.png" alt=""></figure>
+<p class="para">Document 2a</p>
+<!-- CROP: 3952 12 3 0.708 0.13 0.975 0.318 3952_p12_03_doc2b_structure_ovarienne -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p12_03_doc2b_structure_ovarienne.png" alt=""></figure>
+<p class="para">Document 2b</p>
+<p class="para">b- D'après vos connaissances quel est le devenir de l'élément 5 (document 2b) au cours de la période de 2 à 7 septembre.</p>
+<p class="para">c- Citez les transformations ayant lieu pendant la période du 10 à 14 septembre au niveau de l'ovaire et de l'utérus tout en précisant la phase correspondante du cycle sexuel.</p>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 3 · 60 min · 07 pts</div>
+<p class="para"><b>A]</b> Les spermogrammes du document 1 sont le résultat de l'analyse biologique de deux spermes, l'un à pouvoir fécondant (sperme de monsieur X) et l'autre ne possède pas de pouvoir fécondant (sperme de monsieur Y).</p>
+<table>
+<tr><th colspan="2"></th><th>Spermogramme de X</th><th>Spermogramme de Y</th></tr>
+<tr><td colspan="2"><b>Volume de l'éjaculat</b></td><td>4,2 mL</td><td>0,2 mL</td></tr>
+<tr><td colspan="2"><b>pH</b></td><td>7,8</td><td>7,6</td></tr>
+<tr><td colspan="2"><b>Viscosité</b></td><td>Normale</td><td>Normale</td></tr>
+<tr><td colspan="2"><b>Numération</b></td><td>61.10<sup>6</sup> spz/mL</td><td>1,8.10<sup>6</sup> spz/mL</td></tr>
+<tr><td rowspan="2"><b>Morphologie</b></td><td><b>Formes typiques</b></td><td>61%</td><td>60%</td></tr>
+<tr><td><b>Formes atypiques</b></td><td>39%</td><td>40%</td></tr>
+<tr><td rowspan="2"><b>Mobilité</b></td><td><b>Après 1 heure</b></td><td>55%</td><td>1%</td></tr>
+<tr><td><b>Après 4 heures</b></td><td>40%</td><td>0%</td></tr>
+</table>
+<p class="para">Document 1</p>
+<p class="para"><b>1)</b> Comparez les 2 spermogrammes et indiquez les causes possibles de la stérilité de monsieur Y.</p>
+<p class="para"><b>2)</b> Monsieur X ne peut pas avoir d'enfants avec madame X.</p>
+<p class="para">Formulez deux hypothèses quant aux causes possibles de la stérilité de ce couple.</p>
+<!-- page 04 -->
+<p class="para"><b>3)</b> Afin de vérifier les hypothèses émises, on réalise des expériences sur des gamètes de souris fertiles. Le protocole expérimental et les résultats sont représentés par le document 2.</p>
+<table>
+<tr><th>Expériences</th><th>Résultats</th></tr>
+<tr><td>1- Des protéines sont extraites de la zone pellucide d'ovocytes matures de souris fertiles et sont marquées par un isotope radioactif, puis mises en présence de spermatozoïdes de souris fertiles</td><td>La radioactivité apparaît au niveau de la tête des spermatozoïdes</td></tr>
+<tr><td><b>2-</b> On place ces spermatozoïdes marqués de l'expérience précédente en présence d'ovocytes matures de souris fertiles.</td><td>Pas de fécondation</td></tr>
+<tr><td>3- <b>On place des spermatozoïdes non marqués en présence d'ovocytes matures de souris fertiles</b></td><td>Fécondation</td></tr>
+</table>
+<p class="para">Document 2</p>
+<p class="para">Analysez ces résultats en vue de proposer une explication à la stérilité du couple X.</p>
+<p class="para"><b>4)</b> Monsieur et madame X, décident d'avoir recours à la FIVETE.</p>
+<p class="para">Précisez si cette FIVETE est nécessaire à ce couple. Justifiez votre choix.</p>
+<p class="para"><b>B]</b> La FIVETE nécessite un traitement hormonal pour permettre aux ovaires de produire plusieurs ovocytes. Ce traitement hormonal dure à peu près 28 jours et fait intervenir 3 hormones.</p>
+<p class="para">La chronologie de ce traitement hormonal est représentée par le document 3.</p>
+<!-- CROP: 3952 12 4 0.1 0.525 0.915 0.71 3952_p12_04_doc3_chronologie_traitement -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p12_04_doc3_chronologie_traitement.png" alt=""></figure>
+<p class="para">Document 3</p>
+<p class="para">Après prélèvement des ovocytes, le gynécologue peut alors donner la progestérone à sa patiente.</p>
+<p class="para">Afin de vérifier l'efficacité de l'analogue de GnRH dans le traitement, on expérimente sur des guenons pubères.</p>
+<!-- page 05 -->
+<table>
+<tr><th>Expériences</th><th>Résultats</th></tr>
+<tr><td><b>1)</b> On effectue des lésions au niveau de certaines zones de l'hypothalamus d'une guenon pubère</td><td>Arrêt du cycle ovarien et utérin</td></tr>
+<tr><td><b>2)</b> On pratique une perfusion en continue de GnRH à la même femelle</td><td>Aucun changement par rapport aux résultats précédents</td></tr>
+<tr><td><b>3)</b> On pratique une perfusion pulsatile de GnRH à la même femelle</td><td>Reprise du cycle ovarien et utérin</td></tr>
+<tr><td><b>4)</b> On injecte une molécule analogue structurale non fonctionnelle de GnRH à une femelle normale</td><td>Arrêt du cycle ovarien et utérin</td></tr>
+</table>
+<p class="para"><b>1)</b> Analysez ces résultats en vue d'expliquer :</p>
+<p class="para">- le mode de sécrétion et l'effet de la GnRH.</p>
+<p class="para">- l'utilité de l'injection de l'analogue structural de la GnRH.</p>
+<p class="para"><b>2)</b> Pendant la phase d'injection de l'analogue de FSH, on réalise des dosages sanguins de l'œstradiol et des contrôles échographiques afin de suivre l'évolution des follicules ovariens.</p>
+<p class="para">Le résultat de ce suivi médical est représenté par le document 5.</p>
+<table>
+<tr><th>Jour de traitement hormonal</th><th>J<sub>15</sub></th><th>J<sub>21</sub></th><th>J<sub>23</sub></th><th>J<sub>25</sub></th></tr>
+<tr><td><b>Dosage sanguin de l'œstradiol (en pg/mL)</b></td><td>12</td><td>468</td><td>1441</td><td>1944</td></tr>
+<tr><td><b>Diamètre des follicules</b></td><td>10 petits follicules</td><td>10 follicules de 9 à 12 mm</td><td>10 follicules de 11 à 15 mm</td><td>10 follicules de 14 à 20 mm</td></tr>
+</table>
+<p class="para"><b>N.B</b> : Au-delà d'un diamètre de 20 mm, on considère que le follicule a atteint sa maturité.</p>
+<p class="para">Analysez ces résultats dans le but de justifier la chronologie d'utilisation des analogues de GnRH, de FSH, de LH et de la Progestérone.</p>
+<p class="para"><b>3)</b> Lorsque la grossesse est confirmée, la progestérone n'est plus donnée par le gynécologue. Expliquez<b>,</b> schéma à l'appui, pourquoi.</p>
+
+
+<div class="exsub">corrigé série 10</div>
+<!-- page 01 -->
+<!-- NOTE: cover page publisher block (logo, branch list, website, phone) not transcribed — publisher furniture / source -->
+<p class="subhead t-navy">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 _ Gr 1 )</p>
+<p class="subhead t-navy"><b><u>Correction de la série 10 : La procréation</u></b></p>
+<p class="para"><span class="t-gold">Lundi 14/11/2022</span></p>
+<!-- page 02 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">Exercice 1 · 40 min · 05 pts</div>
+<p class="para">1)</p>
+<!-- CROP: 3952 13 2 0.135 0.148 0.9 0.512 3952_p13_02_ex1_interactions_hormonales -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p13_02_ex1_interactions_hormonales.png" alt=""></figure>
+<p class="para">2)</p>
+<p class="para">a- dédut de grossesse : entre 7<sup>ème</sup> jours et 11<sup>ème</sup> semaine</p>
+<!-- CROP: 3952 13 2 0.17 0.548 0.89 0.81 3952_p13_02_ex1_debut_grossesse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p13_02_ex1_debut_grossesse.png" alt=""></figure>
+<p class="para">b-</p>
+<!-- page 03 -->
+<!-- CROP: 3952 13 3 0.145 0.07 0.74 0.297 3952_p13_03_ex1_fin_grossesse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p13_03_ex1_fin_grossesse.png" alt=""></figure>
+<p class="para">c-</p>
+<!-- CROP: 3952 13 3 0.15 0.322 0.83 0.545 3952_p13_03_ex1_menopause -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p13_03_ex1_menopause.png" alt=""></figure>
+<p class="para">d-</p>
+<!-- CROP: 3952 13 3 0.145 0.563 0.905 0.83 3952_p13_03_ex1_pilules_combinees -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p13_03_ex1_pilules_combinees.png" alt=""></figure>
+<!-- page 04 -->
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 2 · 40 min · 05 pts</div>
+<p class="para"><b>I) 1)</b></p>
+<table>
+<tr><th><span class="t-red">1</span></th><th><span class="t-red">2</span></th><th><span class="t-red">3</span></th><th><span class="t-red">4</span></th><th><span class="t-red">5</span></th><th><span class="t-red">6</span></th><th><span class="t-red">7</span></th><th><span class="t-red">8</span></th></tr>
+<tr><td>espace péri-ovocytaire</td><td>zone pellucide</td><td>granules corticaux</td><td>Corona Radiata</td><td>GP1</td><td>GP2</td><td>pronucléus ♀</td><td>pronucléus ♂</td></tr>
+</table>
+<p class="para">Fig 1 : ovocyte I (anaphase I)   Fig 2 : ovotide ou ovule</p>
+<ol class="qn">
+<li>Granules corticaux libèrent leurs contenus enzymatiques dans l'espace péri-ovocytaire d'où hydrolyse des récepteurs des la zone pellucide ce qui empêche la polyspermie.</li>
+<li></li>
+</ol>
+<!-- CROP: 3952 13 4 0.14 0.326 0.862 0.53 3952_p13_04_ex2_garnitures_chromosomiques -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p13_04_ex2_garnitures_chromosomiques.png" alt=""></figure>
+<p class="para">3) a-</p>
+<ul class="dash">
+<li>brassage inter chromosomique.</li>
+<li>brassage intra chromosomique.</li>
+<li>fécondation.</li>
+</ul>
+<p class="para">b-</p>
+<ul class="dash">
+<li>brassage intra chromosomique : échange de fragment de chromatide non sœur du même bivalent est à l'origine de diversité génétique.</li>
+<li>brassage inter chromosomique : migration aléatoire des chromosomes vers les 2 pôles opposés de la cellule est à l'origine de la diversité chromosomique.</li>
+<li>Fécondation : rencontre au hasard des gamètes et leurs fusion est à l'origine de la diversité des individus d'où le polymorphisme.</li>
+</ul>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<p class="para">II)</p>
+<p class="para">1) a-</p>
+<table>
+<tr><th><span class="t-red">1</span></th><th><span class="t-red">2</span></th><th><span class="t-red">3</span></th><th><span class="t-red">4</span></th><th><span class="t-red">5</span></th></tr>
+<tr><td>Thèque externe</td><td>Thèque interne</td><td>Cavité folliculaire</td><td>granulosa</td><td>Ovocyte I bloqué en PI</td></tr>
+</table>
+<p class="para">b- 5 septembre = le jour de l'ovulation</p>
+<p class="para">2 à 7 septembre = 3 jours avant et 2 jours après l'ovulation, c'est la période de fécondité (5 jours) donc durant cette période l'ovocyte I bloqué en prophase I et
+<!-- page 05 -->
+sous l'effet de LH évolue en ovocyte II bloqué en métaphase II, reprise de la méiose puis dégénère puisqu'il n'y a pas de fécondité.</p>
+<p class="para">c- entre le 10 et le 14 septembre (2 jours avant et 2 jours après le 7<sup>ème</sup> jours, qui coïncide avec le jours de maximum de développement du corps jaune) : sous l'action de LH les cellules de granulosa se chargent en pigments jaune, <b>lutéine</b>, et deviennent des cellules lutéiniques (<b>corps jaune</b>) : <b><span class="t-blue">phase post-ovulatoire</span></b> alors qu'au niveau de l'utérus :</p>
+<ul class="b">
+<li>Endomètre : il y a formation de la dentelle utérine .</li>
+<li>Myomètre ; silence utérin .</li>
+<li>Col de l'utérus : glaire cervicale dense à maillage serré et pH acide cad imperméable au passage des spermatozoïdes.</li>
+</ul>
+<p class="para">Donc pour l'utérus , c'est la <b><span class="t-blue">phase pré-menstruelle</span></b> (phase lutéale).</p>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 3 · 60 min · 07 pts</div>
+<p class="para"><b>A] 1)</b></p>
+<table>
+<tr><th>Analyse comparative</th><th>Conclusion</th></tr>
+<tr><td>M. Y présente :<br>- Volume éjaculat 0,2mL&lt; 4,2 mL à celui de M. X.<br>- Le pH 7,6 est très proche de la normale 7,8<br>- La viscosité normale chez les deux.<br>- La numérotation très faible 1,8 million /mL très faible par rapport à la normale de M.X 61 millions/mL.<br>- La morphologie des spermatozoïdes est normale chez les deux (formes typiques 60 % ≈ 60% et aussi forme atypique 40% ≈ 39 %).<br>- La mobilité des spermatozoïdes après 1h est de 1 % très faible par rapport à la normale de 55 %.</td><td>Donc M. Y est stérile à cause :<br>- d'un volume d'éjaculat très faible<br>- d'une oligospermie.<br>- d'une asthénospermie.</td></tr>
+</table>
+<p class="para"><b>2)</b></p>
+<p class="para"><b>Hypothèse 1</b> : La cause de stérilité du couple X existe chez madame X</p>
+<p class="para"><b>Hypothèse 2</b> : La cause de stérilité du couple X existe chez M.X : Spermatozoïdes décapacités.</p>
+<p class="para"><b>3)</b></p>
+<table>
+<tr><th>Analyse</th><th>Déduction</th></tr>
+<tr><td><b>Exp 1</b> :<br>Mise en contact des spermatozoïdes d'une souris fertile avec des protéines extraites de la zone pellucide d'ovocytes II entraine l'apparition de la radioactivité au niveau de la tête des Spermatozoïdes.</td><td>Le spermatozoïde possède sur sa tête des antigènes membranaires qui se fixent sur les récepteurs protéiques de la zone pellucide.</td></tr>
+<tr><td><b>Exp 2</b> :<br>Mise en contact des spermatozoïdes marqués de la première expérience en présence d'ovocytes II matures de souris fertile, il n'y a pas fécondation.</td><td>Le spz qui ont été déjà en contact avec les molécules de la zone pellucide de l'ovocyte II, perdent leur pouvoir fécondant, et deviennent incapables de féconder d'autres ovocyte II</td></tr>
+<tr><td><b>Exp 3</b> :<!-- page 06 --><br>Mise en contact des spermatozoïdes non marqués en présence d'ovocytes II mature de souris fertile, il y fécondation.</td><td>Ces spz sont reconnus par les récepteurs à la surface externe de la zone pellucide, c'est pourquoi il y'a fécondation.<br><b>Explication :</b><br>La fécondation nécessite la <b>reconnaissance</b> des spz de M.X par l'ovocyte II de Mme X Cette reconnaissance se fait entre les antigènes membranaires de nature <b>glycoprotéique de la membrane du Spz</b> et les <b>récepteurs spécifiques de la zone pellucide.</b><br>Mais cette reconnaissance ne se fait que si les <b>Spz sont capacités</b> à nouveau, c'est-à-dire ont retrouvé leur pouvoir fécondant grâce au contact avec la glaire cervicale filante.<br>Donc la stérilité du couple est due au fait qu'il n'y a pas capacitation des spz de M.X dans les voies génitales de la femme.</td></tr>
+</table>
+<p class="para"><b>4)</b> La <b>FIVETE</b> est la solution idéale pour ce couple car la capacitation des spz est une étape indispensable pour assurer une fécondation. Mais cette étape n'est pas possible dans les voies génitales de la femme, alors on remédie par la FIVETE.</p>
+<p class="para"><b>B ]</b></p>
+<p class="para"><b>1)</b></p>
+<table>
+<tr><th>Analyse</th><th>Déductions</th></tr>
+<tr><td><b>Exp 1</b> :<br>La lésion de certaines zones de l'hypothalamus d'une guenon pubère provoque l'arrêt du cycle utérin et ovarien</td><td>L'hypothalamus, en contrôlant l'hypophyse, contrôle le cycle sexuel</td></tr>
+<tr><td><b>Exp 2</b> :<br>la perfusion <b>en continue</b> de GnRH à la même femelle ne rétablit pas les cycles ovarien et utérin</td><td rowspan="2">L'hypothalamus contrôle les cycles sexuel grâce à la GnRH qui agit sur l'hypophyse d'une <b>façon discontinue pulsatile</b></td></tr>
+<tr><td><b>Exp 3</b> :<br>la perfusion <b>pulsatile</b> GnRH entraine la reprise des cycles.</td></tr>
+<tr><td><b>Exp 4</b> :<br>L'injection de l''analogue structurale et non fonctionnel de GnRH à une femelle normale provoque l'arrêt du cycle ovarien et utérin</td><td>Cet analogue structural de GnRH inhibe l'action de GnRH.<br>L'inhibition de l'action de GnRH au niveau de l'hypophyse provoque l'inactivation de l'hypophyse d'où il n'y a plus production d'hormones hypophysaires durant le traitement. Ainsi, seules les hormones injectées (FSH LH ) seront fonctionnelles et on peut contrôler la production des ovocytes et cycle utérin.</td></tr>
+</table>
+<p class="para"><b>2)</b></p>
+<!-- page 07 -->
+<table>
+<tr><th>Analyse</th><th>Déduction</th></tr>
+<tr><td>- A J15 taux œstradiol 12 pg/mL avec 10 follicules de faible diamètre début injection FSH<br>- De J15 au J21 le diamètre des follicules augmente pour atteindre 20 mm donc deviennent matures, le nombre des follicules est de 10 et le taux d'œstradiol passe de 12pg/mL pour atteindre 1944pg/mL</td><td>Du J15 au J26 la FSH injectée assure la croissance folliculaire et stimule la production d'œstradiol par ces follicules.</td></tr>
+<tr><td>L'injection d'une dose unique de l'analogue LH le J26 suite à l'action de FSH (équivalent au pic de LH)</td><td>Cette injection entraine la reprise de la méiose des ovocytes I pour donner des ovocytes II en métaphase II ce qui permet la ponction de ces ovocytes II le jour 28.</td></tr>
+<tr><td>L'injection de l'analogue de GnRH durant 26 jours arrête l'hypophyse durant cette période.</td><td>Cette action empêche le RC(-) ce qui empêche l'atrésie folliculaire. Il empêche aussi le RC(+) entrainé par le taux élevé d'œstradiol ce qui peut provoquer l'ovulation avant la date voulue par le médecin.</td></tr>
+<tr><td colspan="2">L'injection de progestérone a pour effet :<br>- un RC(-) sur l'axe hypothalamo-hypophysaire<br>- stimuler la transformation de la muqueuse utérine en dentelle utérine prête pour la nidation.<br>Toutes ces conclusions expliquent la chronologie de l'usage de ces hormones.</td></tr>
+</table>
+<p class="para">3) Lorsque la grossesse est confirmée la progestérone n'est plus donnée par le gynécologue : en effet</p>
+<p class="para">Le follicule rompu se transforme en corps jaune qui produit de la progestérone. De plus le trophoblaste du blastocyste produit la HCG qui maintient le corps jaune fonctionnel jusqu'à la 11<sup>ème</sup> de grossesse. Puis, c'est placenta formé qui va produire les doses croissantes de progestérone et d'œstradiol pour la suite de grossesse.</p>
+<!-- CROP: 3952 13 7 0.15 0.548 0.865 0.828 3952_p13_07_ex3_schema_grossesse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3952/3952_p13_07_ex3_schema_grossesse.png" alt=""></figure>
+<p class="para"><b>+ stimulation</b></p>
+<p class="para"><b>RC- Rétrocontôle négatif</b></p>
+
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · QCM-HOMME-2</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Source non indiquée">
+<meta data-pagefind-meta="n[content]" content="3979">
+<meta data-pagefind-meta="title[content]" content="QCM-HOMME-2">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · QCM-HOMME-2" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>QCM-HOMME-2</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">QCM</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1qInBxfPY40uUdxJpZDQ_7d-7fEIFfIfb/view">↗ QCM-HOMME-2.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1qInBxfPY40uUdxJpZDQ_7d-7fEIFfIfb/view">Karim Fourati · Bac 2KF25 › SVT / Mme Hend(LPM8) / Reproduction</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Reproduction chez l&#x27;homme</h2></div>
+<div class="exh"><span class="idx ex">Série</span><h2>QCM-HOMME-2</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/3979.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">QCM</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1qInBxfPY40uUdxJpZDQ_7d-7fEIFfIfb/view">↗ QCM-HOMME-2.pdf</a></div>
+<!-- NOTE: handwritten marks on the printed pages (ticks, question numbers 7), 8), 9), 10) written in the margin, underlines, labels written around the figure) are left out -->
+<!-- page 01 -->
+<p class="consigne">Cochez la ou les bonne(s) réponse(s) :</p>
+<table>
+<tr><td>1. <b>la <u>GnRH</u> :</b><br>est une neurohormone<br>est aussi appelée gonadolibérine<br>stimule l'activité testiculaire<br>stimule la production des cellules de leydig</td>
+<td>2. <b>l'ABP :</b><br>est une hormone<br>est sécrétée par les cellules de Leydig qui se sont fixées aux cellules de Sertoli<br>lie la testostérone<br>exerce un RC(-) sur l'hypophyse</td></tr>
+<tr><td>3. <b>l'epididyme :</b><br>est le lieu de production de la spermine<br>est le lieu où murissent les spermatozoïdes<br>est le lieu où se renouvellent les spermatozoïdes<br>est un conduit génital</td>
+<td>4. <b>les caractères sexuels secondaires chez le male :</b><br>Apparaissent  à la naissance<br>sont maintenus grâce à la testostérone<br>sont maintenus grâce à l'inhibine<br>peuvent être restaurés après castration grâce aux gonadostimulines</td></tr>
+<tr><td>5. <b>les cellules qui possèdent des récepteurs spécifiques pour l'hormone lutéinisante LH :</b><br>les cellules de sertoli<br>les cellules de Leydig<br>les cellules de la lignée germinale l<br>les cellules hypothalamiques</td>
+<td>6. <b>les cellules hypophysaires présentent des récepteurs spécifiques à :</b><br>la LH<br>la testostérone<br>la FSH<br>l'inhibine</td></tr>
+</table>
+<!-- PROOFREAD: 3979 part1 p01 — "question numbers 1, 3, 5 partly faded at the left edge; 'la GnRH' underlined on the page (printed or by hand unclear)" -->
+<p class="para"><b>L'ABP, est une protéine</b><br>indispensable à l'action de la testostérone sur les germinales cellules.<br>qui exerce un rétrocontrôle négatif sur la LH.<br>qui stimule directement la spermatogenèse<br>qui n'a aucune action sur la spermatogenàse</p>
+<p class="para"><b>Les schémas du document suivant représentent des étapes de la spermatogenèse.<br>Les phénomènes figurés se déroulent dans l'ordre :</b></p>
+<p class="para">ABC<br>CBA<br>BCA<br>ACB</p>
+<!-- CROP: 3979 1 1 0.44 0.462 0.8 0.565 3979_etapes_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3979/3979_etapes_spermatogenese.png" alt=""></figure>
+<p class="para"><b>Parmi les effets biologiques suivants, ceux de la testostérone sont :</b><br>la stimulation de la spermatogenèse<br>la modification de la voix<br>le développement de la musculature<br>l'augmentation de la température corporelle</p>
+<p class="para"><b>Les caractères cytologiques du spermatozoïde qui lui permettent d'assurer la fécondation :</b><br>l'existence de mitochondries<br>sa forme hydrodynamique<br>son cytoplasme riche en réserves nutritives<br>la présence d'un acrosome dans la tête</p>
+<p class="para"><b>Le gamète mâle de l'espèce humaine est une cellule qui</b><br>a 23 chromosomes à une chromatide chacun.<br>a 23 chromosomes deux chromatides chacun.<br>a achevé sa méiose.<br>est mobile.</p>
+<!-- page 02 -->
+<p class="consigne">A- Pour chacune des questions suivantes, relevez la ou les réponses exactes :</p>
+<p class="para">- Parmi les cellules du testicule, repérez celles qui sont haploïdes :<br>les spermatogonies<br>les spermatocytes I<br>les spermatocytes II<br>les cellules de Sertoli</p>
+<!-- PROOFREAD: 3979 part1 p02 — "number of the first question faded (only '-' visible)" -->
+<p class="para">2- Au terme du stade de différenciation, le nombre de spermatozoïdes obtenu est :<br>le double de celui des spermatocytes II<br>la moitié de celui des spermatocytes I<br>égal à celui des spermatocytes I<br>la moitié de celui des spermatides</p>
+<p class="para">3- Le noyau des spermatozoïdes contient obligatoirement :<br>n chromosomes<br>2n chromosomes<br>22 autosomes + Y<br>22 autosomes + X</p>
+<!-- PROOFREAD: 3979 part1 p02 — "'22 autosomes + Y': the word is overwritten by hand, printed text unclear" -->
+<p class="para">4- Les spermatozoïdes acquièrent leur mobilité au niveau :<br>des vésicules séminales<br>de l'épididyme<br>des tubes séminifères<br>de la vessie</p>
+<p class="para">5- Le stockage des spermatozoïdes se fait dans :<br>les vésicules séminales<br>l'épididyme<br>la prostate<br>les tubes séminifères</p>
+<p class="para">6- La LH est une hormone :<br>produite par l'hypothalamus<br>produite par l'antéhypophyse<br>stimule à elle seule la sécrétion de la testostérone<br>stimule directement la spermatogenèse</p>
+<!-- PROOFREAD: 3979 part1 p02 — "4th proposition of question 6 is handwritten ('stimule directement la spermatogenèse'), kept as written into the blank" -->
+<p class="para">7- L'inhibine :<br>est une neurohormone<br>est produite par les tubes séminifères<br>produite par les cellules de Leydig<br>agit par feed-back sur l'hypophyse</p>
+<p class="para">8- Chez l'homme, la spermatogenèse est stimulée directement par :<br>la LH<br>la FSH<br>la testostérone<br>la GnRH.</p>
+<p class="para"><b>La cryptorchidie (les testicules ne descendent pas dans les bourses) a pour conséquence :</b><br>des concentrations plasmatiques de testostérone très basses ou nulles.<br>la stérilité.<br>l'incapacité de produire du liquide séminal par les glandes annexes.<br>une atrophie des tubes séminifères.</p>
+<p class="para"><b>La testostérone est sécrétée par :</b><br>les tubes séminifères<br>les cellules interstitielles (cellules de leydig)<br>les cellules de Sertoli<br>par les spermatozoïdes</p>
+<!-- page 03 -->
+<p class="consigne">POUR CHACUN DES ITEMS SUIVANTS, IL Y A UNE OU PLUSIEURS AFFIRMATIONS EXACTES<br>COCHEZ LES CASES QUI CORRESPONDENT AUX AFFIRMATIONS EXACTES.</p>
+<!-- PROOFREAD: 3979 part1 p03 — "first header line cut at the top edge; 'COCHEZ' overwritten by hand" -->
+<p class="para">1) <b>La spermatogenèse</b><br>correspond à la formation des spermatozoïdes. ..........<br>est la transformation d'une spermatide en un spermatozoïde. ..........<br>nécessite la FSH uniquement. ..........<br>se déroule de façon continue à partir de la puberté. ..........<br>nécessite l'action directe de Gn-RH ..........</p>
+<p class="para">2) <b>Le spermatozoïde :</b><br>est une cellule sexuelle haploïde. ..........<br>est un gamète mâle destinée à féconder le gamète femelle ..........<br>contient un cytoplasme riche en organites cellulaires. ..........<br>est une cellule à n chromosomes entiers. ..........</p>
+<p class="para">3) <b>La testostérone :</b><br>est une hormone produite par les tubes séminifères. ..........<br>exerce un rétrocontrôle négatif. ..........<br>est une hormone de nature protéique. ..........<br>à faible taux, favorise la sécrétion de LH par la levée du rétrocontrôle négatif. ..........<br>à forte dose, stimule la fréquence des pulses de Gn-RH. ..........<br>est secrétée par pulses en suivant ceux de Gn-RH. ..........<br>est une hormone de nature lipidique ..........</p>
+<p class="para">4) <b>Les gonadostimulines :</b><br>sont deux hormones produites par les gonades. ..........<br>sont sécrétées de façon pulsatile. ..........<br>sont deux glycoprotéines : FSH et LH. ..........<br>sont responsables directement du développement des CSS. ..........<br>sont d'origine hypophysaire ..........<br>sont sécrétées dans la tige pituitaire ..........</p>
+<p class="para">5) <b>La Gn-RH :</b><br>est une hormone produite par certains neurones hypothalamiques. ..........<br>est conduite jusqu'aux cellules de l'antéhypophyse par voie nerveuse. ..........<br>stimule directement la sécrétion de l'hormone testiculaire. ..........<br>est déversée dans le sang sous forme de pulses. ..........</p>
+<p class="para">6) <b>Les caractères sexuels primaires chez le mâle</b> :<br>sont relatifs à l'appareil génital. ..........<br>sont différenciés à la naissance. ..........<br>sont matures à la naissance. ..........<br>se développent pendant la puberté. ..........<br>subissent une atrophie après castration ..........<br>subissent une atrophie après irradiation des tubes séminifères. ..........</p>
+<p class="para">7) <b>Les caractères sexuels secondaires chez le mâle</b> :<br>sont maintenus toute la vie même après castration. ..........<br>apparaissent à la naissance. ..........<br>se développent pendant la période pubertaire. ..........<br>sont maintenus grâce à la testostérone. ..........<br>peuvent être restaurés après castration grâce aux gonadostimuli<br>subissent une régression après hypophysectomie. ..........<br>subissent une régression après une castration. ..........<br>ne régressent pas après lésion de l'hypothalamus ..........</p>
+<p class="para">8) <b>La LH est une hormone :</b><br>d'origine hypothalamique ..........<br>stimulant la sécrétion de testostérone par les cellules de Leydig.<br>stimulant la sécrétion d'inhibine par les cellules de Sertoli. ..........<br>produite par l'adénohypophyse (ou antéhypophyse) ..........<br>d'origine hypophysaire ..........<br>d'origine testiculaire ..........</p>
+<p class="para">9) <b>La FSH :</b><br>est une hormone ..........<br>est une neurohormone. ..........<br>stimule le développement des cellules de Leydig ..........<br>stimule le développement des cellules de Sertoli. ..........<br>stimule la spermiogenèse ..........<br>stimule la phase de multiplication des spermatogonies ..........</p>
+<p class="para">10) <b>Le rétrocontrôle négatif du testicule se traduit par :</b><br>une baisse de sécrétion de testostérone ..........<br>une baisse de sécrétion de LH uniquement ..........<br>une baisse de sécrétion de gonadostimulines et de Gn-RH ..........<br>une augmentation de sécrétion de LH et de FSH ..........<br>une baisse de l'activité sécrétoire du complexe hypothalamo-hy<br>une hypertrophie de l'hypophyse ..........</p>
+<p class="para"><b>L'inhibine est une hormone qui :</b><br>est sécrétée par les cellules de Sertoli<br>est sécrétée par les cellules de Leydig<br>exerce un rétrocontrôle négatif sur la sécrétion de LH<br>exerce un rétrocontrôle négatif sur la sécrétion de FSH</p>
+<p class="para">12) <b>La greffe d'un fragment de testicule sous la peau d'un mâle castré :</b><br>corrige sa stérilité<br>restaure ses caractères sexuels secondaires<br>provoque la baisse des sécrétions hypophysaires de FSH et de LH<br>provoque les mêmes effets que les injections d'extraits testiculaire</p>
+<!-- PROOFREAD: 3979 part1 p03 — "faint/partly hidden printed numbers 1)–4), 8)–10); 'Le rétrocontrôle' and 'L'inhibine' first letters hidden by handwriting; the number 11) is handwritten; handwritten 'doubles' (over 'entiers') and 'conséquence direct' (on a dotted line) left out; 'gonadostimuli' and 'hypothalamo-hy' cut at the right edge" -->
+
+</section>
+
+</div>
+</body>
+</html>

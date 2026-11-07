@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · QCM-Bac-Sciences-Bac-Org</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="BAC.org.tn">
+<meta data-pagefind-meta="n[content]" content="3954">
+<meta data-pagefind-meta="title[content]" content="QCM-Bac-Sciences-Bac-Org">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="chapter[content]" content="Génétique humaine">
+<meta data-pagefind-filter="chapter[content]" content="Évolution biologique">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Muscle squelettique (contraction)">
+<meta data-pagefind-filter="chapter[content]" content="Régulation de la pression artérielle">
+<meta data-pagefind-filter="chapter[content]" content="Immunité">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · QCM-Bac-Sciences-Bac-Org" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>QCM-Bac-Sciences-Bac-Org</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">www.BAC.org.tn · Tél : 28.355.106</span> <span class="tg">Sujet BAC</span><span class="tg">QCM</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1opMOzHaaoj0djCJtLZKhGNeZLbclUVp9/view">↗ QCM-Bac-Sciences-Bac-Org.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1opMOzHaaoj0djCJtLZKhGNeZLbclUVp9/view">Asu bac math pilote · Asu Bac 2025 pilote › Mhmd JMIL BAC 2024 / SVT / Qcm imprt</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+<!-- SOURCE: www.BAC.org.tn · Tél : 28.355.106 -->
+<div class="exh"><span class="idx ex">Série</span><h2>QCM-Bac-Sciences-Bac-Org</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/3954.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">www.BAC.org.tn · Tél : 28.355.106</span> <span class="tg">Sujet BAC</span><span class="tg">QCM</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1opMOzHaaoj0djCJtLZKhGNeZLbclUVp9/view">↗ QCM-Bac-Sciences-Bac-Org.pdf</a></div>
+<!-- page 01 -->
+<p class="subhead t-red"><i>Sommaire</i></p>
+<table>
+<tr><th></th><th colspan="2">Pages</th></tr>
+<tr><td><b>Avant-propos</b></td><td colspan="2"><b>4</b></td></tr>
+<tr><th>Thèmes du programme</th><th>Enoncés des QCM</th><th>Corrigés des QCM</th></tr>
+<tr><td><b>Thème 1 : Reproduction humaine et santé</b></td><td><b>6</b></td><td><b>83</b></td></tr>
+<tr><td><b>Thème 2 : Génétique humaine</b></td><td><b>22</b></td><td><b>85</b></td></tr>
+<tr><td><b>Thème 3 : Évolution biologique</b></td><td><b>38</b></td><td><b>87</b></td></tr>
+<tr><td><b>Thème 4 : Neurophysiologie</b></td><td><b>42</b></td><td><b>88</b></td></tr>
+<tr><td><b>Thème 5 : Immunité de l'organisme</b></td><td><b>69</b></td><td><b>92</b></td></tr>
+</table>
+<!-- page 02 -->
+<p class="subhead t-red"><b><i>ÉNONCÉS des Q.C.M</i></b></p>
+<!-- page 03 -->
+<p class="subhead t-red"><b><i>Thème1 : Reproduction Humaine et santé</i></b></p>
+<p class="consigne">Pour chacun des items suivants ; il peut y avoir une ou deux réponse(s) exacte(s).Indiquez dans chaque cas la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).<br><b>NB :</b> Toute réponse fausse annule la note attribuée l’item.</p>
+<p class="para"><b>1) Parmi les cellules suivantes, celles qui sont haploïdes sont :</b><br>a) les spermatogonies<br>b) les spermatocytes I<br>c) les spermatocytes II<br>d) les spermatozoïdes</p>
+<p class="para"><b>2) Chez l'homme, le spermatocyte II est issu de :</b><br>a) la multiplication d'une spermatogonie<br>b) l'accroissement d'une spermatogonie<br>c) la division réductionnelle de la méiose<br>d) la division équationnelle de la méiose</p>
+<p class="para"><b>3) À la fin de la gamétogenèse masculine, le nombre de spermatozoïdes est :</b><br>a) le double du nombre des spermatocytes I<br>b) la moitié du nombre des spermatocytes I<br>c) égal au nombre des spermatocytes I<br>d) quatre fois le nombre des spermatocytes I</p>
+<p class="para"><b>4) Les spermatozoïdes humains :</b><br>a) ont 23 chromosomes<br>b) ont tous un chromosome X et un chromosome Y<br>c) ont tous un chromosome X<br>d) ont tous un chromosome Y</p>
+<p class="para"><b>5) Les spermatozoïdes acquièrent leur maturité dans :</b><br>a) les tubes séminifères<br>b) l'épididyme<br>c) les vésicules séminales<br>d) la prostate</p>
+<!-- page 04 -->
+<p class="para"><b>6) Dans les testicules, les cellules interstitielles ont pour rôle :</b><br>a) la sécrétion de LH<br>b) la nutrition des spermatozoïdes<br>c) la production des spermatozoïdes<br>d) la sécrétion de testostérone</p>
+<p class="para"><b>7) La testostérone est sécrétée par :</b><br>a) les cellules de Sertoli<br>b) les cellules de Leydig<br>c) les cellules germinales<br>d) les cellules hypophysaires</p>
+<p class="para"><b>8) Chez l’homme, la spermatogenèse est stimulée directement par:</b><br>a) la LH<br>b) la FSH<br>c) la testostérone associée à l’APB (protéine de liaison)<br>d) l’inhibine</p>
+<p class="para"><b>9) La capacitation des spermatozoïdes :</b><br>a) nécessite leur passage par la glaire cervicale<br>b) est  indispensable pour déclencher la réaction acrosomique et corticale<br>c) est la lente élimination du facteur de décapacitation<br>d) est la perte progressive de l'acrosome</p>
+<p class="para"><b>10) L'inhibine est une hormone secrétée par les cellules :</b><br>a) interstitielles du testicule<br>b) hypophysaires<br>c) de Sertoli situées dans les tubes séminifères<br>d) hypothalamiques</p>
+<p class="para"><b>11) les cellules interstitielles ou cellules de Leydig :</b><br>a) sont stimulées par la LH<br>b) sont stimulées par la FSH<br>c) sécrètent l’inhibine<br>d) sécrètent la testostérone</p>
+<!-- page 05 -->
+<p class="para"><b>12) Un faible taux sanguin de testostérone :</b><br>a) inhibe la sécrétion de LH<br>b) stimule la sécrétion de LH<br>c) inhibe la sécrétion de FSH<br>d) provoque une levée d'inhibition sur l'axe hypothalamo-hypophysaire</p>
+<p class="para"><b>13) Chez un animal dont la physiologie de la reproduction est comparable à celle de l’Homme, la castration du mâle entraîne :</b><br>a) une augmentation du taux de LH et une diminution de celui de FSH<br>b) une diminution du taux de LH et une augmentation de celui de FSH<br>c) une diminution du taux  de LH et de celui de FSH<br>d) une augmentation du taux de LH et de celui de  FSH</p>
+<p class="para"><b>14) Un faible taux sanguin de testostérone:</b><br>a) inhibe la sécrétion de LH<br>b) stimule la sécrétion de LH<br>c) inhibe la sécrétion de FSH<br>d) stimule la sécrétion de FSH</p>
+<p class="para"><b>15) La neurohormone GnRH (GnRF) ou gonadolibérine :</b><br>a) est secrétée par les neurones hypothalamiques situés au contact des cellules libératrices de LH et FSH<br>b) est indirectement nécessaire à la sécrétion de la testostérone<br>c) a sa fréquence d'émission pulsatile augmentée par une faible dose de testostérone<br>d) a des récepteurs dans les cellules post-hypophysaires</p>
+<p class="para"><b>16) La fertilité nécessite :</b><br>a) seulement la testostérone et l’APB<br>b) la GnRH, la FSH, la LH, la testostérone et l’APB<br>c) des testicules même greffés loin de leur place habituelle<br>d) seulement la LH et la FSH</p>
+<!-- page 06 -->
+<p class="para"><b>17) La folliculogenèse est :</b><br>a) la transformation d’une ovogonie en un ovocyte II<br>b) l’évolution d’un follicule primordial en follicule mûr<br>c) la transformation d’un follicule mûr en corps jaune<br>d) un processus qui englobe la formation des follicules, l’ovulation et l’évolution du corps jaune</p>
+<p class="para"><b>18) La croissance d’un follicule ovarien est contrôlée par :</b><br>a) la LH<br>b) la FSH<br>c) les oestrogènes<br>d) la progestérone</p>
+<p class="para"><b>19) L’apparition du deuxième globule polaire au cours de l’ovogenèse indique :</b><br>a) l’évolution de l’ovocyte I en ovocyte II<br>b) l’achèvement de la division réductionnelle et le début de la division équationnelle<br>c) une fécondation<br>d) l’achèvement de la division équationnelle</p>
+<p class="para"><b>20) L’ovocyte II libéré lors de l’ovulation est une cellule :</b><br>a) haploïde<br>b) diploïde<br>c) qui résulte d’une division équationnelle de la méiose<br>d) qui résulte d’une  division réductionnelle de la méiose</p>
+<p class="para"><b>21) Un ovocyte II :</b><br>a) est diploïde<br>b) est haploïde<br>c) possède deux chromosomes X<br>d) donnera un ovotide qui peut avoir le même caryotype qu’un spermatozoïde</p>
+<p class="para"><b>22) Chez la femme l’ovulation :</b><br>a) est la rupture du follicule mûr et l’expulsion de l’ovocyte II<br>b) est déclenchée suite à une chute du taux de LH<br>c) se produit en général, 14 jours avant l’apparition des menstruations<br>d) se produit toujours au milieu du cycle ovarien</p>
+<!-- page 07 -->
+<!-- PROOFREAD: 3954 part1 p07 — "23) L’ovulation :" top line partly cut by the page edge -->
+<p class="para"><b>23) L’ovulation :</b><br>a) est déterminée par un pic d’oestradiol<br>b) est déclenchée par un pic de LH<br>c) est provoquée par la FSH<br>d) aboutit à l’achèvement de la méiose</p>
+<p class="para"><b>24) Pendant la phase lutéale du cycle ovarien, il se produit :</b><br>a) un développement du follicule mûr<br>b) la formation du corps jaune<br>c) une sécrétion importante de progestérone<br>d) une sécrétion importante de FSH</p>
+<p class="para"><b>25) L’ovulation peut avoir lieu statistiquement chez une femme adulte ayant un cycle de 28 j et une menstruation de 5 j:</b><br>a) en comptant 9 jours à partir du premier jour des menstruations<br>b) en comptant 9 jours à partir du cinquième  jour des menstruations<br>c) en comptant 12 jours à partir du premier jour des menstruations<br>d) en comptant 16 jours à partir du cinquième jour des menstruations</p>
+<p class="para"><b>26) Suite à l’ovulation on observe dans l’oviducte d’une femme :</b><br>a) un follicule mûr<br>b) un corps jaune<br>c) un ovocyte I<br>d) un ovocyte II</p>
+<p class="para"><b>27) Le gamète mâle et le gamète femelle sont :</b><br>a) de même taille<br>b) produits d’une façon continue depuis la  puberté<br>c) haploïdes<br>d) mobiles</p>
+<p class="para"><b>28) Le gamète femelle (ovocyte II) est une cellule :</b><br>a) haploïde<br>b) immobilisé par les cils de la trompe<br>c) diploïde<br>d) mobile</p>
+<!-- page 08 -->
+<p class="para"><b>29) Le document ci-dessous  correspond à:</b><br>a) une cellule en anaphase II<br>b) une cellule diploïde en mitose<br>c) une cellule diploïde en anaphase I<br>d) une cellule diploïde (ovocyte I) montrant un brassage inter chromosomique</p>
+<!-- CROP: 3954 1 8 0.315 0.150 0.645 0.336 3954_p08_q29 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p08_q29.png" alt=""></figure>
+<p class="para"><b>30) Le document ci-dessous représente une division cellulaire au cours de la gamétogenèse, il correspond à :</b><br>a) un spermatocyte II<br>b) un ovocyte I en anaphase I<br>c) un ovocyte II<br>d) un spermatocyte I en anaphase I</p>
+<!-- CROP: 3954 1 8 0.330 0.512 0.585 0.762 3954_p08_q30 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p08_q30.png" alt=""></figure>
+<p class="para"><b>31) La durée  moyenne de survie des gamètes dans les voies génitales de la femme est de :</b><br>a) un jour pour l'ovocyte II<br>b) deux jours pour l'ovocyte II<br>c)  trois jours pour les spermatozoïdes<br>d) six jours pour les spermatozoïdes</p>
+<!-- page 09 -->
+<p class="para"><b>32) Les oestrogènes :</b><br>a) sont responsables de la formation de la dentelle utérine<br>b) activent la motricité du myomètre<br>c) agissent sur l’hypophyse antérieure<br>d) provoque les menstruations</p>
+<p class="para"><b>33) Les oestrogènes :</b><br>a) à faibles doses, stimulent la sécrétion de FSH<br>b) à fortes doses, augmentent la fréquence des pulses de GnRH<br>c) à fortes doses, stimulent la sécrétion des gonadostimulines<br>d) associées à une forte dose de progestérone, stimulent la sécrétion de FSH et LH</p>
+<p class="para"><b>34) Les oestrogènes :</b><br>a) à faible dose, inhibent la sécrétion des gonadostimulines<br>b) à faible dose, augmentent la fréquence des pulses de Gn RH<br>c) à forte dose, déclenchent la décharge de LH<br>d) à forte dose, diminuent la fréquence des pulses de GnRH</p>
+<p class="para"><b>35) La progestérone :</b><br>a) est sécrétée par le corps jaune et le placenta<br>b) à forte dose, inhibe la sécrétion de gonadostimulines<br>c) à forte dose, stimule la sécrétion de la GnRH<br>d) stimule la contractilité du myomètre</p>
+<p class="para"><b>36) La progestérone :</b><br>a)favorise la sécrétion des hormones hypophysaires<br>b) à forte dose stimule la sécrétion de gonadostimulines<br>c) favorise la formation de la dentelle utérine<br>d) inhibe la contractilité du myomètre</p>
+<p class="para"><b>37) Les hormones ovariennes ont pour cellules cibles :</b><br>a) les cellules du myomètre<br>b) les cellules de l’endomètre<br>c) les cellules du corps jaune<br>d) les cellules des follicules</p>
+<!-- page 10 -->
+<!-- PROOFREAD: 3954 part1 p10 — "38) Chez la femme, l’ovulation se produit suite à une :" top line partly cut by the page edge -->
+<p class="para"><b>38) Chez la femme, l’ovulation se produit suite à une :</b><br>a) élévation importante du taux plasmatique d’œstradiol suivie d’un pic de LH<br>b) diminution du taux plasmatique des hormones ovariennes<br>c) forte augmentation du taux plasmatique de FSH et de LH<br>d) baisse du taux plasmatique de FSH</p>
+<p class="para"><b>39) Les gonadotrophines (FSH et LH) assurent :</b><br>a) un contrôle direct du cycle ovarien<br>b) un contrôle direct du cycle utérin<br>c) une inhibition de la sécrétion des hormones ovariennes<br>d) une stimulation de la sécrétion de la neurohormone hypothalamique (GnRH).</p>
+<p class="para"><b>40) Les graphes 1, 2, 3 indiquent l'évolution de la concentration plasmatique hormonale au cours d'un cycle normal d'une femme :</b><br>a) le graphe 2 correspond à l'œstradiol<br>b) le graphe 1 correspond à la LH<br>c) le graphe 3 correspond à la progestérone<br>d) le graphe 3 correspond à la HCG</p>
+<!-- CROP: 3954 1 10 0.265 0.530 0.715 0.865 3954_p10_q40 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p10_q40.png" alt=""></figure>
+<!-- page 11 -->
+<!-- PROOFREAD: 3954 part1 p11 — "41) La hiérarchie normale de la sécrétion des hormones sexuelles" top line partly cut by the page edge -->
+<p class="para"><b>41) La hiérarchie normale de la sécrétion des hormones sexuelles féminines est :</b><br>a) les gonadostimulines → les hormones ovariennes → la GnRH hypothalamique<br>b) les hormones ovariennes → les gonadostimulines → la GnRH hypothalamique<br>c) la GnRH hypothalamique → les gonadostimulines → les hormones ovariennes<br>d) les hormones ovariennes → la GnRH hypothalamique → les gonadostimulines</p>
+<p class="para"><b>42) Le complexe hypothalamo-hypophysaire :</b><br>a) agit  uniquement sur les gonades femelles<br>b) règle de façon cyclique la sécrétion des hormones sexuelles<br>c) est influencé uniquement par des stimuli externes<br>d) contient des récepteurs à l'inhibine, la testostérone, l’œstradiol et la progestérone</p>
+<p class="para"><b>43) La menstruation :</b><br>a) est une destruction totale de l’endomètre<br>b) est déterminée par la dégénérescence du corps jaune<br>c) est déterminée par la chute simultanée des taux d’oestrogènes et de progestérone<br>d) est provoquée par une hypersécrétion de gonadostimulines</p>
+<p class="para"><b>44) La menstruation :</b><br>a) est une destruction totale de la muqueuse utérine<br>b) est déterminée par une chute des hormones ovariennes<br>c) fait suite à une élévation des hormones hypophysaires<br>d) est déclenchée par la rupture d’un follicule mûr</p>
+<p class="para"><b>45) La menstruation :</b><br>a) résulte d’une chute du taux des hormones ovariennes<br>b) résulte d’une élévation du taux des gonadostimulines<br>c) est déterminée par la rupture d’un follicule mûr<br>d) est une destruction partielle de l’endomètre</p>
+<!-- page 12 -->
+<p class="para"><b>46) La menstruation est la conséquence de :</b><br>a) la fécondation<br>b) l’ovulation<br>c) la chute des hormones ovariennes<br>d) l’augmentation du taux des hormones ovariennes</p>
+<p class="para"><b>47) La menstruation est déclenchée par :</b><br>a) une décharge de LH<br>b) une chute du taux de FSH<br>c) une élévation du taux des oestrogènes et de la progestérone<br>d) une chute du taux des oestrogènes et de la progestérone</p>
+<p class="para"><b>48) L’utérus de la femme est le lieu de :</b><br>a) la fécondation<br>b) la menstruation<br>c) l’ovulation<br>d) la nidation</p>
+<p class="para"><b>49) La glaire cervicale :</b><br>a) est dense à maillage serré, infranchissable en dehors de la période  de l'ovulation<br>b) est filante à maillage lâche, franchissable pendant la période de l'ovulation<br>c) masque les spermatozoïdes par un facteur de décapacitation<br>d) est à l’origine des menstruations</p>
+<p class="para"><b>50) La traversée de la zone pellucide par le spermatozoïde est due à l’action d’enzymes libérées par</b> :<br>a) l’ovocyte<br>b) les spermatozoïdes<br>c) les granules corticaux<br>d) l’acrosome</p>
+<p class="para"><b>51) La pénétration d’un spermatozoïde dans l’ovocyte II déclenche</b> :<br>a) le réveil physiologique de l’ovocyte II<br>b) l’expulsion du 1<sup>er</sup> globule polaire<br>c) l’expulsion du 1<sup>er</sup> et du 2<sup>ème</sup> globule polaire<br>d) la réaction corticale</p>
+<!-- page 13 -->
+<p class="para"><b>52) La pénétration d’un spermatozoïde dans l’ovocyte II déclenche :</b><br>a) la reprise des réactions physiologiques dans l’ovocyte II<br>b) la réaction acrosomique<br>c) l’expulsion du 2<sup>ème</sup> globule polaire<br>d) la fixation d’autres spermatozoïdes sur les récepteurs de la zone pellucide</p>
+<p class="para"><b>53) Une fois le spermatozoïde est dans l’ovocyte II il y aura :</b><br>a) dégranulation –  expulsion du 2<sup>ème</sup>GP – activation métabolique – 1<sup>ère</sup> mitose du zygote<br>b) dégranulation – activation métabolique – expulsion du 2<sup>ème</sup>GP – 1<sup>ère</sup> mitose du zygote<br>c) dégranulation – 1<sup>ère</sup> mitose du zygote – expulsion du 2<sup>ème</sup>GP – activation métabolique<br>d) dégranulation – activation métabolique – reprise de la division équationnelle – 1<sup>ère</sup>  mitose du zygote</p>
+<p class="para"><b>54) Lors de La fécondation :</b><br>a) il y a réaction corticale puis acrosomique assurant la pénétration du spermatozoïde<br>b) la monospermie est due à la réaction corticale<br>c) la caryogamie rétablit la diploïdie<br>d) la division réductionnelle de la méiose commence</p>
+<p class="para"><b>55) En cas  de fécondation :</b><br>a) le corps jaune se maintient développé<br>b) le taux d’œstradiol et de progestérone diminue<br>c) le cycle ovarien s’arrête<br>d) la muqueuse utérine dégénère</p>
+<p class="para"><b>56) Au cours de la fécondation chez la femme, il se produit :</b><br>a) une reprise de la division réductionnelle de la méiose<br>b) une division du premier globule polaire<br>c) une émission du deuxième globule polaire<br>d) un rétablissement de la diploïdie</p>
+<!-- page 14 -->
+<!-- PROOFREAD: 3954 part1 p14 — "57) La fécondation nécessite :" top line partly cut by the page edge -->
+<p class="para"><b>57) La fécondation nécessite :</b><br>a) un volume de sperme normal<br>b) un sperme à pH acide<br>c) une numération de spermatozoïdes supérieur à 60 millions/ml<br>d) une glaire cervicale à maillage serrée</p>
+<p class="para"><b>58) Pour que la fécondation soit possible il faudra :</b><br>a) un rapport sexuel proche de la période ovulatoire<br>b) une glaire cervicale dense<br>c) des sécrétions vaginales acides<br>d) un taux inférieur à 40 % de spermatozoïdes anormaux</p>
+<p class="para"><b>59) La nidation :</b><br>a) est l’implantation de la cellule œuf dans l’endomètre<br>b) est suivie d’une sécrétion de HCG<br>c) est suivie d’un arrêt des menstruations<br>d) est suivie d’une augmentation de sécrétions des gonadostimulines.</p>
+<p class="para"><b>60) La nidation :</b><br>a) se produit immédiatement et automatiquement après la fécondation<br>b) engendre la régression du corps jaune<br>c)  déclenche la sécrétion de HCG<br>d) bloque l’activité hypothalamo-hypophysaire</p>
+<p class="para"><b>61) La nidation :</b><br>a) est l’implantation du blastocyste dans le myomètre<br>b) est suivie d’une sécrétion de HCG par le trophoblaste<br>c) est assurée par les enzymes du trophoblaste qui creusent l’endomètre<br>d) est la descente de l’œuf de la trompe vers l’utérus</p>
+<p class="para"><b>62) La nidation :</b><br>a) est suivie de l’établissement de liens entre l’embryon et sa mère<br>b) est suivie d’une formation de structures d’échanges fœtaux maternels<br>c) est suivie d’une protection totale du fœtus<br>d) est l’implantation de la morula au niveau de l’endomètre</p>
+<!-- page 15 -->
+<p class="para"><b>63) Le placenta :</b><br>a) est une glande qui empêche le passage des virus<br>b) est une glande qui sécrète HCG, œstrogènes et progestérone<br>c) est un organe au niveau duquel se mélangent le sang fœtal et le sang maternel<br>d) est un organe fœtal assurant les échanges fœto-maternels</p>
+<p class="para"><b>64) Le placenta :</b><br>a) est une glande endocrine<br>b) maintient le développement de l’endomètre<br>c) assure la protection du fœtus contre tous les microbes<br>d) est un organe où se mélangent le sang fœtal et le sang maternel pour assurer les échanges trophiques</p>
+<p class="para"><b>65) Le placenta assure :</b><br>a) l’acheminement des nutriments au fœtus<br>b) l’acheminement des déchets métaboliques de la mère au fœtus<br>c) la protection totale du fœtus<br>d) à lui seul, la production d’œstrogènes et de progestérone à partir du 11<sup>ème</sup> semaine de la grossesse</p>
+<p class="para"><b>66) Les œstrogènes et la progestérone sont sécrétés par :</b><br>a) le placenta<br>b) l’hypophyse<br>c) le corps jaune<br>d) le follicule mûr</p>
+<p class="para"><b>67) La HCG est une hormone sécrétée par</b> :<br>a) le trophoblaste<br>b) le placenta<br>c) le corps jaune<br>d) l’hypothalamus</p>
+<p class="para"><b>68) La HCG (L’hormone gonadotrophique chorionique) :</b><br>a) est sécrétée par le trophoblaste<br>b) est sécrétée par l’hypophyse<br>c) stimule le corps jaune<br>d) provoque la régression du corps jaune</p>
+<!-- page 16 -->
+<p class="para"><b>69) Le rétrocontrôle positif des ovaires sur le complexe Hypothalamo-hypophysaire a pour effet :</b><br>a) la folliculogenèse<br>b) l'ovulation<br>c) le développement de l'endomètre<br>d) la menstruation</p>
+<p class="para"><b>70) Le rétrocontrôle négatif (feed-back) sur l’hypophyse peut être exercé par :</b><br>a) un taux élevé d’œstrogènes<br>b) un taux faible de testostérone<br>c) un taux élevé d’inhibine<br>d) un taux élevé et combiné d’œstrogènes  et de progestérone</p>
+<p class="para"><b>71) Les cellules qui possèdent des récepteurs spécifiques pour l'hormone  LH sont :</b><br>a) les cellules de l'endomètre<br>b) les cellules interstitielles<br>c) les cellules de Sertoli<br>d) les cellules du corps jaune</p>
+<p class="para"><b>72) La pilule combinée :</b><br>a) inhibe le fonctionnement du complexe hypothalamo-hypophysaire<br>b) active les ovaires<br>c) inhibe la prolifération normale de l’endomètre<br>d) permet une interruption volontaire de la grossesse</p>
+<p class="para"><b>73) La pilule contraceptive combinée :</b><br>a) contient uniquement des oestrogènes<br>b) inhibe la sécrétion des gonadostimulines<br>c) provoque les menstruations<br>d) développe les follicules ovariens</p>
+<p class="para"><b>74) La pilule combinée provoque :</b><br>a) une hypersécrétion hypophysaire<br>b) une activation des ovaires<br>c) le blocage de l’ovulation<br>d) le déclenchement de la menstruation</p>
+<!-- page 17 -->
+<!-- PROOFREAD: 3954 part1 p17 — "75) La pilule combinée :" top line partly cut by the page edge -->
+<p class="para"><b>75) La pilule combinée :</b><br>a) provoque une inhibition de l’hypophyse<br>b) provoque une prolifération anormale de l’endomètre<br>c) empêche l’ovulation et les menstruations<br>d) entraîne une activation des ovaires</p>
+<p class="para"><b>76) La pilule combinée, prise régulièrement et sans arrêt :</b><br>a) inhibe la sécrétion des gonadotrophines<br>b) stimule la folliculogenèse<br>c) permet une prolifération permanente de l’endomètre<br>d) empêche la fécondation</p>
+<p class="para"><b>77) La stérilité masculine est due à :</b><br>a) des anomalies structurales des spermatozoïdes<br>b) un nombre élevé de spermatozoïdes<br>c) une absence totale de spermatozoïdes (azoospermie)<br>d) des troubles de l'érection</p>
+<p class="para"><b>78) On a recours à la procréation médicalement assistée (PMA) en cas :</b><br>a) d’immobilité spermatique<br>b) d’irrégularité de l'ovulation<br>c) d’une glaire cervicale imperméable aux spermatozoïdes<br>d) d’obstruction de l'une des trompes</p>
+<p class="para"><b>79) La fécondation in vitro :</b><br>a) assure la fusion des 2 gamètes hors de la trompe de Fallope<br>b) est une insémination artificielle<br>c) est suivie d’une réimplantation d’embryons dans l’utérus maternel<br>d) est réalisable après la ménopause</p>
+<p class="para"><b>80) La fécondation in vitro et le transfert d’embryon (FIVETE) est utilisée en cas  :</b><br>a) d’une irrégularité des cycles sexuels<br>b) d’une malformation des trompes de Fallope<br>c) d’un nombre insuffisant de spermatozoïdes<br>d) d’une femme ménopausée</p>
+<!-- page 18 -->
+<p class="para"><b>81) La FIVETE est appliquée dans le cas d'une :</b><br>a) malformation utérine<br>b) infertilité masculine due à une azoospermie<br>c) stérilité féminine due à l'absence de l’ovogenèse<br>d) stérilité immunologique par la présence d'anticorps anti-spermatozoïdes</p>
+<p class="para"><b>82) On pratique la FIVETE :</b><br>a) chez une femme ménopausée<br>b) chez une femme ayant subie l’ablation de l’utérus<br>c) en cas de malformation des trompes<br>d) en cas de malformation de l’utérus</p>
+<p class="para"><b>83) Les principales étapes de la FIVETE sont :</b><br>a) induction de l'ovulation et prélèvement des ovocytes par ponction des follicules<br>b) traitement, sélection des spermatozoïdes et mise en contact des gamètes<br>c) maintien en culture des œufs fécondés pendant 48h et sélection des embryons ayant atteints le stade d'une cellule<br>d) transfert de ou des embryons dans la cavité utérine de la femme en période de la menstruation</p>
+<p class="para"><b>84) Le tabagisme engendre chez la femme enceinte :</b><br>a) la mort systématique du fœtus in utéro<br>b) une augmentation du poids et de la taille du nouveau-né<br>c) certaines maladies congénitales (bec de lièvre, cardiopathies)<br>d) la dépendance du fœtus vis-à-vis de la nicotine</p>
+<p class="para"><b>85) L'alcoolisme provoque chez la femme enceinte :</b><br>a) un retard de croissance in utéro<br>b) la mort systématique du fœtus in utéro<br>c) une dysmorphie crânio-faciale<br>d) la diminution du risque tératogène</p>
+<p class="para"><b>86) Le sport (la marche, la natation)  pratiqué par la femme enceinte</b> :<br>a) protège sa santé et celle de son fœtus<br>b) entraîne des difficultés d'accouchement<br>c) est bénéfique pour le cœur et excellent pour le dos<br>d) entraîne des détresses respiratoires</p>
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<!-- page 19 -->
+<p class="subhead t-red"><b><i>Thème 2 : Génétique humaine</i></b></p>
+<p class="consigne">Pour chacun des items suivants ; il peut y avoir une ou deux réponse(s) exacte(s).Indiquez dans chaque cas la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).<br><b>NB :</b> Toute réponse fausse annule la note attribuée l’item.</p>
+<p class="para"><b>1) Le brassage intrachromosomique est :</b><br>a) dû à  une ségrégation au hasard des chromosomes homologues<br>b) dû à l’ascension polaire des chromatides à  l’anaphase II<br>c) un échange de fragments de chromatides entre les chromosomes homologues au cours de la prophase I<br>d) à l’origine de gamètes génétiquement différents</p>
+<p class="para"><b>2) Le brassage intrachromosomique :</b><br>a) est un échange de fragments de chromatides homologues<br>b) se réalise à l’anaphase I de la méiose<br>c) est à l’origine de chromosomes recombinés<br>d) est un échange de fragments de chromatides entre les chromosomes de deux paires chromosomiques différentes</p>
+<p class="para"><b>3) Le brassage intrachromosomique permet :</b><br>a) l’obtention de gamètes diversifiés<br>b) l’obtention d’un nombre de gamètes plus élevé que la normale<br>c) la séparation des chromosomes homologues<br>d) la séparation des gènes liés</p>
+<p class="para"><b>4) Le brassage intrachromosomique a lieu :</b><br>a) de manière aléatoire à n’importe quel moment de la méiose<br>b) au cours de la prophase I de la méiose<br>c) au cours de la prophase II de la méiose<br>d) à l’anaphase I de la méiose</p>
+<p class="para"><b>5) Le brassage interchromosomique :</b><br>a) résulte de la séparation aléatoire des chromosomes homologues<br>b) permet de séparer deux gènes liés<br>c) assure la diversité génétique<br>d) se réalise à l’anaphase équationnelle de la méiose</p>
+<!-- page 20 -->
+<p class="para"><b>6) Le brassage interchromosomique est :</b><br>a) le  résultat  de la séparation aléatoire des deux chromosomes de chaque paire<br>b) à l’origine d’une variabilité génétique<br>c) réalisé uniquement au cours de la méiose<br>d) Le résultat des crossing-over</p>
+<p class="para"><b>7) Le brassage interchromosomique :</b><br>a) permet de séparer deux gènes liés<br>b) se produit au cours de l’anaphase équationnelle<br>c) résulte des crossing-over<br>d) augmente la diversité des gamètes</p>
+<p class="para"><b>8) Le brassage de l’information génétique se produit au cours :</b><br>a) de la phase de multiplication de la gamétogenèse<br>b) de la division réductionnelle de la méiose<br>c) de la division équationnelle de la méiose<br>d) de la fécondation</p>
+<p class="para"><b>9) L’anaphase I est caractérisée par :</b><br>a) l’appariement des chromosomes homologues<br>b) l’emplacement des chromosomes au milieu du fuseau achromatique<br>c) la séparation des chromosomes homologues sans division des centromères<br>d) la séparation des chromatides après division des centromères</p>
+<p class="para"><b>10) Un crossing-over est un échange entre :</b><br>a) les deux chromatides d’un chromosome dédoublé<br>b) les chromatides de deux paires de chromosomes<br>c) deux chromosomes homologues non dédoublés<br>d) deux chromatides de deux chromosomes homologues</p>
+
+
+<!-- page 21 -->
+<p class="para"><b>11) Le document ci-dessous représente la localisation d’allèles sur les chromosomes de la drosophile :</b></p>
+<!-- CROP: 3954 1 21 0.375 0.07 0.885 0.28 3954_p21_chromosomes_drosophile -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p21_chromosomes_drosophile.png" alt=""></figure>
+<p class="para">a) les deux couples d’allèles (G,g) et (N,n) sont liés<br>b) les deux couples d’allèles (G,g) et (N,n) sont indépendants<br>c) les deux couples d’allèles (G,g) et (R,r) sont indépendants<br>d) les deux couples d’allèles (G,g) et (R,r) sont liés</p>
+<p class="para"><b>12) Le caryotype ci-dessous est celui de deux drosophiles de sexes différents :</b><br>a) la drosophile A est de génotype G N//g n<br>b) la drosophile A est de génotype G//g  N//n<br>c) la drosophile B est de génotype g//g  n//n<br>d) la drosophile B est de génotype gn//g n</p>
+<!-- CROP: 3954 1 21 0.21 0.57 0.845 0.87 3954_p21_caryotypes_drosophiles_A_B -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p21_caryotypes_drosophiles_A_B.png" alt=""></figure>
+<!-- page 22 -->
+<p class="para"><b>13) Le caryotype ci-dessous est celui de deux drosophiles de sexes différents :</b><br>a) la drosophile A est une femelle de phénotype [G N]<br>b) la drosophile B est une femelle de phénotype [g n]<br>c) la drosophile B est un mâle de génotype [g n]<br>d) la drosophile B est un mâle de génotype [G N]</p>
+<!-- CROP: 3954 1 22 0.18 0.215 0.82 0.515 3954_p22_caryotypes_drosophiles_A_B -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p22_caryotypes_drosophiles_A_B.png" alt=""></figure>
+<p class="para"><b>14) Sachant que la d<sub>(G,g)-(N,n)</sub> = 12CM, le croisement de drosophiles GN//gn  par gn//gn donne statistiquement :</b><br>a) 44 % [G N] + 44 % [g n] + 6 % [G n] + 6 % [g N]<br>b) 9/16 [G N] + 3/16 [G n] + 3/16[g N] + 1/16 [g n]<br>c) 1/4 [GN] + 1/4 [G n] + 1/4 [g n] + 1/4 [g n]<br>d) 50 % [G N] + 50 % [g n]</p>
+<p class="para"><b>15) Sachant que la d <sub>(G,g)-(N,n)</sub> = 12CM, le croisement de drosophiles GN//gn par GN//gn donne statistiquement :</b><br>a) 72 % [G N] + 3 % [g N] + 3 % [G n] + 22 % [g n]<br>b) 9/16 [G N] + 3/16 [G n] + 3/16[g N] + 1/16 [g n]<br>c) 1/4 [G N] + 1/4 [G n] + 1/4 [g N] + 1/4 [g n]<br>d) 50 % [G N] + 50 % [g n]</p>
+<!-- page 23 -->
+<p class="para"><b>16) Le croisement de drosophiles G//g  R//r  par g//g  r//r donne statistiquement :</b><br>a) 44% [G R] + 44% [g r] + 6% [G r] + 6% [g R]<br>b) 9/16 [G R] +3/16 [G r] +3/16[g R] +1/16 [g r]<br>c) 1/4 [G R] +1/4 [G r] +1/4 [g R] +1/4 [g r]<br>d) 50% [G R] + 50% [g r]</p>
+<p class="para"><b>17) L’équipement chromosomique et allélique de la cellule œuf à l’origine d’un garçon présentant une maladie héréditaire autosomale récessive résulte de l’union des gamètes suivants:</b><br>a) spermatozoïde <b>1</b>  et ovocyte <b>1’</b><br>b) spermatozoïde <b>3</b>  et ovocyte <b>2’</b><br>c) spermatozoïde <b>2</b> et ovocyte <b>2’</b><br>d) spermatozoïde <b>2</b> et ovocyte <b>1’</b></p>
+<!-- CROP: 3954 1 23 0.12 0.435 0.95 0.9 3954_p23_spermatozoides_ovocytes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p23_spermatozoides_ovocytes.png" alt=""></figure>
+<!-- page 24 -->
+<p class="para"><b>18) L’équipement chromosomique et allélique de la cellule œuf à l’origine d’un garçon présentant une maladie héréditaire autosomale dominante résulte de l’union des gamètes suivants:</b><br>a) spermatozoïde <b>1</b>  et ovocyte <b>1’</b><br>b) spermatozoïde <b>4</b>  et ovocyte <b>1’</b><br>c) spermatozoïde <b>1</b> et ovocyte <b>2’</b><br>d) spermatozoïde <b>4</b> et ovocyte <b>2’</b></p>
+<!-- CROP: 3954 1 24 0.04 0.215 0.9 0.635 3954_p24_spermatozoides_ovocytes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p24_spermatozoides_ovocytes.png" alt=""></figure>
+<p class="para"><b>19) Les spermatozoïdes issus d’un spermatocyte I possédant les chromosomes suivants A//A’ B//B’ X//Y peuvent contenir :</b><br>a) ABX, ABY, AB’X, AB’Y, A’BX, A’BY, A’B’X, A’B’Y<br>b) ABX, ABB’, AB’Y, AB’X, A’BY, AA’B, AA’Y, A’B’Y<br>c) ABX, AXY, AB’X, AB’Y, A’BX, A’BY, A’B’X, A’B’Y<br>d) ABX, ABY, AB’X, AB’Y, ABB’, A’BY, A’B’X, A’B’Y</p>
+<!-- page 25 -->
+<p class="para"><b>20) L’équipement chromosomique et allélique de la cellule œuf à l’origine d’un garçon présentant une maladie héréditaire récessive et liée au sexe  résulte de l’union des gamètes suivants:</b><br>a) spermatozoïde <b>1</b>  et ovocyte <b>1’</b><br>b) spermatozoïde <b>3</b>  et ovocyte <b>1’</b><br>c) spermatozoïde <b>1</b> et ovocyte <b>2’</b><br>d) spermatozoïde <b>2</b> et ovocyte <b>2’</b></p>
+<!-- CROP: 3954 1 25 0.13 0.32 0.9 0.775 3954_p25_spermatozoides_ovocytes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p25_spermatozoides_ovocytes.png" alt=""></figure>
+<!-- page 26 -->
+<p class="para"><b>21) L’hémophilie est une maladie héréditaire récessive liée à X, la Fille II<sub>6</sub> a pour origine une cellule œuf formée suite à l’union du :</b><br>a) spermatozoïde <b>1</b> de <b>I<sub>1</sub></b> et ovocyte <b>1’</b> de <b>I<sub>2</sub></b><br>b) spermatozoïde <b>1</b> de <b>I<sub>1</sub></b> et ovocyte <b>2’</b> de <b>I<sub>2</sub></b><br>c) spermatozoïde <b>2</b> de <b>I<sub>1</sub></b> et ovocyte <b>2’</b> de <b>I<sub>2</sub></b><br>d) spermatozoïde <b>3</b> de <b>I<sub>1</sub></b> et ovocyte <b>1’</b>de <b>I<sub>2</sub></b></p>
+<!-- CROP: 3954 1 26 0.27 0.21 0.58 0.38 3954_p26_arbre_hemophilie -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p26_arbre_hemophilie.png" alt=""></figure>
+<!-- CROP: 3954 1 26 0.13 0.41 0.8 0.875 3954_p26_spermatozoides_ovocytes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p26_spermatozoides_ovocytes.png" alt=""></figure>
+<!-- page 27 -->
+<p class="para"><b>22) Le document ci-dessous représente une spermatogonie de génotype A//a B//b. Peut-on obtenir à partir de cette cellule les spermatozoïdes ayant des chromatides portant les allèles suivants :</b></p>
+<!-- CROP: 3954 1 27 0.345 0.105 0.73 0.245 3954_p27_spermatogonie -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p27_spermatogonie.png" alt=""></figure>
+<p class="para">a) l’une portant l’allèle A l’autre l’allèle b<br>b) l’une portant l’allèle a l’autre l’allèle A<br>c) L’une portant l’allèle A l’autre l’allèle B<br>d) L’une portant l’allèle B l’autre l’allèle b</p>
+<p class="para"><b>23) Le document ci-contre représente une cellule portant sur ces chromosomes les gènes (A, a) et (B, b), peut-on dire que :</b><br>a) son phénotype est [AB]<br>b) son génotype est A//a B//b<br>c) les gènes sont indépendants<br>d) son génotype est AB//ab</p>
+<!-- CROP: 3954 1 27 0.7 0.428 0.885 0.548 3954_p27_cellule_genes_lies -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p27_cellule_genes_lies.png" alt=""></figure>
+<p class="para"><b>24) L’analyse du caryotype humain dans les cellules de l’embryon permet de :</b><br>a) détecter des gènes mutés<br>b) reconnaître le sexe de l’embryon<br>c) dénombrer 23 paires d’autosomes<br>d) dénombrer 22 paires d’autosomes</p>
+<p class="para"><b>25) Dans le cas d’une maladie déterminée par un allèle autosomal récessif :</b><br>a) tout individu sain est homozygote<br>b) un couple de phénotype normal ne donne jamais de descendants atteints<br>c) tout garçon atteint n’hérite la maladie que de sa mère<br>d) le mariage consanguin augmente le risque de la maladie chez les descendants</p>
+<!-- page 28 -->
+<!-- PROOFREAD: 3954 part1 p28 — "26) Une femme atteinte d’une anomalie récessive liée au sexe :" top line partly cut by the page edge -->
+<p class="para"><b>26) Une femme atteinte d’une anomalie récessive liée au sexe :</b><br>a) est issue d’un père atteint<br>b) est issue d’une mère atteinte<br>c) transmet la maladie à tous ces fils<br>d) transmet la maladie à toutes ces filles</p>
+<p class="para"><b>27) Le caryotype normal de l’espèce humaine présente :</b><br>a) 46 chromosomes et une paire de chromosome sexuels<br>b) 46 chromosomes identiques deux par deux chez la femme<br>c) 22 paires d’autosomes et un  chromosome sexuel X chez la femme<br>d) 22 paires d’autosomes et une paire de  chromosome sexuels</p>
+<p class="para"><b>28) Les difficultés de la génétique humaine sont :</b><br>a) la fécondité est restreinte<br>b) la durée des générations est longue<br>c) les croisements dirigés sont possibles<br>d) la garniture chromosomique est simple</p>
+<p class="para"><b>29) les gamètes recombinés, produits par un individu de Génotype Ab//aB  sont :</b><br>a) A b, a B<br>b) A B, a b<br>c) A a, B b<br>d) A, a, B, b</p>
+<p class="para"><b>30) La probabilité des gamètes de type AB produits par un sujet de génotype Ab//aB est de 5%.Dans ce cas, la distance entre les deux gènes est de :</b><br>a) 0 centimorgan<br>b) 5 centimorgan<br>c) 10 centimorgan<br>d) 20 centimorgan</p>
+<p class="para"><b>31) Les allèles d’un gène :</b><br>a) occupent toujours le même locus sur la même paire de chromosomes homologues<br>b) peuvent changer, au cours de la méiose, d’un chromosome à l’autre dans un bivalent<br>c) sont au nombre de deux dans un gamète<br>d) ne peuvent pas exister sous deux formes différentes dans une cellule diploïde</p>
+<!-- page 29 -->
+<p class="para"><b>32) Le génotype A//a B//b correspond à la représentation chromosomique suivante :</b></p>
+<!-- CROP: 3954 1 29 0.25 0.07 0.7 0.275 3954_p29_representations_chromosomiques -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p29_representations_chromosomiques.png" alt=""></figure>
+<p class="para"><b>33) Une anomalie récessive liée au chromosome X est  transmise :</b><br>a) par des parents phénotypiquement sains à tous les garçons<br>b) par une mère phénotypiquement saine à tous ses fils<br>c) par un père phénotypiquement sain à ses fils<br>d) d’une mère malade à tous ses garçons</p>
+<p class="para"><b>34) Si un individu présente un phénotype différent de celui de ses parents, cela s'explique par le fait que:</b><br>a) l’allèle qui contrôle le phénotype considéré est situé sur le chromosome X<br>b) l’allèle qui contrôle le phénotype considéré est situé sur un autosome<br>c) l’allèle responsable du phénotype est dominant<br>d) les parents de cet individu sont hétérozygotes</p>
+<p class="para"><b>35) L’arbre généalogique ci-contre permet- il de dire que l’allèle de l’anomalie est :</b><br>a) dominant et autosomal<br>b) dominant et lié à X<br>c) récessif et lié à Y<br>d) récessif et lié à X</p>
+<!-- CROP: 3954 1 29 0.6 0.7 0.81 0.83 3954_p29_arbre_genealogique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p29_arbre_genealogique.png" alt=""></figure>
+<!-- page 30 -->
+<!-- PROOFREAD: 3954 part1 p30 — "36) L’hémophilie est une maladie héréditaire récessive liée à X" top line partly cut by the page edge -->
+<p class="para"><b>36) L’hémophilie est une maladie héréditaire récessive liée à X et ne touchant pas les filles, dans la descendance du couple II<sub>6</sub>-II<sub>7</sub> :</b></p>
+<!-- CROP: 3954 1 30 0.125 0.085 0.81 0.37 3954_p30_arbre_hemophilie -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p30_arbre_hemophilie.png" alt=""></figure>
+<p class="para">a) tous les enfants sont sains<br>b) toutes les filles sont conductrices<br>c) toutes les filles sont saines<br>d) le risque pour un garçon d’être atteint est de 50%</p>
+<p class="para"><b>37) L’hémophilie est une maladie héréditaire récessive liée à X et ne touchant pas les filles, on peut dire que :</b><br>a) le père d’un hémophile est hétérozygote<br>b) la mère d’un hémophile est toujours hétérozygote<br>c) la sœur d’un hémophile mariée à un homme sain a une chance sur quatre d’avoir un garçon malade<br>d) la sœur d’un hémophile mariée à un homme sain aura obligatoirement des  enfants malades si son génotype est hétérozygote</p>
+<p class="para"><b>38) La technique permettant de détecter des anomalies chromosomiques lors d’un diagnostic prénatal repose sur :</b><br>a) un prélèvement des cellules fœtales par amniocentèse<br>b) un prélèvement des villosités choriales<br>c) l’analyse de l’ADN fœtal<br>d) l’analyse de l’ADN maternel</p>
+<!-- page 31 -->
+<p class="para"><b>39) La technique permettant de détecter des anomalies géniques lors d’un diagnostic prénatal repose sur :</b><br>a) le prélèvement de cellules fœtales par amniocentèse<br>b) l’extraction et la fragmentation de l’ADN<br>c) l’analyse du caryotype<br>d) l’électrophorèse de fragments d’ARN</p>
+<p class="para"><b>40) La technique permettant de détecter des anomalies géniques à partir de protéines du  fœtus repose sur :</b><br>a) l’utilisation de sonde moléculaire radioactive<br>b) l’extraction et la séparation des protéines par des ligases<br>c) la comparaison de l’électrophorèse des protéines du fœtus avec les protéines d’un individu normal<br>d) la détermination du génotype et du phénotype du fœtus et de la mère</p>
+<p class="para"><b>41) Une femme atteinte d’une anomalie récessive liée au chromosome X :</b><br>a) est issue obligatoirement d’un père atteint<br>b) est issue obligatoirement d’une mère atteinte<br>c) ses fils seront tous atteints<br>d) ne risque pas d’avoir des enfants atteints</p>
+<p class="para"><b>42) la formule chromosomique d’un embryon humain avorté est de la forme 3n (3 x 22autosomes et XYY). On explique la formation de cet embryon suite à :</b><br>a) une anomalie dans la formation du gamète paternel<br>b) une anomalie dans la formation du gamète maternel<br>c) le spermatozoïde fécondant était diploïde<br>d) l’ovocyte fécondé était diploïde</p>
+<p class="para"><b>43) le sang d’un individu du groupe sanguin A :</b><br>a) présente sur la membrane de ses globules rouges l’antigène A et dans son plasma l’anticorps B<br>b) présente sur la membrane de ses globules rouges l’antigène B et dans son plasma l’anticorps A<br>c) fait l’agglutination avec un sérum-test anti-B<br>d) fait l’agglutination avec un sérum-test anti-AB</p>
+<!-- page 32 -->
+<p class="para"><b>44) Dans le cas d'une anomalie dominante liée à X, un père atteint transmet la maladie à :</b><br>a) toutes ses filles<br>b) tous ses fils<br>c) la moitié de ses filles<br>d) la moitié de ses fils</p>
+<p class="para"><b>45) Le caryotype d'un garçon atteint de trisomie 21 comporte :</b><br>a) 22 autosomes + XY<br>b) 22 paires d'autosomes + XY<br>c) 45 autosomes + XY<br>d) 45 paires d'autosomes + XY</p>
+<p class="para"><b>46) L’arbre généalogique ci-contre permet- il de dire que l’allèle de l’anomalie est :</b><br>a) dominant et autosomal<br>b) dominant et lié à X<br>c) récessif et autosomal<br>d) récessif et lié à X</p>
+<!-- CROP: 3954 1 32 0.535 0.335 0.74 0.46 3954_p32_arbre_genealogique_46 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p32_arbre_genealogique_46.png" alt=""></figure>
+<p class="para"><b>47) La trisomie 21 ou syndrome de Down :</b><br>a) atteint aussi bien les filles que les garçons<br>b) est toujours congénitale<br>c) concerne un chromosome sexuel surnuméraire<br>d) peut-être due à une métaphase I ou II anormale</p>
+<p class="para"><b>48) Le daltonisme est une maladie héréditaire récessive liée à X, l’arbre généalogique ci-dessous permet- il de dire que :</b></p>
+<!-- CROP: 3954 1 32 0.23 0.675 0.78 0.91 3954_p32_arbre_daltonisme -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p32_arbre_daltonisme.png" alt=""></figure>
+<!-- page 33 -->
+<p class="para">a) tous les garçons seront Daltoniens<br>b) le couple 1x2 pourront avoir un garçon sain<br>c) le couple 3x4  pourront avoir une fille saine<br>d) le couple 3x4  pourront avoir un garçon Daltonien</p>
+<p class="para"><b>49) Le daltonisme est une maladie héréditaire récessive liée à X, on peut dire que :</b><br>a) un garçon daltonien a obligatoirement une mère daltonienne<br>b) un garçon daltonien a obligatoirement un père daltonien<br>c) une fille daltonienne a obligatoirement un père daltonien<br>d) une fille daltonienne a obligatoirement un père et une mère daltonienne</p>
+<p class="para"><b>50) Une maladie autosomale dominante:</b><br>a) ne s'exprime que chez les sujets portant l'allèle responsable à l'état homozygote<br>b) se manifeste chez le père ou la mère d'un sujet atteint<br>c) affecte l'enfant d'un parent malade marié à une personne saine avec une probabilité de 75 %<br>d) peut être liée au sexe</p>
+<p class="para"><b>51) Une maladie autosomale récessive:</b><br>a) s'observe dans la descendance de parents sains hétérozygotes<br>b) affecte systématiquement un enfant sur quatre dans une famille<br>c) est beaucoup plus fréquente chez les garçons<br>d) peut être, dans certains cas, détectée avant la naissance</p>
+<p class="para"><b>52) Lorsqu’un garçon présente un caractère différent de celui de ses parents, cela signifie que l'allèle responsable :</b><br>a) est porté uniquement  par un autosome<br>b) est porté uniquement par le chromosome X<br>c) est dominant si les parents sont malades et le garçon est sain<br>d) est récessif lié à X ou à un autosome</p>
+<!-- page 34 -->
+<p class="para"><b>53) Un couple sain a eu un premier enfant malade et a peur que le deuxième enfant en cours (fœtus) le soit aussi, l'analyse par électrophorèse de l'ADN des différents individus de la famille y compris le fœtus a donné les résultats suivants qui montrent que :</b></p>
+<!-- CROP: 3954 1 34 0.085 0.15 0.86 0.25 3954_p34_electrophorese_ADN -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p34_electrophorese_ADN.png" alt=""></figure>
+<p class="para">a) les parents sont hétérozygotes<br>b) l'allèle A2 est celui de la maladie<br>c) l'allèle A1domine l'allèle A2 et la mère doit interrompre sa grossesse<br>d) l'allèle de la maladie  peut  être lié à un hétérochromosome X ou Y</p>
+<p class="para"><b>54) Le mariage consanguin :</b><br>a) est une union entre deux individus non apparentés<br>b) augmente le risque de l’apparition des anomalies récessives<br>c) est un mariage entre deux individus de même groupe sanguin<br>d) est conseillé dans le cas de l’existence d’une anomalie récessive</p>
+<!-- page 35 -->
+
+<div class="chtag"><span>Chapitre</span> Évolution biologique</div>
+
+<p class="subhead t-red"><b><i>Thème 3 : Evolution biologique</i></b></p>
+<p class="consigne">Pour chacun des items suivants ; il peut y avoir une ou deux réponse(s) exacte(s).Indiquez dans chaque cas la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).<br><b>NB :</b> Toute réponse fausse annule la note attribuée l’item.</p>
+<p class="para"><b>1) Au cours des temps géologiques, les groupes de vertébrés sont apparus dans l’ordre suivant :</b><br>a) reptiles – batraciens – poissons – mammifères – oiseaux<br>b) poissons – batraciens – oiseaux – reptiles – mammifères<br>c) oiseaux – mammifères – reptiles – batraciens - poissons<br>d) poissons – batraciens – reptiles – oiseaux – mammifères</p>
+<p class="para"><b>2) L’homologie :</b><br>a) anatomique du membre antérieur chez divers vertébrés implique une homologie fonctionnelle<br>b) embryonnaire permet de préciser l’ordre d’apparition des divers groupes d’êtres vivants<br>c) moléculaire permet d’estimer le degré de parenté entre les espèces<br>d) témoigne de l’existence d’un ancêtre commun</p>
+<p class="para"><b>3) La phylogénie est :</b><br>a) la disparition d’espèces<br>b) la formation de nouvelles espèces<br>c) la filiation entre espèces<br>d) l’enchaînement d’espèces au cours du temps</p>
+<p class="para"><b>4) Les différences en acides aminés d’une même protéine chez deux espèces de vertébrés :</b><br>a) sont le résultat de mutations ponctuelles<br>b) constitue une preuve anatomique de l’ovulation<br>c) sont d’autant plus grandes que les deux espèces ont un ancêtre commun plus éloigné dans le temps<br>d) sont d’autant plus grandes que les deux espèces ont un ancêtre commun plus rapproché dans le temps</p>
+<!-- page 36 -->
+<!-- PROOFREAD: 3954 part1 p36 — "5) la comparaison de séquences d’acides aminés de l’insuline" top line partly cut by the page edge -->
+<p class="para"><b>5) la comparaison de séquences d’acides aminés de l’insuline chez  trois espèces animales montre des similitudes et des différences. Le nombre de différences des acides aminés nous renseigne sur :</b><br>a) le degré de parenté entre les trois espèces<br>b) l’existence d’une filiation entre les trois espèces<br>c) la stabilité du génotype au cours des temps géologiques<br>d) l’existence d’une molécule ancestrale commune aux trois espèces</p>
+<p class="para"><b>6) Les mécanismes de l’évolution biologiques sont :</b><br>a) la mutation et le crossing-over<br>b) la mutation et la sélection naturelle<br>c) la sélection naturelle et l’adaptation<br>d) le brassage intra et inter chromosomique</p>
+<p class="para"><b>7) Les mutations ponctuelles :</b><br>a) sont fréquentes<br>b) constituent une source de la diversité biologique<br>c) sont indépendantes les unes des autres<br>d) peuvent toucher l’ARN<sub>m</sub></p>
+<p class="para"><b>8) Les mutations géniques :</b><br>a) modifient l’information génétique et font apparaître des génotypes nouveaux au sein de l’espèce<br>b) peuvent être à l’origine de la création de nouvelles espèces<br>c) aboutissent à de nouveaux génotypes adaptés au milieu<br>d) contribuent avec la reproduction sexuée à la spéciation</p>
+<p class="para"><b>9) Les mutations géniques sont :</b><br>a) des remaniements chromosomiques<br>b) le remplacement d’une paire de nucléotides de l’ADN d’un gène par une autre paire<br>c) le changement total de la structure du brin codant  de l’ADN<br>d) la modification du caryotype initial</p>
+<p class="para"><b>10) L’amplification génique :</b><br>a) augmente la taille de l’information génétique<br>b) garde constant le nombre de gènes<br>c) affecte la structure du chromosome<br>d) modifie le nombre de chromosomes</p>
+<!-- page 37 -->
+<p class="para"><b>11) Parmi les mécanismes générateurs de polymorphisme chez les êtres vivants, il y a :</b><br>a) les mutations géniques<br>b) la méiose et la fécondation<br>c) l’adaptation<br>d) la sélection naturelle</p>
+<p class="para"><b>12) La diversité au sein de l’espèce est expliquée par :</b><br>a) la mutation génique au cours de réplication de l’ADN<br>b) le brassage interchromosomique au cours de l’anaphase I de la méiose<br>c) le brassage intrachromosomique au cours de la prophase II de la méiose<br>d) l’union au hasard d’un grand nombre de gamètes de même génotype</p>
+<p class="para"><b>13) La sélection naturelle :</b><br>a) est un processus aléatoire<br>b) élimine les individus les moins adaptés<br>c) privilégie les individus les plus adaptés<br>d) précède la mutation génétique</p>
+<p class="para"><b>14) La sélection naturelle a pour conséquence :</b><br>a) de modifier la fréquence de certains génotypes<br>b) de modifier la fréquence de certains phénotypes<br>c) de modifier la fréquence de certaines mutations<br>d) un changement de variété et non d’espèce</p>
+<p class="para"><b>15) La sélection naturelle :</b><br>a) est un mécanisme de l’évolution<br>b) crée de nouveaux génotypes mieux adaptés aux conditions du milieu<br>c) trie les génotypes les plus adaptés à un milieu donné<br>d) favorise l’isolement reproductif des êtres vivants</p>
+<!-- page 38 -->
+<p class="para"><b>16) La sélection naturelle :</b><br>a) s'exerce de façon aléatoire sur certains individus d'une population<br>b) dépend de l'environnement dans lequel vivent les individus d'une population<br>c) est à l'origine d'individus aux génotypes nouveaux dans la population<br>d) aboutit à l’adaptation des populations à leur environnement</p>
+<p class="para"><b>17) La spéciation :</b><br>a) est la naissance d’espèces nouvelles à partir d’une espèce mère<br>b) entraîne une divergence génétique telle que les nouvelles espèces deviennent incapables de se croiser<br>c) peut-être expliquée par des mutations géniques<br>d) peut-être expliquée par des mutations chromosomiques</p>
+<p class="para"><b>18) La spéciation :</b><br>a) s’explique par l’isolement reproductif entre certaines populations appartenant à une espèce mère<br>b) est la fragmentation d’une espèce mère en espèces nouvelles<br>c) est la séparation par isolement géographique de groupes de populations<br>d) ne peut être expliquée que par des mutations géniques</p>
+<p class="para"><b>19) On considère que la spéciation de deux sous populations est achevée s’il y a :</b><br>a) une divergence génétique<br>b) un isolement géographique<br>c) une barrière à la reproduction<br>d) une interfécondité</p>
+<p class="para"><b>20) La spéciation entraînée par un isolement reproductif au sein d'une espèce originelle peut être la conséquence d'un :</b><br>a) isolement écologique<br>b) isolement uniquement géographique<br>c) isolement uniquement comportemental<br>d) isolement génétique par incompatibilité (il n’y a plus d'appariement chromosomique)</p>
+<!-- page 39 -->
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<p class="subhead t-red"><b><i>Thème 4 : Neurophysiologie</i></b></p>
+<p class="consigne">Pour chacun des items suivants ; il peut y avoir une ou deux réponse(s) exacte(s).Indiquez dans chaque cas la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).<br><b>NB :</b> Toute réponse fausse annule la note attribuée l’item.</p>
+<p class="para"><b>1) Sur une préparation microscopique de la substance grise de la moelle épinière, on peut observer :</b><br>a) des corps cellulaires de neurones multipolaires<br>b) des corps cellulaires de neurones unipolaires<br>c) des cellules gliales<br>d) des axones recouverts de myéline</p>
+<p class="para"><b>2) Dans la substance grise :</b><br>a) les fibres nerveuses peuvent être enveloppées d’une gaine de myéline<br>b) les corps cellulaires sont séparés les uns des autres par les cellules gliales<br>c) les dendrites sont courtes et ramifiées<br>d) les axones peuvent être recouverts d’une gaine de Schwann</p>
+<p class="para"><b>3) Un axone :</b><br>a) est un prolongement cytoplasmique d’un neurone<br>b) est toujours myélinisé<br>c) est localisé dans le nerf<br>d) conduit l’influx nerveux grâce à un neurotransmetteur</p>
+<p class="para"><b>4) Un axone :</b><br>a) est un prolongement long d’un neurone<br>b) est toujours localisé dans la substance blanche<br>c) peut constituer une voie sensitive<br>d) obéit à la loi de tout ou rien dans la propagation du message nerveux</p>
+<!-- page 40 -->
+<!-- PROOFREAD: 3954 part1 p40 — "5) Dans une fibre nerveuse de la substance blanche :" top line partly cut by the page edge -->
+<p class="para"><b>5) Dans une fibre nerveuse de la substance blanche :</b><br>a) il y a des cellules de Schwann<br>b) la myéline est interrompue au niveau des nœuds de Ranvier<br>c) la conduction du message nerveux se fait de proche en proche<br>d) la myéline constitue une couche isolante</p>
+<p class="para"><b>6) La partie de la racine postérieure située entre le ganglion spinal et la mœlle épinière comporte:</b><br>a) des axones<br>b) des dendrites<br>c) des axones et des dendrites<br>d) une ou plusieurs synapses</p>
+<p class="para"><b>7) La partie de la racine postérieure située entre le ganglion spinal et le nerf rachidien comporte :</b><br>a) des axones<br>b) des dendrites<br>c) des axones et des dendrites<br>d) une ou plusieurs synapses</p>
+<p class="para"><b>8) La section de la racine antérieure d’un nerf rachidien entraîne une dégénérescence :</b><br>a) du bout central de cette racine antérieure<br>b) du bout périphérique de cette racine antérieure<br>c) du bout central et du bout périphérique de cette racine antérieure<br>d) des fibres sensitives du nerf rachidien</p>
+<p class="para"><b>9) Dans  la racine postérieure d'un nerf rachidien, la partie située entre le ganglion spinal et la moelle épinière:</b><br>a) contient des axones<br>b) contient des dendrites<br>c) conduit un message nerveux sensitif<br>d) conduit un message nerveux moteur</p>
+
+
+<!-- page 41 -->
+<p class="para"><b>10) Le réflexe myotatique :</b><br>a) a ses récepteurs dans la peau<br>b) est un réflexe médullaire<br>c) est un réflexe polysynaptique<br>d) intervient dans le maintien de la posture</p>
+<p class="para"><b>11) Le réflexe rotulien est un réflexe :</b><br>a) proprioceptif<br>b) extéroceptif<br>c) monosynaptique<br>d) polysynaptique</p>
+<p class="para"><b>12) Le fuseau neuromusculaire intervient dans :</b><br>a) les réflexes de posture<br>b) le réflexe cardiomodérateur<br>c) les réflexes d'équilibration<br>d) le réflexe salivaire</p>
+<p class="para"><b>13) Le réflexe myotatique est :</b><br>a) conditionnel<br>b) proprioceptif<br>c) polysynaptique<br>d) médullaire</p>
+<p class="para"><b>14) Le réflexe myotatique :</b><br>a) comporte un circuit nerveux monosynaptique<br>b) comporte un circuit nerveux polysynaptique<br>c) se manifeste par la contraction du muscle étiré<br>d) se manifeste par le relâchement du muscle étiré</p>
+<p class="para"><b>15) L'innervation réciproque :</b><br>a) explique l'efficacité de la réponse du réflexe myotatique<br>b) assure la contraction du muscle étiré qui est accompagnée d'une chute de tonus du muscle antagoniste<br>c) assure la contraction du muscle non étiré qui est accompagnée d'une augmentation de tonus du muscle antagoniste<br>d) explique la coordination de l'activité des muscles antagonistes et rend moins efficace la réponse réflexe</p>
+<!-- page 42 -->
+<p class="para"><b>16) Au niveau de la membrane nerveuse non excitée, on enregistre une ddp appelée :</b><br>a) potentiel de repos (PR, potentiel de membrane)<br>b) potentiel d'action (PA)<br>c) potentiel post-synaptique excitateur (PPSE)<br>d) potentiel post-synaptique inhibiteur (PPSI)</p>
+<p class="para"><b>17) Le potentiel de repos  résulte d'une perméabilité membranaire à travers :</b><br>a) les canaux ioniques voltage-dépendants Na<sup>+</sup>et K<sup>+</sup><br>b) les canaux de fuite Na<sup>+</sup>et K<sup>+</sup><br>c) la pompe Na<sup>+</sup>/ K<sup>+</sup><br>d) les canaux ioniques de fuite Na<sup>+</sup>et K<sup>+</sup> et la pompe Na<sup>+</sup>/ K<sup>+</sup></p>
+<p class="para"><b>18) Le potentiel de repos est :</b><br>a) modifié lors de la stimulation d'un neurone<br>b) dû à la perméabilité sélective de la membrane aux ions Na<sup>+</sup>et K<sup>+</sup><br>c) dû au transport passif d'ions Na<sup>+</sup>et K<sup>+</sup> à travers la membrane<br>d) dû à l'expulsion des ions K<sup>+</sup> par la pompe  Na<sup>+</sup>/ K<sup>+</sup></p>
+<p class="para"><b>19) Le potentiel d'action est :</b><br>a) une dépolarisation de la membrane neuronique<br>b) une hyperpolarisation de la membrane neuronique<br>c) dû à une modification  de la perméabilité membranaire aux ions Na<sup>+</sup>et K<sup>+</sup><br>d) dû à un transport passif d'ions  Na<sup>+</sup> et K<sup>+</sup></p>
+<p class="para"><b>20) Le potentiel d'action :</b><br>a) a toujours la même amplitude le long d'une fibre nerveuse<br>b) correspond à une pénétration massive d'ions K<sup>+</sup><br>c) dépend toujours de l'ouverture de canaux ioniques chimio-dépendants<br>d) inverse le potentiel membranaire lors de la dépolarisation</p>
+<!-- page 43 -->
+<p class="para"><b>21) Le potentiel d'action :</b><br>a) est une dépolarisation propageable le long de la membrane<br>b) a pour origine un transfert ionique à travers Les canaux de fuite membranaires<br>c)  est dû à un mouvement ionique à travers les canaux chimio-dépendants Na<sup>+</sup>et  K<sup>+</sup><br>d) est enregistré  chaque fois que le potentiel membranaire atteint -50mv</p>
+<p class="para"><b>22) Le potentiel d'action au niveau d'une fibre nerveuse résulte :</b><br>a) d'un flux entrant de Na<sup>+</sup> suivi d'un flux sortant de K<sup>+</sup><br>b) d'un flux sortant de Na<sup>+</sup>, suivi d'un flux sortant de K<sup>+</sup>,<br>c) d'un flux entrant de cl<sup>-</sup>, suivi d'un flux sortant de K<sup>+</sup><br>d) d'un flux entrant de K<sup>+</sup>, suivi d'un flux sortant de Na<sup>+</sup></p>
+<p class="para"><b>23) Les canaux ioniques voltage-dépendants sont localisés :</b><br>a) au niveau de la membrane post synaptique<br>b) au niveau des boutons synaptiques<br>c) au niveau des étranglements de Ranvier<br>d) au niveau des corps cellulaires neuroniques</p>
+<p class="para"><b>24) Les canaux voltage-dépendants :</b><br>a) ne s'ouvrent que si la d.d.p. membranaire atteint la valeur de – 50 mV<br>b) sont localisés uniquement au niveau des nœuds de Ranvier ou des cônes axoniques<br>c) font entrer les ions K<sup>+</sup> et sortir les ions Na<sup>+</sup> dans la fibre nerveuse<br>d) interviennent dans la propagation et la transmission du message nerveux</p>
+<p class="para"><b>25) Les canaux voltage-dépendants à Na<sup>+</sup> :</b><br>a) sont constitués de protéines incluses dans la membrane neuronique<br>b) sont activés par les neurotransmetteurs<br>c) sont activés par une augmentation du potentiel de la membrane neuronique de 20 mV<br>d) assurent la dépolarisation de la membrane post synaptique</p>
+<!-- page 44 -->
+<p class="para"><b>26) Lors d'un potentiel d'action, il y a entrée massive des ions Na<sup>+</sup> :</b><br>a) par les canaux de fuite<br>b) par la pompe Na<sup>+</sup> / K<sup>+</sup><br>c) par les canaux  voltage-dépendants<br>d) par les canaux chimio-dépendants</p>
+<p class="para"><b>27) Dans un potentiel d'action, la repolarisation est le résultat :</b><br>a) d'une entrée de Na<sup>+</sup> à l'intérieur de la fibre<br>b) d'une sortie de K<sup>+</sup> par les canaux voltage-dépendants à K<sup>+</sup><br>c) d'un excès de K<sup>+</sup> à l'extérieur de la membrane de la fibre<br>d)  d'une entrée de Cl<sup>-</sup> et d'une sortie de K<sup>+</sup></p>
+<p class="para"><b>28) Le message nerveux</b><br>a) est constitué de potentiels d'action modulés en amplitude<br>b) est constitué de potentiels d'action modulés en fréquence<br>c) est constitué de potentiels d'action modulés en amplitude et en fréquence<br>d) a une propagation unidirectionnelle imposée par la zone réfractaire</p>
+<p class="para"><b>29) Le message nerveux :</b><br>a) est un train de potentiel d'action<br>b) est codé en modulation de fréquence<br>c) est codé en modulation d'amplitude<br>d) se propage toujours vers un centre nerveux</p>
+<p class="para"><b>30) Le message nerveux :</b><br>a) est unidirectionnel au niveau d'un neurone<br>b) est bidirectionnel au niveau d'une synapse<br>c) nécessite des CVD et des canaux chimio-dépendants pour sa transmission synaptique<br>d) fait intervenir des canaux chimio-dépendants pour sa propagation le long de la fibre nerveuse</p>
+<p class="para"><b>31) La naissance et  la propagation du message nerveux font intervenir des canaux ioniques :</b><br>a) voltage-dépendants  à Na<sup>+</sup><br>b) voltage-dépendants  à K<sup>+</sup><br>c) voltage-dépendants à Ca<sup>++</sup>;<br>d) chimio-dépendants à Na<sup>+</sup>, K<sup>+</sup>, Cl<sup>-</sup></p>
+<!-- page 45 -->
+<p class="para"><b>32) Le potentiel local :</b><br>a) est enregistré lorsqu'on atteint le seuil de stimulation<br>b) peut être un potentiel post synaptique inhibiteur<br>c) peut naître au niveau d'une dendrite<br>d) est propageable localement en s'amortissant</p>
+<p class="para"><b>33) Les potentiels locaux :</b><br>a) sont enregistrés lorsqu'on atteint le seuil de stimulation<br>b) n'obéissent pas à la loi du tout ou rien<br>c) diminuent d'amplitude au fur et à mesure que l'on s'éloigne du lieu de stimulation<br>d) sont des potentiels propageables sur une longue distance</p>
+<p class="para"><b>34) Un potentiel d'action et un potentiel local ont en commun :</b><br>a) la variation de la différence de potentiel membranaire<br>b)  une amplitude constante<br>c)  la propagation sur une longue distance<br>d) la présence d'un temps de latence</p>
+<p class="para"><b>35) Un récepteur sensoriel :</b><br>a) est toujours localisé à la périphérie de l'organisme<br>b) stimulé, il est le siège de la naissance d'un potentiel de récepteur<br>c) envoie au centre nerveux un message codé en amplitude<br>d) ne présente pas de potentiel de repos</p>
+<p class="para"><b>36) Un récepteur sensoriel :</b><br>a) est une terminaison dendritique spécialisée<br>b) peut se trouver à l'extrémité d'un axone<br>c) est le lieu de la transduction<br>d) peut répondre à plusieurs types de stimuli (mécaniques, chimiques, thermiques.).</p>
+<p class="para"><b>37) Au niveau d'un récepteur sensoriel : le corpuscule de Pacini, un potentiel d'action naît au niveau  :</b><br>a) de la capsule conjonctive<br>b) du premier nœud de Ranvier<br>c) du deuxième nœud de Ranvier<br>d) de la gaine de myéline</p>
+<!-- page 46 -->
+<p class="para"><b>38) Les fibres sensitives Ia sont :</b><br>a) les axones des neurones de la corne antérieure de la moelle épinière<br>b) issues des fuseaux neuromusculaires<br>c) les axones des neurones de la corne postérieure de la moelle épinière<br>d) les dendrites des neurones en T dont les corps cellulaires sont localisés dans les ganglions spinaux</p>
+<p class="para"><b>39) Le potentiel de récepteur :</b><br>a) est déclenché par un  neurotransmetteur<br>b) prend naissance au niveau du site générateur<br>c) prend naissance à l'extrémité dendritique d'un récepteur suite à une stimulation<br>d) est d'amplitude proportionnelle à l'intensité du stimulus</p>
+<p class="para"><b>40) La transduction sensorielle est la conversion de :</b><br>a) l'énergie du stimulus en phénomène électrique<br>b) l'énergie du stimulus en phénomène mécanique<br>c) l'influx  nerveux sensitif en influx nerveux moteur<br>d) l'influx nerveux moteur en influx nerveux sensitif</p>
+<p class="para"><b>41) Au niveau du site transducteur d'un récepteur sensoriel, on enregistre suite à une stimulation:</b><br>a) un potentiel postsynaptique excitateur (PPSE)<br>b) un potentiel postsynaptique inhibiteur (PPSI)<br>c) un potentiel local de récepteur<br>d)  un potentiel d'action</p>
+<p class="para"><b>42) Dans les conditions physiologiques, la propagation du message nerveux le long des fibres myélinisées :</b><br>a) est saltatoire<br>b) a une vitesse constante<br>c) est unidirectionnelle<br>d) se produit de part et d'autre de la zone excitée</p>
+<!-- page 47 -->
+<p class="para"><b>43) La vitesse de propagation de l'influx nerveux le long d'une fibre nerveuse augmente lorsque :</b><br>a) le diamètre de la fibre nerveuse augmente<br>b) le diamètre de la fibre nerveuse diminue<br>c) la fréquence des stimulations augmente<br>d) la fibre nerveuse est amyélinisée</p>
+<p class="para"><b>44) Dans une fibre à myéline, l'influx nerveux est plus rapide que dans une fibre non myélinisée car :</b><br>a) la propagation de l'influx nerveux se fait par les courants locaux<br>b) la propagation de l'influx nerveux est saltatoire<br>c) le diamètre des fibres sans myéline est plus grand que celui des fibres à myéline<br>d) les canaux voltage-dépendants sont plus nombreux dans les fibres à myéline que dans les fibres sans myéline</p>
+<p class="para"><b>45) Une synapse neuroneuronique :</b><br>a) est une jonction entre deux dendrites<br>b) est activée par une stimulation efficace de l'élément présynaptique<br>c) ne fait intervenir que l'acétylcholine<br>d) lorsqu'elle est activée, elle donne naissance obligatoirement à un potentiel d'action post-synaptique</p>
+<p class="para"><b>46) Dans une synapse :</b><br>a) la circulation du message nerveux est unidirectionnelle<br>b) le neuromédiateur diffuse à partir d'une dendrite<br>c) la fixation du neuromédiateur ouvre les canaux voltage-dépendants<br>d) l'ouverture des canaux chimio-dépendants précède celle des canaux Ca<sup>++</sup>voltage-dépendants</p>
+<p class="para"><b>47) La transmission synaptique :</b><br>a) fait intervenir un neurotransmetteur<br>b) met en jeu un neurotransmetteur libéré par l'extrémité dendritique<br>c) engendre nécessairement un potentiel d'action<br>d) induit une dépolarisation de la membrane post synaptique</p>
+<!-- page 48 -->
+<p class="para"><b>48) La transmission synaptique :</b><br>a) modifie le potentiel membranaire du neurone post synaptique<br>b) est unidirectionnel<br>c) provoque la libération des ions Ca<sup>++</sup>dans la fente synaptique<br>d) engendre nécessairement un potentiel d'action postsynaptique</p>
+<p class="para"><b>49) Le neurotransmetteur libéré au niveau de la synapse neuromusculaire est :</b><br>a) la noradrénaline<br>b) l'acétylcholine<br>c) le Gaba (acide gamma-amino-butyrique)<br>d) l'adrénaline</p>
+<p class="para"><b>50) Un neurotransmetteur excitateur</b><br>a) permet l'ouverture des canaux ioniques voltage-dépendants Na<sup>+</sup>et K<sup>+</sup><br>b) permet l'ouverture des canaux ioniques chimio-dépendants Na<sup>+</sup>et K<sup>+</sup><br>c) agit au niveau de toutes les synapses<br>d) déclenche l'ouverture des canaux ioniques voltage-dépendants Ca<sup>2+</sup></p>
+<p class="para"><b>51) Un neurotransmetteur inhibiteur</b><br>a) déclenche une hyperpolarisation au niveau de la membrane post synaptique<br>b) déclenche l'ouverture des canaux ioniques chimio-dépendants K<sup>+</sup>et Cl<sup>-</sup><br>c) agit au niveau de la membrane post synaptique nerveuse et musculaire.<br>d) assure l'ouverture des canaux ioniques volage-dépendants K<sup>+</sup></p>
+<p class="para"><b>52) Les canaux ioniques chimio dépendants</b><br>a) permettent le passage des ions dans le neurone post synaptique<br>b) s'ouvrent suite à une variation de la ddp membranaire<br>c) assurent le transport des ions Ca<sup>2+</sup><br>d) sont localisés au niveau du bouton synaptique</p>
+<!-- page 49 -->
+<p class="para"><b>53) L'ouverture des canaux ioniques chimio-dépendants :</b><br>a) dépend de la différence de potentiel membranaire<br>b) dépend de la fixation d'un neurotransmetteur sur la membrane post synaptique<br>c) permet l'entrée des ions Na<sup>+</sup> et la sortie des ions Cl<sup>-</sup><br>d) engendre nécessairement un potentiel d'action</p>
+<p class="para"><b>54) Les différents canaux ioniques sont localisés :</b><br>a) sur la membrane pré-synaptique pour les CCD<br>b) au niveau des étranglements de Ranvier pour les CVD<br>c) sur la membrane neuronique pour les canaux de fuite<br>d) sur le corps cellulaire d'un neurone pour les CVD Ca<sup>++</sup></p>
+<p class="para"><b>55) Le potentiel post synaptique :</b><br>a) ne prend naissance qu'au niveau du cône axonique<br>b) se propage le long de tout le neurone<br>c) a une amplitude constante<br>d) est engendré par un potentiel d'action pré synaptique</p>
+<p class="para"><b>56) Le potentiel post synaptique excitateur (PPSE) :</b><br>a) fait rapprocher le potentiel post synaptique du seuil<br>b) se propage sur une courte distance en diminuant d'amplitude<br>c) provoque une hyperpolarisation<br>d) est enregistré au niveau d'un bouton synaptique</p>
+<p class="para"><b>57) Le potentiel post synaptique excitateur (PPSE) :</b><br>a) engendre un potentiel d'action<br>b) a une amplitude constante<br>c) diminue l'électronégativité interne de l'élément post synaptique<br>d) précède l'entrée des ions Na<sup>+</sup> dans l'élément post synaptique</p>
+<p class="para"><b>58) Le potentiel post synaptique inhibiteur (PPSI) :</b><br>a) correspond à une hyperpolarisation de la membrane post synaptique<br>b) correspond à une dépolarisation de la membrane post synaptique<br>c) ne modifie pas la polarisation  membranaire  post synaptique<br>d) rend plus difficile la génération post synaptique d'un potentiel d'action</p>
+<!-- page 50 -->
+<p class="para"><b>59) Dans une synapse inhibitrice, le (PPSI) enregistré au niveau du neurone postsynaptique a pour origine :</b><br>a) l'entrée des ions Na<sup>+</sup> dans le neurone post synaptique<br>b) l'entrée des ions K<sup>+</sup> dans le neurone post synaptique<br>c) l'entrée des ions Cl<sup>-</sup>et la sortie des ions K<sup>+</sup> au niveau du neurone post-synaptique<br>d) la sortie des ions  ca<sup>++</sup> du neurone post synaptique</p>
+<p class="para"><b>60) La sommation temporelle :</b><br>a) fait intervenir plusieurs synapses<br>b) est due à une série de stimulations portées sur la même synapse<br>c) est une sommation algébrique des PPSI et des PPSE<br>d) donne toujours un potentiel d'action post synaptique</p>
+<p class="para"><b>61) la sommation spatiale :</b><br>a) fait intervenir plusieurs synapses<br>b) est due à une série de stimulations portées sur la même synapse<br>c) est une sommation algébrique des PPSI et des PPSE<br>d) donne toujours un potentiel d'action post synaptique</p>
+<p class="para"><b>62) L'intégration nerveuse post synaptique :</b><br>a) est toujours réalisée par la sommation spatiale des potentiels post synaptiques<br>b) est toujours réalisée par la sommation temporelle des potentiels post synaptiques<br>c) est la traduction de la sommation algébrique de tous les potentiels post synaptiques reçus<br>d) engendre un potentiel d'action ou un potentiel de repos au niveau de l'axone</p>
+<p class="para"><b>63) L'intégration nerveuse est:</b><br>a) réalisée par la sommation spatiale des multiples afférences reçues par le neurone<br>b) réalisée par la sommation temporelle des multiples afférences reçues par le neurone<br>c) la présence de nombreux neurones organisés en réseau dans le système nerveux<br>d) la somme algébrique que des PPSE reçus par le neurone</p>
+<!-- page 51 -->
+<!-- PROOFREAD: 3954 part1 p51 — "64) Le tissu musculaire strié est formé:" — title line cut at the top edge, only the lower half of the letters visible -->
+
+<div class="chtag"><span>Chapitre</span> Muscle squelettique (contraction)</div>
+
+<p class="para"><b>64) Le tissu musculaire strié est formé:</b><br>a) de fibres striées parallèles<br>b) de fibres striées croisées<br>c) de fibres à noyaux périphériques<br>d) de fibres à noyaux centraux</p>
+<p class="para"><b>65) Une fibre musculaire :</b><br>a) est une cellule polynucléée<br>b) constitue l'unité structurale et fonctionnelle du muscle<br>c) obéit au phénomène de recrutement<br>d) admet un potentiel de repos</p>
+<p class="para"><b>66) La fibre musculaire est caractérisée par :</b><br>a) la présence de glycogène<br>b) l'absence de mitochondries<br>c) l'absence de tubules transverses<br>d) la présence de noyaux périphériques</p>
+<p class="para"><b>67) Le tonus musculaire c'est le fait que :</b><br>a) les muscles soient légèrement contractés en permanence<br>b) les fuseaux neuromusculaires sont totalement inactifs<br>c) les fuseaux neuromusculaires sont en légère activité<br>d) les messages nerveux moteurs arrivent de temps en temps aux muscles</p>
+<p class="para"><b>68) L'unité motrice est :</b><br>a) l'ensemble des motoneurones qui commandent la contraction d'un  même muscle<br>b) la synapse qui unit une terminaison axonique à une fibre musculaire striée<br>c) l'ensemble des ramifications axoniques qui innervent la même fibre musculaire striée<br>d) un motoneurone et l'ensemble des fibres musculaires striées qu'il innerve</p>
+<p class="para"><b>69) L'unité motrice est :</b><br>a) une cellule polynuclée<br>b) formée d'un motoneurone et de plusieurs fibres musculaires<br>c) une fibre nerveuse<br>d) un ensemble de structures contractiles</p>
+<!-- page 52 -->
+<!-- PROOFREAD: 3954 part1 p52 — "70) Les messages sensitifs provenant des fuseaux neuromusculaires" — first line cut at the top edge -->
+<p class="para"><b>70) Les messages sensitifs provenant des fuseaux neuromusculaires du muscle étiré :</b><br>a) inhibent directement les motoneurones du muscle non étiré<br>b) activent directement les motoneurones du muscle non étiré<br>c) activent directement les motoneurones du muscle antagoniste<br>d) inhibent indirectement les motoneurones du muscle antagoniste</p>
+<p class="para"><b>71) Le neurotransmetteur libéré au niveau de la plaque motrice d'un muscle strié est :</b><br>a) l'adrénaline<br>b) l'acétylcholine<br>c) la noradrénaline<br>d) l'acide gamma-amino-butyrique (GABA)</p>
+<p class="para"><b>72) Au niveau de la plaque motrice, la fixation de l'acétylcholine sur les récepteurs de la membrane post-synaptique provoque l'ouverture :</b><br>a) des canaux chimio-dépendants<br>b) des canaux voltage-dépendants Na<sup>+</sup><br>c) des canaux voltage-dépendants  K<sup>+</sup><br>d) des canaux de fuites</p>
+<p class="para"><b>73) On peut provoquer la naissance d'un potentiel d'action musculaire :</b><br>a) en déposant l'acétylcholine dans la fibre musculaire, en dehors de la plaque motrice<br>b) en injectant de l'acétylcholine dans la fibre musculaire<br>c) en déposant de l'acétylcholine dans la fente synaptique d'une plaque motrice<br>d) en injectant des ions Ca<sup>++</sup> dans la fibre musculaire</p>
+<p class="para"><b>74) Le potentiel d'action musculaire provoque la libération des ions Ca<sup>++</sup>stockés dans les citernes du réticulum endoplasmique, ces ions assurent :</b><br>a) la fixation du complexe ATP-myosine sur les molécules d'actine<br>b) la formation du complexe ATP-myosine<br>c) la fixation de l'actine sur la myosine<br>d) indirectement l'hydrolyse de l'ATP</p>
+<!-- page 53 -->
+<!-- PROOFREAD: 3954 part1 p53 — "75) La contraction musculaire est toujours :" — first line cut at the top edge -->
+<p class="para"><b>75) La contraction musculaire est toujours :</b><br>a) suivie d'un potentiel d'action musculaire<br>b) précédée d'un potentiel d'action musculaire<br>c) synchrone avec un potentiel d'action musculaire<br>d) indépendante du potentiel d'action musculaire</p>
+<p class="para"><b>76) Au cours de la contraction musculaire :</b><br>a) les myofilaments d'actine glissent entre les myofilaments de myosine<br>b) les myofilaments de myosine glissent entre les myofilaments d'actine<br>c) le sarcomère se raccourcit par raccourcissement des disques clairs<br>d) les stries Z se déplacent et la bande H s'élargit</p>
+<p class="para"><b>77) Lors  de la contraction musculaire :</b><br>a) le complexe ATP-myosine  se fixe sur les myofilaments d'actine permettant le glissement<br>b) l'énergie de glissement provient de l'hydrolyse du glycogène<br>c) l'énergie de glissement provient de l'hydrolyse du phosphagène<br>d) l'énergie de glissement provient de l'hydrolyse immédiate de l'ATP</p>
+<p class="para"><b>78) Un sarcomère, au cours de sa contraction, se caractérise par :</b><br>a) le raccourcissement des filaments d'actine<br>b) le raccourcissement des filaments de myosine<br>c) le glissement des filaments d'actine entre les filaments de myosine<br>d) le rapprochement des deux stries Z consécutives</p>
+<p class="para"><b>79) Au cours de la contraction musculaire, les phénomènes se succèdent comme suit :</b><br>a) naissance d'un PA musculaire, hydrolyse de l'ATP, raccourcissement des sarcomères<br>b) hydrolyse de l'ATP , naissance d'un PA musculaire, raccourcissement des sarcomères<br>c) naissance d'un PA musculaire, raccourcissement des sarcomères, hydrolyse d'ATP<br>d) raccourcissement des sarcomères, naissance d'un PA musculaire, hydrolyse de l'ATP</p>
+<!-- page 54 -->
+<!-- PROOFREAD: 3954 part1 p54 — "80) Au niveau de la fibre musculaire striée, les ions ca++ :" — first line cut at the top edge, superscript of "ca" not fully visible -->
+<p class="para"><b>80) Au niveau de la fibre musculaire striée, les ions ca<sup>++</sup> :</b><br>a) sont libérés du réticulum endoplasmique suite à la naissance d'un potentiel d'action  musculaire<br>b) permettent la fixation des têtes de myosine sur l'actine<br>c) permettent la fixation de l'ATP sur les têtes de myosine<br>d) augmentent l'activité ATPasique de l'actine</p>
+<p class="para"><b>81) Dans la plaque motrice, le neurotransmetteur libéré :</b><br>a) est l'acétylcholine<br>b) est l'adrénaline<br>c) provoque l'ouverture des canaux ca<sup>++</sup> voltage-dépendants<br>d) provoque l'ouverture des canaux Na<sup>+</sup> chimio-dépendants</p>
+<p class="para"><b>82) Le muscle est le siège de deux types de réactions chimiques exothermiques:</b><br>a) les 1<sup>ères</sup>anaérobies, rapides et seraient à l'origine de la chaleur initiale de contraction<br>b) les secondes aérobies, lentes et seraient à l'origine de la chaleur retardée<br>c) les secondes anaérobies et assurent la régénération lente de la source d'énergie<br>d) les secondes aérobies et assurent la régénération rapide de la phosphocréatine (PC)</p>
+<p class="para"><b>83) La régénération rapide de l'ATP dans la cellule musculaire se fait à partir :</b><br>a) de l'acide lactique<br>b) de la phosphocréatine<br>c) de l'ADP<br>d) du glycogène</p>
+<p class="para"><b>84) Au cours de la contraction musculaire, la régénération rapide de l'ATP  se fait :</b><br>a) à partir de la glycolyse<br>b) à partir de la fermentation<br>c) par transfert d'un groupement phosphate d'une molécule  d'ADP sur une autre molécule d'ADP<br>d) par transfert d'un groupement phosphate de la phosphocréatine sur une molécule d'ADP</p>
+<!-- page 55 -->
+<!-- PROOFREAD: 3954 part1 p55 — "85) La régénération rapide de l'ATP dans le muscle squelettique en" — first line cut at the top edge -->
+<p class="para"><b>85) La régénération rapide de l'ATP dans le muscle squelettique en contraction est assurée par la (les) réaction(s) suivante(s) :</b><br>a) ATP + H<sub>2</sub>O  → ADP + P<br>b) ADP + ADP → ATP + AMP<br>c) Glucose-P + ADP → ATP + acide pyruvique<br>d) Phosphocréatine  + ADP → ATP  + créatine</p>
+
+<div class="chtag"><span>Chapitre</span> Régulation de la pression artérielle</div>
+
+<p class="para"><b>86) Les récepteurs sensoriels localisés dans le sinus carotidien :</b><br>a) sont des chimiorécepteurs<br>b) sont des fuseaux neuromusculaires<br>c) sont des thermorécepteurs<br>d) sont des barorécepteurs</p>
+<p class="para"><b>87) Le nerf de Héring  est :</b><br>a) un nerf dépresseur<br>b) un nerf sensitif<br>c) un nerf moteur<br>d) un nerf mixte</p>
+<p class="para"><b>88) Le nerf de Cyon :</b><br>a) est une voie efférente d'un réflexe intéroceptif<br>b) véhicule des trains de potentiels d'action codés en modulation de fréquence<br>c) est capable de réaliser la transduction par ses extrémités dendritiques<br>d) est un nerf du système orthosympathique</p>
+<p class="para"><b>89) Les nerfs de Héring et de Cyon :</b><br>a) sont des voies efférentes du réflexe correcteur de l'hypotension<br>b) sont des voies afférentes du réflexe correcteur de l'hypertension<br>c) sont activés en cas d'hypotension<br>d) sont des nerfs dépresseurs.</p>
+<p class="para"><b>90) Le nerf X :</b><br>a) est un nerf hypotenseur<br>b) agit sur le rythme cardiaque par la noradrénaline<br>c) conduit des messages codés en modulation d'amplitude<br>d) relie le bulbe rachidien au cœur</p>
+<!-- page 56 -->
+<!-- PROOFREAD: 3954 part1 p56 — "91) Le nerf sympathique cardiaque :" — line cut at the top edge -->
+<p class="para"><b>91) Le nerf sympathique cardiaque :</b><br>a) est un nerf sensitif cardioaccélérateur<br>b) agit sur le rythme cardiaque par l'intermédiaire de la noradrénaline<br>c) est un nerf hypertenseur<br>d) est activé suite à une hypertension</p>
+<p class="para"><b>92) Le rythme cardiaque normal d'un sujet résulte de :</b><br>a) la seule action du tissu nodal<br>b) l'action du système nerveux central<br>c) la seule action des systèmes nerveux ortho et para-sympathique<br>d) l'action combinée des systèmes  ortho et parasympathiques et du tissu nodal.</p>
+<p class="para"><b>93) Le rythme cardiaque est accéléré sous l'action :</b><br>a) d'une augmentation de la pression artérielle<br>b) d'une diminution de la pression artérielle<br>c) de la stimulation des nerfs vagues (nerf X)<br>d) de la stimulation des nerfs orthosympathiques cardiaques</p>
+<p class="para"><b>94) Le rythme cardiaque est ralenti sous l'action :</b><br>a) d'une vasodilatation des artères<br>b) d'une vasoconstriction des artères<br>c) de l'ADH<br>d) de l'aldostérone</p>
+<p class="para"><b>95) La pression artérielle :</b><br>a) dépend de la vasomotricité<br>b) dépend uniquement de la fréquence cardiaque<br>c) est toujours constante au cours du temps<br>d)  est contrôlée en partie, par le système neurovégétatif</p>
+<p class="para"><b>96) La pression artérielle :</b><br>a) dépend de la vasomotricité, de la volémie et du rythme cardiaque<br>b) augmente suite à une hémorragie<br>c) diminue suite à un stress<br>d) est régulée par un mécanisme réflexe</p>
+<!-- page 57 -->
+<!-- PROOFREAD: 3954 part1 p57 — "97) La pression artérielle :" — line cut at the top edge -->
+<p class="para"><b>97) La pression artérielle :</b><br>a) augmente suite à une vasoconstriction<br>b) diminue suite à une augmentation du rythme cardiaque<br>c) est régulée par un mécanisme nerveux<br>d) est une constante physiologique qui ne doit pas être contrôlée</p>
+<p class="para"><b>98) Une augmentation de la pression artérielle au niveau du sinus carotidien entraîne:</b><br>a) une stimulation des parasympathiques moteurs (nerf X)<br>b) une vasodilatation  des artères<br>c) une diminution de la fréquence des Potentiels d'action au niveau des nerfs de Héring<br>d) une vasoconstriction des artères</p>
+<p class="para"><b>99) Une augmentation de la pression artérielle au niveau du sinus carotidien entraîne :</b><br>a) une accélération du rythme cardiaque<br>b) une diminution du rythme cardiaque<br>c) une augmentation de la fréquence des potentiels d'action au niveau du nerf X<br>d) une augmentation de la fréquence des potentiels d'action au niveau du nerf orthosympathique cardiaque</p>
+<p class="para"><b>100) En réponse à une hypertension artérielle :</b><br>a) le  rythme cardiaque s'accélère<br>b) la fréquence des potentiels d'action augmente sur les nerfs de Héring<br>c) la libération de l'acétylcholine, au niveau du cœur, diminue<br>d) la fréquence des potentiels d'action de l'orthosympathique augmente</p>
+<p class="para"><b>101) Le réflexe correcteur de l'hypertension artérielle fait intervenir :</b><br>a) des barorécepteurs<br>b) le nerf pneumogastrique (X)<br>c) les fibres orthosympathiques<br>d) le centre médullaire cardioaccélérateur</p>
+<!-- page 58 -->
+<p class="para"><b>102) L'hypertension artérielle peut-être corrigée par :</b><br>a) une vasoconstriction<br>b) une augmentation du rythme cardiaque<br>c) une vasodilatation<br>d) une baisse du rythme cardiaque</p>
+<p class="para"><b>103) En cas d'une hypertension au niveau du sinus carotidien :</b><br>a)  la fréquence des potentiels d'action augmente dans les fibres du nerf du Héring et  les fibres du nerf pneumo-gastrique (nerf X)<br>b)  la fréquence des potentiels d'action augmente dans les fibres du nerf du Héring et diminue dans les fibres du nerf pneumogastrique<br>c)  la fréquence des potentiels d'action augmente dans les fibres du nerf orthosympathique cardiaque<br>d)  la médullosurrénale libère l'adrénaline dans le sang</p>
+<p class="para"><b>104) Une hypertension artérielle entraîne :</b><br>a)  une augmentation de la fréquence des potentiels d'action au niveau du nerf du Héring<br>b)  une baisse de la fréquence des potentiels d'action au niveau du nerf (X)<br>c)  une inhibition des neurones du centre vasomoteur bulbaire<br>d)  une accélération du rythme cardiaque</p>
+<p class="para"><b>105) Dans le réflexe correcteur de l'hypotension on constate :</b><br>a) une augmentation de la fréquence de potentiels d'action au niveau des nerfs de Héring et de Cyon<br>b) une levée de l'inhibition exercée sur le centre vasomoteur<br>c) une vasodilatation<br>d) une décharge d'adrénaline au niveau de la médullosurrénale</p>
+<p class="para"><b>106) Une hypotension artérielle provoque :</b><br>a)  une augmentation de la fréquence des potentiels d'action au niveau du nerf pneumogastrique<br>b)  une baisse du rythme cardiaque<br>c)  une vasoconstriction<br>d)  une augmentation de la fréquence des potentiels d'action dans les fibres motrices orthosympathiques</p>
+<!-- page 59 -->
+<p class="para"><b>107) La vasoconstriction des artérioles est due à :</b><br>a) une sécrétion d'adrénaline par les médullosurrénales<br>b) une libération de la noradrénaline par le système orthosympatique<br>c) l'action du système rénine-angiotensine<br>d) l'augmentation de la fréquence du potentiel d'action au niveau du sinus carotidien</p>
+<p class="para"><b>108)  L'adrénaline provoque :</b><br>a) une accélération du rythme cardiaque<br>b) un ralentissement du rythme cardiaque<br>c) une diminution de la pression artérielle<br>d) une vasoconstriction de artérioles</p>
+<p class="para"><b>109) L'adrénaline :</b><br>a) est sécrétée par les médullosurrénales<br>b) est un neuromédiateur cardioaccélérateur<br>c) provoque une augmentation de la pression artérielle<br>d) provoque une vasodilatation</p>
+<p class="para"><b>110)  L'adrénaline provoque :</b><br>a) une accélération du rythme cardiaque<br>b) un ralentissement  du rythme cardiaque<br>c) une vasoconstriction<br>d) une vasodilatation</p>
+<p class="para"><b>111) Parmi les maladies cardiovasculaires on distingue les affections cardiaques dues à des infections telles que :</b><br>a) l'angine de poitrine<br>b) l'infarctus du myocarde<br>c) les cardiopathies rhumatismales<br>d) les cardiopathies congénitales</p>
+<p class="para"><b>112) Parmi les maladies cardiovasculaires on distingue les affections vasculaires suivantes :</b><br>a) l'athérosclérose causée par un traumatisme des artères<br>b) la phlébite  causée par l'obstruction veineuse par caillot sanguin<br>c) l'embolie pulmonaire causée par un virus<br>d) les varices des membres supérieurs causées par la position debout prolongée</p>
+<!-- page 60 -->
+<p class="para"><b>113) La prévention des maladies cardiovasculaires repose sur le renforcement des comportements suivants :</b><br>a) l'adaptation de bonnes habitudes alimentaires<br>b) l'abstinence tabagique (éradication du tabagisme)<br>c) la vie sédentaire sans pratique d'une activité physique<br>d) l'incapacité de gérer son stress et d'apaiser ses tensions</p>
+<p class="para"><b>114) Parmi les substances suivantes, celle(s) qui a (ont) pour effet une diminution de la pression artérielle est (sont) :</b><br>a) la noradrénaline<br>b) l'aldostérone<br>c) l'ADH (hormone antidiurétique)<br>d) l'acétylcholine</p>
+<p class="para"><b>115) Parmi les substances suivantes, celle(s) qui a (ont) pour effet une augmentation de la pression artérielle est (sont) :</b><br>a) l'acétylcholine<br>b) l'adrénaline<br>c) l'aldostérone<br>d) le GABA</p>
+<p class="para"><b>116) La pression artérielle :</b><br>a)  s'explique par la poussée sanguine d'origine cardiaque et par la résistance des vaisseaux à l'écoulement du sang<br>b)  augmente suite à une sécrétion par la posthypophyse de vasopressine (ADH)assurant une réabsorption d'eau<br>c)  diminue lorsque la volémie diminue suite à la mise en jeu du système rénine-angiotensine-aldostérone et ADH<br>d)  diminue lorsque la réabsorption du Na<sup>+</sup> assurée par l'aldostérone entraine un accroissement de la volémie</p>
+<p class="para"><b>117) Le stress est :</b><br>a) un état physique causé par les agressions et les contraintes de l'existence<br>b) le taux de résistance à l'usure de l'organisme<br>c) une réaction non uniforme, qu'il s'agisse d'une stimulation agréable ou désagréable<br>d) une réaction uniforme, qu'il s'agisse d'une stimulation agréable ou désagréable</p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<!-- page 61 -->
+<p class="para"><b>118) Le stress est :</b></p>
+<p class="para">a) une réaction uniforme à une stimulation agréable<br>
+b) une demande faite aux capacités d'adaptation de l'esprit et du corps<br>
+c) ne peut pas être une source de plaisir sans laquelle la vie aurait manqué de piquant<br>
+d) positif si les capacités d'adaptation de l'esprit et du corps ne peuvent gérer le stress ni apprécier la stimulation qu'il implique</p>
+<p class="para"><b>119) Le stress peut être causé par :</b></p>
+<p class="para">a) des pressions exercées auxquelles on ne peut pas échapper<br>
+b) des horaires peu chargés<br>
+c) un manque de sommeil et une vie paisible<br>
+d) un grand changement dans le mode de vie</p>
+<p class="para"><b>120) Le stress :</b></p>
+<p class="para">a) est produit par n'importe qu'elle activité normale<br>
+b) est négatif si les capacités d'adaptation de l'esprit et du corps ne  peuvent pas le gérer<br>
+c) déclenche dans l'organisme différents effets apparents<br>
+d) est toujours une stimulation négative pour l’organisme</p>
+<p class="para"><b>121) Les malaises du stress prolongé peuvent être :</b></p>
+<p class="para">a) l'hypotension artérielle et l'infarctus du myocarde<br>
+b) des douleurs musculaires de la nuque<br>
+c) l'hypoglycémie<br>
+d) des malaises digestifs et ulcères d'estomac</p>
+<p class="para"><b>122) Le stress prolongé provoque :</b></p>
+<p class="para">a) des maux de tête, des vertiges<br>
+b) une hypertension artérielle<br>
+c) une hypoglycémie<br>
+d) une résistance plus importante du système immunitaire aux infections</p>
+<!-- page 62 -->
+<!-- PROOFREAD: 3954 part1 p62 — "123) Le stress aboutit à des malaises multiples tels que :" top of the line cut by the page edge -->
+<p class="para"><b>123) Le stress aboutit à des malaises multiples tels que :</b></p>
+<p class="para">a) les insomnies<br>
+b) la diminution du rythme cardiaque<br>
+c) la diminution de la pression artérielle<br>
+d) des douleurs musculaires de la nuque</p>
+<p class="para"><b>124) Les phases de réponse au stress sont :</b></p>
+<p class="para">a) la phase d'alarme initiale brève<br>
+b) la phase d'adaptation suivie d'épuisement pendant laquelle le corps est débordée<br>
+c) la phase de résistance ou d'adaptation pendant laquelle le corps est bien adapté à l'agression<br>
+d) la phase d'accoutumance</p>
+<p class="para"><b>125) L’adrénaline intervient dans le stress :</b></p>
+<p class="para">a) comme étant une hormone sécrétée par les médullo surrénales<br>
+b) a des effets analogues à ceux de la noradrénaline mais plus tardifs<br>
+c) en activant la glycogénolyse, les glandes sudoripares et l'irrigation des muscles<br>
+d) comme étant une neurohormone</p>
+<p class="para"><b>126) Le cortisol intervient dans le stress :</b></p>
+<p class="para">a) comme étant une hormone sécrétée par l'hypothalamus<br>
+b) comme étant une hormone sécrétée par la zone corticale des glandes surrénales<br>
+c) en hydrolysant les protéines en acides aminés que le foie transforme en glycogène<br>
+d) en mobilisant le système immunitaire pour s’opposer aux agressions externes</p>
+<p class="para"><b>127) Un des mécanismes d'action des drogues sur le cerveau est :</b></p>
+<p class="para">a) l'inhibition de la recapture du neurotransmetteur<br>
+b) l'accélération de la recapture du neurotransmetteur<br>
+c) la non libération du neurotransmetteur<br>
+d) la libération et la fixation du neurotransmetteur</p>
+<!-- page 63 -->
+<!-- PROOFREAD: 3954 part1 p63 — "128) La prévention contre la toxicomanie se joue à plusieurs" top of the line cut by the page edge -->
+<p class="para"><b>128) La prévention contre la toxicomanie se joue à plusieurs niveaux :</b></p>
+<p class="para">a) à l'échelle individuelle en communiquant avec autrui et en vainquant l'ennui<br>
+b) à l'échelle familiale par l'écoute et la compréhension des parents<br>
+c) à l'échelle sociale en faisant de la publicité pour le tabac<br>
+d) à l'échelle  sociale en vendant le tabac et les drogues douces aux jeunes</p>
+<p class="para"><b>129) L'arrêt de la prise des drogues entraîne un état de manque caractérisé par :</b></p>
+<p class="para">a) une sensation de malaise, d'angoisse allant jusqu'à la dépression<br>
+b) la mort subite d'origine cardiaque<br>
+c) une insomnie, douleurs, anxiété, c'est la dépendance physique<br>
+d) un endormissement</p>
+<p class="para"><b>130) Un rat est devenu esclave d'une drogue puisqu'un dispositif expérimental lui permet de s'auto-injecter la drogue à des doses de plus en plus importantes, cet état est :</b></p>
+<p class="para">a) suicidaire<br>
+b) un état d'intoxication alimentaire<br>
+c) un état d'intoxication conduisant à la tolérance<br>
+d) un état d'intoxication conduisant à l'indépendance</p>
+<p class="para"><b>131) Parmi les règles de vie qui assurent l'hygiène du système nerveux on cite :</b></p>
+<p class="para">a) éviter le tabac, l'alcool et la consommation des drogues<br>
+b) la pratique régulière du sport<br>
+c) se nourrir d'aliments sains et variés et ne pas dormir suffisamment<br>
+d) éviter le surmenage et ne pas aménager journellement des moments de détente èt de loisir</p>
+<!-- page 64 -->
+<p class="para"><b>132) La cocaïne agit au niveau de certaines synapses neuroneuroniques en :</b></p>
+<p class="para">a) inhibant la libération de la dopamine par le neurone pré synaptique<br>
+b) inhibant la fixation de la dopamine sur la membrane du neurone post synaptique<br>
+c) empêchant la recapture de la dopamine par le neurone pré synaptique<br>
+d) donnant une sensation de plaisir</p>
+
+<div class="chtag"><span>Chapitre</span> Immunité</div>
+
+<!-- page 65 -->
+<!-- PROOFREAD: 3954 part1 p65 — "Thème 5 : Immunité de l’organisme" top of the title cut by the page edge -->
+<p class="subhead t-red"><b><i>Thème 5 : Immunité de l’organisme</i></b></p>
+<p class="consigne">Pour chacun des items suivants ; il peut y avoir une ou deux réponse(s) exacte(s).Indiquez dans chaque cas la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).<br>
+<b>NB :</b> Toute réponse fausse annule la note attribuée l’item.</p>
+<p class="para"><b>1) Les cellules phagocytaires :</b></p>
+<p class="para">a) se fixent sur l’antigène par des récepteurs spécifiques<br>
+b) naissent toutes dans la moelle rouge osseuse<br>
+c) quittent les vaisseaux sanguins par diapédèse<br>
+d) sont attirées vers le lieu de l’infection par transport passif</p>
+<p class="para"><b>2) La phagocytose peut être effectuée par :</b></p>
+<p class="para">a) les polynucléaires<br>
+b) les lymphocytes T cytotoxiques<br>
+c) les macrophages<br>
+d) les lymphocytes B</p>
+<p class="para"><b>3) Le système HLA :</b></p>
+<p class="para">a) correspond à des protéines fixées à la membrane des cellules nucléées de l’organisme<br>
+b) intervient dans la reconnaissance de l'anticorps<br>
+c) est semblable chez tous les êtres vivants<br>
+d) est codé par le CMH</p>
+<p class="para"><b>4) Les molécules HLA. :</b></p>
+<p class="para">a) sont présentes à la surface de toutes les cellules de l’organisme<br>
+b) sont codées par le CMH<br>
+c) sont identiques chez deux personnes histoincompatibles<br>
+d) interviennent dans la reconnaissance de l’antigène</p>
+<p class="para"><b>5) Un antigène :</b></p>
+<p class="para">a) peut être particulaire ou soluble<br>
+b) est reconnu par le système immunitaire grâce aux déterminants antigéniques<br>
+c) est toujours éliminé par phagocytose<br>
+d) perd son pouvoir immunogène suite à certains traitements</p>
+<!-- page 66 -->
+<p class="para"><b>6) Une anatoxine :</b></p>
+<p class="para">a) est un microbe affaibli<br>
+b) est une toxine atténuée<br>
+c) a un pouvoir pathogène<br>
+d) a un pouvoir immunogène</p>
+<p class="para"><b>7) Les organes lymphoïdes primaires sont :</b></p>
+<p class="para">a) la moelle rouge des os et le thymus<br>
+b) le thymus et les ganglions lymphatiques<br>
+c) les ganglions lymphatiques et la rate<br>
+d) la peau et les muqueuses</p>
+<p class="para"><b>8) Un macrophage :</b></p>
+<p class="para">a) possède uniquement des récepteurs membranaires HLAII<br>
+b) possède des récepteurs pour le site de fixation de l'anticorps aux cellules immunitaires<br>
+c) provient de cellules souches de la mœlle rouge osseuse<br>
+d) est une cellule qui intervient uniquement au cours de l'immunité non spécifique</p>
+<p class="para"><b>9) Les macrophages :</b></p>
+<p class="para">a) sont capables de produire des anticorps<br>
+b) sont capables de phagocytose<br>
+c) présentent l’antigène aux lymphocytes T auxiliaires (T<sub>a</sub>)<br>
+d) produisent l’interleukine IL<sub>2</sub></p>
+<p class="para"><b>10) Les macrophages :</b></p>
+<p class="para">a) interviennent uniquement au début d’une réaction immunitaire<br>
+b) ont des récepteurs spécifiques à certains épitopes<br>
+c) participent seulement aux réactions immunitaires non spécifiques<br>
+d) présentent les antigènes aux LB et LT</p>
+<p class="para"><b>11) Les défenses non spécifiques que l’organisme oppose aux agents qui lui sont étrangers se font par :</b></p>
+<p class="para">a) la peau, les muqueuses et les sécrétions<br>
+b) les perforines sécrétées par les LT<sub>c</sub><br>
+c) la phagocytose<br>
+d) les anticorps</p>
+<!-- page 67 -->
+<!-- PROOFREAD: 3954 part1 p67 — "12) Les ganglions lymphatiques sont :" top of the line cut by the page edge -->
+<p class="para"><b>12) Les ganglions lymphatiques sont :</b></p>
+<p class="para">a) des organes immunitaires périphériques secondaires<br>
+b) des organes immunitaires centraux primaires<br>
+c) les lieux de rencontre des lymphocytes avec  les antigènes<br>
+d) des cellules du système immunitaire</p>
+<p class="para"><b>13) Les ganglions lymphatiques sont des organes lymphoïdes :</b></p>
+<p class="para">a) où naissent les lymphocytes B et les lymphocytes T à partir de cellules souches<br>
+b) où les lymphocytes B et les lymphocytes T deviennent immunocompétents<br>
+c) où les lymphocytes immunocompétents entrent en contact avec les antigènes<br>
+d) qui reçoivent des lymphocytes à partir des organes lymphoïdes primaires</p>
+<p class="para"><b>14) Parmi les organes lymphoïdes périphériques ou secondaires, on peut citer :</b></p>
+<p class="para">a) le thymus<br>
+b) la moelle osseuse<br>
+c) la rate<br>
+d) les ganglions lymphatiques</p>
+<p class="para"><b>15) Parmi les effecteurs de l'immunité spécifique, on peut citer :</b></p>
+<p class="para">a) la peau<br>
+b) les lymphocytes<br>
+c) les anticorps<br>
+d) les polynucléaires</p>
+<p class="para"><b>16) Les cellules impliquées dans une réaction à médiation humorale sont :</b></p>
+<p class="para">a) les macrophages<br>
+b) les lymphocytes T<sub>4</sub><br>
+c) les lymphocytes B et les LT<sub>c</sub><br>
+d) les lymphocytes T<sub>8</sub></p>
+<!-- page 68 -->
+<!-- PROOFREAD: 3954 part1 p68 — "17) L’immunocompétence :" top of the line cut by the page edge -->
+<p class="para"><b>17) L’immunocompétence :</b></p>
+<p class="para">a) est la capacité des macrophages à reconnaître les éléments du  non soi<br>
+b) est la capacité des cellules immunitaires à détruire les éléments  non soi<br>
+c) est la capacité pour les cellules immunitaires d’acquérir des récepteurs<br>
+d) est sous contrôle nerveux et hormonal</p>
+<p class="para"><b>18) La réponse immunitaire  à médiation humorale :</b></p>
+<p class="para">a) est une réponse non spécifique<br>
+b) fait intervenir des anticorps<br>
+c) fait intervenir des lymphocytes T auxiliaires<br>
+d) fait intervenir des lymphocytes T cytotoxiques</p>
+<p class="para"><b>19) L’immunité à médiation humorale :</b></p>
+<p class="para">a) neutralise l’antigène grâce à des molécules solubles, les anticorps<br>
+b) détruit l’antigène grâce à des cellules cytotoxiques<br>
+c) est responsable du rejet de greffe<br>
+d) est responsable de l’incompatibilité entre les groupes sanguins différents</p>
+<p class="para"><b>20) L’immunité à médiation cellulaire :</b></p>
+<p class="para">a) a pour effecteur les lymphocytes B<br>
+b) nécessite une coopération avec les lymphocytes T<sub>4</sub><br>
+c) élimine les antigènes circulants<br>
+d) est responsable de l’incompatibilité entre les groupes sanguins différents</p>
+<p class="para"><b>21) La réponse immunitaire  à médiation cellulaire se fait contre :</b></p>
+<p class="para">a) les virus et les bactéries extracellulaires<br>
+b) les virus et les bactéries intracellulaires<br>
+c) les antigènes libres dans le sang<br>
+d) les greffons histo-incompatibles</p>
+<!-- page 69 -->
+<!-- PROOFREAD: 3954 part1 p69 — "22) Les cellules impliquées nécessairement au cours d'une RIMC" top of the line cut by the page edge -->
+<p class="para"><b>22) Les cellules impliquées nécessairement au cours d'une RIMC sont :</b></p>
+<p class="para">a) les lymphocytes T<sub>8</sub> (LT<sub>8</sub>) et les LT<sub>c</sub><br>
+b) les plasmocytes<br>
+c) les macrophages  et les LT<sub>4</sub><br>
+d) les lymphocytes B (LB)</p>
+<p class="para"><b>23) L'immunité à médiation cellulaire (RIMC) assure une défense contre :</b></p>
+<p class="para">a) les cellules infectées<br>
+b) les greffons histo-incompatibles<br>
+c) les greffons histo-compatibles<br>
+d) les toxines libres</p>
+<p class="para"><b>24) Les cellules impliquées nécessairement au cours d’une RIMH sont :</b></p>
+<p class="para">a) les macrophages<br>
+b) les lymphocytes T<sub>8</sub> (LT8)<br>
+c) les lymphocytes LT<sub>C</sub><br>
+d) les lymphocytes B (LB)</p>
+<p class="para"><b>25) L’immunité à médiation humorale (RIMH) assure une défense contre :</b></p>
+<p class="para">a) les toxines libres<br>
+b) les greffons histo-incompatibles<br>
+c) les greffons histo-compatibles<br>
+d) les cellules infectées du corps</p>
+<p class="para"><b>26) La réaction de rejet d’un greffon chez un receveur :</b></p>
+<p class="para">a) se produit lorsque le donneur et le receveur sont de même CMH<br>
+b) se produit lorsque le donneur et le receveur sont de CMH différents<br>
+c) fait intervenir les lymphocytes B<br>
+d) fait intervenir les lymphocytes T</p>
+<p class="para"><b>27) Les lymphocytes T acquièrent leur immunocompétence au niveau :</b></p>
+<p class="para">a) de la rate<br>
+b) des ganglions lymphatiques<br>
+c) de la moelle osseuse<br>
+d) du thymus</p>
+<!-- page 70 -->
+<p class="para"><b>28) Le lymphocyte LT<sub>4</sub> :</b></p>
+<p class="para">a) comporte des récepteurs à l’IL<sub>1</sub> (interleukine1)<br>
+b) sécrète IL<sub>1</sub><br>
+c) comporte des récepteurs à l’IL<sub>2</sub> (interleukine2)<br>
+d) stimule les LB par l’IL<sub>2</sub></p>
+<p class="para"><b>29) Les lymphocytes T auxiliaires peuvent reconnaître :</b></p>
+<p class="para">a) les antigènes libres<br>
+b) les antigènes présentés par d’autres lymphocytes T<br>
+c) les antigènes présentés par des lymphocytes B<br>
+d) les antigènes présentés par des macrophages</p>
+<p class="para"><b>30) Les lymphocytes T cytotoxiques (T<sub>C</sub>) :</b></p>
+<p class="para">a) reconnaissent, par leurs récepteurs (TCR), les antigènes libres<br>
+b) ne reconnaissent un  antigène du non soi que s’il est associé à des marqueurs du CMH à la surface de cellules du soi<br>
+c) peuvent détruire certaines cellules du soi (cellules infectées, cellules tumorales...)<br>
+d) ne sont pas activés par les lymphocytes T auxiliaires (T<sub>a</sub>)</p>
+<p class="para"><b>31) Les lymphocytes T cytotoxiques (T<sub>c</sub>):</b></p>
+<p class="para">a) sont des cellules qui provoquent la lyse des cellules infectées ou greffées<br>
+b) se différencient dans la moelle osseuse<br>
+c) sécrètent des anticorps<br>
+d) sécrètent IL<sub>2</sub></p>
+<p class="para"><b>32) Les lymphocytes T cytotoxiques :</b></p>
+<p class="para">a) sont produits par la moelle rouge des os<br>
+b) subissent leur maturation dans le thymus<br>
+c) produisent des anticorps<br>
+d) reconnaissent  les antigènes libres</p>
+<p class="para"><b>33) Les lymphocytes T auxiliaires (Ta ou T<sub>h</sub>) :</b></p>
+<p class="para">a) deviennent immunocompétents dans la moelle rouge<br>
+b) deviennent immunocompétents dans le thymus<br>
+c) ont pour récepteurs membranaires des Ig<br>
+d) stimulent par IL<sub>2</sub> les LB et les LT<sub>8</sub></p>
+<!-- page 71 -->
+<p class="para"><b>34) Les LT<sub>8</sub> engendrent après stimulation, prolifération et différenciation :</b></p>
+<p class="para">a) les lymphocytes T mémoires (LT<sub>8m</sub>)<br>
+b) les lymphocytes T auxiliaires (LTa ou LT<sub>h</sub>)<br>
+c) les lymphocytes T cytotoxiques (LTc)<br>
+d) les lymphocytes T suppresseurs (LT<sub>s)</sub></p>
+<p class="para"><b>35) Les LT<sub>4</sub> appartiennent à un clone et les LT<sub>8</sub> à un autre :</b></p>
+<p class="para">a) ils reconnaissent les différents épitopes d’un même antigène<br>
+b) ils reconnaissent un  antigène associé à HLA I<br>
+c) ils reconnaissent un  antigène associé à HLA II<br>
+d) ils reconnaissent un  antigène associé à HLAI pour LT<sub>8</sub> et à HLAII pour LT<sub>4</sub></p>
+<p class="para"><b>36) Les lymphocytes B :</b></p>
+<p class="para">a) peuvent jouer le rôle de cellules présentatrices d’antigènes<br>
+b) ne reconnaissent l’antigène que s’il est associé à la molécule HLA<br>
+c) deviennent immunocompétents dans la moelle rouge des os<br>
+d) expriment à leur surface des Ig (immunoglobulines) identiques chez un  même individu</p>
+<p class="para"><b>37) les lymphocytes B :</b></p>
+<p class="para">a) sont produits par la moelle rouge des os<br>
+b) subissent leur maturation dans le thymus<br>
+c) détruisent les cellules infectées<br>
+d) sécrètent les anticorps</p>
+<p class="para"><b>38) Les lymphocytes B et les lymphocytes T :</b></p>
+<p class="para">a) existent avant tout contact avec les antigènes<br>
+b) naissent tous suite au contact avec les antigènes<br>
+c) se multiplient suite à la reconnaissance des antigènes<br>
+d) chacun d’eux est spécifique de plusieurs déterminants</p>
+<p class="para"><b>39) L'acquisition des récepteurs des lymphocytes B et T a lieu:</b></p>
+<p class="para">a) avant la pénétration de l'antigène<br>
+b) après la pénétration de l'antigène<br>
+c) lors de la phase d'induction de la réponse immunitaire<br>
+d) suite à une stimulation antigénique</p>
+<!-- page 72 -->
+<p class="para"><b>40) Les plasmocytes proviennent de la transformation :</b></p>
+<p class="para">a) des macrophages<br>
+b) des lymphocytes B<br>
+c) des lymphocytes T auxiliaires<br>
+d) des lymphocytes T cytotoxiques</p>
+<p class="para"><b>41) Les plasmocytes :</b></p>
+<p class="para">a) proviennent de la différenciation des lymphocytes B<br>
+b) proviennent de la différenciation  des lymphocytes T<br>
+c) produisent des anticorps<br>
+d) produisent des perforines</p>
+<p class="para"><b>42) Les anticorps sont produits par :</b></p>
+<p class="para">a) les macrophages<br>
+b) les lymphocytes auxiliaires LT<sub>4</sub><br>
+c) les plasmocytes<br>
+d) les lymphocytes cytotoxiques LT<sub>8</sub></p>
+<p class="para"><b>43) L’anticorps :</b></p>
+<p class="para">a) se trouve dans le sérum<br>
+b) peut se fixer sur deux antigènes différents<br>
+c) est sécrété par les lymphocytes T<br>
+d) intervient dans toutes les réactions immunitaires spécifiques</p>
+<p class="para"><b>44) Les anticorps :</b></p>
+<p class="para">a) sont produits par toutes les cellules du système immunitaire<br>
+b) peuvent protéger un organisme qui ne les a pas synthétisés<br>
+c) sont les effecteurs de la RIMC<br>
+d) neutralisent l’antigène par la formation d’un complexe immun</p>
+<p class="para"><b>45) Au niveau des anticorps, le site de fixation de l’antigène se situe :</b></p>
+<p class="para">a) sur la partie constante de la chaîne lourde<br>
+b) sur la partie variable de la chaîne légère<br>
+c) sur la partie constante de la chaîne légère<br>
+d) sur l’extrémité de la partie variable des chaînes lourde et légère</p>
+<!-- page 73 -->
+<p class="para"><b>46) Dans le système immunitaire, les immunoglobulines ont pour fonction :</b></p>
+<p class="para">a) la reconnaissance des antigènes<br>
+b) la neutralisation des antigènes<br>
+c) la lyse des cellules infectées<br>
+d) l’activation des lymphocytes T<sub>4</sub></p>
+<p class="para"><b>47) Le thymus est un lieu de :</b></p>
+<p class="para">a) la naissance des lymphocytes T (LT)<br>
+b) la naissance des lymphocytes B (LB)<br>
+c) la maturation des lymphocytes T<br>
+d) la maturation des lymphocytes B</p>
+<p class="para"><b>48) Une thymectomie à la naissance provoque :</b></p>
+<p class="para">a) l’absence de lymphocytes B et de lymphocytes T<br>
+b) la tolérance des xénogreffes<br>
+c) un affaiblissement de la réponse immunitaire non spécifique<br>
+d) un affaiblissement de la phagocytose</p>
+<p class="para"><b>49) Suite à l’absence congénitale du thymus il y a :</b></p>
+<p class="para">a) absence des réactions immunitaires<br>
+b) affaiblissement des réponses immunitaires non spécifiques<br>
+c) affaiblissement des RIMH<br>
+d) affaiblissement des RIMH et des RIMC</p>
+<p class="para"><b>50) Un vaccin :</b></p>
+<p class="para">a) contient des anticorps qui protègent l’organisme contre un antigène déterminé<br>
+b) peut être utilisé pour la protection immédiate contre un agent pathogène<br>
+c) permet l’activation du système immunitaire<br>
+d) permet l’acquisition d’une mémoire immunitaire contre un antigène déterminé</p>
+<p class="para"><b>51) La sérothérapie :</b></p>
+<p class="para">a) consiste à introduire dans l’organisme un antigène atténué<br>
+b) assure une immunité durable à l’aide d’un sérum<br>
+c) apporte une  immunité immédiate grâce à des anticorps<br>
+d) est une technique de prévention contre certaines maladies</p>
+<!-- page 74 -->
+<!-- PROOFREAD: 3954 part1 p74 — "52) La sérothérapie :" top of the line cut by the page edge -->
+<p class="para"><b>52) La sérothérapie :</b></p>
+<p class="para">a) consiste en l’injection de cellules immunitaires immunocompétentes<br>
+b) consiste en l’injection d’anticorps<br>
+c) permet de secourir une personne non immunisée<br>
+d) permet d’assurer un état d’immunité durable chez l’individu receveur</p>
+<p class="para"><b>53) Une souris A a survécu suite à 2 injections successives, la 1<sup>ère</sup> injection contient du sérum d’une  souris B immunisée contre la toxine tétanique, la 2<sup>ème</sup> injection contient une toxine tétanique. Cela prouve que:</b></p>
+<p class="para">a) l’immunité de la souris A est active<br>
+b) la souris A, a développée une réponse immunitaire contre la toxine tétanique<br>
+c) la toxine tétanique injectée à la souris A n’est pas virulente<br>
+d) l’immunité de la souris B a été transférée à la souris A au cours de la première injection</p>
+<p class="para"><b>54) Le sérum anti-tétanique :</b></p>
+<p class="para">a) contient des anatoxines<br>
+b) contient des anti-toxines<br>
+c) est utilisé pour un traitement d’urgence contre le tétanos<br>
+d) est utilisé dans le cadre d’une prévention contre l’atteinte par les bacilles tétaniques</p>
+<p class="para"><b>55) Le sérum anti-scorpionique :</b></p>
+<p class="para">a) contient des anatoxines<br>
+b) contient des anti-toxines<br>
+c) est utilisé à titre préventif<br>
+d) est utilisé à titre curatif</p>
+<p class="para"><b>56) L'interleukine 2 (IL<sub>2</sub>) est sécrétée par :</b></p>
+<p class="para">a) les macrophages<br>
+b) les lymphocytes B (LB)<br>
+c) les lymphocytes T<sub>8</sub>  (LT<sub>8</sub>)<br>
+d) les lymphocytes T helper (LT<sub>h</sub>)</p>
+<!-- page 75 -->
+<!-- PROOFREAD: 3954 part1 p75 — "57) Pour détruire une cellule infectée, les lymphocytes T" top of the line cut by the page edge -->
+<p class="para"><b>57) Pour détruire une cellule infectée, les lymphocytes T cytotoxiques (LT<sub>c</sub>) utilisent :</b></p>
+<p class="para">a) l'interleukine 1 (IL<sub>1</sub>)<br>
+b) l'interleukine 1 (IL<sub>2</sub>)<br>
+c) des anticorps<br>
+d) des perforines</p>
+<p class="para"><b>58) L’ordre normal du déroulement d’une réaction immunitaire spécifique est :</b></p>
+<p class="para">a) phase d’induction- phase d’amplification - phase effectrice<br>
+b) phagocytose - phase d’amplification - phase effectrice<br>
+c) phase d’amplification - phase effectrice – phase d’induction<br>
+d) phagocytose - phase d’induction - phase effectrice</p>
+<p class="para"><b>59) Au cours de la phase d'amplification de la réponse immunitaire :</b></p>
+<p class="para">a) les lymphocytes B (LB)  sont différenciés en cellules tueuses<br>
+b) les lymphocytes T (LT<sub>4</sub>) coordonnent la réponse par contact direct et par sécrétion de IL<sub>2</sub><br>
+c) les macrophages (CP<sub>Ag</sub>) présentent aux LT<sub>4</sub> le déterminant antigénique (épitope)<br>
+d) les récepteurs des LB ne reconnaissent pas les antigènes libres dans le sang</p>
+<p class="para"><b>60) Au cours de la phase effectrice de la réponse immunitaire :</b></p>
+<p class="para">a) les lymphocytes T(LT<sub>c</sub>) déversent leur substance dans le sang<br>
+b) les anticorps fixent les antigènes circulants et les font précipiter<br>
+c) les anticorps perforent l'antigène à l'aide du complément<br>
+d) le macrophage neutralise le complément</p>
+<p class="para"><b>61) Au cours de la réponse immunitaire :</b></p>
+<p class="para">a) pendant l'expression clonale, les lymphocytes T (LT<sub>8</sub>) synthétisent des récepteurs à IL<sub>2</sub><br>
+b) l'identification de l'antigène et l'expansion clonale forment la réponse primaire<br>
+c) les lymphocytes T (LT<sub>c</sub>) tuent les cellules étrangères présentant l'épitope associé au HLA I<br>
+d) les lymphocytes (LT<sub>4</sub>) sont activés lorsqu'ils se mettent à produire des IL<sub>1</sub> et des récepteurs à IL<sub>2</sub></p>
+<!-- page 76 -->
+<p class="para"><b>62) Lors d’une transfusion sanguine entre un donneur de groupe A et un receveur de groupe B, il y a eu agglutination des globules rouges chez le receveur car :</b></p>
+<p class="para">a) les anticorps anti-B du donneur se sont fixés sur les anticorps anti-A du receveur<br>
+b) les anticorps anti-A du receveur se sont fixés sur les antigènes A du donneur<br>
+c) les antigènes A du donneur se sont fixés sur les antigènes du receveur<br>
+d) le donneur et le receveur n’ont pas le même complexe d’histocompatibilité (CMH) antigénique</p>
+<p class="para"><b>63) Dans le sang d'un individu de groupe sanguin A, il y a :</b></p>
+<p class="para">a) l'agglutinogène de type A sur la membrane des hématies<br>
+b) l'agglutinogène de type B sur la membrane des hématies<br>
+c) l'agglutinine anti- A dans le plasma<br>
+d) l'agglutinine anti- B dans le plasma</p>
+<p class="para"><b>64) Pour le système sanguin ABO, dans le cas où les hématies d’un individu X sont agglutinées par le sérum d’un individu Y, on peut déduire que :</b></p>
+<p class="para">a) les deux individus X et Y sont de même groupe sanguin<br>
+b) les deux individus X et Y sont de groupes sanguins différents<br>
+c) l’individu X peut être de groupe sanguin O<br>
+d) l’individu Y peut être de groupe sanguin O</p>
+<p class="para"><b>65) Une allergie:</b></p>
+<p class="para">a) est une réaction excessive de l'organisme contre un allergène<br>
+b) est une réaction d'hypersensibilité qui peut être agréable<br>
+c) est une réaction d'hypersensibilité après un premier contact avec un allergène<br>
+d) est une réaction d'hypersensibilité après un deuxième contact avec un allergène</p>
+<!-- page 77 -->
+<!-- PROOFREAD: 3954 part1 p77 — "66) La réaction allergique :" top of the line cut by the page edge -->
+<p class="para"><b>66) La réaction allergique :</b></p>
+<p class="para">a) nécessite la fixation des anticorps produits lors de la réponse primaire sur les mastocytes<br>
+b) consiste en une dégranulation des mastocytes et une libération de l'histamine<br>
+c) est une dégranulation des plasmocytes<br>
+d) est toujours une réponse à l'introduction dans l'organisme d'un antigène pathogène</p>
+<p class="para"><b>67) Lors de la mise en place de l’allergie il y a :</b></p>
+<p class="para">a) un 1<sup>er</sup> contact avec l’allergène et différenciation de certains LB<br>
+b) transformation de LB en plasmocytes sécrétrices d’histamine<br>
+c) suite à un contact ultérieur, l’allergène se fixe sur les IgE liés aux mastocytes<br>
+d) pontage entre les IgE suivi d’une désactivation des mastocytes</p>
+<p class="para"><b>68) L’ordre chronologique exact de déroulement des deux phases de la mise en place de l’allergie représenté par les schémas ci-dessous est :</b></p>
+<!-- CROP: 3954 1 77 0.17 0.485 0.92 0.635 3954_p77_allergie_schemas -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/3954/3954_p77_allergie_schemas.png" alt=""></figure>
+<p class="para">a) B - A - C -D - E<br>
+b) D - A - E - B –C<br>
+c) D - A - C - E –B<br>
+d) D -A - B - E - C</p>
+<p class="para"><b>69) La réaction allergique fait intervenir :</b></p>
+<p class="para">a) les mastocytes<br>
+b) les plasmocytes<br>
+c) les lymphocytes T cytotoxiques (LT<sub>c</sub>)<br>
+d) les perforines</p>
+<!-- page 78 -->
+<p class="para"><b>70) Les deux phases caractéristiques de la mise en place de l’allergie sont :</b></p>
+<p class="para">a) la phase de sensibilisation<br>
+b) la phase de pontage entre les Ig E<br>
+c) la phase de déclenchement de la réaction allergique<br>
+d) la phase de libération des médiateurs inflammatoires (Histamine)</p>
+<p class="para"><b>71) Le SIDA :</b></p>
+<p class="para">a) est une déficience immunitaire héréditaire<br>
+b) est provoqué par un virus à ADN<br>
+c) se transmet de la mère à son enfant par l’allaitement<br>
+d) est dû à une destruction des LT<sub>a</sub> (LT<sub>4</sub>) par le virus VIH</p>
+<p class="para"><b>72) Le test de dépistage du VIH :</b></p>
+<p class="para">a) met en évidence les antigènes du virus<br>
+b) met en évidence les anticorps anti-VIH<br>
+c) met en évidence une diminution considérable des LT<sub>4</sub><br>
+d) consiste à chercher la présence du virus dans le sérum</p>
+<p class="para"><b>73) Le VIH (virus du SIDA) peut se transmettre :</b></p>
+<p class="para">a) d’une mère séropositive à son fœtus<br>
+b) par la voie sexuelle<br>
+c) par l’utilisation des serviettes d’une personne atteinte du SIDA<br>
+d) par la baignade avec des personnes séropositives</p>
+<p class="para"><b>74) Les principales cellules cibles du VIH sont :</b></p>
+<p class="para">a) les lymphocytes B<br>
+b) les lymphocytes T<sub>a</sub><br>
+c) les lymphocytes T cytotoxiques<br>
+d) les macrophages</p>
+<p class="para"><b>75) La formation de l’ADN pro viral du VIH  nécessite :</b></p>
+<p class="para">a) un ARN polymérase<br>
+b) un ADN polymérase<br>
+c) une transcriptase réverse<br>
+d) une protéase</p>
+<!-- page 79 -->
+<!-- page 80 -->
+<p class="subhead t-red"><b><i>CORRIGÉS<br>des<br>Q.C.M</i></b></p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+
+<!-- page 81 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 1:<br>Reproduction humaine et santé</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>1</b></td><td>c - d</td><td><b>21</b></td><td>b - d</td></tr>
+<tr><td><b>2</b></td><td>c</td><td><b>22</b></td><td>a - c</td></tr>
+<tr><td><b>3</b></td><td>d</td><td><b>23</b></td><td>a - b</td></tr>
+<tr><td><b>4</b></td><td>a</td><td><b>24</b></td><td>b - c</td></tr>
+<tr><td><b>5</b></td><td>b</td><td><b>25</b></td><td>b - c</td></tr>
+<tr><td><b>6</b></td><td>d</td><td><b>26</b></td><td>d</td></tr>
+<tr><td><b>7</b></td><td>b</td><td><b>27</b></td><td>c</td></tr>
+<tr><td><b>8</b></td><td>b - c</td><td><b>28</b></td><td>a</td></tr>
+<tr><td><b>9</b></td><td>a - c</td><td><b>29</b></td><td>c - d</td></tr>
+<tr><td><b>10</b></td><td>c</td><td><b>30</b></td><td>b - d</td></tr>
+<tr><td><b>11</b></td><td>a - d</td><td><b>31</b></td><td>b - c</td></tr>
+<tr><td><b>12</b></td><td>b - d</td><td><b>32</b></td><td>b - c</td></tr>
+<tr><td><b>13</b></td><td>d</td><td><b>33</b></td><td>b - c</td></tr>
+<tr><td><b>14</b></td><td>b - d</td><td><b>34</b></td><td>a - c</td></tr>
+<tr><td><b>15</b></td><td>b - c</td><td><b>35</b></td><td>a - b</td></tr>
+<tr><td><b>16</b></td><td>b</td><td><b>36</b></td><td>c - d</td></tr>
+<tr><td><b>17</b></td><td>b</td><td><b>37</b></td><td>a - b</td></tr>
+<tr><td><b>18</b></td><td>b</td><td><b>38</b></td><td>a - c</td></tr>
+<tr><td><b>19</b></td><td>c - d</td><td><b>39</b></td><td>a</td></tr>
+<tr><td><b>20</b></td><td>a - d</td><td><b>40</b></td><td>c</td></tr>
+</table>
+<!-- page 82 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 1:<br>Reproduction humaine et santé</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>41</b></td><td>c</td><td><b>64</b></td><td>a - b</td></tr>
+<tr><td><b>42</b></td><td>b - d</td><td><b>65</b></td><td>a - d</td></tr>
+<tr><td><b>43</b></td><td>b - c</td><td><b>66</b></td><td>a - c</td></tr>
+<tr><td><b>44</b></td><td>b</td><td><b>67</b></td><td>a - b</td></tr>
+<tr><td><b>45</b></td><td>a - d</td><td><b>68</b></td><td>a - c</td></tr>
+<tr><td><b>46</b></td><td>c</td><td><b>69</b></td><td>b</td></tr>
+<tr><td><b>47</b></td><td>d</td><td><b>70</b></td><td>c - d</td></tr>
+<tr><td><b>48</b></td><td>b - d</td><td><b>71</b></td><td>b - d</td></tr>
+<tr><td><b>49</b></td><td>a - b</td><td><b>72</b></td><td>a - c</td></tr>
+<tr><td><b>50</b></td><td>b - d</td><td><b>73</b></td><td>b</td></tr>
+<tr><td><b>51</b></td><td>a - d</td><td><b>74</b></td><td>c</td></tr>
+<tr><td><b>52</b></td><td>a - c</td><td><b>75</b></td><td>a - b</td></tr>
+<tr><td><b>53</b></td><td>b - d</td><td><b>76</b></td><td>a - c</td></tr>
+<tr><td><b>54</b></td><td>b - c</td><td><b>77</b></td><td>a - c</td></tr>
+<tr><td><b>55</b></td><td>a - c</td><td><b>78</b></td><td>a - c</td></tr>
+<tr><td><b>56</b></td><td>c - d</td><td><b>79</b></td><td>a - c</td></tr>
+<tr><td><b>57</b></td><td>a - c</td><td><b>80</b></td><td>b - c</td></tr>
+<tr><td><b>58</b></td><td>a - d</td><td><b>81</b></td><td>b - d</td></tr>
+<tr><td><b>59</b></td><td>b - c</td><td><b>82</b></td><td>c</td></tr>
+<tr><td><b>60</b></td><td>c - d</td><td><b>83</b></td><td>a - b</td></tr>
+<tr><td><b>61</b></td><td>b - c</td><td><b>84</b></td><td>c</td></tr>
+<tr><td><b>62</b></td><td>a - b</td><td><b>85</b></td><td>a - c</td></tr>
+<tr><td><b>63</b></td><td>b</td><td><b>86</b></td><td>a  - c</td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<!-- page 83 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 2:<br>Génétique humaine</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>1</b></td><td>c - d</td><td><b>21</b></td><td>d</td></tr>
+<tr><td><b>2</b></td><td>a - c</td><td><b>22</b></td><td>a - c</td></tr>
+<tr><td><b>3</b></td><td>a - d</td><td><b>23</b></td><td>a - d</td></tr>
+<tr><td><b>4</b></td><td>b</td><td><b>24</b></td><td>b - d</td></tr>
+<tr><td><b>5</b></td><td>a - c</td><td><b>25</b></td><td>d</td></tr>
+<tr><td><b>6</b></td><td>a - b</td><td><b>26</b></td><td>a - c</td></tr>
+<tr><td><b>7</b></td><td>d</td><td><b>27</b></td><td>b - d</td></tr>
+<tr><td><b>8</b></td><td>b - d</td><td><b>28</b></td><td>a - b</td></tr>
+<tr><td><b>9</b></td><td>c</td><td><b>29</b></td><td>b</td></tr>
+<tr><td><b>10</b></td><td>d</td><td><b>30</b></td><td>c</td></tr>
+<tr><td><b>11</b></td><td>a - c</td><td><b>31</b></td><td>a - b</td></tr>
+<tr><td><b>12</b></td><td>a - d</td><td><b>32</b></td><td>c</td></tr>
+<tr><td><b>13</b></td><td>a - c</td><td><b>33</b></td><td>d</td></tr>
+<tr><td><b>14</b></td><td>a</td><td><b>34</b></td><td>d</td></tr>
+<tr><td><b>15</b></td><td>a</td><td><b>35</b></td><td>a - b</td></tr>
+<tr><td><b>16</b></td><td>c</td><td><b>36</b></td><td>c - d</td></tr>
+<tr><td><b>17</b></td><td>c</td><td><b>37</b></td><td>b - c</td></tr>
+<tr><td><b>18</b></td><td>b - d</td><td><b>38</b></td><td>a - b</td></tr>
+<tr><td><b>19</b></td><td>a</td><td><b>39</b></td><td>a - b</td></tr>
+<tr><td><b>20</b></td><td>d</td><td><b>40</b></td><td>b - c</td></tr>
+</table>
+<!-- page 84 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 2:<br>Génétique humaine</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>41</b></td><td>a - c</td><td><b>48</b></td><td>c - d</td></tr>
+<tr><td><b>42</b></td><td>a - c</td><td><b>49</b></td><td>c</td></tr>
+<tr><td><b>43</b></td><td>a - d</td><td><b>50</b></td><td>b - d</td></tr>
+<tr><td><b>44</b></td><td>a</td><td><b>51</b></td><td>a - d</td></tr>
+<tr><td><b>45</b></td><td>c</td><td><b>52</b></td><td>c - d</td></tr>
+<tr><td><b>46</b></td><td>c - d</td><td><b>53</b></td><td>a - b</td></tr>
+<tr><td><b>47</b></td><td>a - b</td><td><b>54</b></td><td>b</td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Évolution biologique</div>
+
+<!-- page 85 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 3:<br>Évolution biologique</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>1</b></td><td>d</td><td><b>11</b></td><td>a - d</td></tr>
+<tr><td><b>2</b></td><td>d</td><td><b>12</b></td><td>a</td></tr>
+<tr><td><b>3</b></td><td>c - d</td><td><b>13</b></td><td>b - c</td></tr>
+<tr><td><b>4</b></td><td>a - c</td><td><b>14</b></td><td>b - d</td></tr>
+<tr><td><b>5</b></td><td>a</td><td><b>15</b></td><td>a - c</td></tr>
+<tr><td><b>6</b></td><td>b</td><td><b>16</b></td><td>b - d</td></tr>
+<tr><td><b>7</b></td><td>b - c</td><td><b>17</b></td><td>a - b</td></tr>
+<tr><td><b>8</b></td><td>d</td><td><b>18</b></td><td>a - b</td></tr>
+<tr><td><b>9</b></td><td>b</td><td><b>19</b></td><td>c</td></tr>
+<tr><td><b>10</b></td><td>a - c</td><td><b>20</b></td><td>a - d</td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<!-- page 86 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 4:<br>Neurophysiologie</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>1</b></td><td>a - c</td><td><b>21</b></td><td>a - d</td></tr>
+<tr><td><b>2</b></td><td>b - c</td><td><b>22</b></td><td>a</td></tr>
+<tr><td><b>3</b></td><td>a</td><td><b>23</b></td><td>b - c</td></tr>
+<tr><td><b>4</b></td><td>a - c</td><td><b>24</b></td><td>d</td></tr>
+<tr><td><b>5</b></td><td>b - d</td><td><b>25</b></td><td>a - c</td></tr>
+<tr><td><b>6</b></td><td>a</td><td><b>26</b></td><td>c</td></tr>
+<tr><td><b>7</b></td><td>b</td><td><b>27</b></td><td>b</td></tr>
+<tr><td><b>8</b></td><td>b</td><td><b>28</b></td><td>b - d</td></tr>
+<tr><td><b>9</b></td><td>a - c</td><td><b>29</b></td><td>a - b</td></tr>
+<tr><td><b>10</b></td><td>b - d</td><td><b>30</b></td><td>a - c</td></tr>
+<tr><td><b>11</b></td><td>a - c</td><td><b>31</b></td><td>a - b</td></tr>
+<tr><td><b>12</b></td><td>a - c</td><td><b>32</b></td><td>c - d</td></tr>
+<tr><td><b>13</b></td><td>b - d</td><td><b>33</b></td><td>b - c</td></tr>
+<tr><td><b>14</b></td><td>a - c</td><td><b>34</b></td><td>a - d</td></tr>
+<tr><td><b>15</b></td><td>a - b</td><td><b>35</b></td><td>b</td></tr>
+<tr><td><b>16</b></td><td>a</td><td><b>36</b></td><td>a - c</td></tr>
+<tr><td><b>17</b></td><td>d</td><td><b>37</b></td><td>b</td></tr>
+<tr><td><b>18</b></td><td>a - b</td><td><b>38</b></td><td>b - d</td></tr>
+<tr><td><b>19</b></td><td>a - c</td><td><b>39</b></td><td>c - d</td></tr>
+<tr><td><b>20</b></td><td>a - d</td><td><b>40</b></td><td>a</td></tr>
+</table>
+<!-- page 87 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 4 :<br>Neurophysiologie</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>41</b></td><td>c</td><td><b>61</b></td><td>a - c</td></tr>
+<tr><td><b>42</b></td><td>a - c</td><td><b>62</b></td><td>c - d</td></tr>
+<tr><td><b>43</b></td><td>a</td><td><b>63</b></td><td>a - b</td></tr>
+<tr><td><b>44</b></td><td>b</td><td><b>64</b></td><td>a - c</td></tr>
+<tr><td><b>45</b></td><td>b</td><td><b>65</b></td><td>a - d</td></tr>
+<tr><td><b>46</b></td><td>a</td><td><b>66</b></td><td>a - d</td></tr>
+<tr><td><b>47</b></td><td>a</td><td><b>67</b></td><td>a - c</td></tr>
+<tr><td><b>48</b></td><td>a - b</td><td><b>68</b></td><td>d</td></tr>
+<tr><td><b>49</b></td><td>b</td><td><b>69</b></td><td>b</td></tr>
+<tr><td><b>50</b></td><td>b</td><td><b>70</b></td><td>d</td></tr>
+<tr><td><b>51</b></td><td>a - b</td><td><b>71</b></td><td>b</td></tr>
+<tr><td><b>52</b></td><td>a</td><td><b>72</b></td><td>a</td></tr>
+<tr><td><b>53</b></td><td>b</td><td><b>73</b></td><td>c</td></tr>
+<tr><td><b>54</b></td><td>b - c</td><td><b>74</b></td><td>a - d</td></tr>
+<tr><td><b>55</b></td><td>d</td><td><b>75</b></td><td>b</td></tr>
+<tr><td><b>56</b></td><td>a - b</td><td><b>76</b></td><td>a - c</td></tr>
+<tr><td><b>57</b></td><td>c</td><td><b>77</b></td><td>a - d</td></tr>
+<tr><td><b>58</b></td><td>a - d</td><td><b>78</b></td><td>c - d</td></tr>
+<tr><td><b>59</b></td><td>c</td><td><b>79</b></td><td>a</td></tr>
+<tr><td><b>60</b></td><td>b</td><td><b>80</b></td><td>a - b</td></tr>
+</table>
+<!-- page 88 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 4:<br>Neurophysiologie</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>81</b></td><td>a - d</td><td><b>101</b></td><td>a - b</td></tr>
+<tr><td><b>82</b></td><td>a - b</td><td><b>102</b></td><td>c - d</td></tr>
+<tr><td><b>83</b></td><td>b - c</td><td><b>103</b></td><td>a</td></tr>
+<tr><td><b>84</b></td><td>c - d</td><td><b>104</b></td><td>a - c</td></tr>
+<tr><td><b>85</b></td><td>b - d</td><td><b>105</b></td><td>b - d</td></tr>
+<tr><td><b>86</b></td><td>d</td><td><b>106</b></td><td>c - d</td></tr>
+<tr><td><b>87</b></td><td>a - b</td><td><b>107</b></td><td>b - c</td></tr>
+<tr><td><b>88</b></td><td>b - c</td><td><b>108</b></td><td>a - d</td></tr>
+<tr><td><b>89</b></td><td>b - c</td><td><b>109</b></td><td>a - c</td></tr>
+<tr><td><b>90</b></td><td>a - d</td><td><b>110</b></td><td>a</td></tr>
+<tr><td><b>91</b></td><td>b - c</td><td><b>111</b></td><td>c - d</td></tr>
+<tr><td><b>92</b></td><td>d</td><td><b>112</b></td><td>a - b</td></tr>
+<tr><td><b>93</b></td><td>b - d</td><td><b>113</b></td><td>a - b</td></tr>
+<tr><td><b>94</b></td><td>a</td><td><b>114</b></td><td>d</td></tr>
+<tr><td><b>95</b></td><td>a - d</td><td><b>115</b></td><td>b - c</td></tr>
+<tr><td><b>96</b></td><td>a - d</td><td><b>116</b></td><td>a - b</td></tr>
+<tr><td><b>97</b></td><td>a - c</td><td><b>117</b></td><td>b - d</td></tr>
+<tr><td><b>98</b></td><td>a - b</td><td><b>118</b></td><td>a - b</td></tr>
+<tr><td><b>99</b></td><td>b - c</td><td><b>119</b></td><td>a - d</td></tr>
+<tr><td><b>100</b></td><td>b</td><td><b>120</b></td><td>a - b</td></tr>
+</table>
+<!-- page 89 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 4:<br>Neurophysiologie</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>121</b></td><td>b - d</td><td><b>127</b></td><td>a</td></tr>
+<tr><td><b>122</b></td><td>a - b</td><td><b>128</b></td><td>a - b</td></tr>
+<tr><td><b>123</b></td><td>a - d</td><td><b>129</b></td><td>a - c</td></tr>
+<tr><td><b>124</b></td><td>a - c</td><td><b>130</b></td><td>a - c</td></tr>
+<tr><td><b>125</b></td><td>a - c</td><td><b>131</b></td><td>a - b</td></tr>
+<tr><td><b>126</b></td><td>b - c</td><td><b>132</b></td><td>c - d</td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Immunité</div>
+
+<!-- page 90 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 5:<br>Immunité de l’organisme</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>1</b></td><td>b - c</td><td><b>21</b></td><td>b - d</td></tr>
+<tr><td><b>2</b></td><td>a - c</td><td><b>22</b></td><td>a - c</td></tr>
+<tr><td><b>3</b></td><td>a - d</td><td><b>23</b></td><td>a - b</td></tr>
+<tr><td><b>4</b></td><td>b - d</td><td><b>24</b></td><td>a - d</td></tr>
+<tr><td><b>5</b></td><td>a - b</td><td><b>25</b></td><td>a</td></tr>
+<tr><td><b>6</b></td><td>b - d</td><td><b>26</b></td><td>b - d</td></tr>
+<tr><td><b>7</b></td><td>a</td><td><b>27</b></td><td>d</td></tr>
+<tr><td><b>8</b></td><td>b - c</td><td><b>28</b></td><td>a - c</td></tr>
+<tr><td><b>9</b></td><td>b - c</td><td><b>29</b></td><td>c - d</td></tr>
+<tr><td><b>10</b></td><td>d</td><td><b>30</b></td><td>b - c</td></tr>
+<tr><td><b>11</b></td><td>a - c</td><td><b>31</b></td><td>a</td></tr>
+<tr><td><b>12</b></td><td>a - c</td><td><b>32</b></td><td>a - b</td></tr>
+<tr><td><b>13</b></td><td>c - d</td><td><b>33</b></td><td>b - d</td></tr>
+<tr><td><b>14</b></td><td>c - d</td><td><b>34</b></td><td>a - c</td></tr>
+<tr><td><b>15</b></td><td>b - c</td><td><b>35</b></td><td>a - d</td></tr>
+<tr><td><b>16</b></td><td>a - b</td><td><b>36</b></td><td>a - c</td></tr>
+<tr><td><b>17</b></td><td>a - c</td><td><b>37</b></td><td>a</td></tr>
+<tr><td><b>18</b></td><td>b - c</td><td><b>38</b></td><td>a - c</td></tr>
+<tr><td><b>19</b></td><td>a - d</td><td><b>39</b></td><td>a</td></tr>
+<tr><td><b>20</b></td><td>b</td><td><b>40</b></td><td>b</td></tr>
+</table>
+<!-- page 91 -->
+<p class="subhead t-red"><b>Les QCM concernant le thème 5:<br>Immunité de l’organisme</b></p>
+<table>
+<tr><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th><th>N° de l’Item</th><th>Réponse(s) exacte(s)</th></tr>
+<tr><td><b>41</b></td><td>a - c</td><td><b>59</b></td><td>b</td></tr>
+<tr><td><b>42</b></td><td>c</td><td><b>60</b></td><td>b - c</td></tr>
+<tr><td><b>43</b></td><td>a</td><td><b>61</b></td><td>a - c</td></tr>
+<tr><td><b>44</b></td><td>b - d</td><td><b>62</b></td><td>b</td></tr>
+<tr><td><b>45</b></td><td>d</td><td><b>63</b></td><td>a - d</td></tr>
+<tr><td><b>46</b></td><td>a - b</td><td><b>64</b></td><td>b - d</td></tr>
+<tr><td><b>47</b></td><td>c</td><td><b>65</b></td><td>a - d</td></tr>
+<tr><td><b>48</b></td><td>b</td><td><b>66</b></td><td>a - b</td></tr>
+<tr><td><b>49</b></td><td>c - d</td><td><b>67</b></td><td>a - c</td></tr>
+<tr><td><b>50</b></td><td>c - d</td><td><b>68</b></td><td>b</td></tr>
+<tr><td><b>51</b></td><td>c</td><td><b>69</b></td><td>a - b</td></tr>
+<tr><td><b>52</b></td><td>b - c</td><td><b>70</b></td><td>a - d</td></tr>
+<tr><td><b>53</b></td><td>d</td><td><b>71</b></td><td>d</td></tr>
+<tr><td><b>54</b></td><td>b - c</td><td><b>72</b></td><td>b - c</td></tr>
+<tr><td><b>55</b></td><td>b - d</td><td><b>73</b></td><td>a - b</td></tr>
+<tr><td><b>56</b></td><td>d</td><td><b>74</b></td><td>b - d</td></tr>
+<tr><td><b>57</b></td><td>d</td><td><b>75</b></td><td>b - c</td></tr>
+<tr><td><b>58</b></td><td>a</td><td></td><td></td></tr>
+</table>
+
+</section>
+
+</div>
+</body>
+</html>
