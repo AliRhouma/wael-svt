@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · ACTIV COURS 1 NEURO   EXERCICES 2026</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Hend Ben Abbes">
+<meta data-pagefind-meta="n[content]" content="4970">
+<meta data-pagefind-meta="title[content]" content="ACTIV COURS 1 NEURO   EXERCICES 2026">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · ACTIV COURS 1 NEURO   EXERCICES 2026" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>ACTIV COURS 1 NEURO   EXERCICES 2026</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">HEND BEN ABBES</span> <span class="tg">Exercices</span><span class="tg">Cours</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1M5_gXvFs40tia98kP54wbK7ZIsXLuXma/view">↗ ACTIV COURS 1 NEURO   EXERCICES 2026.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1M5_gXvFs40tia98kP54wbK7ZIsXLuXma/view">Eya Masmoudi · Bac math 2026 › Svt / Mme Hend LPM8</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: HEND BEN ABBES -->
+<div class="exh"><span class="idx ex">Série</span><h2>ACTIV COURS 1 NEURO   EXERCICES 2026</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4970.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">HEND BEN ABBES</span> <span class="tg">Exercices</span><span class="tg">Cours</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1M5_gXvFs40tia98kP54wbK7ZIsXLuXma/view">↗ ACTIV COURS 1 NEURO   EXERCICES 2026.pdf</a></div>
+<!-- page 01 -->
+<p class="para"><b>THEME III</b> <span class="t-red">NEUROPHYSIOLOGIE</span><br>
+<b>COURS 1  2025.2026  4EME M</b></p>
+<p class="subhead t-red"><b>ACTIVITE 1</b></p>
+<p class="consigne"><b><span class="t-red">1.</span> Terminez le tableau 1 en vous basant sur les données de l’activité 1 p.9.</b></p>
+<table>
+<tr><th rowspan="2">Légende</th><th colspan="3">4. Encéphale (logé dans le crâne)</th><th rowspan="2">5. Moelle épinière (logée dans le canal rachidien)</th><th rowspan="3">6. Nerfs crâniens (sensitifs ou moteurs ou mixtes) 12 paires attachés à l’encéphale.</th><th rowspan="2">7. Nerfs rachidiens (mixtes = sensitifs et moteurs). 31 paires attachées à la moelle.</th></tr>
+<tr><th>1. Cerveau</th><th>2. Cervelet</th><th>3. Bulbe rachidien</th></tr>
+<tr><td><b>Composition</b></td><td colspan="3">Substance grise externe (périphérique ou superficielle) + Substance blanche interne (centrale ou profonde)</td><td>SG (interne) + SB externe</td><td><span class="t-red">?</span></td></tr>
+<tr><td><b>Rôle</b></td><td colspan="4">Renferment <span class="t-red">les centres nerveux</span> de la sensibilité, de la motricité et de l’émotion</td><td colspan="2"><span class="t-red">Relient</span> les organes du corps aux centres nerveux</td></tr>
+<tr><td rowspan="2"><b>Classification</b></td><td colspan="4">Système nerveux central</td><td colspan="2">Système nerveux périphérique</td></tr>
+<tr><td colspan="6"><b>S y s t è m e   n e r v e u x   c é r é b r o - s p i n a l</b></td></tr>
+</table>
+<p class="para"><b>TABLEAU 1</b></p>
+<p class="consigne"><b><span class="t-red">2.</span></b> Anatomie de la moelle épinière :</p>
+<!-- CROP: 4970 1 1 0.059 0.246 0.347 0.348 4970_act1_moelle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act1_moelle.png" alt=""></figure>
+<table>
+<tr><td>1.   Substance blanche</td><td>2.   Substance grise</td></tr>
+<tr><td>3.   Ganglion spinal (composé de Sb grise)</td><td>4.   Racine postérieure (dorsale)</td></tr>
+<tr><td>5.   Nerf rachidien</td><td>6.   Racine antérieure (ventrale)</td></tr>
+<tr><td>a. Corne postérieure de la SG (effilée).</td><td>b. Corne antérieure de la SG (large).</td></tr>
+</table>
+<p class="para"><span class="t-green"><b><i>Remarque :</i></b></span> Dans les ventricules et le canal central circule le liquide céphalorachidien (liquide d’amortissement localisé autour de l’axe cérébrospinal formé de l’encéphale et de la moelle épinière) et dans ses cavités internes.</p>
+<p class="para"><span class="t-red"><b>Question :</b></span> Quelle est la structure histologique de la SG, de la SB de la moelle épinière et du nerf rachidien ? --&gt; <b>Parag.I.B</b></p>
+<p class="subhead t-red"><b>ACTIVITE 2</b></p>
+<p class="consigne"><b><span class="t-red">1.</span> Terminez le tableau 2 en vous basant sur les données des documents 4 et 5 p.10-11 et 6 et 7 p.12.</b></p>
+<table>
+<tr><th></th><th>Schéma d’interprétation</th><th colspan="2">Description</th><th></th></tr>
+<tr><td>S u b s t a n c e   g r i s e<br><b>Doc. 4 p.11 <span class="t-red">+ FIG.A p.19</span></b></td>
+<td><!-- CROP: 4970 1 1 0.094 0.457 0.441 0.610 4970_act2_sg -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act2_sg.png" alt=""></figure>
+SG (corne antérieure de la moelle épinière)</td>
+<td colspan="2">On observe :<br>
+<b><span class="t-red">1.</span></b> des <span class="t-red">formes étoilées</span> contenant chacune un noyau. Chaque forme est appelée <span class="t-red">corps cellulaire</span> d’où partent :<br>
+*un prolongement long (à partir du cône axonique du corps cellulaire) ayant le même diamètre sur toute sa longueur : <span class="t-red">l’axone</span> ou cylindraxe ou <span class="t-red">fibre nerveuse</span> (dite centrale).<br>
+*plusieurs prolongements courts, fins et ramifiés : <span class="t-red">les dendrites</span>.<br>
+On parle de corps cellulaires <span class="t-red">multipolaires</span>.<br>
+<b><span class="t-red">2.</span></b> des cellules très petites et très nombreuses. : <span class="t-red">les cellules gliales</span> ou cellules de la névroglie (rôles de soutien, de nutrition, de défense et d’isolant électrique).</td>
+<td>CC MULTIPOLAIRES + FnCA</td></tr>
+<tr><td>S u b s t a n c e   b l a n c h e<br><b>Doc. 5 p.11 <span class="t-red">+ FIG.C p.19</span></b></td>
+<td><!-- CROP: 4970 1 1 0.094 0.620 0.441 0.722 4970_act2_sb -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act2_sb.png" alt=""></figure>
+SB (moelle épinière) en coupe transversale (figure a) et en coupe longitudinale (figure b)</td>
+<td colspan="2">On observe :<br>
+<b><span class="t-red">1.</span></b> des éléments arrondis blancs avec des taches foncées au centre : ce sont <span class="t-red">des coupes transversales des fibres centrales myélinisées</span> <span class="t-red"><b>(fig.a)</b></span> constituées d’un axone entouré <span class="t-red">d’une gaine de myéline</span> (substance de nature lipidique et de couleur blanche) discontinue au niveau <span class="t-red">des nœuds de Ranvier</span> (fig.b).<br>
+<b><span class="t-red">2.</span></b> des <span class="t-red">cellules gliales</span> (ce sont ces cellules qui fabriquent la gaine de myéline centrale). Les fibres nerveuses de la substance grise sont des <span class="t-red"><b>fibres centrales amyélinisées (sans myéline).</b></span></td>
+<td>SB de la ME = FnCM</td></tr>
+<tr><td>N e r f   r a c h i d i e n<br><b>Doc.6 et 7 p.12 <span class="t-red">+ FIG.B p.19</span></b></td>
+<td>Un nerf est composé de <b>fibres nerveuses</b> disposées en faisceaux entourés d’une gaine conjonctive.<br>
+<b>Structure d’une fibre nerveuse :</b>
+<!-- CROP: 4970 1 1 0.100 0.803 0.448 0.924 4970_act2_fibre_cd -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act2_fibre_cd.png" alt=""></figure>
+Schéma d’une fibre périphérique myélinisée en coupe transversale (figure a) et en coupe longitudinale (figure b)</td>
+<td><!-- CROP: 4970 1 1 0.450 0.754 0.591 0.847 4970_act2_fibre_e -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act2_fibre_e.png" alt=""></figure>
+Schéma d’une coupe transversale d’une fibre périphérique amyélinisée (absence de myéline)</td>
+<td><b>Les nerfs rachidiens sont composés de <span class="t-red">fibres périphériques</span> dont :</b><br>
+<b><span class="t-red">1.</span></b> certaines sont <span class="t-red">entourées d’une gaine de myéline doublée d’une gaine de Schwann</span> (composée de cellules nucléées) : ce sont les fibres <span class="t-red">périphériques myélinisées</span> (Fig.c et d).<br>
+<b><span class="t-red">2.</span></b> d’autres sont seulement entourées d’une gaine de Schwann : ce sont <span class="t-red">les fibres périphériques sans myéline ou fibres périphériques amyélinisées</span> (Fig.e). Dans les nerfs, la gaine de myéline périphérique est fabriquée par les cellules de Schwann.</td>
+<td>NERF rach = FnPM + FnPA</td></tr>
+</table>
+<p class="para"><b>TABLEAU 2</b></p>
+<!-- page 02 -->
+<p class="para"><span class="t-red"><b>Question :</b></span> Existe-t-il une continuité anatomique entre ces différents éléments (CC, FnC et FnP) ?</p>
+<p class="consigne"><b><span class="t-red">2.</span> Exploitez les données de la page 13. Que pouvez-vous en déduire ?</b></p>
+<table>
+<tr><th>Observations et Expériences</th><th>Déduction</th></tr>
+<tr><td>Expérience de mérotomie chez l’amibe : Suite à la section du cytoplasme d’une amibe, on constate la dégénérescence du fragment anucléé et la régénération du fragment nucléé.</td><td> Le noyau est indispensable à la survie de la cellule, à sa croissance et sa division.</td></tr>
+<tr><td>La poliomyélite : La destruction des corps cellulaires de la corne antérieure de la moelle épinière par le virus provoque la dégénérescence des fibres nerveuses en relation avec les muscles paralysés.</td><td rowspan="3">Il y a une continuité cellulaire entre le corps cellulaire et la fibre nerveuse. L’ensemble constitue l’unité fonctionnelle du système nerveux : la cellule nerveuse ou neurone spécialisé dans la production, la propagation et la transmission du message nerveux (voir schéma d’un neurone p.16).</td></tr>
+<tr><td>Culture de cellules nerveuses embryonnaires : Des cellules nerveuses embryonnaires en culture émettent au cours de leur différenciation des ramifications : axones et dendrites.</td></tr>
+<tr><td>Expérience de dégénérescence wallérienne : La section d’un nerf rachidien d’un animal entraîne la dégénérescence des fibres dans le bout périphérique du nerf : l’axone et la gaine de myéline se fragmentent, se décomposent puis disparaissent. La gaine de Schwann, pourvue de noyau, reste intacte.  Après un certain temps le bout central régénère : l’axone s’allonge et s’enfile dans la gaine de Schwann qui reconstitue la gaine de myéline.</td></tr>
+</table>
+<p class="consigne"><b><span class="t-red">3.</span>   Bilan : parag.II1. p.15</b></p>
+<!-- CROP: 4970 1 2 0.687 0.250 0.908 0.309 4970_act2_neurone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act2_neurone.png" alt=""></figure>
+<p class="para"><span class="t-red"><b>Question :</b></span> Existe-t-il une continuité anatomique entre les différents neurones ? <b>Parag.I.C</b></p>
+<p class="para"><b>ACTIVITE 3 :</b> Le réflexe de retrait de la main suite au contact avec un objet très chaud ou la piqûre par une épine, de même que la flexion des orteils suite au chatouillement de la peau de la plante du pied, sont des réactions motrices réflexes qui font intervenir plusieurs éléments anatomiques. <b>Précisez les supports anatomiques du réflexe de retrait de la main au contact d’un objet brulant en vous basant sur les observations suivantes.</b></p>
+<table>
+<tr><th><span class="t-red">Observations</span></th><th><span class="t-red">Déductions</span></th></tr>
+<tr><td>L’anesthésie de la peau de la main par l’éther entraine la disparition du réflexe de retrait de la main au contact d’un objet très chaud.</td><td>1<sup>er</sup> support : Récepteurs sensoriels de la peau sensibles aux températures élevées (thermorécepteurs). Une stimulation efficace de ces récepteurs provoque la production au niveau des récepteurs stimulés, de messages (influx) nerveux sensitifs.</td></tr>
+<tr><td>Une lésion de la partie supérieure de la moelle épinière fait disparaitre le réflexe de retrait de la main.</td><td>2<sup>ème</sup> support : Moelle épinière. C’est le centre nerveux du réflexe étudié qui est donc un réflexe médullaire. La moelle épinière a pour fonction de traiter les messages nerveux sensitifs (<span class="t-gold">afférents</span>) provenant des récepteurs et d’envoyer des messages nerveux moteurs (<span class="t-gold">efférents</span>) vers les organes effecteurs.</td></tr>
+<tr><td>La section accidentelle du nerf rachidien innervant le membre supérieur abolit le réflexe de retrait de la main</td><td>3<sup>ème</sup> support : Nerf rachidien innervant le membre supérieur (nerf mixte : composé de fibres sensitives conductrices de messages sensitifs et de fibres motrices conductrices de messages moteurs).</td></tr>
+<tr><td>La section des tendons reliant le muscle fléchisseur du membre supérieur aux os abolit le réflexe de retrait de la main.</td><td>4<sup>ème</sup> support : Muscles du bras. Ce sont les organes effecteurs du réflexe de retrait de la main. Il s’agit du muscle fléchisseur (le biceps) et de son antagoniste : le muscle extenseur (le triceps).</td></tr>
+</table>
+<p class="para">L’observation du réflexe de retrait de la main montre que la contraction du muscle fléchisseur est accompagnée par le relâchement du muscle antagoniste : le muscle extenseur du bras. On parle de <span class="t-green">coordination</span> de l’activité des muscles antagonistes (dont le mécanisme sera détaillé dans le cours 5).</p>
+<p class="para"><span class="t-red"><b>Questions :</b></span> Où sont localisées les fibres sensitives et les fibres motrices du nerf rachidien et comment confirmer <span class="t-gold">le sens de conduction</span> dans chaque type de fibre ? <b>Parag.II.B</b></p>
+<p class="subhead t-red"><b>ACTIVITE 4</b></p>
+<p class="consigne">1.   Analysez les résultats à court et long termes des sections a, b et c du tableau p.23 en vue <b><u>de localiser</u></b> les fibres du nerf rachidien.</p>
+<table>
+<tr><th rowspan="3"><span class="t-red">Section</span></th><th colspan="2">RESULTATS (DOCUMENT 1 P.23)</th><th rowspan="3">Dégénérescence</th></tr>
+<tr><th>immédiats</th><th>à long terme</th></tr>
+<tr><th><span class="t-red">➔</span> Localisation des fibres dans les racines)</th><th><span class="t-red">➔</span> Déduction (localisation des fibres dans le nerf rachidien et localisation de leurs corps cellulaires)</th></tr>
+<tr><td><span class="t-gold">a.</span> du nerf rachidien</td><td>Le nerf rachidien est un nerf mixte : il contient des f sensitives et des f motrices.</td><td>Les corps cellulaires des f du nerf rachidien sont situés du côté de la moelle épinière (dans le ganglion ou dans la corne antérieure).</td><td><!-- CROP: 4970 1 2 0.835 0.768 0.965 0.845 4970_act4_section_a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act4_section_a.png" alt=""></figure></td></tr>
+<tr><td><span class="t-gold">b.</span> de la racine dorsale de part et d’autre du ganglion.</td><td>Les f de la racine dorsale sont des fibres nerveuses sensitives.</td><td>Les f sensitives :<br>- sont localisées dans la racine dorsale et dans la partie dorsale du nerf.<br>- ont leurs corps cellulaires dans le ganglion spinal</td><td><!-- CROP: 4970 1 2 0.835 0.845 0.965 0.905 4970_act4_section_b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act4_section_b.png" alt=""></figure></td></tr>
+<tr><td><span class="t-gold">c.</span> de la racine ventrale</td><td>Les f de la racine ventrale sont des fibres nerveuses motrices.</td><td>Les f motrices :<br>- sont localisées dans la racine ventrale et dans la partie ventrale du nerf.<br>- ont leurs corps cellulaires dans la corne ventrale de la moelle épinière.</td><td><!-- CROP: 4970 1 2 0.835 0.905 0.965 0.962 4970_act4_section_c -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act4_section_c.png" alt=""></figure></td></tr>
+</table>
+<!-- page 03 -->
+<p class="consigne"><b><span class="t-red">2.</span>   Analysez les résultats des stimulations suivantes après sections en vue <u>de confirmer le sens de conduction</u> des messages nerveux sensitifs et moteurs.</b></p>
+<table>
+<tr><th>Analyse</th><th>Confirmation</th></tr>
+<tr><td>La section de la RD (S1 ou S2) puis la stimulation de son BP n’entraine pas la contraction du muscle innervé (le muscle fléchisseur dans le cas du réflexe étudié).</td><td rowspan="2">Les FNS sont afférentes (centripètes) : elles conduisent les messages nerveux sensitifs des récepteurs sensoriels vers la moelle épinière.</td></tr>
+<tr><td>La même section puis la stimulation du BC entraine la contraction du muscle innervé.</td></tr>
+<tr><td>La section de la RV (S3) puis la stimulation de son BP entraine une contraction (celles des deux muscles dans le cas du réflexe étudié).</td><td rowspan="2">Les FNM sont efférentes (centrifuges) : elles conduisent les messages nerveux moteurs de la moelle épinière vers les muscles.</td></tr>
+<tr><td>La même section puis la stimulation du BC n’entraine pas de contraction.</td></tr>
+</table>
+<!-- CROP: 4970 1 3 0.572 0.047 0.961 0.223 4970_act4_sections_stimulations -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act4_sections_stimulations.png" alt=""></figure>
+<p class="para">Pour qu’il y ait coordination des muscles antagonistes du reflexe étudié, il faut l’intervention de la moelle épinière (cours 5).</p>
+<p class="subhead t-red"><b>ACTIVITE 5</b></p>
+<p class="para">On peut représenter Circuit nerveux du réflexe du retrait de la main au contact d’un objet très chaud comment suit :</p>
+<p class="subhead t-navy"><b>Doc.1+Doc.3</b></p>
+<p class="para">Les neurones sensitifs (Doc.1) sont <span class="t-green">afférents</span>. Ce sont des neurones en T (ou unipolaires) appelés fibres Ia et possèdent chacun :</p>
+<ul class="b">
+<li>un corps cellulaire unipolaire situé dans <span class="t-green">le ganglion spinal</span>.</li>
+<li>une dendrite très allongée dont les ramifications jouent le rôle de <span class="t-green">récepteurs sensoriels</span>.</li>
+</ul>
+<p class="para">Cette dendrite est localisée dans la partie périphérique de la racine dorsale et dans <span class="t-green">la partie dorsale</span> du nerf rachidien.</p>
+<ul class="b">
+<li>un axone situé dans la partie centrale de la racine dorsale et qui pénètre dans la substance grise de la moelle épinière. Son arborisation terminale assure la <u>transmission synaptique (dans la substance grise)</u>.</li>
+</ul>
+<p class="para"><b>Le message centripète se propage de la dendrite du neurone en T jusqu’à l’extrémité de l’axone en passant par <span class="t-green">le corps cellulaire</span>.</b></p>
+<!-- CROP: 4970 1 3 0.644 0.339 0.958 0.519 4970_act5_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act5_doc1.png" alt=""></figure>
+<p class="subhead t-navy"><b>Doc.2+Doc.3</b></p>
+<p class="para">Les neurones moteurs (Doc.2) sont <span class="t-green">efférents</span>. Ce sont des neurones <span class="t-green">multipolaires</span> appelés motoneurones <i>α</i> et possèdent chacun :</p>
+<ul class="b">
+<li>un corps cellulaire multipolaire et ses dendrites situés dans la corne antérieure de la moelle épinière.</li>
+<li>un axone situé dans <span class="t-green">la racine ventrale et dans la partie ventrale</span> du nerf rachidien. Son arborisation terminale intervient dans la <u>transmission synaptique (au niveau du muscle)</u>.</li>
+</ul>
+<p class="para"><b>Le message centrifuge se propage des dendrites du motoneurone jusqu’à l’extrémité de l’axone en passant par <span class="t-green">le corps cellulaire</span>.</b></p>
+<!-- CROP: 4970 1 3 0.644 0.522 0.958 0.693 4970_act5_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act5_doc2.png" alt=""></figure>
+<p class="consigne">En vous basant sur les données recueilles précédemment, représentez le Circuit anatomique intervenant dans un réflexe moteur à point de départ cutané (le retrait de la main au contact d’un objet très chaud.</p>
+<!-- CROP: 4970 1 3 0.219 0.707 0.941 0.968 4970_act5_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_act5_doc3.png" alt=""></figure>
+<p class="para"><b>Doc.3</b> : Circuit nerveux du réflexe du retrait de la main au contact d’un objet très chaud</p>
+<!-- page 04 -->
+<p class="subhead t-red"><b>E X E R C I C E S</b></p>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 1 (QROC BAC MATHS contrôle 2023)</b></span></div>
+<p class="subhead t-navy"><b>II-   Neurophysiologie (4 points)</b></p>
+<p class="para">  Le document 1 représente des schémas d’interprétation d’observations microscopiques de <b>coupes transversales</b> de trois <b>fibres nerveuses</b> (Fn<sub>1</sub>, Fn<sub>2</sub> et Fn<sub>3</sub>) observées dans différents niveaux du tissu nerveux humain.</p>
+<!-- CROP: 4970 1 4 0.542 0.128 0.938 0.222 4970_ex1_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_ex1_doc1.png" alt=""></figure>
+<p class="consigne">1-   Légendez le document 1 en reportant sur votre copie les numéros des flèches de 1 à 4.<br>
+2-   Indiquez le type et la localisation de chaque fibre.<br>
+3-   Expliquez, schéma à l’appui, le mécanisme de la propagation du potentiel d’action le long de la fibre Fn<sub>3</sub>.</p>
+<p class="para">COURS 3</p>
+<!-- NOTE: red frames drawn around question 3 (exercice 1) and question 2 (exercice 2) not transcribed — marks on top of printed text -->
+<div class="exsub"><span class="t-blue"><b>EXERCICE 2 (Bac Maths 2016 p)</b></span></div>
+<p class="para">On se propose d’étudier certains aspects de la naissance et de la propagation du message nerveux.</p>
+<p class="consigne"><b>1)</b>   Le document  1 représente schématiquement deux types de fibres nerveuses A et B.<br>
+Identifiez ces deux types de fibres.</p>
+<!-- CROP: 4970 1 4 0.678 0.287 0.847 0.397 4970_ex2_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_ex2_doc1.png" alt=""></figure>
+<p class="consigne"><b>2)</b>   On porte sur l’une des deux fibres nerveuses A ou B des stimulations électriques d’intensités croissantes et on mesure l’amplitude du potentiel membranaire obtenu</p>
+<p class="para">COURS 3</p>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 3 (Bac Maths 2011 c)</b></span></div>
+<p class="para">  Le document 1 représente une coupe transversale réalisée au niveau de la moelle épinière.<br>
+  Le document 2 représente des observations microscopiques A, B et C de structures prélevées dans les zones I,  II et  III du document 1.</p>
+<!-- CROP: 4970 1 4 0.084 0.485 0.497 0.618 4970_ex3_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_ex3_doc1.png" alt=""></figure>
+<!-- CROP: 4970 1 4 0.520 0.485 0.935 0.618 4970_ex3_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_ex3_doc2.png" alt=""></figure>
+<p class="consigne">1- Légendez le document 1 en reportant sur votre copie les numéros correspondants.<br>
+2- Identifiez les structures A, B et  C du document 2.<br>
+3- Précisez l’emplacement de ces structures en faisant correspondre les lettres A, B et C du document 2 aux chiffres I,  II et  III du document 1.<br>
+4- A partir de vos connaissances, nommez une expérience qui prouve la continuité entre les structures A, B et C.</p>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 4 (Bac Lettres 2010)</b></span></div>
+<p class="para">L’étude microscopique du tissu nerveux montre les structures nerveuses présentées par le document 1.</p>
+<!-- CROP: 4970 1 4 0.290 0.746 0.736 0.846 4970_ex4_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_ex4_doc1.png" alt=""></figure>
+<p class="consigne">1)   Légendez le document 1 en indiquant sur votre copie les numéros et les noms correspondants.<br>
+2)   a)   Nommez les structures A, B et C.<br>
+       b)   Précisez à quelle partie du tissu nerveux appartient chacune de ces structures.<br>
+3)   Les structures A, B et C appartiennent à une même cellule qui représente l’unité structurale du tissu nerveux.  Nommez cette cellule.</p>
+<!-- page 05 -->
+<div class="exsub"><span class="t-blue"><b>EXERCICE 5 (Bac Lettres 2016)</b></span></div>
+<p class="para">  Le document 1 représente le schéma d’une portion de circuit nerveux observée au niveau de la substance grise de la Moelle épinière.</p>
+<!-- CROP: 4970 1 5 0.094 0.058 0.811 0.197 4970_ex5_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_ex5_doc1.png" alt=""></figure>
+<p class="consigne"><b>1) a</b> - Légendez le document 1 en reproduisant les numéros des flèches (de 1 à 4) sur votre copie.<br>
+    <b>b</b> - Identifiez les zones A et B du document 1.<br>
+<b>2)</b> Précisez le sens de conduction du message nerveux à travers les neurones N<sub>1</sub>, N<sub>2</sub> et N<sub>3</sub>.<br>
+<b>3)</b> Représentez, à l’aide d’un schéma légendé, la structure microscopique d’une portion de substance blanche de la Moelle épinière.</p>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 6</b></span></div>
+<p class="consigne"><b>3)  Le retrait de la main au contact d'un objet brûlant est un réflexe:</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2019P</b></span></p>
+<ul class="dash">
+<li><b>a-</b>  de protection;</li>
+<li><b>b-</b>  monosynaptique; <b>(Cours 5)</b></li>
+<li><b>c-</b>  à point de départ cutané ;</li>
+<li><b>d-</b>  bulbaire (le centre nerveux est situé au niveau du bulbe rachidien).</li>
+</ul>
+<p class="consigne"><b>5)  Au niveau d'une synapse axo-somatique, le message nerveux est transmis:</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2017C</b></span></p>
+<ul class="dash">
+<li><b>a-</b>  de l'axone vers les dendrites,</li>
+<li><b>b-</b>  de l'axone vers le corps cellulaire,</li>
+<li><b>c-</b>  des dendrites vers le corps cellulaire,</li>
+<li><b>d-</b>  du bouton synaptique vers le corps cellulaire.</li>
+</ul>
+<p class="consigne"><b>7)  L'élément nerveux du document ci- contre est :</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2016P</b></span></p>
+<!-- CROP: 4970 1 5 0.375 0.423 0.492 0.512 4970_ex6_q7_doc -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_ex6_q7_doc.png" alt=""></figure>
+<ul class="dash">
+<li><b>a-</b>  une cellule gliale.</li>
+<li><b>b-</b>  une fibre nerveuse.</li>
+<li><b>c-</b>  un corps cellulaire d'un neurone multipolaire.</li>
+<li><b>d-</b>  un corps cellulaire d'un neurone du ganglion spinal.</li>
+</ul>
+<div class="data">
+<p class="consigne"><b>9)  Le réflexe du retrait de la main au contact d'un objet brûlant est :</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2016P</b></span></p>
+<ul class="dash">
+<li><b>a-</b>  un acte volontaire.</li>
+<li><b>b-</b>  un réflexe à point de départ cutané.</li>
+<li><b>c-</b>  un réflexe impliquant un circuit nerveux polysynaptique. <b>(Cours 5)</b></li>
+<li><b>d-</b>  un réflexe dont le centre nerveux est situé au niveau de l'encéphale.</li>
+</ul>
+</div>
+<p class="consigne"><b>4)  La conduction du message nerveux par les fibres contenues dans les racines et le nerf rachidiens peut être représentée par le schéma:</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2016C</b></span></p>
+<!-- CROP: 4970 1 5 0.107 0.555 0.468 0.633 4970_ex6_q4_schemas -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_ex6_q4_schemas.png" alt=""></figure>
+<p class="consigne"><b>1)  Les récepteurs sensoriels impliqués dans le réflexe  de retrait de la main sont :</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2015P</b></span></p>
+<ul class="dash">
+<li><b>a-</b>  localisés au niveau de la peau.</li>
+<li><b>b-</b>  localisés au niveau du muscle extenseur.</li>
+<li><b>c-</b>  des terminaisons axoniques des neurones sensitifs.</li>
+<li><b>d-</b>  des terminaisons dendritiques des neurones sensitifs.</li>
+</ul>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 7</b></span></div>
+<p class="para">  Le document  1 est un schéma d’interprétation simplifié d’un type de neurone qui existe chez l’espèce humaine.</p>
+<!-- CROP: 4970 1 5 0.404 0.708 0.872 0.812 4970_ex7_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_ex7_doc1.png" alt=""></figure>
+<p class="consigne"><b>1)</b>  Légendez le schéma du document 1 en reportant sur votre copie les numéros de 1 à 8.<br>
+<b>2)</b>  Nommez le type de ce neurone.<br>
+<b>3)</b>  Indiquez :<br>
+<b>a-</b> la localisation des éléments 2, 5 et 7 au niveau du tissu nerveux.<br>
+<b>b-</b> le rôle physiologique de chacun des éléments 1 et 8.<br>
+<b>c-</b> le sens de propagation du potentiel d'action entre les éléments 2 et 7. Justifiez votre réponse.<br>
+<b>d-</b> le mode de propagation du message nerveux tout au long de ce neurone.</p>
+<!-- page 06 -->
+<p class="subhead t-red"><b>C O R R E C T I O N</b></p>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 1</b></span></div>
+<p class="para">1)  Légende :<br>
+① : axone / prolongement cytoplasmique<br>
+② : gaine de myéline<br>
+③ : noyau de la gaine de Schwann<br>
+④ : gaine de Schwann</p>
+<p class="para">2)</p>
+<table>
+<tr><th>Fibres</th><th>Types</th><th>Localisation</th></tr>
+<tr><td>Fn<sub>1</sub></td><td>fibre myélinisée</td><td>Substance blanche (centrale)</td></tr>
+<tr><td>Fn<sub>2</sub></td><td>fibre myélinisée</td><td>Nerfs (périphérique)</td></tr>
+<tr><td>Fn<sub>3</sub></td><td>fibre amyélinisée</td><td>Nerfs (périphérique)</td></tr>
+</table>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 2</b></span></div>
+<p class="para"><span class="t-gold">Fibre A :</span><br>
+<b>Fibre périphérique Amyélinisée.</b><br>
+Justification : L’axone est entouré d’une gaine de Schwann (absence de myéline).<br>
+<span class="t-gold">Fibre B :</span><br>
+<b>Fibre périphérique myélinisée</b><br>
+Justification : L’axone est entouré d’une gaine de myéline doublée d’une gaine de Schwann.</p>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 3</b></span></div>
+<ol class="qn">
+<li>Légende :
+<ol class="qn">
+<li>Substance blanche.</li>
+<li>Substance grise.</li>
+<li>Ganglion spinal.</li>
+<li>Racine dorsale.</li>
+<li>Nerf rachidien.</li>
+<li>Racine ventrale.</li>
+</ol></li>
+<li>Tableau :
+<table>
+<tr><th><span class="t-gold">Structure</span></th><th><span class="t-gold">Identification</span></th><th><span class="t-gold">Justification</span></th></tr>
+<tr><td>A</td><td>Fibres centrales myélinisées</td><td>Éléments arrondis blancs avec des taches foncées au centre : ce sont des coupes transversales des fibres centrales myélinisées constituées d’un axone central (cylindraxe), entouré d’une gaine de myéline.</td></tr>
+<tr><td>B</td><td>Fibre périphérique myélinisée</td><td>Fibre entourée d’une gaine de myéline (ou pas) doublée d’une gaine de Schwann constituée de plusieurs cellules nucléées.</td></tr>
+<tr><td>C</td><td>corps cellulaire multipolaire</td><td>Forme étoilée contenant chacune un noyau d’où partent :<br>- un prolongement long ayant le même diamètre sur toute sa longueur : l’axone.<br>- plusieurs prolongements courts, fins et ramifiés : les dendrites.</td></tr>
+</table></li>
+<li>A → Zone I.<br>
+B → Zone III.<br>
+C → Zone II.</li>
+<li><table>
+<tr><td><span class="t-green"><b>Expérience de dégénérescence wallérienne (Doc.9 p.13)</b></span></td><td>Suite à la section du nerf rachidien d’un animal, on constate la dégénérescence du bout périphérique (relié au muscle) et la régénération du bout central (relié au centre nerveux). Le noyau régénère l’axone qui s’allonge et s’enfile de la gaine de Schwann qui reconstitue la gaine de myéline.</td></tr>
+</table></li>
+</ol>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 4</b></span></div>
+<ol class="qn">
+<li>Légende :
+<ol class="qn">
+<li>Cytoplasme.</li>
+<li>Dendrite.</li>
+<li>Gaine de Schwann.</li>
+<li>Nœud de Ranvier.</li>
+<li>Gaine de myéline.</li>
+<li>Axone.</li>
+</ol></li>
+<li>a. A : Corps cellulaire multipolaire      B : Fibre périphérique myélinisée      C : Fibre centrale myélinisée<br>
+b. A : corne antérieure de la moelle épinière      B : Nerf rachidien      C : Substance blanche de la moelle épinière</li>
+</ol>
+<p class="para">3. Neurone.</p>
+<!-- page 07 -->
+<div class="exsub"><span class="t-blue"><b>EXERCICE 5</b></span></div>
+<p class="para"><b>1)   a- Légende :</b></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+<tr><td>Cytoplasme ou corps cellulaire</td><td>noyau</td><td>dendrite</td><td>axone</td></tr>
+</table>
+<p class="para"><b>b-</b></p>
+<table>
+<tr><td><b>Zone A</b></td><td>Synapse axosomatique</td></tr>
+<tr><td><b>Zone B</b></td><td>Synapse axodendritique</td></tr>
+</table>
+<p class="para"><b>2)</b>   Le message nerveux est conduit de N<sub>1</sub> vers N<sub>2</sub> et de N<sub>1</sub> vers N<sub>3</sub>.</p>
+<p class="para"><b>3)</b>   Schéma de la structure microscopique de la substance blanche de la moelle épinière</p>
+<!-- CROP: 4970 1 7 0.068 0.205 0.686 0.289 4970_corr_ex5_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_corr_ex5_schema.png" alt=""></figure>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 6</b></span></div>
+<!-- NOTE: in this correction the right answers are circled in green on the reprinted QCM; the circled letters are shown in green -->
+<p class="consigne"><b>3)  Le retrait de la main au contact d'un objet brûlant est un réflexe:</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2019P</b></span></p>
+<ul class="dash">
+<li><span class="t-green"><b>a-</b></span>  de protection;</li>
+<li><b>b-</b>  monosynaptique;</li>
+<li><span class="t-green"><b>c-</b></span>  à point de départ cutané ;</li>
+<li><b>d-</b>  bulbaire (le centre nerveux est situé au niveau du bulbe rachidien).</li>
+</ul>
+<p class="consigne"><b>7)  L'élément nerveux du document ci- contre est :</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2016P</b></span></p>
+<!-- CROP: 4970 1 7 0.398 0.400 0.521 0.480 4970_corr_ex6_q7_doc -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_corr_ex6_q7_doc.png" alt=""></figure>
+<ul class="dash">
+<li><b>a-</b>  une cellule gliale.</li>
+<li><b>b-</b>  une fibre nerveuse.</li>
+<li><span class="t-green"><b>c-</b></span>  un corps cellulaire d'un neurone multipolaire.</li>
+<li><b>d-</b>  un corps cellulaire d'un neurone du ganglion spinal.</li>
+</ul>
+<p class="consigne"><b>4)  La conduction du message nerveux par les fibres contenues dans les racines et le nerf rachidiens peut être représentée par le schéma:</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2016C</b></span></p>
+<!-- CROP: 4970 1 7 0.114 0.504 0.443 0.583 4970_corr_ex6_q4_schemas -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4970/4970_corr_ex6_q4_schemas.png" alt=""></figure>
+<p class="consigne"><b>5)  Au niveau d'une synapse axo-somatique, le message nerveux est transmis:</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2017C</b></span></p>
+<ul class="dash">
+<li><b>a-</b>  de l'axone vers les dendrites,</li>
+<li><span class="t-green"><b>b-</b></span>  de l'axone vers le corps cellulaire,</li>
+<li><b>c-</b>  des dendrites vers le corps cellulaire,</li>
+<li><span class="t-green"><b>d-</b></span>  du bouton synaptique vers le corps cellulaire.</li>
+</ul>
+<p class="consigne"><b>9)  Le réflexe du retrait de la main au contact d'un objet brûlant est :</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2016P</b></span></p>
+<ul class="dash">
+<li><b>a-</b>  un acte volontaire.</li>
+<li><span class="t-green"><b>b-</b></span>  un réflexe à point de départ cutané.</li>
+<li><span class="t-green"><b>c-</b></span>  un réflexe impliquant un circuit nerveux polysynaptique.</li>
+<li><b>d-</b>  un réflexe dont le centre nerveux est situé au niveau de l'encéphale.</li>
+</ul>
+<p class="consigne"><b>1)  Les récepteurs sensoriels impliqués dans le réflexe  de retrait de la main sont :</b></p>
+<p class="para"><span class="t-red"><b>MATHS 2015P</b></span></p>
+<ul class="dash">
+<li><span class="t-green"><b>a-</b></span>  localisés au niveau de la peau.</li>
+<li><b>b-</b>  localisés au niveau du muscle extenseur.</li>
+<li><b>c-</b>  des terminaisons axoniques des neurones sensitifs.</li>
+<li><span class="t-green"><b>d-</b></span>  des terminaisons dendritiques des neurones sensitifs.</li>
+</ul>
+<div class="exsub"><span class="t-blue"><b>EXERCICE 7</b></span></div>
+<p class="para"><b>1)</b></p>
+<table>
+<tr><td>1</td><td>Ramification dendritique</td><td>5</td><td>Corps cellulaire</td></tr>
+<tr><td>2</td><td>Dendrite</td><td>6</td><td>Gaine de myéline</td></tr>
+<tr><td>3</td><td>Cellule (ou gaine ou noyau) de Schwann</td><td>7</td><td>Axone</td></tr>
+<tr><td>4</td><td>Nœud de Ranvier</td><td>8</td><td>Arborisation terminale (ramification axonique)</td></tr>
+</table>
+<p class="para"><b>2)</b>  Neurone unipolaire ou neurone en T ou neurone sensitif<br>
+<b>3)</b><br>
+<b>a-</b></p>
+<table>
+<tr><th></th><th>Localisation</th></tr>
+<tr><td>Dendrite du neurone en T</td><td>le nerf rachidien et la partie de la racine postérieure située en aval du ganglion spinal.<br>Ou<br>Entre le récepteur sensoriel et le ganglion spinal</td></tr>
+<tr><td>Corps cellulaire du neurone en T</td><td>ganglion spinal</td></tr>
+<tr><td>Axone du neurone en T</td><td>La partie de la racine dorsale située au-delà du ganglion spinal et pénètre dans la moelle épinière</td></tr>
+</table>
+<p class="para"><b>b-</b></p>
+<ul class="b">
+<li>Les ramifications dendritiques sont des terminaisons sensorielles qui jouent un rôle fondamental dans la <b>naissance</b> du PA.</li>
+<li>L’arborisation terminale qui se termine par des boutons synaptiques joue un rôle fondamental dans la <b>transmission</b> synaptique du PA.</li>
+</ul>
+<p class="para"><b>c-</b>  Sens de propagation : Le PA se propage de la <b>dendrite vers l’axone</b> car :<br>
+Justification :</p>
+<ul class="dash">
+<li>Le PA se propage toujours du récepteur sensoriel vers l’extrémité de l’axone.</li>
+</ul>
+<p class="para"><b>Ou</b></p>
+<ul class="dash">
+<li>L’influx nerveux est transmis le long d’un neurone sensitif, de la dendrite vers le corps cellulaire jusqu’à l’extrémité de l’axone.</li>
+</ul>
+<p class="para"><b>d-</b>  <span class="t-gold">La propagation du message nerveux est de type <b>saltatoire</b>.</span></p>
+<p class="para">COURS 3</p>
+
+</section>
+
+</div>
+</body>
+</html>

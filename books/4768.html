@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Chap 4_La transmission synaptique</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4768">
+<meta data-pagefind-meta="title[content]" content="Chap 4_La transmission synaptique">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Chap 4_La transmission synaptique" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Chap 4_La transmission synaptique</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">ÉQUIPE ACADEMIQUE SCIENCES DE LA VIE ET DE LA TERRE · Academy · www.takiacademy.com · Takiacademy.com © 2018</span> <span class="tg">Cours</span><span class="tg">Résumé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1VghTSe_M4EjoaiSX-1a5nMCSR9AoKYmz/view">↗ Chap 4_La transmission synaptique.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (3)</b><ul><li><a href="https://drive.google.com/file/d/1VghTSe_M4EjoaiSX-1a5nMCSR9AoKYmz/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / Résumé et cours / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/18XWA7kQtvyJeg6R9Bva-yx0eGHgkrDfN/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / Résumé et cours / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1sUELVxDO6p0iHXQJEcrovHjJ1D9uRBGc/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / Résumé et cours / Thème 4 _Neurophysiologie</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: ÉQUIPE ACADEMIQUE SCIENCES DE LA VIE ET DE LA TERRE · Academy · www.takiacademy.com · Takiacademy.com © 2018 -->
+<div class="exh"><span class="idx">Cours</span><h2>La transmission synaptique</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4768.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">ÉQUIPE ACADEMIQUE SCIENCES DE LA VIE ET DE LA TERRE · Academy · www.takiacademy.com · Takiacademy.com © 2018</span> <span class="tg">Cours</span><span class="tg">Résumé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1VghTSe_M4EjoaiSX-1a5nMCSR9AoKYmz/view">↗ Chap 4_La transmission synaptique.pdf</a></div>
+<!-- page 01 -->
+<p class="subhead t-navy">MAGAZINE DE SCIENCES DE LA VIE ET DE LA TERRE</p>
+<p class="subhead t-red">La transmission synaptique</p>
+<p class="para">BAC Sciences Expérimentales</p>
+<!-- page 02 -->
+<!-- NOTE: page 02 is blank -->
+<!-- page 03 -->
+<p class="subhead t-navy"><span class="t-blue">MAGAZINE DE SCIENCES DE LA VIE ET DE LA TERRE</span></p>
+<p class="subhead t-red">La transmission synaptique</p>
+<p class="para">BAC Sciences Expérimentales</p>
+<!-- page 04 -->
+<p class="subhead t-red"><span class="t-gold">La transmission synaptique</span></p>
+<p class="subhead t-red">Introduction :</p>
+<p class="para">La réalisation du réflexe myotatique nécessite la présence de contacts entre le neurone sensitif et les neurones moteurs : ce sont les synapses.</p>
+<p class="para"><span class="t-blue">Quel est le mécanisme de la transmission synaptique ?</span></p>
+<p class="para"><span class="t-blue">Quel est son rôle dans la réalisation du réflexe myotatique ?</span></p>
+<p class="subhead t-red">1- Ultra structure d'une synapse neuroneuronique : <b>doc 15 p 187</b></p>
+<p class="para">Une synapse neuroneuronique comporte :</p>
+<p class="para">- l'élément présynaptique : formé toujours d'un bouton synaptique (terminaison nerveuse de l'axone ). Il renferme un grand nombre de mitochondries et de vésicules synaptiques qui renferment un neurotransmetteur ou médiateur (l'acétylcholine, GABA, noradrénaline...) impliqués dans la transmission du message nerveux.</p>
+<p class="para">Un neurone ne synthétise et ne libère qu'un seul type de neurotransmetteur.</p>
+<p class="para">- une fente synaptique : espace séparant la membrane pré-synaptique et la membrane post-synaptique ce qui prouve que les deux neurones ont électriquement isolés l'un de l'autre.</p>
+<p class="para">- l'élément postsynaptique est généralement un corps cellulaire ou une dendrite et rarement un axone. Sa membrane renferme des récepteurs spécifiques au neurotransmetteur libéré par l'élément présynaptique.</p>
+<!-- CROP: 4768 1 4 0.015 0.672 0.380 0.868 4768_ultrastructure_synapse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4768/4768_ultrastructure_synapse.png" alt=""></figure>
+<p class="para"><b>Ultrastructure d’une synapse neuroneuronique</b></p>
+<!-- CROP: 4768 1 4 0.383 0.645 0.945 0.880 4768_schema_interpretation_synapse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4768/4768_schema_interpretation_synapse.png" alt=""></figure>
+<p class="para"><b>Schéma d’interprétation</b></p>
+<!-- page 05 -->
+<p class="subhead t-red">2- Le mécanisme de la transmission synaptique <b>: voir doc 16 p 187</b></p>
+<ul class="b">
+<li>Arrivée d'un PA dans l'élément présynaptique ce qui provoque la dépolarisation de la membrane présynaptique et l'ouverture des canaux calcique voltage-dépendants.</li>
+<li>Entrée des ions Ca2+ (doc 17 p188) qui active la libération du neurotransmetteur par <b>exocytose</b> (doc 16 p187).</li>
+<li>Le neurotransmetteur ainsi libéré dans la fente synaptique se fixe sur ses récepteurs spécifiques au niveau de la membrane postsynaptique.</li>
+<li>Ouverture de canaux ioniques chimiodépendants.</li>
+<li>Mouvements ioniques à travers ces canaux ce qui entraîne une modification du potentiel de la membrane postsynaptique appelée potentiel postsynaptique (PPS).</li>
+<li>L’inactivation rapide du neurotransmetteur dans la fente synaptique interrompt la transmission synaptique.<br>
+Remarques :<br>
+-Le temps mis par le PA pour franchir une synapse est appelé délai synaptique (varie de 0.5 à 1ms).<br>
+- La transmission synaptique est unidirectionnelle : du neurone présynaptique (vésicules synaptiques) vers le neurone postsynaptique (récepteurs).</li>
+</ul>
+<p class="subhead t-red">3- Enregistrement des potentiels postsynaptiques :</p>
+<p class="para">Chaque neurone est capable de synthétiser un seul type de neurotransmetteur par contre il peut recevoir plusieurs boutons synaptiques ayant des neurotransmetteurs différents :</p>
+<p class="para">- s'il s'agit d'un neurotransmetteur excitateur : <span class="t-red">synapse excitatrice</span></p>
+<p class="para">- s'il s'agit d'un neurotransmetteur inhibiteur <b>:</b> <span class="t-red">synapse inhibitrice.</span></p>
+<p class="subhead t-navy"><span class="t-red">a- <b>La synapse excitatrice :</b></span></p>
+<p class="para"><span class="t-red">Activité p 188</span></p>
+<p class="para">La stimulation du neurone N1 provoque une dépolarisation au niveau du neurone postsynaptique N3 qui fait rapprocher le potentiel de la membrane au seuil de potentiel  -50mv, cette variation de ddp est appelée <span class="t-red">PPSE : potentiel postsynaptique excitateur.</span></p>
+<p class="para"><span class="t-blue">Quelle est l'origine ionique du PPSE ?</span></p>
+<p class="para">- la fixation du neurotransmetteur <span class="t-red">excitateur</span> (libéré par N1) sur ses récepteurs spécifiques au niveau du neurone postsynaptique provoque l'ouverture des <span class="t-red">canaux chimiodépendants à Na+.</span></p>
+<p class="para">- diffusion des ions Na+ à l'origine d'une dépolarisation au niveau du neurone postsynaptique : PPSE.</p>
+<p class="para">- le PPSE se propage jusqu'au cône axonique (à travers les neurofibrilles)</p>
+<!-- page 06 -->
+<p class="para">-l'amplitude du PPSE diminue en se propageant. S'il arrive au cône axonique avec une amplitude suffisante (atteint le seuil de -50mv) il déclenche l'ouverture des CVD Na+ provoquant ainsi la naissance d'un PA.</p>
+<p class="subhead t-navy"><span class="t-red">b- La synapse inhibitrice :</span></p>
+<p class="para"><b>Activité p 188</b></p>
+<p class="para">La stimulation su neurone N2 provoque une hyperpolarisation au niveau de N3 c'est un <span class="t-blue">PPSI : potentiel postsynaptique inhibiteur.</span></p>
+<p class="para"><span class="t-blue">Quelle est l'origine ionique du PPSI ?</span></p>
+<p class="para">- la fixation du <span class="t-blue">neurotransmetteur inhibiteur</span> (libéré par N2: GABA ou acide gamma-aminobutyrique ) sur ses récepteurs spécifiques au niveau du neurone postsynaptique provoque l'ouverture des canaux chimiodépendants.</p>
+<p class="para">- <span class="t-blue">diffusion des ions Cl-</span> dans le neurone postsynaptique et <span class="t-blue">sortie des ions K+</span> à l'origine d'une <span class="t-blue">hyperpolarisation</span> au niveau du neurone postsynaptique appelée <span class="t-blue"><b>PPSI : potentiel postsynaptique inhibiteur</b>.</span></p>
+<p class="para">- le PPSI se propage jusqu'au cône axonique (à travers les neurofibrilles) mais il n'atteint jamais le seuil et donc ne déclenche pas un PA.</p>
+<p class="subhead t-red">4- Rôle intégrateur du neurone postsynaptique:</p>
+<p class="para">L'activation d'un seul bouton synaptique donne un PPS (PPSE ou PPSI) insuffisant pour déclencher la naissance d'un PA au niveau du cône axonique.</p>
+<p class="para"><span class="t-blue">Comment naît alors un PA au niveau du neurone postsynaptique?</span></p>
+<p class="para"><b>Activité p 190</b> :</p>
+<p class="consigne">1-  Analysez les données de la 1ere série d’expériences afin de déterminer :</p>
+<p class="consigne">a-   Les différents types de synapses,</p>
+<p class="consigne">b-   Une propriété des potentiels postsynaptiques.</p>
+<!-- page 07 -->
+<table>
+<tr><th><span class="t-blue">Analyse</span></th><th><span class="t-blue">Types de synapses</span></th><th><span class="t-blue">Propriété des PPS</span></th></tr>
+<tr><td>La stimulation des neurones N1, N2 et N4 donne naissance au niveau du neurone postsynaptique N5 à une dépolarisation qui rapproche le potentiel du seuil : c'est un PPSE.<br>
+-	La stimulation de N1 donne en O5 un PPSE d’amplitude 9mv,<br>
+-	La stimulation de N2 donne en O5 un PPSE d’amplitude 9mv<br>
+-	La stimulation de N4 donne en O5 un PPSE d’amplitude 6mv<br><br>
+Les PPSE se propagent jusqu’au cône axonique en diminuant d’amplitude puis disparaissent en O6.</td><td>N1-N5, N2-N5, N4-N5 sont des synapses <span class="t-gold">excitatrices</span></td><td rowspan="2">Non propageable A décrément spatial</td></tr>
+<tr><td>La stimulation du neurone N3 donne naissance au niveau du neurone postsynaptique N5 à une hyperpolarisation : c'est un PPSI.<br><br>
+Le PPSI se propage jusqu’au cône en diminuant d’amplitude puis disparait en O6.<br>
+Le PPSI atteint le cône axonique avec une amplitude égale à 4mv.</td><td>La synapse N3-N5 est donc <span class="t-gold">inhibitrice</span></td></tr>
+</table>
+<p class="consigne">2- Analysez les autres expériences afin de dégager les conditions de naissance du PA postsynaptique.</p>
+<p class="subhead t-navy"><span class="t-blue"><b><u>2<sup>ème</sup> série d’expériences :</u></b></span></p>
+<ul class="dash">
+<li>L’application de 2 excitations efficaces peu rapprochées sur N1 engendre en O1 deux PPSE séparés dont l’amplitude diminue en O5.</li>
+<li>L’application de 2 excitations efficaces plus rapprochées sur N1 engendre en O1 un seul PPSE issu de deux PPSE élémentaires fusionnés : c’est un PPSE global qui résulte d’une <span class="t-blue">sommation temporelle</span> des 2 PPSE élémentaire. (<i>Les PPS sont sommables car ils ne sont pas suivis d’une période réfractaire contrairement aux PA</i>)<br>
+PPSE g = 2 PPSE = 2 x 9 = 18 mv<br>
+Ce PPSEg n’atteint pas le seuil en O5 et ne déclenche pas un PA d’où l’enregistrement d’un PR en O6.</li>
+</ul>
+<!-- page 08 -->
+<ul class="dash">
+<li>L’application de 3 excitations efficaces plus rapprochées sur N1 engendre en O1 un seul PPSE issu de 3 PPSE élémentaires fusionnés : c’est un PPSE global qui résulte d’une <span class="t-blue">sommation temporelle</span> des 3 PPSE élémentaire.<br>
+PPSE g =  3 PPSE = 3 x 9 = 27 mv<br>
+Ce PPSEg se propage jusqu’au cône axonique où il atteint le seuil et déclenche l’ouverture des CVD et la naissance d’un PA qui se propage jusqu’à O6.</li>
+</ul>
+<p class="subhead t-navy"><span class="t-blue"><b><u>3<sup>ème</sup> série d’expériences :</u></b></span></p>
+<ul class="dash">
+<li>L’application de 2 excitations efficaces peu rapprochées sur N3 engendre en O3 deux PPSI séparés dont l’amplitude diminue en O5.</li>
+<li>L’application de 2 excitations efficaces plus  rapprochées sur N3 engendre en O3 un seul PPSI issu de deux PPSI élémentaires fusionnés : c’est un PPSI global qui résulte d’une <span class="t-blue">sommation temporelle</span> des 2 PPSI élémentaire. Ce PPSIg n’atteint jamais le seuil en O5 et ne déclenche pas un PA d’où l’enregistrement d’un PR en O6.</li>
+</ul>
+<p class="subhead t-navy"><span class="t-blue"><b><u>4<sup>ème</sup> série d’expériences :</u></b></span></p>
+<ul class="dash">
+<li>L’application d’excitations efficaces simultanément sur N1, N2 et N4 engendre en O5 un seul PPSEg qui résulte de la sommation algébrique de 3 PPSE élémentaires : c’est <span class="t-blue">une sommation spatiale</span>.<br>
+PPSE g =  9 + 9 + 6 = 24mv<br>
+Le PPSEg atteint le seuil en O5 et déclenche la naissance d’un PA postsynaptique propageable.</li>
+<li>L’application d’excitations efficaces simultanément sur N1, N2 et N3 engendre en O5 un seul PPSEg qui résulte de la sommation algébrique spatiale de 2 PPSE et 1 PPSI : c’est <span class="t-blue">une sommation spatiale</span>.<br>
+PPSE g =  9 + 9 + (-4) = 14mv<br>
+Le PPSEg n’atteint pas le seuil en O5 et ne déclenche pas la naissance d’un PA postsynaptique.</li>
+</ul>
+<p class="subhead t-navy"><span class="t-blue"><b><u>5<sup>ème</sup> série d’expériences :</u></b></span></p>
+<p class="para">L’application d’excitations efficaces simultanément sur N1, N2, N3 et N4 engendre en O5 un seul PPSEg qui résulte de la sommation algébrique spatiale de 3 PPSE et 1 PPSI : c’est <span class="t-blue">une sommation spatiale</span>.</p>
+<p class="para">PPSE g =  9 + 9 + 6 + (-4) = 20mv</p>
+<!-- page 09 -->
+<p class="para">Le PPSEg atteint le seuil en O5 et déclenche la naissance d’un PA postsynaptique propageable.</p>
+<p class="consigne">3- A partir de toutes ces données, expliquer comment le neurone postsynaptique intègre les messages nerveux provenant des neurones présynaptiques.</p>
+<p class="para">Lorsque plusieurs neurones présynaptiques transmettent leur message simultanément au même neurone postsynaptique par des synapses excitatrices et inhibitrices, le potentiel postsynaptique résultant a une amplitude égale à la somme algébrique des PPS unitaires. On parle dans ce cas de <span class="t-red">sommation spatiale.</span></p>
+<p class="para">- Lorsqu'un même neurone présynaptique émet des PA très rapprochés à un neurone postsynaptique par une synapse excitatrice ou inhibitrice, le PPS résultant a une amplitude égale à la somme des PPS successifs provenant de la même synapse : on parle alors de <span class="t-red">sommation temporelle</span> des PPS.</p>
+<p class="para">Dans les deux cas, si la somme atteint au niveau du cône axonique (ou segment initial) le seuil de potentiel, un PA est déclenché.</p>
+<p class="para">On appelle <span class="t-red">intégration postsynaptique</span> la capacité du neurone postsynaptique d'intégrer les informations qui lui parviennent des neurones présynaptiques.</p>
+<p class="para"><span class="t-blue">Remarque :</span> En cas de réalisation des deux types de sommation on parle d’une <span class="t-blue">sommation spatio-temporelle.</span></p>
+<!-- CROP: 4768 1 9 0.130 0.525 0.610 0.685 4768_neurone_st1_st2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4768/4768_neurone_st1_st2.png" alt=""></figure>
+<p class="para"><span class="t-blue">extrait du bac math 2013c</span></p>
+<table>
+<tr><td>La stimulation appliquée sur N1 (St1) provoque l’activation de 3 synapses simultanément : c’est une <span class="t-gold">sommation spatiale.</span> (en O3)</td><td>L’application de plusieurs stimulations rapprochées sur N1 (St1) provoque la naissance 3 PA successifs et l’activation de 3 synapses simultanément : c’est une <span class="t-gold">sommation spatio-temporelle.</span></td></tr>
+</table>
+<!-- page 10 -->
+<p class="subhead t-red">5- La coordination des muscles antagonstes au cours du réflexe myotatique :</p>
+<p class="para"><span class="t-red"><b>Activité p 193 :</b></span></p>
+<p class="para">Comment expliquer la contraction du muscle étiré et le relâchement simultané du muscle antagoniste?</p>
+<p class="para">1- <b>En O1</b> : au niveau du fuseau neuromusculaire (site transducteur) l’intensité de l’étirement du muscle M est convertie en potentiel de récepteur qui se propage jusqu’au 1<sup>er</sup> nœud de Ranvier (site générateur) où il atteint le seuil et déclenche un train de 4 PA qui se propagent le long des fibres nerveuses sensitives Ia.</p>
+<p class="para"><b>En O2</b> : après 0.8 ms de la stimulation apparait un PPSE</p>
+<p class="para">Le temps mis par l'influx nerveux pour passer de O1 à O2 est égale à 0.8 ms- 0.3ms = 0.5ms (délai synaptique) qui correspond au temps mis par l'influx nerveux pour franchir une seule synapse (N1-N2).</p>
+<p class="para">Il s'agit donc d'un circuit <span class="t-blue"><b>monosynaptique</b></span> constitué de deux neurones : l'un sensitif (constitué de fibre nerveuse Ia) et l'autre moteur (constitué de fibre nerveuse motrice α) s'articulant par une synapse.</p>
+<p class="para">Le PPSEg résulte d’une sommation temporelle des 4 PPSE : N1-N2 est une synapse excitatrice.</p>
+<p class="para"><b>En O3</b>: après 1.3ms apparait un PPSI</p>
+<p class="para">Le temps mis par l'influx nerveux pour passer de O1 à O3 est égale à : 1.3- 0.3ms = 1ms (2 x 0,5ms) ce qui correspond au temps mis par l'influx nerveux pour franchir deux synapses. Il s'agit d'un circuit <span class="t-blue"><b>polysynaptique</b></span> constitué de trois neurones :</p>
+<p class="para">- un neurone sensitif<br>
+- un interneurone,<br>
+- un motoneurone</p>
+<p class="para">Le PPSIg est le résultat d’une sommation temporelle de 2 PPSI élémentaires.</p>
+<p class="para">L'apparition d'un PPSI montre que ces neurones sont intercalés par :<br>
+- une synapse excitatrice entre le neurone sensitif et l'interneurone inhibiteur,<br>
+- une synapse inhibitrice entre l'interneurone et le motoneurone α.</p>
+<p class="para"><b>En O4 :</b> apparition de PA</p>
+<p class="para">Le PPSE global obtenu au niveau de O2 atteint le seuil au niveau du cône axonique du motoneurone α et déclenche l’ouverture des CVD d'où la naissance de 2 PA postsynaptiques.</p>
+<p class="para"><b>En O5 :</b> apparition d'un PR</p>
+<p class="para">Le PPS global obtenu au niveau de O3 n'atteint pas le seuil et ne déclenche pas un PA.</p>
+<!-- page 11 -->
+<p class="para">2- Les messages nerveux sensitifs provenant des fuseaux neuromusculaires ont une double action :<br>
+- ils activent les motoneurones du muscle étiré entraînant sa contraction.<br>
+- ils inhibent les motoneurones du muscle antagoniste ce qui entraîne son relâchement.</p>
+<p class="para">C'est <span class="t-blue"><b>l'innervation réciproque</b></span> à l'origine de la coordination de l'activité des muscles antagonistes.</p>
+<p class="para">Activité : exploiter toutes les données précédentes pour reconstituer le circuit anatomique intervenant dans le réflexe myotatique.</p>
+<p class="para"><b>Remarque</b> : au repos les fuseaux neuromusculaires ne sont pas totalement inactifs. Ils présentent une légère activité qui a pour conséquence l'arrivée permanente de messages nerveux moteurs vers le muscle lui imposant une légère contraction appelée <span class="t-blue"><b>le tonus musculaire.</b></span></p>
+<!-- page 12 -->
+<!-- NOTE: page 12 is a back cover with only "Takiacademy.com © 2018" (kept in SOURCE) -->
+<!-- page 13 -->
+<!-- NOTE: page 13 is the back cover with only "WWW.TAKIACADEMY.COM" (kept in SOURCE) -->
+
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · GMARATT(flash cards)</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Résumé">
+<meta data-pagefind-filter="resource[content]" content="FLASH Bac">
+<meta data-pagefind-meta="n[content]" content="4776">
+<meta data-pagefind-meta="title[content]" content="GMARATT(flash cards)">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Muscle squelettique (contraction)">
+<meta data-pagefind-filter="chapter[content]" content="Génétique des diploïdes (monohybridisme, dihybridisme)">
+<meta data-pagefind-filter="chapter[content]" content="Génétique humaine">
+<meta data-pagefind-filter="chapter[content]" content="Immunité">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · GMARATT(flash cards)" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>GMARATT(flash cards)</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">FLASH Bac · @flashbac.tn · www.flashbac.tn</span> <span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1QOhjaXjHLmPZdSJmIHAfGqXlP4sAozy_/view">↗ Comparaison de synapse</a> <a href="https://drive.google.com/file/d/1QIvQI1hau2AIK77xSklsueYgl7MqusR2/view">↗ Génétique</a> <a href="https://drive.google.com/file/d/1Ptu2Yahf3TcdlYN8xpm4A_UbFQodA5_d/view">↗ Humaine</a> <a href="https://drive.google.com/file/d/1RUsz8YkXxSjKTcPc-nx6r3f-uGDlQkNL/view">↗ Immunité</a> <a href="https://drive.google.com/file/d/1Omi36BD1eGVDvMud2Ky54rwZp-uyNH9F/view">↗ Neuro1</a> <a href="https://drive.google.com/file/d/1AwcS0H1xmtJyYAoTG2ZG7gyNeaLytrJY/view">↗ Neuro2</a> <a href="https://drive.google.com/file/d/1bIgQJzaSuI2Mgdf-pYKuEuZhp0ff4yQA/view">↗ Neuro3</a> <a href="https://drive.google.com/file/d/1ZJ3mOlfa350fPk-Y5aW-59DAwYxR8mZR/view">↗ Neuro4</a> <a href="https://drive.google.com/file/d/19k6zdeJNp0RSiAMZ-P-_yNllVxx9fwcr/view">↗ Neuro5</a> <a href="https://drive.google.com/file/d/1v98k08tX8xyoe12goo1fkxnP9EAY-MPG/view">↗ Neuro6</a> <a href="https://drive.google.com/file/d/1tPv7i8po1gKRTK4FhvKf7qyOnEcv-T23/view">↗ Neuro7</a> <a href="https://drive.google.com/file/d/1XqVl6u2TqAPz7ISA9z_ARX5HBDOqLfyf/view">↗ Neuro8</a> <a href="https://drive.google.com/file/d/1sFZ9gZmZe9-OVAtM1Ab3wIcrgzVQpHsl/view">↗ Neuro9</a> <a href="https://drive.google.com/file/d/1wHC4bXnxu_1pfHgM9L-kIG3MhpewS_lO/view">↗ Neuro10</a> <a href="https://drive.google.com/file/d/1SwDxVfsuamkW8KXyNoTF-BQLRsSnA30m/view">↗ Neuro11</a> <a href="https://drive.google.com/file/d/1TdOiEkT0Hvn1RYEiYAyHCOK54LvQOeVm/view">↗ Neuro12</a> <a href="https://drive.google.com/file/d/1PdnQRynvXURzCT5zIpvqLQwHImCNrNqW/view">↗ Neuro PR</a> <a href="https://drive.google.com/file/d/1RavyNCs3yhsnz8zM8sQNDO45anyXoCPJ/view">↗ Réflexe myttq</a> <a href="https://drive.google.com/file/d/1PfUHPDsPc6Y1aKOdyxclYGdIiofbMdG1/view">↗ Spermatogenèse</a> <a href="https://drive.google.com/file/d/1Q31eY9nkjwn3US-a6ovUBIZPrJUKVNvr/view">↗ Spermatogenèse 2</a> <a href="https://drive.google.com/file/d/1QVlVeNOTsJSwcB7-X-iCGySB9PWsMRx8/view">↗ Trans synaptique</a> <a href="https://drive.google.com/file/d/1Q8-G0D5gPKoLI1jrBAMYm3qm2SJlDi_z/view">↗ Trisomie 21</a> <a href="https://drive.google.com/file/d/1Pe0kd9l4ffust0a9M6G14TxDRYCknioK/view">↗ Électrophorèse</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (23)</b><ul><li><a href="https://drive.google.com/file/d/1QOhjaXjHLmPZdSJmIHAfGqXlP4sAozy_/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1QIvQI1hau2AIK77xSklsueYgl7MqusR2/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1Ptu2Yahf3TcdlYN8xpm4A_UbFQodA5_d/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1RUsz8YkXxSjKTcPc-nx6r3f-uGDlQkNL/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1Omi36BD1eGVDvMud2Ky54rwZp-uyNH9F/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1AwcS0H1xmtJyYAoTG2ZG7gyNeaLytrJY/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1bIgQJzaSuI2Mgdf-pYKuEuZhp0ff4yQA/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1ZJ3mOlfa350fPk-Y5aW-59DAwYxR8mZR/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/19k6zdeJNp0RSiAMZ-P-_yNllVxx9fwcr/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1v98k08tX8xyoe12goo1fkxnP9EAY-MPG/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1tPv7i8po1gKRTK4FhvKf7qyOnEcv-T23/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1XqVl6u2TqAPz7ISA9z_ARX5HBDOqLfyf/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1sFZ9gZmZe9-OVAtM1Ab3wIcrgzVQpHsl/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1wHC4bXnxu_1pfHgM9L-kIG3MhpewS_lO/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1SwDxVfsuamkW8KXyNoTF-BQLRsSnA30m/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1TdOiEkT0Hvn1RYEiYAyHCOK54LvQOeVm/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1PdnQRynvXURzCT5zIpvqLQwHImCNrNqW/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1RavyNCs3yhsnz8zM8sQNDO45anyXoCPJ/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1PfUHPDsPc6Y1aKOdyxclYGdIiofbMdG1/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1Q31eY9nkjwn3US-a6ovUBIZPrJUKVNvr/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1QVlVeNOTsJSwcB7-X-iCGySB9PWsMRx8/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1Q8-G0D5gPKoLI1jrBAMYm3qm2SJlDi_z/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li><li><a href="https://drive.google.com/file/d/1Pe0kd9l4ffust0a9M6G14TxDRYCknioK/view">Jacem Haj Salem · bac science(Jassem) › GMARATT(flash cards)</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: FLASH Bac · @flashbac.tn · www.flashbac.tn -->
+<div class="exh"><span class="idx">Résumé</span><h2>GMARATT(flash cards)</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4776.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">FLASH Bac · @flashbac.tn · www.flashbac.tn</span> <span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1QOhjaXjHLmPZdSJmIHAfGqXlP4sAozy_/view">↗ Comparaison de synapse</a> <a href="https://drive.google.com/file/d/1QIvQI1hau2AIK77xSklsueYgl7MqusR2/view">↗ Génétique</a> <a href="https://drive.google.com/file/d/1Ptu2Yahf3TcdlYN8xpm4A_UbFQodA5_d/view">↗ Humaine</a> <a href="https://drive.google.com/file/d/1RUsz8YkXxSjKTcPc-nx6r3f-uGDlQkNL/view">↗ Immunité</a> <a href="https://drive.google.com/file/d/1Omi36BD1eGVDvMud2Ky54rwZp-uyNH9F/view">↗ Neuro1</a> <a href="https://drive.google.com/file/d/1AwcS0H1xmtJyYAoTG2ZG7gyNeaLytrJY/view">↗ Neuro2</a> <a href="https://drive.google.com/file/d/1bIgQJzaSuI2Mgdf-pYKuEuZhp0ff4yQA/view">↗ Neuro3</a> <a href="https://drive.google.com/file/d/1ZJ3mOlfa350fPk-Y5aW-59DAwYxR8mZR/view">↗ Neuro4</a> <a href="https://drive.google.com/file/d/19k6zdeJNp0RSiAMZ-P-_yNllVxx9fwcr/view">↗ Neuro5</a> <a href="https://drive.google.com/file/d/1v98k08tX8xyoe12goo1fkxnP9EAY-MPG/view">↗ Neuro6</a> <a href="https://drive.google.com/file/d/1tPv7i8po1gKRTK4FhvKf7qyOnEcv-T23/view">↗ Neuro7</a> <a href="https://drive.google.com/file/d/1XqVl6u2TqAPz7ISA9z_ARX5HBDOqLfyf/view">↗ Neuro8</a> <a href="https://drive.google.com/file/d/1sFZ9gZmZe9-OVAtM1Ab3wIcrgzVQpHsl/view">↗ Neuro9</a> <a href="https://drive.google.com/file/d/1wHC4bXnxu_1pfHgM9L-kIG3MhpewS_lO/view">↗ Neuro10</a> <a href="https://drive.google.com/file/d/1SwDxVfsuamkW8KXyNoTF-BQLRsSnA30m/view">↗ Neuro11</a> <a href="https://drive.google.com/file/d/1TdOiEkT0Hvn1RYEiYAyHCOK54LvQOeVm/view">↗ Neuro12</a> <a href="https://drive.google.com/file/d/1PdnQRynvXURzCT5zIpvqLQwHImCNrNqW/view">↗ Neuro PR</a> <a href="https://drive.google.com/file/d/1RavyNCs3yhsnz8zM8sQNDO45anyXoCPJ/view">↗ Réflexe myttq</a> <a href="https://drive.google.com/file/d/1PfUHPDsPc6Y1aKOdyxclYGdIiofbMdG1/view">↗ Spermatogenèse</a> <a href="https://drive.google.com/file/d/1Q31eY9nkjwn3US-a6ovUBIZPrJUKVNvr/view">↗ Spermatogenèse 2</a> <a href="https://drive.google.com/file/d/1QVlVeNOTsJSwcB7-X-iCGySB9PWsMRx8/view">↗ Trans synaptique</a> <a href="https://drive.google.com/file/d/1Q8-G0D5gPKoLI1jrBAMYm3qm2SJlDi_z/view">↗ Trisomie 21</a> <a href="https://drive.google.com/file/d/1Pe0kd9l4ffust0a9M6G14TxDRYCknioK/view">↗ Électrophorèse</a></div>
+
+<!-- page 01 (part1) -->
+
+<div class="chtag"><span>Chapitre</span> Muscle squelettique (contraction)</div>
+
+<p class="subhead t-red">le muscle : comparaison des synapses</p>
+<p class="subhead t-navy">synapse neuroneuronique</p>
+<!-- CROP: 4776 1 1 0.110 0.272 0.510 0.515 4776_synapse_neuroneuronique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_synapse_neuroneuronique.png" alt=""></figure>
+<p class="subhead t-navy">plaque motrice ou synapse neuromusculaire</p>
+<!-- CROP: 4776 1 1 0.508 0.272 0.895 0.542 4776_plaque_motrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_plaque_motrice.png" alt=""></figure>
+<table>
+<tr><th>synapse neuroneuronique</th><th>plaque motrice ou synapse neuromusculaire</th></tr>
+<tr><td colspan="2"><b>Les deux synapses partagent les mêmes étapes de transmission synaptique</b></td></tr>
+<tr><td><b>Peut être inhibitrice ou excitatrice.</b></td><td><b>Toujours excitatrice.</b></td></tr>
+<tr><td><b>roduit des PPS (Potentiels Post-Synaptiques) et réalise des sommations.</b><!-- PROOFREAD: 4776 part1 p01 — "roduit": first letter hidden by the box edge (Produit) --></td><td><b>Déclenche directement un PA (Potentiel d’Action) et ne fait pas de sommations.</b></td></tr>
+</table>
+
+<!-- page 01 (part2) -->
+<!-- NOTE: part2 is a phone screenshot of a reel; the app interface (status bar, Reels buttons, likes, captions, "À SUIVRE") is not transcribed — only the card -->
+
+<div class="chtag"><span>Chapitre</span> Génétique des diploïdes (monohybridisme, dihybridisme)</div>
+
+<p class="subhead t-red">génétique: il faut savoir !</p>
+<div class="data"><p class="para">1) pour maîtriser la dihybridisme il faut travailler beaucoup des exercices.</p></div>
+<div class="data">
+<p class="para">pour travailler <span class="t-gold">n'importe quel exercise</span> il faut :</p>
+<p class="para">1- voir est que il y a des résultats de cours ( comme 9.3.3.1 ...).</p>
+<p class="para">2-sinon  il faut travailler chaque caractère à part.(comme le monohybridism).</p>
+<p class="para">3-sinon il faut toujours savoir que chaque individu ne peut être que soit homozygote ou hétérozygote il reçoit un seul allèle de chaque parent .</p>
+<p class="para">4- faire le croisement et l'echequié peut généralement résoudre le problème.</p>
+</div>
+<p class="para">mahma yos3ob l'exercise!</p>
+
+<!-- page 01 (part3) -->
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<p class="subhead t-red">Bilan de la génétique humaine</p>
+<table>
+<tr><th>Types d’hérédité</th><th>Caractéristiques</th><th>Contre exemples pour exclure l’hypothèse suggérant ce type d’hérédité</th></tr>
+<tr><td><span class="t-blue">Liée à Y</span></td><td><span class="t-blue">La maladie se transmet systématiquement de père en fils La maladie n'affecte que les garçons</span></td><td><span class="t-blue">- Présence de filles (ou femmes) malades<br>- Présence de fils de phénotype différent de celui de leur père.<br>- L'analyse de l'ADN montre la présence d'allèles (normaux et/ou muté) chez les femmes.</span></td></tr>
+<tr><td><span class="t-green">Récessive autosomale</span></td><td><span class="t-green">- Tout individu malade est obligatoirement homozygote de génotype m//m.<br>- Tout individu sain ayant au moins un descendant (ou un ascendant) malade est obligatoirement hétérozygote de génotype S//m.</span></td><td><span class="t-green">- Individu malade hétérozygote.<br>- Un individu sain ayant un descendant (ou un ascendant) malade et l’analyse de son ADN montre qu’il est homozygote (présente uniquement l’allèle sain).<br>- Les sujets masculins n’ont qu’un seul allèle.</span></td></tr>
+<tr><td><span class="t-blue">Récessive liée à X</span></td><td><span class="t-blue">- Toutes les filles d’un père sain, doivent être saines.<br>- Toute fille atteinte doit avoir un père atteint.<br>- Tous les garçons d'une mère atteinte sont atteints.<br>- Tout garçon sain doit être issu d'une mère saine</span></td><td><span class="t-blue">- Une fille malade ayant un père sain.<br>- Un garçon sain ayant une mère atteinte.<br>- L’analyse de l’ADN montre la présence des 2 allèles normale et muté chez le garçon.</span></td></tr>
+<tr><td><span class="t-green">Dominante autosomale</span></td><td><span class="t-green">- Deux parents atteints peuvent donner un enfant sain<br>- Deux parents sains ne donnent que des enfants sains<br>- Chaque individu atteint à au moins un parent atteint.</span></td><td><span class="t-blue">- Un enfant atteint issu de 2 parents sains.<br>- l’analyse de l’ADN montre la présence des 2 allèles (normal et muté) chez un individu sain.</span></td></tr>
+<tr><td><span class="t-blue">Dominante liée à X</span></td><td><span class="t-blue">- Un garçon atteint doit être issu d'une mère atteinte<br>- Toutes les filles d'un père malade doivent être malades.<br>- Tous les garçons d'une mère saine doivent être sains.<br>- Toute fille saine doit avoir un père sain.</span></td><td><span class="t-blue">- Un père atteint ayant une fille saine.<br>- Une mère saine ayant eu un garçon malade.<br>- L’analyse de l’ADN montre la présence des 2 allèles normale et muté chez le garçon.</span></td></tr>
+</table>
+
+<!-- page 01 (part4) -->
+
+<div class="chtag"><span>Chapitre</span> Immunité</div>
+
+<p class="subhead t-red">l’immunité : les marqueurs du soi</p>
+<p class="subhead t-navy">HLA I ou CMH I</p>
+<p class="subhead t-navy">HLA II ou CMH II</p>
+<!-- CROP: 4776 4 1 0.050 0.125 0.940 0.430 4776_hla_cmh_cartes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_hla_cmh_cartes.png" alt=""></figure>
+<!-- CROP: 4776 4 1 0.025 0.430 0.380 0.590 4776_hla1_membrane -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_hla1_membrane.png" alt=""></figure>
+<!-- CROP: 4776 4 1 0.570 0.425 0.945 0.595 4776_hla2_membrane -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_hla2_membrane.png" alt=""></figure>
+<p class="subhead t-navy">CAS DU GREFFE</p>
+<!-- CROP: 4776 4 1 0.030 0.600 0.960 0.705 4776_greffe_acceptee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_greffe_acceptee.png" alt=""></figure>
+<p class="para"><b>Le système HLA du <span class="t-blue">donneur</span> est identique  de celui du <span class="t-green">receveur</span>, le greffon est <span class="t-green">accepté</span>✅.</b></p>
+<!-- CROP: 4776 4 1 0.030 0.765 0.985 0.870 4776_greffe_rejetee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_greffe_rejetee.png" alt=""></figure>
+<p class="para"><b>Le système HLA du <span class="t-blue">donneur</span> est différent de celui du <span class="t-green">receveur</span>, le greffon est <span class="t-red">rejeté</span>⛔.</b></p>
+
+<!-- page 01 (part5) -->
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<!-- NOTE: promotional blocks (QR code box "hetha model 3D od5ol lel storiyet flashbac bch tchouf kifnouwa" / Arabic "EN 3D" banner, footer "BAC 2026 raby ynaja7kom / BAC 2027 barcha jaw fel site flashbac.tn") and the "#أقرى_بسيستام_جديد" header are page furniture, not transcribed -->
+<p class="subhead t-red">Neurophysiologie : Le système nerveux</p>
+<!-- CROP: 4776 5 1 0.205 0.250 0.860 0.755 4776_systeme_nerveux -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_systeme_nerveux.png" alt=""></figure>
+<p class="para"><b>Certains nerfs crâniens sont directement liés aux sens (la vue, l'audition et le goût).</b></p>
+
+<!-- page 01 (part6) -->
+<p class="subhead t-red">Neurophysiologie : Le système nerveux</p>
+<div class="data"><p class="para">Tous les noms de la voie <span class="t-red">S</span>ensitive renferment "<span class="t-red">S</span>"</p></div>
+<!-- CROP: 4776 6 1 0.200 0.220 0.830 0.755 4776_moelle_neurone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_moelle_neurone.png" alt=""></figure>
+
+<!-- page 01 (part7) -->
+<p class="subhead t-red">Neurophysiologie :Les neurones</p>
+<!-- CROP: 4776 7 1 0.185 0.220 0.825 0.610 4776_neurone_structure -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_neurone_structure.png" alt=""></figure>
+<!-- CROP: 4776 7 1 0.300 0.620 0.720 0.830 4776_types_neurones -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_types_neurones.png" alt=""></figure>
+
+<!-- page 01 (part8) -->
+
+
+<p class="subhead t-red">Neurophysiologie : Les éléments du réflexe myotatique</p>
+<!-- CROP: 4776 8 1 0.185 0.265 0.830 0.465 4776_arc_reflexe_myotatique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_arc_reflexe_myotatique.png" alt=""></figure>
+<div class="data">
+<p class="subhead t-navy">1 <span class="t-blue">Ré</span>cepteur sensoriel</p>
+<p class="para">Réagit au stimulus et crée un potentiel gradué ,Si le seuil est  atteint un PA (influx nerveux) est généré.</p>
+</div>
+<div class="data">
+<p class="subhead t-navy">2 Neurone <span class="t-gold">S</span>ensitif</p>
+<p class="para">Transmet l'influx nerveux depuis le récepteur jusqu'au centre d'intégration.</p>
+</div>
+<div class="data">
+<p class="subhead t-navy">3 <span class="t-gold">Cen</span>tre d’integration Moelle épinière:</p>
+<p class="para">Dans le SNC, des interneurones relaient l'influx nerveux du neurone sensitif au neurone moteur via des synapses permettant l'analyse des influx.</p>
+</div>
+<div class="data">
+<p class="subhead t-navy">4 Neurone <span class="t-red">Mo</span>teur</p>
+<p class="para">L'axone du neurone moteur transmet l'influx nerveux du centre d'intégration jusqu'à l'effecteur.</p>
+</div>
+<div class="data">
+<p class="subhead t-navy">5 <span class="t-gold">EFFE</span>CTEUR</p>
+<p class="para">Le muscle (ou la glande) obéit à la commande motrice.</p>
+</div>
+<p class="para"><b>“<span class="t-blue">RESSEN</span>TIR <span class="t-red">MO</span>N <span class="t-gold">EFFE</span>T”</b></p>
+<!-- CROP: 4776 8 1 0.435 0.630 0.815 0.775 4776_fuseau_neuromusculaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_fuseau_neuromusculaire.png" alt=""></figure>
+<p class="para"><b>F N M</b></p>
+
+<!-- page 01 (part9) -->
+<p class="subhead t-red">Neurophysiologie : Le PR</p>
+<!-- CROP: 4776 9 1 0.180 0.228 0.820 0.470 4776_pompe_na_k -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pompe_na_k.png" alt=""></figure>
+<p class="para"><span class="t-gold">3Na+</span></p>
+<p class="para"><b>"el pompe ybi3 <span class="t-gold">Na3Na3</span> wyechri <span class="t-gold">Klil</span>"</b></p>
+<p class="para"><span class="t-gold">2k+</span></p>
+<!-- CROP: 4776 9 1 0.360 0.645 0.760 0.785 4776_mesure_pr -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_mesure_pr.png" alt=""></figure>
+<p class="para"><b>e1 et e2 : électrodes réceptrices</b></p>
+
+<!-- page 01 (part10) -->
+<!-- NOTE: promotional QR box "hethi simulation od5ol lel storiyet flashbac bch tchouf kifnouwa" not transcribed (page furniture) -->
+<p class="subhead t-red">Neurophysiologie : Le PA</p>
+<!-- CROP: 4776 10 1 0.720 0.172 0.802 0.243 4776_pa_legende -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pa_legende.png" alt=""></figure>
+<!-- CROP: 4776 10 1 0.415 0.355 0.660 0.505 4776_courbe_pa -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_courbe_pa.png" alt=""></figure>
+<!-- CROP: 4776 10 1 0.210 0.532 0.512 0.622 4776_pa_phase1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pa_phase1.png" alt=""></figure>
+<p class="subhead t-navy">1 <span class="t-red">Phase de repos</span></p>
+<p class="para"><b>Potentiel membranaire stable à -70 mV.<br>La pompe travaille pour maintenir cet équilibre.</b></p>
+<!-- CROP: 4776 10 1 0.190 0.383 0.412 0.470 4776_pa_phase2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pa_phase2.png" alt=""></figure>
+<p class="subhead t-navy">2 <span class="t-blue">Dépolarisation progressive</span></p>
+<p class="para"><b>Stimulus reçu → Les CVD (Na+) commencent à s’ouvrir légèrement. jusqu'à atteindre le seuil ( -50 mV)</b></p>
+<!-- CROP: 4776 10 1 0.180 0.220 0.405 0.312 4776_pa_phase3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pa_phase3.png" alt=""></figure>
+<p class="subhead t-navy">3 <span class="t-blue">Dépolarisation du PA (le pic)</span></p>
+<p class="para"><b>Les CVD Na+ s’ouvrent en grand → Entrée massive de Na+ → Potentiel atteint +30 mV.</b></p>
+<!-- CROP: 4776 10 1 0.585 0.243 0.805 0.335 4776_pa_phase4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pa_phase4.png" alt=""></figure>
+<p class="subhead t-navy">4 <span class="t-green">Repolarisation</span></p>
+<p class="para"><b>Les CVD de (Na+) se ferment les CVD de (K+) s’ouvrent → Le k+ sort, ce qui rend l'intérieur de la cellule (-) à nouveau.</b></p>
+<!-- CROP: 4776 10 1 0.585 0.498 0.805 0.582 4776_pa_phase5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pa_phase5.png" alt=""></figure>
+<p class="subhead t-navy">5 <span class="t-red">Hyperpolarisation</span>⛔ <span class="t-red">(Trop de k+ sort)</span></p>
+<p class="para"><b>Potentiel légèrement plus bas que -70 mV, mais la pompe Na+/K+ rétablit progressivement l'équilibre.</b></p>
+<p class="para">nanopdt.com</p>
+<!-- CROP: 4776 10 1 0.185 0.680 0.820 0.758 4776_pa_moyen_mnemo -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pa_moyen_mnemo.png" alt=""></figure>
+<div class="data"><p class="para"><b>3abd re9ed<sub>1</sub> t9ala9 mel 7ess<sub>2</sub> 9am mafjou3<sub>3</sub><br>rja3 r9ad<sub>4</sub> rigtou selet<sub>5</sub> ba3d rja3 3ady<sub>1</sub></b></p></div>
+
+<!-- page 01 (part11) -->
+<p class="subhead t-red">Neurophysiologie : <span class="t-red">À savoir</span></p>
+<!-- CROP: 4776 11 1 0.200 0.235 0.815 0.440 4776_canaux_membrane_axone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_canaux_membrane_axone.png" alt=""></figure>
+<div class="data"><p class="para"><b>Tous <span class="t-red">les canaux</span> (<span class="t-blue">CVD</span> et de <span class="t-blue">fuite</span>) en le même sens de mouvement des ions ; <span class="t-red">sortie de</span> K<sup>+</sup> <span class="t-red">et entrée de</span> Na<sup>+</sup> "</b></p></div>
+<p class="para"><b>"(Selon le gradient de concentration)"</b></p>
+<!-- CROP: 4776 11 1 0.390 0.668 0.775 0.810 4776_gradient_concentration -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_gradient_concentration.png" alt=""></figure>
+
+<!-- page 01 (part12) -->
+<p class="subhead t-red">Neurophysiologie : Naissance de message</p>
+<p class="subhead t-navy">copuscule de Pacini</p>
+<!-- CROP: 4776 12 1 0.178 0.228 0.820 0.425 4776_pacini_potentiels -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pacini_potentiels.png" alt=""></figure>
+<p class="subhead t-navy">1er nœud de Renvier</p>
+<!-- CROP: 4776 12 1 0.182 0.460 0.390 0.546 4776_premier_noeud_ranvier -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_premier_noeud_ranvier.png" alt=""></figure>
+<div class="data"><p class="para">On n'a pas des CVD dans le site transducteur les CVD n'existent qu au niveau des nœuds de Renvier.</p></div>
+<p class="para"><span class="t-blue">↪on dit que le récepteur sensoriel traduit le stimulus mécanique en signal électrique.</span></p>
+<p class="subhead t-navy">LE P.RECEPT EST:</p>
+<p class="para"><b>De même POUR Le PL</b></p>
+<p class="para"><b>*graduable.<br>*se propage sur une courte distance en decrement spatiale.<br>*ne nécessite pas un seuil.</b></p>
+
+<!-- page 01 (part13) -->
+<p class="subhead t-red">Neurophysiologie : Vitesse d’un PA</p>
+<!-- CROP: 4776 13 1 0.183 0.215 0.530 0.398 4776_conduction_saltatoire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_conduction_saltatoire.png" alt=""></figure>
+<div class="data">
+<p class="subhead t-navy">Conduction Saltatoire</p>
+<p class="para">*Accélérer la conduction électrique<br>*Économiser de l'énergie<br>*Économiser de l'espace</p>
+</div>
+<!-- CROP: 4776 13 1 0.183 0.398 0.530 0.577 4776_conduction_pas_a_pas -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_conduction_pas_a_pas.png" alt=""></figure>
+<div class="data">
+<p class="subhead t-navy">Conduction Pas à Pas</p>
+<p class="para">*Moins accélérée<br>*Plus d'énergie<br>*Plus de distance</p>
+</div>
+<p class="para"><span class="t-red"><b>V=d/t</b></span></p>
+
+<!-- page 01 (part14) -->
+<p class="subhead t-red">Neurophysiologie : Transmission synaptique</p>
+<!-- CROP: 4776 14 1 0.185 0.215 0.560 0.560 4776_transmission_synaptique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_transmission_synaptique.png" alt=""></figure>
+<div class="data">
+<p class="para"><b>1 Un potentiel d'action dépolarise la terminaison axonale.</b></p>
+<p class="para"><b>2 La dépolarisation ouvre des canaux Ca<sup>2+</sup> voltage-dépendants, permettant au Ca<sup>2+</sup> d'entrer dans la cellule.</b></p>
+<p class="para"><b>3 Le calcium entrant déclenche l'exocytose du contenu des vésicules synaptiques.</b></p>
+<p class="para"><b>4 Le neurotransmetteur diffuse à travers la fente synaptique et se lie aux récepteurs de la cellule post -synaptique.</b></p>
+<p class="para"><b>5 Le neurotransmetteur lié provoque une réponse de la cellule post-synaptique.</b></p>
+</div>
+<div class="data">
+<p class="para"><b>7awel rodha ghoneya</b></p>
+<p class="para"><b>1 Pa arrivé<br>2 Ca entré<br>3 Vésicule ouverte<br>4 Sur récepteurs fixer<br>5 La réponse est passée</b></p>
+</div>
+
+<!-- page 01 (part15) -->
+<p class="subhead t-red">Neurophysiologie : Les PPS</p>
+<p class="subhead t-navy">Potentiel Postsynaptique Excitateur (PPSE)</p>
+<!-- CROP: 4776 15 1 0.335 0.215 0.812 0.352 4776_ppse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_ppse.png" alt=""></figure>
+<p class="para"><b>1 PPSE : Sodium (Na<sup>+</sup>) → Dépolarisation = 🔥.</b></p>
+<p class="para"><b>2 PPSI : Chlorure (Cl<sup>−</sup>) → Hyperpolarisation = ❌.</b></p>
+<p class="subhead t-navy">Potentiel Postsynaptique Inhibiteur (PPSI)</p>
+<!-- CROP: 4776 15 1 0.335 0.405 0.812 0.538 4776_ppsi -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_ppsi.png" alt=""></figure>
+<!-- CROP: 4776 15 1 0.183 0.538 0.820 0.746 4776_sommations -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_sommations.png" alt=""></figure>
+<p class="para"><b>(a) Seuil non atteint, absence de sommation❌</b></p>
+<p class="para"><b>(b) Sommation➕ temporelle</b></p>
+<p class="para"><b>(c) Sommation spatiale ➕</b></p>
+<p class="para"><b>d)Sommation spatiale de PPSE ❎et de PPSI ⛔</b></p>
+
+<!-- page 01 (part16) -->
+<p class="subhead t-red">Neurophysiologie : Synthèse</p>
+<!-- CROP: 4776 16 1 0.180 0.190 0.825 0.800 4776_synthese_reflexe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_synthese_reflexe.png" alt=""></figure>
+<!-- PROOFREAD: 4776 part16 p01 — bottom labels of the figure ("Codage en fréquence de potentiel d'action du …", "Codage en concentration de neurotransmetteur du …") are cut by the footer banner on the page -->
+
+<!-- page 01 (part17) -->
+<p class="subhead t-red">neurophysiologie: Le PR</p>
+<!-- CROP: 4776 17 1 0.010 0.150 0.990 0.465 4776_pr_pompe_na_k -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pr_pompe_na_k.png" alt=""></figure>
+<p class="para"><span class="t-gold">3Na+</span></p>
+<p class="para"><b>"el pompe ybi3 <span class="t-gold">Na3Na3</span> w yechri <span class="t-gold">Klil</span>"</b></p>
+<p class="para"><span class="t-gold">2k+</span></p>
+<!-- CROP: 4776 17 1 0.200 0.700 0.900 0.890 4776_pr_mesure -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_pr_mesure.png" alt=""></figure>
+<p class="para"><b>e1 et e2 : électrodes réceptrices</b></p>
+
+<!-- page 01 (part18) -->
+<p class="subhead t-red">neurophysiologie: les éléments du réflexe myotatique</p>
+<!-- CROP: 4776 18 1 0.020 0.195 0.850 0.470 4776_reflexe_myotatique_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_reflexe_myotatique_schema.png" alt=""></figure>
+<div class="data">
+<p class="subhead t-navy">1 Récepteur sensoriel</p>
+<p class="para"><b>Réagit au stimulus et crée un potentiel gradué ,Si le seuil est atteint un PA (influx nerveux) est généré.</b></p>
+</div>
+<div class="data">
+<p class="subhead t-navy">2 Neurone sensitif</p>
+<p class="para"><b>Transmet l'influx nerveux depuis le récepteur jusqu'au centre d'intégration.</b></p>
+</div>
+<div class="data">
+<p class="subhead t-navy">3 Centre d’integration Moelle épiniére</p>
+<p class="para"><b>Dans le SNC, des interneurones relaient l'influx nerveux du neurone sensitif au neurone moteur via des synapses permettant l'analyse des influx.</b></p>
+</div>
+<div class="data">
+<p class="subhead t-navy">4 Neurone Moteur</p>
+<p class="para"><b>L'axone du neurone moteur transmet l'influx nerveux du centre d'intégration jusqu'à l'effecteur.</b></p>
+</div>
+<div class="data">
+<p class="subhead t-navy">5 EFFECTEUR</p>
+<p class="para"><b>Le muscle (ou la glande) obéit à la commande motrice.</b></p>
+</div>
+<p class="para"><b>"<span class="t-blue">ressen</span>tir <span class="t-red">mo</span>n <span class="t-gold">effe</span>t "</b></p>
+<p class="para"><b>à retenir !</b></p>
+<!-- CROP: 4776 18 1 0.170 0.700 0.815 0.955 4776_fnm_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_fnm_schema.png" alt=""></figure>
+<p class="para"><b>F N M</b></p>
+
+<!-- page 01 (part19) -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+
+<p class="subhead t-red">l’homme : spermatogenèse</p>
+<p class="para"><b>7AWEL RODHA GHONEYA</b></p>
+<div class="data">
+<p class="para"><b><span class="t-red">spermatogonie</span><br>awel wahda houni</b></p>
+<p class="para"><b><span class="t-red">spermatocyteI</span><br>akbar wahda lehna</b></p>
+<p class="para"><b><span class="t-red">spermatocyteII</span><br>haw 9samna 3al deux</b></p>
+<p class="para"><b><span class="t-red">spermatide</span><br>haw wsolna b n wa7id</b></p>
+<p class="para"><b><span class="t-red">spermatozoïde</span><br>c bon wsolna ya Walid</b></p>
+</div>
+<!-- CROP: 4776 19 1 0.415 0.180 0.890 0.925 4776_tube_seminifere -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_tube_seminifere.png" alt=""></figure>
+
+<!-- page 01 (part20) -->
+<p class="subhead t-red">l’homme : spermatogenèse</p>
+<!-- CROP: 4776 20 1 0.020 0.115 0.970 0.712 4776_spermatogenese_meiose -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_spermatogenese_meiose.png" alt=""></figure>
+<p class="para"><b>"2n di<span class="t-red">r</span><span class="t-gold">e</span>ction n"</b></p>
+<div class="data">
+<p class="para"><b>NB:</b></p>
+<p class="para"><b>*<span class="t-red">2n</span>= les chromosome sont en couples<br>*<span class="t-gold">n</span>= chaque chromosome est seul<br><span class="t-red">dupliquer</span>= les chromosomes sous forme de<span class="t-red">X</span><br><span class="t-blue">simple</span>=les chromosomes sous forme de <span class="t-red">I</span></b></p>
+</div>
+
+<!-- page 01 (part21) -->
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<p class="subhead t-red">neurophysiologie: transmission synaptique</p>
+<!-- CROP: 4776 21 1 0.112 0.170 0.575 0.590 4776_transmission_synaptique_2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_transmission_synaptique_2.png" alt=""></figure>
+<div class="data">
+<p class="para"><b>1 Un potentiel d'action dépolarise la terminaison axonale.</b></p>
+<p class="para"><b>2 La dépolarisation ouvre des canaux Ca<sup>2+</sup> voltage-dépendants, permettant au Ca<sup>2+</sup> d'entrer dans la cellule.</b></p>
+<p class="para"><b>3 Le calcium entrant déclenche l'exocytose du contenu des vésicules synaptiques.</b></p>
+<p class="para"><b>4 Le neurotransmetteur diffuse à travers la fente synaptique et se lie aux récepteurs de la cellule post-synaptique.</b></p>
+<p class="para"><b>5 Le neurotransmetteur lié provoque une réponse de la cellule post-synaptique.</b></p>
+</div>
+<div class="data">
+<p class="para"><b>7awel rodha ghoneya</b></p>
+<p class="para"><b>1 Pa arrivé<br>2 Ca entré<br>3 Vésicule ouverte<br>4 Sur récepteurs fixer<br>5 La réponse est passée</b></p>
+</div>
+
+<!-- page 01 (part22) -->
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<p class="subhead t-red">génétique: humaine trisomie 21</p>
+<!-- CROP: 4776 22 1 0.118 0.188 0.488 0.580 4776_non_disjonction_anaphase1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_non_disjonction_anaphase1.png" alt=""></figure>
+<p class="para">problème au niveau de <span class="t-gold">l'anaphaseI</span> de la méiose.</p>
+<!-- CROP: 4776 22 1 0.490 0.188 0.890 0.580 4776_non_disjonction_anaphase2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_non_disjonction_anaphase2.png" alt=""></figure>
+<p class="para">problème au niveau de <span class="t-blue">l'anaphaseII</span> de la méiose.</p>
+<!-- CROP: 4776 22 1 0.118 0.662 0.456 0.848 4776_caryotype_trisomie21 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_caryotype_trisomie21.png" alt=""></figure>
+<p class="para">la trisomie 21 est une anomalie chromosomique. Elle est plus fréquente dans les gamètes des femmes plus 40 ans.</p>
+
+<!-- page 01 (part23) -->
+<p class="subhead t-red">génétique: humaine l'électrophorèse</p>
+<!-- CROP: 4776 23 1 0.050 0.125 0.980 0.607 4776_electrophorese_southern -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_electrophorese_southern.png" alt=""></figure>
+<p class="para"><b>1 9os 2 lassa9 3 etba3 4 lawej</b></p>
+<p class="para"><b>5 el9a</b></p>
+<!-- CROP: 4776 23 1 0.550 0.770 0.800 0.875 4776_sonde_complementarite -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4776/4776_sonde_complementarite.png" alt=""></figure>
+<p class="para">NB:(A--T)et(C--G)</p>
+<p class="para"><b>La sonde se lie à la séquence ADN recherchée par complémentarité</b></p>
+
+</section>
+
+</div>
+</body>
+</html>

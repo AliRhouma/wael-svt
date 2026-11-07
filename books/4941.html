@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · 36._DS-2-Mini-Bac-2019 fini</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Devoir">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4941">
+<meta data-pagefind-meta="title[content]" content="36._DS-2-Mini-Bac-2019 fini">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Muscle squelettique (contraction)">
+<meta data-pagefind-filter="chapter[content]" content="Génétique humaine">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · 36._DS-2-Mini-Bac-2019 fini" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>36._DS-2-Mini-Bac-2019 fini</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy · Proposé par les profs de Sc.Nat</span> <span class="tg">Sujet BAC</span><span class="tg">Série</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1IC6FP5E5RfUvD-9knNWqjH4U3BoDEj4R/view">↗ 36._DS-2-Mini-Bac-2019 fini.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/1IC6FP5E5RfUvD-9knNWqjH4U3BoDEj4R/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1XlM1asbp-T77toBuozGs23MuleeLxWNP/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: Taki Academy · Proposé par les profs de Sc.Nat -->
+<div class="exh"><span class="idx ex">Devoir</span><h2>DEVOIR DE SYNTHESE N°2</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4941.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy · Proposé par les profs de Sc.Nat</span> <span class="tg">Sujet BAC</span><span class="tg">Série</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1IC6FP5E5RfUvD-9knNWqjH4U3BoDEj4R/view">↗ 36._DS-2-Mini-Bac-2019 fini.pdf</a></div>
+<!-- page 01 -->
+<p class="para"><span class="t-red"><b><i>SVT</i></b></span></p>
+<p class="para"><b><i><u>Date </u>:</i> 27/03/2019</b><br>
+<b><i><u>Section</u> :  4<sup>ème</sup> Sc.exp</i></b><br>
+<b><i><u>Coef</u> : 4</i></b><br>
+<b><i>Durée : 3heures</i></b></p>
+<p class="subhead t-red"><span class="t-blue"><b><u>PREMIERE PARTIE ( 08 points )</u></b></span></p>
+<div class="exsub"><span class="t-red">I)   QCM (04,5 points) :</span></div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes. Reportez sur votre copie, le numéro de chaque item et indiquez-la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).</p>
+<p class="consigne"><b><u>Toute réponse fausse annule la note attribuée à l’item considéré</u>.</b></p>
+<p class="para"><span class="t-blue"><b>1) La sommation spatiale a lieu quand :</b></span></p>
+<p class="para"><b>a-</b> une synapse excitatrice est activée d’une façon répétitive,<br>
+<b>b-</b> une synapse inhibitrice est activée une seule fois,<br>
+<b>c-</b> plusieurs synapses sont activées simultanément,<br>
+<b>d-</b> les boutons présynaptiques sont activés successivement.</p>
+<p class="para"><span class="t-blue"><b>2) L’unité structurale du muscle squelettique est :</b></span></p>
+<p class="para"><b>a-</b> la fibre intrafusale,<br>
+<b>b-</b> la fibre musculaire,<br>
+<b>c-</b> la myofibrille,<br>
+<b>d-</b> le sarcomère.</p>
+<p class="para"><span class="t-blue"><b>3) Parmi les points communs entre une fibre nerveuse et une fibre musculaire, on cite la présence d’une :</b></span></p>
+<p class="para"><b>a-</b> activité électrique,<br>
+<b>b-</b> striation,<br>
+<b>c-</b> gaine de myéline,<br>
+<b>d-</b> activité mécanique.</p>
+<p class="para"><span class="t-blue"><b>4) Au niveau d’un muscle squelettique au repos, les fuseaux neuromusculaires :</b></span></p>
+<p class="para"><b>a-</b> envoient un message nerveux afférent,<br>
+<b>b-</b> sont totalement inactifs,<br>
+<b>c-</b> conduisent le message nerveux centripète,<br>
+<b>d-</b> transmettent le message nerveux efférent.</p>
+<p class="para"><span class="t-blue"><b>5) Au niveau d'un récepteur sensoriel, le corpuscule de Pacini, un potentiel d'action naît au niveau du premier nœud de Ranvier car :</b></span></p>
+<p class="para"><b>a-</b> c’est le site transducteur,<br>
+<b>b-</b> il s’agit du site générateur,<br>
+<b>c-</b> les canaux voltage dépendants calciques sont nombreux,<br>
+<b>d-</b> il est recouvert de la gaine de myéline.</p>
+<p class="para"><span class="t-blue"><b>6) Les tracés suivants sont enregistrés au niveau d’un neurone postsynaptique suite à des stimulations successives ou simultanées portées sur la fibre présynaptique.</b></span></p>
+<!-- CROP: 4941 1 1 0.118 0.820 0.870 0.959 4941_p01_document1_traces -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p01_document1_traces.png" alt=""></figure>
+<!-- page 02 -->
+<p class="para"><b>a-</b> le tracé 1 est enregistré au niveau du cône axonique,<br>
+<b>b-</b> le tracé 1 montre une sommation spatiale de deux PPSE,<br>
+<b>c-</b> le tracé 2 montre une sommation temporelle,<br>
+<b>d-</b> le tracé 2 représente un potentiel d’action présynaptique.</p>
+<p class="para"><span class="t-blue"><b>7) Concernant les tracés 3 et 4, d’après le document 1 :</b></span></p>
+<p class="para"><b>a-</b> le tracé 3 est le résultat d’une seule stimulation présynaptique,<br>
+<b>b-</b> le tracé 3 montre une sommation spatiale de PPSE,<br>
+<b>c-</b> le tracé 4 est enregistré au niveau du cône axonique,<br>
+<b>d-</b> le tracé 4 fait l’objet d’une sommation spatiale.</p>
+<p class="para"><span class="t-blue"><b>8) En ce qui concerne les tracés 5 et 6, d’après le document 1 :</b></span></p>
+<p class="para"><b>a-</b> le tracé 5 est le résultat de deux stimulations successives,<br>
+<b>b-</b> le tracé 5 montre une sommation,<br>
+<b>c-</b> le tracé 6 est enregistré au niveau d’une synapse inhibitrice,<br>
+<b>d-</b> le tracé 6 montre une sommation spatiale.</p>
+<p class="para"><span class="t-blue"><b>9) Au niveau du muscle squelettique, la contraction musculaire est :</b></span></p>
+<p class="para"><b>a-</b> maintenue en absence d’ATP,<br>
+<b>b-</b> provoquée par un potentiel d'action musculaire,<br>
+<b>c-</b> suivie d'un potentiel d'action musculaire,<br>
+<b>d-</b> bloquée en absence d’oxygène.</p>
+
+<div class="chtag"><span>Chapitre</span> Muscle squelettique (contraction)</div>
+
+<div class="exsub"><span class="t-red">II) QROC (03,5 points)</span></div>
+<p class="para">Le document 1 représente deux électronographies d’une myofibrille  dans deux états différents : etats1 et états 2.Le document 2 représente deux coupes transversales de la même myofibrille réalisées selon le même plan. C<sub>1</sub> première coupe réalisée pendant l’état 1, C<sub>2</sub> deuxième coupe (selon le même plan) réalisée pendant l’état 2</p>
+<!-- CROP: 4941 1 2 0.060 0.514 0.607 0.690 4941_p02_document1_myofibrille -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p02_document1_myofibrille.png" alt=""></figure>
+<!-- CROP: 4941 1 2 0.605 0.514 0.940 0.690 4941_p02_document2_coupes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p02_document2_coupes.png" alt=""></figure>
+<p class="para">1) Identifiez les structures A et B du document 1.<br>
+2) Nommez les éléments 1 et 2 du document 2.<br>
+3) a) Réalisez un schéma d’interprétation légendé et commenté du document 1 montrant le passage de l’état 1 a l’état 2.<br>
+b) représentez sur le schéma le plan de coupe permettant d’obtenir les coupes C1 et C2.<br>
+4) La contraction de l’élément A du document 1 fait dégager de la chaleur.<br>
+Indiquez, dans l’ordre, les réactions biochimiques qui sont à l’origine de ces dégagements de chaleur.</p>
+<!-- page 03 -->
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<p class="subhead t-red"><span class="t-blue"><b><u>DEUXIÈME PARTIE ( 12 points )</u></b></span></p>
+<div class="exsub"><span class="t-red">I) Réflexe myotatique (07 points)</span></div>
+<p class="para"><span class="t-red"><b>A)</b></span> On se propose d’étudier la transmission du message nerveux. On dispose du montage expérimental du document 1.</p>
+<!-- CROP: 4941 1 3 0.542 0.049 0.930 0.228 4941_p03_document1_montage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p03_document1_montage.png" alt=""></figure>
+<p class="para">1)  On stimule le neurone N<sub>1</sub>. Le document 2 montre les résultats obtenus.<br>
+Analysez le document 1 en vue :<br>
+- de donner une précision sur la stimulation de N<sub>1</sub>,<br>
+- d’indiquer la nature de la synapse N<sub>1</sub> - N<sub>3</sub>.</p>
+<!-- CROP: 4941 1 3 0.679 0.242 0.937 0.388 4941_p03_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p03_document2.png" alt=""></figure>
+<p class="para">2) Par une micropipette, on injecte dans l’espace synaptique de la synapse S<sub>1</sub>, une substance X et on stimule la fibre nerveuse N<sub>1</sub>. Les résultats obtenus sont présentés dans le document 3.</p>
+<!-- CROP: 4941 1 3 0.686 0.392 0.937 0.536 4941_p03_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p03_document3.png" alt=""></figure>
+<p class="para">a) A partir de l’analyse de ce résultat, proposez trois hypothèses explicatives du mode d’action de la substance X.</p>
+<p class="para">b) L’injection de la même substance X au niveau de la fente synaptique de S<sub>2</sub> puis la stimulation efficace de N<sub>2</sub>, a donné les résultats présentés par le document 4.</p>
+<!-- CROP: 4941 1 3 0.675 0.537 0.942 0.688 4941_p03_document4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p03_document4.png" alt=""></figure>
+<p class="para">Analysez cette ce résultat en vue de déduire laquelle (ou lesquelles) des hypothèses proposées précédemment est (sont) rejetée(s).</p>
+<p class="para">c) Par autoradiographie, on suit le parcours da la substance X rendue radioactive, après son injection dans la fente synaptique de chacune des synapses S<sub>1</sub> et S<sub>2</sub>. Le document 5 résume schématiquement les résultats obtenus.</p>
+<!-- CROP: 4941 1 3 0.185 0.764 0.787 0.896 4941_p03_document5_synapses -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p03_document5_synapses.png" alt=""></figure>
+<p class="para">Document 5</p>
+<!-- page 04 -->
+<p class="para">Exploitez le document 5 en vue de :</p>
+<ul class="dash">
+<li>préciser le mode d’action de la substance X,</li>
+<li>déduire laquelle (ou lesquelles) des hypothèses proposées est (ou sont) confirmée(s).</li>
+</ul>
+<p class="para"><span class="t-red"><b>B)</b></span> On étudie l’état de la membrane cytoplasmique de la fibre nerveuse N1 (document 6).</p>
+<!-- CROP: 4941 1 4 0.343 0.138 0.656 0.304 4941_p04_document6 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p04_document6.png" alt=""></figure>
+<table>
+<tr><td><!-- CROP: 4941 1 4 0.065 0.324 0.350 0.520 4941_p04_document7a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p04_document7a.png" alt=""></figure></td>
+<td><!-- CROP: 4941 1 4 0.348 0.324 0.634 0.520 4941_p04_document7b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p04_document7b.png" alt=""></figure></td>
+<td><!-- CROP: 4941 1 4 0.632 0.324 0.918 0.520 4941_p04_document7c -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p04_document7c.png" alt=""></figure></td></tr>
+<tr><td><b>7a</b> : avant la stimulation</td><td><b>7b</b> : première phase du signal électrique</td><td><b>7c</b> : deuxième phase du signal électrique</td></tr>
+<tr><td colspan="3">Les concentrations des ions sont exprimées en <b>millimoles par litre</b>.<br>
+<b>MEC</b> : milieu extracellulaire          <b>MIC</b> : milieu intracellulaire</td></tr>
+</table>
+<p class="para">Document 7</p>
+<p class="para"><b>1)</b> En exploitant les données du document 7 et vos connaissances, précisez, pour chaque phase du signal électrique, l’origine ionique et le type de canaux ioniques mis en jeu. Justifiez votre réponse.</p>
+<p class="para"><b>2)</b> Le venin de certains scorpions comporte des neurotoxines qui inhibent le fonctionnement normal du système nerveux.<br>
+Pour déterminer le mode d'action de ce venin, on réalise les expériences suivantes :</p>
+<p class="para"><b><i><u>Expérience 1</u></i></b> : sur le même dispositif du document 1 on applique :<br>
+- une première stimulation efficace, le neurone <b>N1</b> (document 6) étant normal ;<br>
+- une deuxième stimulation de même intensité que la première mais le neurone <b>N1</b> a été préalablement traitée par du venin.<br>
+Le document 8 représente les résultats obtenus en <b>O<sub>2</sub></b></p>
+<!-- page 05 -->
+<table>
+<tr><th>Enregistrement en O<sub>2</sub></th><th>Enregistrement en O<sub>2</sub></th></tr>
+<tr><td><!-- CROP: 4941 1 5 0.079 0.077 0.516 0.236 4941_p05_document8_normale -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p05_document8_normale.png" alt=""></figure></td>
+<td><!-- CROP: 4941 1 5 0.515 0.077 0.922 0.236 4941_p05_document8_venin -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p05_document8_venin.png" alt=""></figure></td></tr>
+<tr><td>Fibre nerveuse <b>N1</b> normale</td><td>Fibre nerveuse <b>N1</b> traité au venin</td></tr>
+</table>
+<p class="para"><b><i><u>Document 8</u></i></b></p>
+<p class="para"><b>a-</b> Proposez deux hypothèses pouvant expliquer l'effet du venin sur la fibre nerveuse.<br>
+<b><i><u>Expérience 2</u></i></b> : l'utilisation du venin marqué (radioactif) a montré que les molécules du poison se fixent uniquement sur le canal de type 2 du document 7.<br>
+<b>b-</b> En exploitant ces données, précisez l'hypothèse à retenir parmi celles proposées dans la réponse à la question précédente. Justifiez votre réponse.</p>
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<div class="exsub"><span class="t-red">II) Génétique humaine (05 points)</span></div>
+<p class="para"><b>On se propose d'étudier le mode de transmission d'une maladie héréditaire détectée dans une famille.</b></p>
+<ul class="b">
+<li>Le document 1 présente le pédigrée correspondant à cette famille.</li>
+<li>Le document 2 présente l'électrophorèse de l'ADN de trois membres de cette famille.</li>
+</ul>
+<!-- CROP: 4941 1 5 0.065 0.516 0.502 0.716 4941_p05_document1_pedigree -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p05_document1_pedigree.png" alt=""></figure>
+<!-- CROP: 4941 1 5 0.500 0.516 0.938 0.716 4941_p05_document2_electrophorese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4941/4941_p05_document2_electrophorese.png" alt=""></figure>
+<p class="para">En utilisant les documents 1 et 2 et en justifiant les réponses :</p>
+<p class="para"><b>1)</b> Indiquer l'allèle malade et l'allèle sain.</p>
+<p class="para"><b>2)</b> Discuter les hypothèses suivantes :<br>
+<b>a.</b> <b>hypothèse 1 :</b> allèle malade porté par Y.<br>
+<b>b.</b> <b>hypothèse 2 :</b> allèle malade récessif lié à X.<br>
+<b>c.</b> <b>hypothèse 3</b> : allèle malade récessif autosomal.<br>
+<b>d.</b> <b>hypothèse 4 :</b> allèle malade dominant autosomal.<br>
+<b>e.</b> <b>hypothèse 5</b> : allèle malade dominant lié à X.</p>
+<p class="para"><b>3)</b> Donner les génotypes des membres de cette famille.</p>
+
+</section>
+
+</div>
+</body>
+</html>

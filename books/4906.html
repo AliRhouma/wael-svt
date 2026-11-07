@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · SERIE-C-NEURO-FINALE-2023 (2)</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Hend Ben Abbes">
+<meta data-pagefind-meta="n[content]" content="4906">
+<meta data-pagefind-meta="title[content]" content="SERIE-C-NEURO-FINALE-2023 (2)">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · SERIE-C-NEURO-FINALE-2023 (2)" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>SERIE-C-NEURO-FINALE-2023 (2)</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">HEND BEN ABBES 2023 4M1 - 4M2</span> <span class="tg">Série</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1gPRPrH7JBQP-wzoXiCCbtr-GDMzkNITH/view">↗ SERIE-C-NEURO-FINALE-2023 (2).pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/1gPRPrH7JBQP-wzoXiCCbtr-GDMzkNITH/view">Anas Saïd · IDEAL BAC MATH(Anas Saïd) › SVT / science / Neuro</a></li><li><a href="https://drive.google.com/file/d/1U75hsfSlrX3TrKIBcs6CUPfrTHrsIyFD/view">Karim Fourati · Bac 2KF25 › SVT / Mme Hend(LPM8) / Neuro</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: HEND BEN ABBES 2023 4M1 - 4M2 -->
+<div class="exh"><span class="idx ex">Série</span><h2>SERIE C NEURO (Cours 8)</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4906.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">HEND BEN ABBES 2023 4M1 - 4M2</span> <span class="tg">Série</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1gPRPrH7JBQP-wzoXiCCbtr-GDMzkNITH/view">↗ SERIE-C-NEURO-FINALE-2023 (2).pdf</a></div>
+<!-- NOTE: handwritten ticks, marks and scores written on top of the printed corrections are left out -->
+<!-- page 01 -->
+<p class="subhead t-red">SERIE <span class="t-gold">C</span> NEURO (<span class="t-red">Cours 8</span>)</p>
+<p class="subhead t-navy">BAC MATHS 2020 C</p>
+<div class="exsub">II- Neurophysiologie (5 points)</div>
+<p class="para">Le document 1 représente schématiquement certains éléments anatomiques qui interviennent dans le réflexe de la flexion de la jambe. L'oscilloscope O<sub>1</sub> enregistre l'activité électrique d'un neurone sensitif à la suite d'une piqure de la peau de la plante du pied par une punaise.</p>
+<!-- CROP: 4906 1 1 0.065 0.200 0.845 0.355 4906_doc1_reflexe_flexion -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4906/4906_doc1_reflexe_flexion.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="consigne"><b>1)</b> Citez deux types de canaux ioniques membranaires se trouvant dans la zone Z.</p>
+<p class="consigne"><b>2)</b> Expliquez la modification de la perméabilité membranaire aux ions Na<sup>+</sup> et K<sup>+</sup>, au niveau de la zone Z, à la suite de la piqure.</p>
+<p class="consigne"><b>3)</b> En tenant compte des données du document 1, nommez les phénomènes électriques attendus au niveau des oscilloscopes O<sub>2</sub>, O<sub>3</sub>, O<sub>4</sub> et O<sub>5</sub> à la suite de la piqure.</p>
+<p class="consigne"><b>4)</b> Expliquez la contribution des interneurones dans les réflexes à point de départ cutané.</p>
+<p class="subhead t-navy"><b>CORRECTION</b></p>
+<div class="exsub">II- Neurophysiologie (5 points)</div>
+<p class="para">1) Parmi les canaux ioniques membranaires caractérisant la zone Z, on peut citer : <b>0.5 point (0.25 x 2)</b></p>
+<ul class="dash">
+<li>les canaux de fuite.</li>
+<li>les canaux voltage-dépendants (CVD).</li>
+</ul>
+<p class="para">2) A la suite de la piqure, il y a naissance d'un message nerveux (train de PA). Chaque PA résulte de la modification de la perméabilité membranaire de la zone Z, à la suite de l'activité des CVD aux ions Na<sup>+</sup> et K<sup>+</sup> : <b>1.5 pt (0.5 x 3)</b></p>
+<ul class="dash">
+<li><b>Phase de dépolarisation :</b> lorsque la ddp membranaire atteint le seuil de -50 mV, il y a ouverture des CVD aux ions Na<sup>+</sup> entraînant une entrée massive de ces ions.</li>
+<li><b>Phase de repolarisation :</b> à une ddp membranaire de +30 mV, il y a ouverture des CVD aux ions K<sup>+</sup>, entraînant une sortie de ces ions et une fermeture progressive des CVD aux ions Na<sup>+</sup>.</li>
+<li><b>Phase d'hyperpolarisation :</b> les ions K<sup>+</sup> continuent à sortir quelques millisecondes après la fin de la phase de repolarisation.</li>
+</ul>
+<p class="para">3) <b>2 points (0 5 x 4)</b></p>
+<table>
+<tr><th>O<sub>2</sub></th><th>O<sub>3</sub></th><th>O<sub>4</sub></th><th>O<sub>5</sub></th></tr>
+<tr><td>PA (train de PA)</td><td>PR</td><td>PA (train de PA)</td><td>PA (train de PA)</td></tr>
+</table>
+<p class="para">4) Pour qu'il y ait flexion d'un membre, il faut que les muscles fléchisseurs se contractent et que leurs antagonistes se relâchent. <b>1 point</b></p>
+<p class="para">Lorsque le message sensoriel pénètre dans la corne dorsale de la moelle épinière, il est transmis à :</p>
+<ul class="dash">
+<li>des interneurones excitateurs en relation avec les motoneurones des muscles fléchisseurs,</li>
+<li>des interneurones inhibiteurs en relation avec les motoneurones des muscles extenseurs.</li>
+</ul>
+<p class="para">Ainsi, le même message permet à l'animal d'effectuer un mouvement coordonné</p>
+<!-- page 02 -->
+<p class="subhead t-navy">BAC MATHS 2020 C</p>
+<p class="para">Le document 1 représente trois tracés pouvant êtres enregistrés lors d'une transmission synaptique.</p>
+<!-- CROP: 4906 1 2 0.050 0.088 0.875 0.178 4906_doc1_traces_1_2_3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4906/4906_doc1_traces_1_2_3.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="consigne">Recopiez sur votre copie le tableau suivant et complétez-le.</p>
+<table>
+<tr><th></th><th>Tracé 1</th><th>Tracé 2</th><th>Tracé 3</th></tr>
+<tr><td>Nom</td><td></td><td></td><td></td></tr>
+<tr><td>Lieux d'enregistrement</td><td></td><td></td><td></td></tr>
+<tr><td>Canaux ioniques mis en jeu</td><td></td><td></td><td></td></tr>
+<tr><td>Propriétés (se limiter à deux)</td><td></td><td></td><td></td></tr>
+</table>
+<p class="subhead t-navy"><b>CORRECTION</b></p>
+<table>
+<tr><th></th><th>Tracé 1</th><th>Tracé 2</th><th>Tracé 3</th></tr>
+<tr><td><b>Nom</b></td><td>PPSE</td><td>PPSI</td><td>PA</td></tr>
+<tr><td><b>Lieux d'enregistrement</b></td><td><ul class="b"><li>Cône axonique</li><li>Membrane postsynaptique</li></ul></td><td><ul class="b"><li>Cône axonique</li><li>Membrane postsynaptique</li></ul></td><td>Cône axonique</td></tr>
+<tr><td><b>Canaux ioniques mis en jeu</b></td><td>CCD à Na+</td><td>CCD à K+ et ou Cl-</td><td>CVD à Na<sup>+</sup> et CVD à K<sup>+</sup></td></tr>
+<tr><td><b>Propriétés (se limiter à deux)</b></td><td><ul class="b"><li>Graduable</li><li>Sommable</li><li>Non propageable</li></ul></td><td><ul class="b"><li>Graduable</li><li>Sommable</li><li>Non propageable</li></ul></td><td><ul class="b"><li>Obéit à la loi du tout ou rien</li><li>Propageable</li></ul></td></tr>
+</table>
+<p class="subhead t-navy">BAC MATHS 2015 C</p>
+<p class="para">On se propose d'étudier le mode de transmission du message nerveux à travers les synapses. Pour cela on a réalisé deux expériences selon le dispositif expérimental représenté par le document 4.</p>
+<!-- CROP: 4906 1 2 0.155 0.533 0.755 0.643 4906_doc4_dispositif_neurone_M -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4906/4906_doc4_dispositif_neurone_M.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para"><b>Expérience 1</b> : On porte une stimulation efficace d'intensité S au niveau de E<sub>1</sub>. L'enregistrement obtenu au niveau de l'oscilloscope est représenté par le tracé 1 du document 5.</p>
+<p class="para"><b>Expérience 2</b> : On porte simultanément, deux stimulations efficaces d'intensité S au niveau de E<sub>1</sub> et de E<sub>2</sub>. L'enregistrement obtenu est représenté par le tracé 2 du document 5.</p>
+<!-- CROP: 4906 1 2 0.085 0.715 0.830 0.833 4906_doc5_traces_1_2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4906/4906_doc5_traces_1_2.png" alt=""></figure>
+<p class="para"><b>Document 5</b></p>
+<p class="consigne"><b>1)</b> Exploitez les données du document 5 en vue :</p>
+<p class="consigne">a- d'identifier la nature des réponses obtenues au niveau de l'oscilloscope.</p>
+<p class="consigne">b- de déduire la nature des synapses A-M et B-M.</p>
+<p class="consigne"><b>2)</b> En utilisant le même dispositif expérimental du document 4, déterminez le nombre minimal de stimulations efficaces permettant d'enregistrer un potentiel d'action au niveau de l'oscilloscope. Justifiez votre réponse.</p>
+<p class="consigne"><b>3)</b> En exploitant les résultats précédents, expliquez le rôle du neurone M dans la transmission du message nerveux.</p>
+<!-- page 03 -->
+<p class="subhead t-navy"><b>CORRECTION</b></p>
+<p class="para"><b>1) a-</b> <b>1,5 pt (0,75 x 2)</b></p>
+<p class="para">-Une stimulation efficace en A engendre au niveau du cône axonique du neurone M une hyperpolarisation d'amplitude égale à 10 mV (tracé 1). Il s'agit d'un PPSI</p>
+<p class="para">-Deux stimulations efficaces et simultanées au niveau de E1 et de E2 engendrent au niveau du cône axonique du neurone M une hyperpolarisation moins ample de 5 mV (tracé 2). Il s'agit d'un PPSI.</p>
+<p class="para"><b>b</b> – Le PPSI global obtenu (tracé 2) résulte de la sommation d'un PPSI d'amplitude 10 mV (dû à l'activation de la terminaison A) et d'un PPSE d'amplitude 5 mV (dû à l'activation de la terminaison B). <b>1,5 pt (0,5 x 3)</b></p>
+<p class="para">La synapse B-M est une synapse <b>excitatrice</b>.</p>
+<p class="para">La synapse A-M est une synapse <b>inhibitrice</b>.</p>
+<p class="para"><b>2)</b> 4 stimulations successives et rapprochées au niveau de E2 donnent par sommation temporelle au niveau du cône axonique de M un PPSE global d'amplitude = 4X5 = 20 mV atteignant ainsi le seuil et donnant naissance à un potentiel d'action <b>1 pt</b></p>
+<p class="para"><b>3)</b> Le neurone post-synaptique a la capacité d'intégrer à tout instant les informations qui lui parviennent des neurones pré-synaptiques par sommation temporelle et/ou spatiale des PPS. Si la somme algébrique des PPS obtenue atteint le seuil, il y a naissance et propagation d'un message nerveux. Sinon, aucun message ne prend naissance <b>1 pt</b></p>
+<p class="subhead t-navy">BAC MATHS 2015 C</p>
+<p class="para"><b>Le retrait de la main au contact d'un corps chaud est une réaction réflexe.</b></p>
+<p class="consigne"><b>1-</b> a- Enumérez 3 caractéristiques de cette réaction.</p>
+<p class="consigne">b- Citez le rôle de cette réaction réflexe.</p>
+<p class="consigne"><b>2-</b> En se référant à cette réaction réflexe, reproduisez sur votre copie le tableau suivant et complétez-le:</p>
+<table>
+<tr><td>Type de récepteur</td><td></td></tr>
+<tr><td>Centre nerveux</td><td></td></tr>
+<tr><td>Réaction du muscle extenseur</td><td></td></tr>
+<tr><td>Réaction du muscle fléchisseur</td><td></td></tr>
+<tr><td>Caractéristique du circuit neuronique</td><td></td></tr>
+</table>
+<p class="consigne"><b>3-</b> Expliquez comment l'innervation réciproque intervient dans la coordination de l'activité des muscles antagonistes au cours du réflexe de retrait de la main.</p>
+<p class="subhead t-navy"><b>CORRECTION</b></p>
+<ol class="qn">
+<li>a. Réaction innée, involontaire et stéréotypée.<br>b. Réaction de protection.</li>
+<li>Tableau :
+<table>
+<tr><td>Type de récepteur</td><td>Thermorécepteurs cutanés</td></tr>
+<tr><td>Centre nerveux</td><td>Moelle épinière</td></tr>
+<tr><td>Réaction du muscle extenseur</td><td>Relâchement</td></tr>
+<tr><td>Réaction du muscle fléchisseur</td><td>Contraction</td></tr>
+<tr><td>Caractéristique du circuit neuronique</td><td>Polysynaptique</td></tr>
+</table></li>
+<li>Les messages nerveux sensitifs provenant des récepteurs cutanés ont une double action :</li>
+</ol>
+<ul class="b">
+<li>ils activent les motoneurones du muscle fléchisseur par l'intermédiaire d'interneurones médullaires excitateurs provoquant sa contraction. Ce circuit excitateur constitué du neurone sensitif, de deux interneurones excitateurs et du motoneurone lié au muscle fléchisseur s'articule par plusieurs synapses médullaires.</li>
+<li>ils inhibent les motoneurones du muscle antagoniste (extenseur) provoquant son relâchement. Ce circuit inhibiteur constitué du neurone sensitif, d'un interneurone excitateur, d'un interneurone inhibiteur et du motoneurone lié au muscle extenseur, est également un circuit polysynaptique.</li>
+</ul>
+<!-- page 04 -->
+<p class="subhead t-navy">BAC MATHS 2012 C</p>
+<p class="para">On se propose d'étudier le fonctionnement du circuit nerveux du réflexe de flexion du pied chez la grenouille; le document 2 représente le montage expérimental utilisé.</p>
+<!-- CROP: 4906 1 4 0.055 0.090 0.820 0.310 4906_doc2_montage_grenouille -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4906/4906_doc2_montage_grenouille.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para">On applique en S plusieurs stimulations efficaces très rapprochées; les oscilloscopes O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub>, O<sub>4</sub> et O<sub>5</sub> permettent de détecter les phénomènes électriques déclenchés ; le document 3 montre les tracés obtenus.</p>
+<!-- CROP: 4906 1 4 0.060 0.378 0.840 0.465 4906_doc3_traces_a_e -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4906/4906_doc3_traces_a_e.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="consigne"><b>1-</b> Faites correspondre chacun des tracés a, b, c, d et e aux oscilloscopes O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub>, O<sub>4</sub> et O<sub>5</sub>. Justifiez votre réponse.</p>
+<p class="consigne"><b>2-</b> En exploitant les données précédentes (documents 2 et 3), expliquez la coordination de l'activité des deux muscles antagonistes M<sub>1</sub> et M<sub>2</sub> lors de ce réflexe de flexion.</p>
+<p class="subhead t-navy"><b>CORRECTION</b></p>
+<p class="para"><b>1-</b></p>
+<table>
+<tr><th>Oscilloscope.</th><th>tracé obtenu</th><th>Justification</th></tr>
+<tr><td><b>O<sub>1</sub></b></td><td><b>d</b></td><td>Plusieurs excitations efficaces rapprochées en S déclenchent un train de PA propageables qui seraient enregistrés en O<sub>1</sub></td></tr>
+<tr><td><b>O<sub>2</sub></b></td><td><b>b</b></td><td>Les PA atteignant l'interneurone inhibiteur I<sub>2</sub> sont à l'origine de PPSI successifs qui s'additionnent et engendrent au niveau du cône axonique du motoneurone du muscle extenseur (M<sub>2</sub>) un PPSI global qui éloigne le potentiel membranaire du seuil</td></tr>
+<tr><td><b>O<sub>3</sub></b></td><td><b>e</b></td><td>Les PA atteignant l'interneurone excitateur I<sub>1</sub> sont à l'origine de PPSE successifs qui s'additionnent et engendrent au niveau du cône axonique du motoneurone du muscle fléchisseur (M<sub>1</sub>) un PPSE global qui atteint le seuil suivi d'un PA</td></tr>
+<tr><td><b>O<sub>4</sub></b></td><td><b>c</b></td><td>Le PA prenant naissance au niveau du cône axonique du motoneurone innervant le muscle M<sub>1</sub> se propage; il est alors enregistré au niveau de l'axone moteur</td></tr>
+<tr><td><b>O<sub>5</sub></b></td><td><b>a</b></td><td>Le PPSI global déclenché au niveau du cône axonique du motoneurone innervant le muscle M<sub>2</sub> ne déclenche pas un PA d'où le PR enregistré au niveau de l'axone moteur</td></tr>
+</table>
+<p class="para"><b>2-</b></p>
+<p class="para">Le message nerveux sensitif (déclenché en S) a une double action:</p>
+<p class="para">- il active le motoneurone du muscle fléchisseur M<sub>1</sub> (tracé c) par l'intermédiaire de l'interneurone excitateur I<sub>1</sub> et entraîne alors sa contraction<br>
+- il inhibe le motoneurone du muscle M<sub>2</sub> (tracé a) par l'intermédiaire de l'interneurone inhibiteur I<sub>2</sub> (tracé b) et entraîne alors le relâchement de ce muscle.</p>
+<p class="para">La contraction du muscle fléchisseur M<sub>1</sub>est accompagnée du relâchement du muscle antagoniste (le muscle extenseur M<sub>2</sub>); cette coordination de l'activité de ces deux muscles antagonistes s'explique par l'innervation réciproque.</p>
+<!-- page 05 -->
+<p class="subhead t-navy">SPORT 2017 C</p>
+<p class="para">On se propose d'étudier certains aspects du fonctionnement des synapses. Pour cela, on réalise quatre expériences en utilisant le dispositif expérimental représenté dans le document 2.</p>
+<!-- CROP: 4906 1 5 0.080 0.100 0.890 0.278 4906_doc2_dispositif_neurone_C -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4906/4906_doc2_dispositif_neurone_C.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para">On stimule, de manière efficace, séparément et simultanément les terminaisons axoniques A et B et la collatérale de C. Les réponses obtenues sont enregistrées au niveau des oscilloscopes O<sub>1</sub> et O<sub>2</sub> et sont présentées par le document 3.</p>
+<!-- CROP: 4906 1 5 0.080 0.358 0.900 0.678 4906_doc3_enregistrements_O1_O2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4906/4906_doc3_enregistrements_O1_O2.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="consigne"><b>1)</b> Exploitez les données du document 3 en vue :</p>
+<p class="consigne">a-d'identifier les tracés 1 et 2.</p>
+<p class="consigne">b-d'expliquer l'obtention du tracé 1.</p>
+<p class="consigne">c-de préciser la nature des synapses A-C et B-C.</p>
+<p class="consigne"><b>2)</b> Représentez, en justifiant votre réponse, les tracés attendus au niveau de O<sub>1</sub> :</p>
+<p class="consigne">a- suite à la stimulation efficace de la collatérale C.</p>
+<p class="consigne">b- suite à la stimulation efficace et simultanée en A, en B et au niveau de la collatérale de C.</p>
+<p class="consigne"><b>3)</b> Déduisez la nature de la synapse C-collatérale de C.</p>
+<p class="consigne"><b>4)</b> Expliquez les différences de réponses enregistrées au niveau de l'oscilloscope O<sub>2</sub> dans les deux expériences 3 et 4.</p>
+<p class="consigne"><b>5)</b> A partir des informations dégagées précédemment et en faisant appel à vos connaissances, expliquez le rôle du neurone C.</p>
+<!-- page 06 -->
+<p class="subhead t-navy"><b>CORRECTION</b></p>
+<p class="para"><b>1) a- Exploitation</b> : Suite à la stimulation simultanée des deux terminaisons axoniques A et B, on obtient au niveau de O<sub>1</sub> une dépolarisation d'amplitude 100mV.<br>
+Le tracé 1 est donc un PA.</p>
+<p class="para"><b>Exploitation</b> : Suite à l'application de deux stimulations simultanées de la terminaison axonique de B et de la collatérale de C, on obtient une dépolarisation d'amplitude 5mV inférieur au seuil (20 mV).<br>
+Le tracé 2 est donc un PPSE.</p>
+<p class="para"><b>b- Exploitation</b> : Le tracé 1 est obtenu suite à la <b>sommation spatiale de deux PPSE</b> d'amplitudes respectives 10 mV et 15 mV dont la résultante <b>atteignant le seuil</b>, déclenche un <b>PA</b>.</p>
+<p class="para"><b>c-Exploitation</b> : Les stimulations en A et en B donnent chacune au niveau de O1 une dépolarisation.<br>
+Les synapses A-C et B-C sont donc excitatrices.</p>
+<p class="para"><b>2)</b></p>
+<table>
+<tr><th>Expériences</th><th>Enregistrement</th><th>Justification</th></tr>
+<tr><td rowspan="2"><b>a-</b>Stimulation efficace de la collatérale C</td><td>Un PPSI</td><td>-Stimulation en B engendre un PPSE d'amplitude 15mV<br>-Stimulation simultanée en B et au niveau de la collatérale de C engendre un PPSE d'amplitude 5mV,<br>Donc, la stimulation au niveau de la collatérale de C engendre un PPSI d'amplitude :<br>10 mV = 5-15 mV.</td></tr>
+<tr><td>Un PA</td><td>- La stimulation de la collatérale C, engendre un PA qui peut se propager en retour vers le cône axonique (propagation bidirectionnelle dans le cas expérimental).</td></tr>
+<tr><td rowspan="2"><b>b-</b>Stimulation efficace et simultanée en A, en B et au niveau de la collatérale de C</td><td>Un PPSE</td><td>-Stimulation en A : PPSE d'amplitude 10 mV<br>-Stimulation en B : PPSE d'amplitude 15 mV<br>-Stimulation au niveau de la collatérale de C : PPSI d'amplitude 10 mV<br>La résultante de ces stimulations est un PPSE d'amplitude :<br>15mV = 10+15-10</td></tr>
+<tr><td>Un PA</td><td>- La stimulation de la collatérale C, engendre un PA qui peut se propager en retour vers le cône axonique (propagation bidirectionnelle dans le cas expérimental).</td></tr>
+</table>
+<p class="para"><b>3) Déduction :</b> La synapse collatérale de C-C est inhibitrice.</p>
+<p class="para"><b>4)</b> - Si le PPS global au niveau du cône axonique atteint le seuil, il déclenche un PA propageable le long du neurone postsynaptique C enregistré au niveau de O<sub>2</sub> : Expérience 3 .<br>
+- Si le PPS global n'atteint pas le seuil, il s'annule dans l'axone, ce qui explique l'obtention d'un PR au niveau de O<sub>2</sub> : Expérience 4.</p>
+<p class="para"><b>5) Rôle du neurone C :</b><br>
+Le neurone C est capable d'intégrer à tout instant des informations qui lui parviennent des neurones présynaptiques par sommation spatiale, il a donc un rôle intégrateur.</p>
+<!-- page 07 -->
+<p class="subhead t-red">QCM</p>
+<p class="para"><b>3) Le retrait de la main au contact d'un objet brûlant est un réflexe:</b></p>
+<p class="para"><b>a-</b> de protection;<br><b>b-</b> monosynaptique;<br><b>c-</b> à point de départ cutané ;<br><b>d-</b> bulbaire (le centre nerveux est situé au niveau du bulbe rachidien).</p>
+<p class="para">M2019P</p>
+<p class="para"><b>9) Le réflexe du retrait de la main au contact d'un objet brûlant est :</b></p>
+<p class="para"><b>a-</b> un acte volontaire.<br><b>b-</b> un réflexe à point de départ cutané.<br><b>c-</b> un réflexe impliquant un circuit nerveux polysynaptique.<br><b>d-</b> un réflexe dont le centre nerveux est situé au niveau de l'encéphale.</p>
+<p class="para">M2016P</p>
+<p class="para"><b>5) Le retrait de la jambe à la suite d'une piqûre de la plante du pied est :</b></p>
+<p class="para"><b>a-</b> une réaction volontaire.<br><b>b-</b> un réflexe de protection.<br><b>c-</b> un réflexe à point de départ cutané.<br><b>d-</b> une réaction assurée par un circuit neuronique constitué par un neurone sensitif et un motoneurone.</p>
+<p class="para">M2016C</p>
+<p class="para"><b>5- Dans le réflexe de retrait de la main, le circuit nerveux dirigé vers le muscle extenseur :</b></p>
+<p class="para">a- fait intervenir deux interneurones excitateurs.<br>b- fait intervenir un interneurone excitateur et un interneurone inhibiteur.<br>c- est monosynaptique.<br>d- est polysynaptique.</p>
+<p class="para">M2014C</p>
+<p class="para"><b>2) Le schéma ci-contre représente un circuit neuronique où le message nerveux naissant au niveau du point A se transmet dans :</b></p>
+<!-- CROP: 4906 1 7 0.655 0.565 0.870 0.660 4906_qcm_circuit_fleches -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4906/4906_qcm_circuit_fleches.png" alt=""></figure>
+<p class="para"><b>a.</b> le sens indiqué par la flèche 1.<br><b>b.</b> le sens indiqué par la flèche 2.<br><b>c.</b> le sens indiqué par la flèche 3.<br><b>d.</b> les deux sens 1 et 2 indiqués par les flèches.</p>
+<p class="para">SP 2016C</p>
+<p class="para"><b>1- La transduction sensorielle est la conversion de l'énergie du stimulus en :</b></p>
+<p class="para"><b>a.</b> énergie chimique.<br><b>b.</b> énergie mécanique.<br><b>c.</b> signaux électriques.<br><b>d.</b> message nerveux moteur.</p>
+<p class="para">SP2014P</p>
+<p class="para"><b>5- La substance grise de la moelle épinière comporte des :</b></p>
+<p class="para"><b>a.</b> interneurones.<br><b>b.</b> fibres nerveuses myélinisées.<br><b>c.</b> corps cellulaires et des cellules gliales.<br><b>d.</b> fibres nerveuses entourées de gaine de Schwann.</p>
+<p class="para">SP 2013C</p>
+<p class="subhead t-navy"><span class="t-blue">FIN SERIE C</span></p>
+
+</section>
+
+</div>
+</body>
+</html>

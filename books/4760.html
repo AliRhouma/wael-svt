@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · 5- Série n°3 _ Réflexe myotatique </title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="SMART ACADEMY">
+<meta data-pagefind-meta="n[content]" content="4760">
+<meta data-pagefind-meta="title[content]" content="5- Série n°3 _ Réflexe myotatique">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · 5- Série n°3 _ Réflexe myotatique " data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>5- Série n°3 _ Réflexe myotatique </h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">SMART ACADEMY · منصة تعليمية عن بعد توفر دروس تدارك يقدمها مجموعة من الأساتذة الأكفاء · PROF:BASSEM HEZZI · SMART Academy · +21628224454 · @smartacademy9528</span> <span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1LYMaQDO1pNwgkIYw_yqe05L6vpyCSMKN/view">↗ 5- Série n°3 _ Réflexe myotatique .pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1LYMaQDO1pNwgkIYw_yqe05L6vpyCSMKN/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / Drive élite / Science élites / Ons</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: SMART ACADEMY · منصة تعليمية عن بعد توفر دروس تدارك يقدمها مجموعة من الأساتذة الأكفاء · PROF:BASSEM HEZZI · SMART Academy · +21628224454 · @smartacademy9528 -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série n°3 : Réflexe myotatique</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4760.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">SMART ACADEMY · منصة تعليمية عن بعد توفر دروس تدارك يقدمها مجموعة من الأساتذة الأكفاء · PROF:BASSEM HEZZI · SMART Academy · +21628224454 · @smartacademy9528</span> <span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1LYMaQDO1pNwgkIYw_yqe05L6vpyCSMKN/view">↗ 5- Série n°3 _ Réflexe myotatique .pdf</a></div>
+<!-- page 01 -->
+<div class="exsub">QCM</div>
+<p class="subhead t-red">Série n°3 : Réflexe myotatique</p>
+<p class="para"><b>1)- Le potentiel de repos :</b><br>
+<b>a-</b> correspond à une différence de potentiel électrique.<br>
+<b>b-</b> est variable au niveau d'une même cellule.<br>
+<b>c-</b> est modifié lors d'une stimulation d'un neurone.<br>
+<b>d-</b> est dû à l'accumulation de charges négatives dans le milieu extracellulaire et de charges positives dans le milieu intracellulaire.</p>
+<p class="para"><b>2)- Le potentiel de repos d'une fibre nerveuse est dû :</b><br>
+<b>a-</b> aux propriétés de la membrane plasmique de l'axone.<br>
+<b>b-</b> à des protéines de la membrane plasmique de l'axone.<br>
+<b>c-</b> essentiellement au fonctionnement des canaux de fuite.<br>
+<b>d-</b> à une plus grande perméabilité au sodium qu'au potassium.</p>
+<p class="para"><b>3)- Si on soumet une fibre nerveuse isolée à l'action d'une substance qui bloque la synthèse de l'ATP, on constate ce qui suit :</b><br>
+<b>a-</b> il y a augmentation de la concentration en Na+ du milieu intracellulaire<br>
+<b>b-</b> il y a diminution de la concentration en k+ du milieu extracellulaire<br>
+<b>c-</b> il y a diminution du flux entrant de Na+ par blocage de la pompe Na+/k+<br>
+<b>d-</b> la fibre devient inexcitable</p>
+<p class="para"><b>4)-On applique un stimulation électrique infraliminaire sur une fibre nerveuse. On enregistre :</b><br>
+<b>a-</b> Aucun tracé<br>
+<b>b-</b> Un potentiel d'action<br>
+<b>c-</b> Un potentiel de repos<br>
+<b>d-</b> Un potentiel local</p>
+<p class="para"><b>5). Un récepteur sensoriel :</b><br>
+<b>a.</b> Assure la transduction d'un stimulus spécifique en message nerveux.<br>
+<b>b.</b> Est une terminaison axonique.<br>
+<b>c.</b> Renferme un site transducteur.<br>
+<b>d.</b> Assure le codage du message nerveux en modulation de fréquence.</p>
+<p class="para"><b>6). Dans une synapse neuroneuronique :</b><br>
+<b>a.</b> La transmission du message nerveux est unidirectionnelle.<br>
+<b>b.</b> Le neurotransmetteur diffuse à partir d'une dendrite.<br>
+<b>c.</b> La libération du neurotransmetteur assure l'ouverture des C.V.D Ca++.<br>
+<b>d.</b> Le neurotransmetteur libéré est toujours l'acétylcholine.</p>
+<p class="para"><b>7). Le délai synaptique est le temps mis par le message nerveux pour :</b><br>
+<b>a.</b> Sauter d'un nœud de Ranvier à un autre.<br>
+<b>b.</b> Parcourir la distance séparant les deux électrodes excitatrices.<br>
+<b>c.</b> Parcourir la distance séparant le site transducteur du site générateur.<br>
+<b>d.</b> Franchir une synapse.</p>
+<p class="para"><b>8). La sommation temporelle :</b><br>
+<b>a.</b> Est une sommation algébrique des PPSE ou des PPSI.<br>
+<b>b.</b> Donne toujours un potentiel d'action post synaptique.<br>
+<b>c.</b> Résulte de l'activation simultanée de plusieurs synapses.<br>
+<b>d.</b> Résulte des activations très rapprochées de la même synapse</p>
+<!-- page 02 -->
+<div class="exsub">Exercice n° 1</div>
+<p class="para">Dans le but d'étudier certaines activités de la fibre nerveuse, on réalise les expériences suivantes.</p>
+<p class="para">Au temps T0, on porte sur une fibre une stimulation efficace.</p>
+<p class="para">Au temps T5, on place la fibre nerveuse en présence d'un poison métabolique qui tue la cellule.</p>
+<p class="para">Pendant ces expériences, on mesure la variation de la concentration des ions Na<sup>+</sup> et K<sup>+</sup> à l'intérieur de cette fibre. Les résultats de ces mesures sont représentés par les graphes suivants.</p>
+<!-- CROP: 4760 1 2 0.130 0.374 0.915 0.572 4760_concentrations_na_k -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4760/4760_concentrations_na_k.png" alt=""></figure>
+<ol class="qn">
+<li>Entre T0 et T1, la membrane de la fibre est-elle en état de dépolarisation ou d'hyperpolarisation ? Justifier.</li>
+<li>Déterminer, d'après le graphe, la valeur de la ddp de part et d'autre de la membrane de la fibre au temps : T1, T2, T3 et T4.</li>
+<li>Décrire l'activité de la membrane de la fibre qui est à l'origine des échanges ioniques entre le temps T3 et T4.</li>
+<li><span class="t-red">a</span>-Expliquer les causes à l'origine de l'évolution de la concentration interne des ions Na<sup>+</sup> et des ions K<sup>+</sup> entre le temps T5 et T6.<br>
+<span class="t-red">b</span>-Préciser la valeur de la ddp de part et d'autre de la membrane de la fibre nerveuse au temps T6.</li>
+<li>Décrire l'évolution de la ddp de part et d'autre de la membrane de cette fibre nerveuse à la suite d'une stimulation d'intensité supraliminaire et portée sur cette fibre au temps T6. Justifier.</li>
+</ol>
+<!-- page 03 -->
+<div class="exsub">Exercice n° 2</div>
+<p class="para">On se propose d'étudier certains phénomènes électriques au niveau d'une chaine neuronique.<br>
+Le document 1 ci-dessous montre une chaine de trois neurones N1, N2 et N3 :</p>
+<!-- CROP: 4760 1 3 0.140 0.240 0.910 0.418 4760_chaine_neuronique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4760/4760_chaine_neuronique.png" alt=""></figure>
+<p class="para">- N1, N2 et N3 sont les neurones constituant la chaine neuronique,<br>
+- St1 et St2 sont les lieux de stimulations électriques,<br>
+- O1, O2, O3, O4 et O5 sont des oscilloscopes (lieux de l'enregistrement de la variation du potentiel membranaire au niveau des neurones N1, N2 et N3).</p>
+<p class="subhead t-navy"><b><u>Document 1</u></b></p>
+<p class="para">En utilisant le dispositif expérimental du document 1 ci-dessus, on réalise les deux expériences suivantes :</p>
+<p class="subhead t-navy"><b><u>Expérience 1 :</u></b></p>
+<p class="para">On porte en St1 une stimulation efficace ; les réponses obtenues en O3 et O5 sont représentées sur le document 2.</p>
+<table>
+<tr><th>Tracé obtenu en O3</th><th>Tracé obtenu en O5</th></tr>
+<tr><td><!-- CROP: 4760 1 3 0.140 0.597 0.534 0.816 4760_trace_o3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4760/4760_trace_o3.png" alt=""></figure></td>
+<td><!-- CROP: 4760 1 3 0.534 0.597 0.940 0.816 4760_trace_o5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4760/4760_trace_o5.png" alt=""></figure></td></tr>
+<tr><td colspan="2"><b>Document 2</b></td></tr>
+</table>
+<p class="para"><span class="t-blue">1)</span> En exploitant les données des deux documents 1 et 2 :<br>
+<b>a-</b> schématisez les tracés enregistrés en O1, en O2 et en O4.<br>
+<b>b-</b> expliquez l'obtention des tracés enregistrés en O3 et en O5 (document 2).<br>
+<b>c-</b> déduisez la nature de chacun des deux neurones N1 et N2.</p>
+<!-- page 04 -->
+<p class="subhead t-navy"><b><u>Expérience 2 :</u></b></p>
+<p class="para">On applique une stimulation isolée en St2 ; on obtient en O2 et en O3 les tracés indiqués sur le document 3.</p>
+<table>
+<tr><th>Tracé obtenu en O2</th><th>Tracé obtenu en O3</th></tr>
+<tr><td><!-- CROP: 4760 1 4 0.140 0.233 0.530 0.431 4760_trace_o2_exp2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4760/4760_trace_o2_exp2.png" alt=""></figure></td>
+<td><!-- CROP: 4760 1 4 0.529 0.233 0.932 0.431 4760_trace_o3_exp2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4760/4760_trace_o3_exp2.png" alt=""></figure></td></tr>
+<tr><td colspan="2"><b>Document 3</b></td></tr>
+</table>
+<p class="para"><span class="t-blue">2)</span> En tenant compte de ces tracés, indiquez la nature de la réponse que l'on peut obtenir en O3 si on porte en St2 trois stimulations rapprochées et de même intensité que celle appliquée dans l'expérience 2 ; justifiez votre réponse.<br>
+<span class="t-blue">3)</span> À partir des expériences 1 et 2, expliquez alors le rôle du neurone N2 dans la transmission du message nerveux.</p>
+<div class="exsub">Exercice n° 3</div>
+<p class="para">On se propose d'étudier certains aspects de la transmission synaptique neuroneuronique.<br>
+Le document 1 montre un neurone postsynaptique N3 en relation avec deux terminaisons axoniques appartenant à deux neurones présynaptiques différents N1 et N2. Une branche axonique de ce neuronN3 fait synapse avec lui-même au niveau du soma.<br>
+Les oscilloscopes O1, O2, O3, O4  et O5 permettent, grâce à des électrodes réceptrices, de visualiser la variation de la ddp membranaire enregistrée.</p>
+<!-- CROP: 4760 1 4 0.136 0.679 0.932 0.855 4760_ex3_dispositif -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4760/4760_ex3_dispositif.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<!-- page 05 -->
+<p class="para">On réalise les expériences suivantes :</p>
+<p class="subhead"><span class="t-red"><b>Expérience 1 :</b></span></p>
+<p class="para">On porte une stimulation isolée d'intensité I1 sur le neurone N1 en St1. On obtient sur O1 une ddp de -54 mV et sur O4 le tracé 1 du document 2.</p>
+<!-- CROP: 4760 1 5 0.622 0.235 0.966 0.420 4760_ex3_traces_1_2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4760/4760_ex3_traces_1_2.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<p class="para"><span class="t-red">1)</span> <span class="t-blue">a-</span> L'intensité I1 est-elle efficace ? Pourquoi ?<br>
+<span class="t-blue">b-</span> Analysez cette expérience et le tracé 1 en vue de :</p>
+<ul class="b">
+<li>reconnaitre le tracé 1.</li>
+<li>préciser une propriété du phénomène électrique enregistr<!-- PROOFREAD: 4760 part1 p05 — "enregistr" cut off by the figure frame --></li>
+</ul>
+<p class="subhead"><span class="t-red"><b>Expérience 2 :</b></span></p>
+<p class="para">On stimule simultanément les neurones N1 et N2 avec la même intensité I1. On obtient le tracé 2 du document 2 .</p>
+<p class="para"><span class="t-red">2)</span> Analysez le tracé 1 et le tracé 2 afin de dégager :</p>
+<ul class="b">
+<li>la nature des synapses N1-N3 et N2-N3.</li>
+<li>une propriété du phénomène électrique P1 du tracé 2.</li>
+<li>une propriété du phénomène électrique P2 du tracé 2.</li>
+</ul>
+<p class="subhead"><span class="t-red"><b>Expérience 3 :</b></span></p>
+<p class="para">On porte une stimulation d'intensité I1 en St3 la ddp enregistrée sur O3 est de -84 mV et sur O4 de-80 mV.</p>
+<p class="para"><span class="t-red">3)</span> Représentez à l'échelle, les enregistrements ainsi obtenus sur O3, O4 et O5. Justifiez votre réponse.</p>
+<p class="subhead"><span class="t-red"><b>Expérience 4 :</b></span></p>
+<p class="para">En utilisant une microélectrode, on injecte dans la fente synaptique de la synapse N2 - N3 du document 1 une microgoutte d'une substance X puis on porte en St2 une stimulation d'intensité I1.<br>
+Le document 3 présente le résultat obtenu sur O2.</p>
+<!-- CROP: 4760 1 5 0.678 0.578 0.960 0.692 4760_ex3_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4760/4760_ex3_doc3.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="para"><span class="t-red">4)</span> A partir de l'analyse de l'expérience 4, proposez trois hypothèses.pouvant expliquer le mode d'action de cette substance X au niveau de la synapse N2 - N3.</p>
+<p class="subhead"><span class="t-red"><b>Expérience 5 :</b></span></p>
+<p class="para">L'injection de la substance X radioactive dans cette fente synaptique sans stimulation en St2, donne les résultats présentés schématiquement par le document 4</p>
+<!-- CROP: 4760 1 5 0.303 0.752 0.790 0.856 4760_ex3_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4760/4760_ex3_doc4.png" alt=""></figure>
+<p class="subhead"><b>Document 4</b></p>
+<p class="para"><span class="t-red">5)</span> D'après les résultats du document 4, quelle(s) l'hypothèse(s) est(sont) ainsi rejetée(s).</p>
+<!-- page 06 -->
+<p class="subhead"><span class="t-red"><b>Expérience 6 :</b></span></p>
+<ul class="b">
+<li><b>Etape 1 :</b>  On injecte une microgoutte d'une molécule Y extraite du bouton synaptique du neurone N2 et rendue radioactive, dans la fente synaptique de la même synapse N2-N3. On obtient un résultat analogue à celui obtenu dans l'expérience 5.<br>
+L'enregistrement obtenu sur O2 est une ddp de -55mV.</li>
+<li><b>Etape 2 :</b> En présence de la substance X non radioactive dans la fente synaptique, on injecte la substance Y radioactive dans la même fente. Le résultat obtenu est analogue à celui du document 4 et sur O2 le même enregistrement que le document 3.</li>
+</ul>
+<p class="para"><span class="t-red">6)</span> <span class="t-blue">a-</span> D'après les résultats de l'étape 1, indiquez le rôle de la substance Y dans la transmission synaptique.</p>
+<p class="para"><span class="t-blue">b-</span> A partir des résultats de l'expérience 6 et en faisant appel à vos connaissances :</p>
+<ul class="b">
+<li>précisez l'hypothèse ainsi confirmée.</li>
+<li>expliquez le mode d'action de cette substance X sur la synapse N2-N3.</li>
+</ul>
+
+</section>
+
+</div>
+</body>
+</html>

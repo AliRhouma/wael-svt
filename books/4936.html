@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Magazine+séries+devoirs — série réflexe myotatiquex</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4936">
+<meta data-pagefind-meta="title[content]" content="Magazine+séries+devoirs — série réflexe myotatiquex">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Magazine+séries+devoirs — série réflexe myotatiquex" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Magazine+séries+devoirs — série réflexe myotatiquex</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">SBK · Website : www.TakiAcademy.com</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/12P-MBvEDc3Rs6hoxhmAWGEkv9E-h8cTE/view">↗ 23.Série 21 03-02-2019 réflexe myotatiquex.pdf</a> <a href="https://drive.google.com/file/d/1ucO8yRAjCnygHj5H4LDvyvVbCiiDgm1D/view">↗ 25.Série 22  10-02-2019 réflexe myotatiquex.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/12P-MBvEDc3Rs6hoxhmAWGEkv9E-h8cTE/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1ucO8yRAjCnygHj5H4LDvyvVbCiiDgm1D/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: SBK · Website : www.TakiAcademy.com -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série 21: Réflexe myotatique</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4936.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">SBK · Website : www.TakiAcademy.com</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/12P-MBvEDc3Rs6hoxhmAWGEkv9E-h8cTE/view">↗ 23.Série 21 03-02-2019 réflexe myotatiquex.pdf</a> <a href="https://drive.google.com/file/d/1ucO8yRAjCnygHj5H4LDvyvVbCiiDgm1D/view">↗ 25.Série 22  10-02-2019 réflexe myotatiquex.pdf</a></div>
+<div class="exsub">23.Série 21 03-02-2019 réflexe myotatiquex</div>
+<!-- page 01 -->
+<p class="subhead t-navy">03/02/2019</p>
+<div class="exsub">Exercice 1 :</div>
+<p class="para"><b>A)</b> Le document 1 ci-dessous, est un schéma simplifié d’un neurone qui intervient dans le réflexe myotatique. Il est divisé en cinq parties selon leur emplacement dans le tissu nerveux.</p>
+<!-- CROP: 4936 1 1 0.130 0.286 0.886 0.452 4936_p1_ex1_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4936/4936_p1_ex1_doc1.png" alt=""></figure>
+<p class="para"><b>1)</b> Reconnaissez ce neurone et nommez ces différentes parties en reportant sur votre copie les lettres A, B, C, D, E et F en précisant leur emplacement respectif.<br>
+<b>B)</b> Le document 2 illustre les mouvements ioniques de <b>Na<sup>+</sup></b> et de <b>K<sup>+</sup></b> à travers trois structures A’, B’ et C’ d’une portion de la membrane d’une fibre nerveuse.</p>
+<!-- CROP: 4936 1 1 0.134 0.583 0.846 0.862 4936_p1_ex1_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4936/4936_p1_ex1_doc2.png" alt=""></figure>
+<!-- page 02 -->
+<p class="para">2) Nommez les structures A’, B’ et C’ du document 2.<br>
+3) Exploitez les informations dégagées du document 2 et vos connaissances en vue de</p>
+<p class="para">a- préciser les deux types de transports ioniques présents dans ce document ainsi que leurs effets.<br>
+b- déterminer l’état de la fibre nerveuse. Justifiez votre réponse.</p>
+<p class="para">4) Expliquez le résultat du blocage de :</p>
+<p class="para">a- la structure B’ en absence de stimulation.<br>
+b- la structure C’ suite à une stimulation efficace.</p>
+<div class="exsub">Exercice 2:</div>
+<p class="para">Dans le but d’étudier certaines activités de la fibre nerveuse on réalise les expériences suivantes :</p>
+<ul class="b">
+<li>Au temps t<sub>1</sub>, on porte sur la fibre nerveuse une stimulation efficace.</li>
+<li>Au temps t<sub>5</sub>, on place la fibre nerveuse en présence des cyanures qui tuent la cellule. Le document suivant montre les résultats des mesures des concentrations des ions Na<sup>+</sup> et K<sup>+</sup> à l’interieur de  cette fibre :</li>
+</ul>
+<!-- CROP: 4936 1 2 0.198 0.524 0.803 0.787 4936_p1_ex2_graphe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4936/4936_p1_ex2_graphe.png" alt=""></figure>
+<ol class="qn">
+<li>Identifiez C1 et C2.</li>
+<li>Comment expliquez-vous la concentration des ions entre t<sub>0</sub> et t<sub>1</sub> ?</li>
+<li>Nommez la ddp au temps t<sub>1</sub>.</li>
+<!-- page 03 -->
+<li> Précisez, en le justifiant, la valeur de la ddp au temps t<sub>1</sub> ;t<sub>2</sub> ; t<sub>3</sub>  et t<sub>4</sub>.</li>
+<li>Représentez à l’aide d’un schéma  clair et bien légendé, la structure de la membrane entre le temps t<sub>1</sub> et t<sub>2</sub> puis entre le t<sub>2</sub> et t<sub>3</sub>.</li>
+<li>Décrivez l’activité de la membrane de la fibre  qui est à l’origine des échanges ionique entre  le temps  t<sub>3</sub>et t<sub>4</sub>.</li>
+<li>a-  Expliquez les cause à l’origine de l’évolution de la concentration interne des ions Na<sup>+</sup> et K<sup>+</sup> entre t<sub>5</sub> et t<sub>6</sub>.<br>
+b- Précisez la valeur de la ddp au temps t<sub>6</sub> en justifiant votre réponse.</li>
+</ol>
+<div class="exsub">25.Série 22  10-02-2019 réflexe myotatiquex</div>
+<!-- page 01 -->
+<p class="subhead t-red">Série 22 : Réflexe myotatique</p>
+<p class="subhead t-navy">10/02/2019</p>
+<div class="exsub">Exercice 1 :</div>
+<p class="consigne">. Pour chacun des items suivants, il y a une ou deux réponses exactes. Reportez sur votre copie, le numéro de chaque item et indiquez la (ou les) lettre(s) correspondante(s) à la  réponse(s) exacte(s).</p>
+<p class="para"><b><span class="t-blue">1) Le réflexe d’extension  :</span></b></p>
+<p class="para">a- à ses récepteurs dans la peau,<br>
+b- est un réflexe médullaire,<br>
+c- est un réflexe poly synaptique,<br>
+d- intervient dans le maintien de la posture.</p>
+<p class="para"><b><span class="t-blue">2) Une section de la racine antérieure d’un nerf rachidien entraîne une dégénérescence :</span></b></p>
+<p class="para">a- du bout central de cette racine antérieure,<br>
+b- du bout périphérique de cette racine antérieure,<br>
+c- du bout central et du bout périphérique de cette racine antérieure,<br>
+d- des fibres sensitives du nerf rachidien,</p>
+<p class="para"><b><span class="t-blue">3) Un récepteur sensoriel :</span></b></p>
+<p class="para">a- est toujours localisé à la périphérie de l’organisme,<br>
+b- stimulé, il est le siége de la naissance d’un potentiel de récepteur,<br>
+c- envoie au centre nerveux un message codé en amplitude,<br>
+d- ne présente pas de potentiel de repos.</p>
+<p class="para"><b><span class="t-blue">4)La figure ci-contre représente l’état de la membrane:</span></b></p>
+<p class="para">a- au repos,<br>
+b- pendant la repolarisation,<br>
+c- pendant l’hyperpolarisation,<br>
+<b>d-</b> pendant la dépolarisation.</p>
+<!-- CROP: 4936 2 1 0.537 0.584 0.963 0.770 4936_p2_qcm4_membrane -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4936/4936_p2_qcm4_membrane.png" alt=""></figure>
+<!-- page 02 -->
+<p class="para"><b><span class="t-blue">5) La partie de la racine postérieure située entre le ganglion spinal et le nerf rachidien comporte :</span></b></p>
+<p class="para">a- des axons,<br>
+b- des dendrites,<br>
+c- des axones et des dendrites,<br>
+d- une ou plusieurs synapses.</p>
+<p class="para"><b><span class="t-blue">6) Le réflexe d’extension est :</span></b></p>
+<p class="para">a- un réflexe conditionnel,<br>
+b- un réflexe proprioceptif,<br>
+c- un réflexe extéroceptif,<br>
+d- un réflexe myotatique.</p>
+<p class="para"><b><span class="t-blue">7) La transduction est:</span></b></p>
+<p class="para">a- une caractéristique du fuseau neuromusculaire,<br>
+b- une caractéristique de tous les récepteurs sensoriels,<br>
+c- a l’origine du potentiel du récepteur,<br>
+d- a l’origine du potentiel du générateur.</p>
+<p class="para"><b><span class="t-blue">8) Dans un potentiel d’action, la repolarisation est le résultat :</span></b></p>
+<p class="para">a- d’une entrée de Na+ à l’intérieur de la fibre,<br>
+b- d’une sortie de K+ par les canaux voltage dépendants à K+,<br>
+c- d’un excès de K+ à l’extérieur de la membrane de la fibre,<br>
+d- d’une entrée de Cl- et d’une sortie de K+.</p>
+<p class="para"><b><span class="t-blue">9) dans une cellule nerveuse au repos :</span></b></p>
+<p class="para">a- les ions Na+ qui entrent et qui sortent ne sont pas à égalité.<br>
+b- la membrane plasmique présente à la fois un transport passif et un transport actif.<br>
+c- les canaux de fuite sont toujours fermés.<br>
+d- les canaux Na+et K+ voltage dépendants sont ouverts.</p>
+<p class="para"><b><span class="t-blue">10) la période réfractaire est :</span></b></p>
+<p class="para">a- une période d’inexcitabilité qui permet à la membrane de récupérer son PR.<br>
+b- une période pendant laquelle la membrane est dépolarisée.<br>
+c- une période pendant laquelle la membrane est hyper polarisée.<br>
+d- une période pendant laquelle les CVD Na+ sont ouverts.</p>
+<!-- page 03 -->
+<div class="exsub">Exercice 2:</div>
+<p class="para">Chez l’homme un coup sec porté sur le tendon d’Achille entraine l’extension du pied (document 1)</p>
+<!-- CROP: 4936 2 3 0.118 0.260 0.878 0.481 4936_p2_ex2_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4936/4936_p2_ex2_doc1.png" alt=""></figure>
+<p class="para">1)Précisez, en justifiant votre réponse la nature de cette réaction,<br>
+2) Afin de préciser les circuits neuroniques  impliqués dans cette réaction , on réalise une série d’expériences sur les neurones N1, N2 et  N3 innervant les muscles M1 et M2 de certains sujets accidentés chez qui les sections S1, S2 et S3 peuvent être observées.<br>
+<b>NB</b>- Les trois sections ne peuvent pas être observées en même temps.</p>
+<table>
+<tr><th>Niveau de section</th><th colspan="2">S<sub>1</sub></th><th colspan="2">S<sub>2</sub></th><th colspan="2">S<sub>3</sub></th></tr>
+<tr><td></td><td><b>M<sub>1</sub></b></td><td><b>M<sub>2</sub></b></td><td><b>M<sub>1</sub></b></td><td><b>M<sub>2</sub></b></td><td><b>M<sub>1</sub></b></td><td>M<sub>2</sub></td></tr>
+<tr><td><b>Stimulation du bout central du neurone sectionné ( BC)</b></td><td>+</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td><b>Stimulation du bout périphérique du neurone sectionné ( BP)</b></td><td>-</td><td>-</td><td>+</td><td>-</td><td>-</td><td>+</td></tr>
+</table>
+<p class="para"><b><span class="t-red">NB :    + : contraction du muscle   - : pas de contraction du muscle</span></b></p>
+<!-- page 04 -->
+<p class="para">Analysez ces résultats et que peut-on déduire à propos des types de ces trois neurones et nommer les.<br>
+3) Dans les muscles M1 et M2 on distingue plusieurs structures dont la structure F indiquée par le document 2</p>
+<!-- CROP: 4936 2 4 0.665 0.188 0.912 0.424 4936_p2_ex2_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4936/4936_p2_ex2_doc2.png" alt=""></figure>
+<p class="para">a- Légendez le document 2.<br>
+b- La variation de la fréquence des potentiels d’action qui se propagent le long de la fibre issue de la structure F est indiquée dans le tableau suivant :</p>
+<table>
+<tr><th><b><i><span class="t-red">Longueur de la structure F</span></i></b></th><th>60mm</th><th>65 mm</th><th>70 mm</th><th>50 mm</th></tr>
+<tr><td><b><i><span class="t-red">Fréquence des potentiels d’action propagés en 1 (doc 2)</span></i></b></td><td><b>30 /s</b></td><td><b>45/s</b></td><td><b>100/s</b></td><td><b>0/s</b></td></tr>
+</table>
+<p class="para"><b><span class="t-red">NB- au repos la longueur de la structure f est 60mm</span></b></p>
+<p class="para">Exploitez ce tableau à fin d’identifier la structure F, indiquer à quelle catégorie ou type de récepteur appartient-elle ? et expliquez ses rôles dans l’élaboration de l’extension du pied suite au coup porté sur le tendon d’Achille.</p>
+<div class="exsub">Exercice 3 :</div>
+<p class="para">Pour comprendre le fonctionnement d’une structure nerveuse, on lui applique une série de stimulations d’intensités croissantes. A l’aide de microélectrodes reliées à un oscilloscope, on enregistre pour chaque valeur de l’intensité de stimulation, la réponse de la structure nerveuse. Le document 1 montre les résultats obtenus :</p>
+<!-- page 05 -->
+<!-- CROP: 4936 2 5 0.124 0.143 0.489 0.384 4936_p2_ex3_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4936/4936_p2_ex3_doc1.png" alt=""></figure>
+<!-- CROP: 4936 2 5 0.489 0.143 0.855 0.384 4936_p2_ex3_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4936/4936_p2_ex3_doc2.png" alt=""></figure>
+<p class="para">1) Analysez ce document. que peut-on déduire ?<br>
+2) A partir des expériences décrites précédemment, quelle est  la nature et la propriété de la structure nerveuse.<br>
+4) On fait ensuite varier la fréquence des stimulations supraliminaires ; on obtient les résultats du document 2.<br>
+Donnez une explication ionique du comportement de cette structure nerveuse après la 1ère réponse.</p>
+
+</section>
+
+</div>
+</body>
+</html>

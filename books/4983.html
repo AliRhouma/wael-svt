@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · cour tissu nerveux</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="Source non indiquée">
+<meta data-pagefind-meta="n[content]" content="4983">
+<meta data-pagefind-meta="title[content]" content="cour tissu nerveux">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · cour tissu nerveux" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>cour tissu nerveux</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Cours</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1F-rBgRrDxWEnjE90BNQwLiYTTrLvYo0o/view">↗ cour tissu nerveux.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1F-rBgRrDxWEnjE90BNQwLiYTTrLvYo0o/view">Eya Masmoudi · Bac math 2026 › Svt / Mme chaouch / Neuro</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<div class="exh"><span class="idx">Cours</span><h2>Chapitre 1 : LE TISSU NERVEUX</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4983.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Cours</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1F-rBgRrDxWEnjE90BNQwLiYTTrLvYo0o/view">↗ cour tissu nerveux.pdf</a></div>
+<!-- page 01 -->
+<!-- NOTE: blue/red pen underlines and marks added by hand on top of the printed text are left out -->
+<!-- NOTE: a running header cut by the top edge of page 01 (only the bottom of the letters visible) is not transcribed -->
+<p class="subhead t-red"><span class="t-navy">Chapitre 1 :</span> LE TISSU NERVEUX</p>
+<!-- CROP: 4983 1 1 0.575 0.05 0.97 0.222 4983_schema_integration -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_schema_integration.png" alt=""></figure>
+<p class="para"><span class="t-red"><b><u>I-Introduction</u></b></span> Le système nerveux forme dans l'organisme un réseau de communication qui permet à la fois :</p>
+<ul class="b">
+<li>De recueillir des informations en provenance de l'environnement et des structures internes et de convoyer les messages vers les centres.</li>
+<li>D'intégrer et éventuellement de mettre en mémoire ces informations au niveau des centres.</li>
+<li>D'élaborer des décisions et de propager des messages efférents correspondants vers la périphérie pour générer des actions appropriées</li>
+</ul>
+<div class="data">
+<p class="para">►Chez l'homme divers comportements peuvent être observés (le retrait de la main suite au toucher d'un objet brûlant, le contact d'un aliment savoureux avec la muqueuse buccale, déclenche une abondante salivation)</p>
+<p class="para">►Tous ces comportements ont pour support le <span class="t-red">tissu nerveux</span> qui constitue les centres nerveux et le nerfs</p>
+<p class="para"><span class="t-blue">- Comment est organisé le système nerveux ?</span></p>
+<p class="para"><span class="t-blue">- De quoi est constitué le tissu nerveux ?</span></p>
+<p class="para"><span class="t-blue">- Quelle est la structure histologique de ce tissu ?</span></p>
+</div>
+<p class="subhead t-red"><b>II-Structure du système nerveux</b></p>
+<p class="subhead t-red"><b>A- Structure macroscopique (organisation) du système nerveux :</b></p>
+<!-- CROP: 4983 1 1 0.137 0.498 0.545 0.785 4983_systeme_nerveux_homme -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_systeme_nerveux_homme.png" alt=""></figure>
+<div class="data">
+<p class="para"><span class="t-blue">1- Cerveau</span></p>
+<p class="para"><span class="t-blue">2- Cervelet</span></p>
+<p class="para"><span class="t-blue">3- Bulbe rachidien</span></p>
+<p class="para"><span class="t-blue">4- Encéphale</span></p>
+<p class="para"><span class="t-blue">5- Moelle épinière</span></p>
+<p class="para"><span class="t-blue">6- Système nerveux central (centres nerveux)</span></p>
+<p class="para"><span class="t-blue">7- Nerfs crâniens</span></p>
+<p class="para"><span class="t-blue">8- Nerfs rachidiens</span></p>
+<p class="para"><span class="t-blue">9- Système nerveux périphérique</span></p>
+</div>
+<p class="para">1) D'après la localisation des organes, on distingue :</p>
+<p class="para"><span class="t-green"><u>a- Le système nerveux central</u></span> (ensemble des centres nerveux situés dans des boites osseuses centres de la sensibilité et centres de la motricité, de l' émotion…). On distingue :</p>
+<p class="para">- L'encéphale situé dans la boite crânienne. Il comprend cerveau, cervelet, bulbe rachidien…</p>
+<!-- page 02 -->
+<p class="para">- La moelle épinière située dans la colonne vertébrale fait suite au bulbe rachidien et se prolonge sur une longueur de 45 cm dans le canal rachidien formé par les vertèbres, son diamètre est d'environ 2,5 cm. Elle porte deux sillons :</p>
+<p class="para">- le sillon postérieur qui est dorsal peu profond ;</p>
+<p class="para">- le sillon antérieur qui est ventral et beaucoup plus profond.</p>
+<!-- CROP: 4983 1 2 0.124 0.147 0.78 0.542 4983_encephale_moelle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_encephale_moelle.png" alt=""></figure>
+<p class="para">Au centre on trouve le canal de l'épendyme dans lequel circule le liquide céphalorachidien (LCR). L'encéphale et la moelle épinière sont entourés par 3 enveloppes protectrices appelées méninges.</p>
+<p class="para"><span class="t-green"><u>b- Le système nerveux périphérique</u></span> : ensemble des nerfs reliant les centres nerveux aux différents organes. On distingue :</p>
+<p class="para"><b>- 12 paires de nerfs crâniens attachés à l'encéphale ex : nerf I = nerf olfactif ; nerf II = nerf optique ; nerf X = nerf pneumogastrique</b> (innerve des muscles à commande <i>involontaire</i> comme le cœur, muscles digestif et respiratoire).</p>
+<p class="para"><b>-31 paires de nerfs rachidiens attachés à la moelle épinière, ex le nerf sciatique</b></p>
+<p class="para"><span class="t-blue">2) D'après l'orientation des nerfs :</span></p>
+<p class="para"><b>a- Système nerveux de relation ou sensorimoteur</b> dont les nerfs sont dirigés vers les organes périphériques (muscles squelettiques et organes de sens).</p>
+<p class="para"><b>b- Système nerveux végétatif ou système nerveux autonome</b> dont les nerfs sont dirigés vers les organes internes. Il est régulateur des fonctions vitales (circulation, respiration…). On distingue :</p>
+<p class="para"><b><span class="t-blue">- Système nerveux orthosympathique</span></b> : stimulateur</p>
+<p class="para"><b><span class="t-blue">- Système nerveux parasympathique</span></b> : modérateur.</p>
+<!-- CROP: 4983 1 2 0.566 0.726 0.94 0.944 4983_organigramme_sn -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_organigramme_sn.png" alt=""></figure>
+<!-- page 03 -->
+<p class="subhead t-red"><b>B- Structure microscopique (histologie) du système nerveux :</b></p>
+<p class="para">Une coupe faite à différents niveaux du système nerveux central montre qu'il est formé de deux substances :</p>
+<p class="para">- Une <span class="t-red"><b>substance grise</b></span>, localisée essentiellement au niveau des centres nerveux, le ganglion spinal.</p>
+<p class="para">- Une <span class="t-red"><b>substance blanche</b></span>,</p>
+<p class="para">La disposition de la substance grise et de la substance blanche dans la moelle épinière est inversée par rapport à celle du cerveau : la substance grise est interne, la substance blanche externe.</p>
+<!-- CROP: 4983 1 3 0.013 0.282 0.59 0.5 4983_doc3_moelle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_doc3_moelle.png" alt=""></figure>
+<p class="para"><b>Document 3</b> : coupe transversale de la moelle épinière de mammifère</p>
+<!-- CROP: 4983 1 3 0.598 0.302 0.962 0.518 4983_doc4_encephale -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_doc4_encephale.png" alt=""></figure>
+<p class="para"><b>Document 4</b> : coupe transversale de l'encéphale de mammifère</p>
+<!-- page 04 -->
+<!-- CROP: 4983 1 4 0.104 0.057 0.868 0.427 4983_moelle_coupe_histologie -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_moelle_coupe_histologie.png" alt=""></figure>
+<p class="subhead t-navy"><span class="t-green"><b>1) Structure microscopique de la substance grise de la moelle épinière</b></span></p>
+<!-- CROP: 4983 1 4 0.717 0.462 0.932 0.596 4983_substance_grise_photo -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_substance_grise_photo.png" alt=""></figure>
+<p class="para">Une coupe faite au niveau de la substance grise montre au microscope :</p>
+<p class="para">a- des corps cellulaires ou péricaryons avec :</p>
+<p class="para">- Une forme caractéristique multipolaire dans la corne antérieure et unipolaire dans le ganglion spinal.</p>
+<!-- CROP: 4983 1 4 0.645 0.597 0.958 0.936 4983_corps_cellulaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_corps_cellulaire.png" alt=""></figure>
+<p class="para">- Deux types de prolongements cytoplasmiques : les <b>dendrites</b>, qui au niveau de la substance grise de la moelle épinière sont courtes et ramifiées et un seul <b>axone ou cylindraxe</b> par corps cellulaire, qui au niveau de la substance grise de la moelle épinière est long et au diamètre constant.</p>
+<p class="para">- Des organites cytoplasmiques caractéristiques : noyau clair avec un nucléole bien visible ; des <b>neurofibrilles</b> (elles ont un rôle dans la migration des métabolites de la cellule, synthétisés au niveau du péricaryon, vers les extrémités des prolongements.<br>
+Elles ont un rôle de maintien de la structure de la cellule) ;<br>
+un <b>corps de Nissl</b> (accumulation d'ergastoplasme : lieu de synthèse protéique ).</p>
+<p class="para">b- des <b>cellules gliales</b> : nombreuses et petites se trouvent entre les corps cellulaires.<br>
+Variées, ont un rôle de soutien, de nutrition et de défense.<br>
+L'ensemble des cellules gliales forme la névroglie.</p>
+<!-- page 05 -->
+<p class="subhead t-navy"><span class="t-green"><b>2) Structure de la substance blanche centrale :</b></span></p>
+<p class="para">La substance blanche montre au microscope, des éléments cylindriques : les fibres nerveuses. Chaque fibre est constituée ou axone entouré d'un cylindraxe d'une gaine de myéline de nature lipidique. La couleur de la substance est due à l'absence des corps cellulaires et la présence de la myéline blanche.</p>
+<!-- CROP: 4983 1 5 0.104 0.138 0.374 0.244 4983_substance_blanche_photo -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_substance_blanche_photo.png" alt=""></figure>
+<!-- CROP: 4983 1 5 0.5 0.155 0.88 0.244 4983_gaine_myeline_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_gaine_myeline_schema.png" alt=""></figure>
+<!-- CROP: 4983 1 5 0.088 0.296 0.93 0.478 4983_oligodendrocyte_neurone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_oligodendrocyte_neurone.png" alt=""></figure>
+<p class="subhead t-navy"><span class="t-green"><b>3) Structure microscopique du nerf</b></span></p>
+<p class="para"><b>Anatomie d'un nerf</b></p>
+<!-- CROP: 4983 1 5 0.08 0.548 0.48 0.776 4983_anatomie_nerf -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_anatomie_nerf.png" alt=""></figure>
+<!-- CROP: 4983 1 5 0.515 0.518 0.932 0.756 4983_nerf_fascicules -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_nerf_fascicules.png" alt=""></figure>
+<!-- PROOFREAD: 4983 part1 p05 — the last paragraph is cut by the right edge of the photo ("se", "sép" at line ends); only visible letters typed -->
+<p class="para">Chaque nerf est formé de deux branches courtes (appelées racines nerveuses rachidiennes) : l'une <b>ventrale</b> et l'autre dorsale. A leur sortie de la moelle épinière, les racines nerveuses correspondantes se réunissent pour former un nerf rachidien. Le nerf est un ensemble de faisceaux de fibres nerveuses sép par un tissu conjonctif vascularisé. Les fibres groupées en faisceaux sont toutes orientées dans le même sens et sont limitées par une enveloppe conjonctive.</p>
+<!-- page 06 -->
+<!-- NOTE: the top of page 06 (bottom of the "Anatomie d'un nerf" figure and the paragraph "Chaque nerf est formé de deux branches courtes …") repeats the end of page 05 (overlapping photos) — not transcribed twice -->
+<!-- CROP: 4983 1 6 0.186 0.26 0.498 0.568 4983_nerf_micrographies -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_nerf_micrographies.png" alt=""></figure>
+<!-- CROP: 4983 1 6 0.5 0.26 0.852 0.42 4983_coupe_nerf_agrandissement -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_coupe_nerf_agrandissement.png" alt=""></figure>
+<p class="para">Coupe transversale d'un nerf et agrandissement</p>
+<!-- PROOFREAD: 4983 part1 p06 — very small blurred print: "Quand on dilacère un nerf, on sépare les fibres nerveuses qu le constituent." -->
+<p class="para">Quand on dilacère un nerf, on sépare les fibres nerveuses qu le constituent.</p>
+<!-- CROP: 4983 1 6 0.508 0.459 0.827 0.627 4983_fibres_dilacerees -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_fibres_dilacerees.png" alt=""></figure>
+<p class="para">Chaque fibre nerveuse <b>périphérique</b> est constituée d'un axone ou d'une dendrite entouré d'une <b>gaine de Schwann</b> qui peut dans certain cas émettre un enroulement membranaire correspondant à la <b>gaine de myéline</b>. Les cellules de Schwann ne sont pas jointives tout au long de l'axone, l'espace libre entre ces cellules est appelée nœud de Ranvier</p>
+<p class="para">Les fibres nerveuses sont de 2 types,</p>
+<!-- CROP: 4983 1 6 0.272 0.726 0.7 0.852 4983_fibres_A_B -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_fibres_A_B.png" alt=""></figure>
+<!-- page 07 -->
+<!-- PROOFREAD: 4983 part1 p07 — first line cut by the top edge: "-La fibre myélinisée" -->
+<p class="para">-La fibre myélinisée</p>
+<!-- CROP: 4983 1 7 0.305 0.0 0.94 0.084 4983_myelinisation_etapes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_myelinisation_etapes.png" alt=""></figure>
+<!-- CROP: 4983 1 7 0.35 0.083 0.78 0.252 4983_coupe_longitudinale_fibre -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_coupe_longitudinale_fibre.png" alt=""></figure>
+<p class="para">Schéma d'une coupe longitudinale d'une fibre nerveuse observée au microscope optique</p>
+<p class="para">-La fibre amyélinique</p>
+<!-- CROP: 4983 1 7 0.15 0.345 0.6 0.492 4983_fibre_amyelinique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_fibre_amyelinique.png" alt=""></figure>
+<p class="para">On peut distinguer 3 types de nerfs :</p>
+<p class="para">- Les nerfs moteurs ;<br>
+- Les nerfs sensitifs ;<br>
+- Les nerfs mixtes.</p>
+<p class="para">Les différentes parties du système nerveux sont essentiellement constituées de <b>corps cellulaires et des cellules gliales</b> localisés dans la substance grise de <b>fibres nerveuses centrales myelinisées</b> situées au niveau de la substance blanche et de fibres nerveuses périphériques contenues dans les nerfs (fibres entourées par la <b>gaine de Schwann</b>).</p>
+<p class="subhead t-red"><b>Existe -t-il une relation entre ces différents éléments ?</b></p>
+<p class="para">Les observations et expériences suivantes apportent des éléments de réponse à cette question.</p>
+<p class="subhead t-red"><b>1) Observations</b></p>
+<p class="subhead t-navy"><b>-Observation medicale</b></p>
+<p class="para"><b>La poliomyélite</b> est une maladie virale qui se traduit par la paralysie musculaire au niveau des membres inférieurs. Chez les sujets atteints, on constate la destruction des corps cellulaires de la moelle épinière; cette destruction entraîne la dégénérescence des fibres nerveuses en relation avec les muscles paralysés.</p>
+<p class="subhead t-navy"><b>- Observation d'une culture de cellules nerveuses embryonnaires.</b></p>
+<p class="para">La culture de tissu nerveux embryonnaire permet de suivre la différenciation de cellules nerveuses embryonnaires. Chaque cellule émet au cours de sa différenciation de nombreux</p>
+<!-- page 08 -->
+<p class="para">prolongements dont certains se ramifient : ce sont les <b>dendrites</b>; l'un des prolongements s'allonge progressivement en <b>axone</b> qui ne se ramifie qu'à son extrémité.</p>
+<!-- CROP: 4983 1 8 0.405 0.073 0.848 0.137 4983_culture_cellules -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_culture_cellules.png" alt=""></figure>
+<p class="subhead t-red"><b>2) Expériences</b></p>
+<p class="para"><b>1) Expérience de Mérotomie :</b> Ce phénomène est observé chez des animaux unicellulaires, comme l'amibe. Quand on lui sectionne une partie du cytoplasme, le fragment anucléé (sans noyau) dégénère, alors que le fragment nucléé (qui contient le noyau) régénère.</p>
+<!-- CROP: 4983 1 8 0.08 0.246 0.735 0.418 4983_merotomie_amibe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_merotomie_amibe.png" alt=""></figure>
+<p class="para"><b>2) Expériences de dégénérescence wallérienne : (Waller : 1851)</b></p>
+<!-- CROP: 4983 1 8 0.033 0.483 0.44 0.647 4983_waller_section -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_waller_section.png" alt=""></figure>
+<p class="para">La section d'un nerf rachidien d'un animal entraîne la dégénérescence des fibres dans le bout périphérique du nerf : l'axone et la gaine de myéline se fragmentent, se décomposent puis disparaissent. La gaine de Schwann, pourvue de noyau, reste intacte.</p>
+<p class="para">Après un certain temps le bout central régénère : l'axone s'allonge et s'enfile dans la gaine de Schwann qui reconstitue la gaine de myéline</p>
+<!-- CROP: 4983 1 8 0.12 0.67 0.488 0.812 4983_waller_a_neurone_normal -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_waller_a_neurone_normal.png" alt=""></figure>
+<!-- CROP: 4983 1 8 0.518 0.705 0.882 0.804 4983_waller_b_chromatolyse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_waller_b_chromatolyse.png" alt=""></figure>
+<!-- CROP: 4983 1 8 0.12 0.806 0.488 0.927 4983_waller_c_degenerescence -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_waller_c_degenerescence.png" alt=""></figure>
+<!-- CROP: 4983 1 8 0.518 0.806 0.882 0.927 4983_waller_d_regeneration -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_waller_d_regeneration.png" alt=""></figure>
+<!-- page 09 -->
+<!-- PROOFREAD: 4983 part1 p09 — "Conclusion :" cut by the top edge -->
+<p class="subhead"><b>Conclusion :</b></p>
+<table>
+<tr><td>Observation médicale : la poliomyélite</td><td>Il existe une relation entre les corps cellulaires de la moelle épinière et les fibres nerveuses innervant les muscles.</td></tr>
+<tr><td>Observation d'une culture de cellules nerveuses embryonnaires</td><td>Il existe un lien anatomique entre l'axone, les dendrites et le corps cellulaire</td></tr>
+<tr><td>Expérience de mérotomie<br><b><i>Mérotomie</i></b> : division de la cellule en deux parties, celle du cytoplasme et celle du noyau</td><td>Le cytoplasme sans noyau dégénère. Le noyau est indispensable à la survie de la cellule</td></tr>
+<tr><td>Expérience de dégénérescence wallérienne</td><td>Sans noyau, le cytoplasme est incapable de vivre. La dégénérescence de l'axone dans le bout périphérique du nerf prouve qu'il constitue le prolongement cytoplasmique d'un corps cellulaire situé du côté de la moelle.</td></tr>
+</table>
+<p class="para">L'expérience de dégénérescence Wallérienne, les observations cliniques (cas de la poliomyélite) ont montré que les fibres nerveuses de la substance blanche ne sont que des prolongements cytoplasmiques, enveloppées par des gaines, des corps cellulaires de la substance grise, l'ensemble formant le neurone.</p>
+<p class="para">Le <b>neurone</b> est donc l'unité structurale du tissu nerveux. Les <b>cellules gliales</b>, au service des neurones, assurent plusieurs fonctions : nutrition, soutien, protection, phagocytose des cellules mortes, isolant électrique.</p>
+<!-- CROP: 4983 1 9 0.05 0.483 0.74 0.73 4983_le_neurone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_le_neurone.png" alt=""></figure>
+<p class="para">Il existe plusieurs types de neurones (voir schéma):</p>
+<!-- CROP: 4983 1 9 0.53 0.771 0.952 0.946 4983_types_neurones -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_types_neurones.png" alt=""></figure>
+<!-- PROOFREAD: 4983 part1 p09 — the last line is cut through by the bottom edge: "l'axone qui pénètre dans la moelle épinière" -->
+<p class="para"><span class="t-green">Remarque</span> Pour le neurone unipolaire sensitif dont le corps cellulaire est situé dans le ganglion spinal, la dendrite dont les terminaisons sont attachées à des récepteurs sensoriels, est très allongé et constitue une fibre sensitive contenue dans le nerf rachidien et la racine postérieure de ce nerf, alors que l'axone qui pénètre dans la moelle épinière</p>
+<!-- page 10 -->
+<!-- NOTE: page 10 is a screenshot of a word-processor page; the image selection handles, rotate handle and layout icon around the photo are software interface, not transcribed -->
+<p class="subhead t-red"><b>III-Relation entre les neurones :</b></p>
+<p class="para">Différentes observations microscopiques permettent montrer les modes de connexion</p>
+<p class="para">entre les neurones (documents ci-dessous) :</p>
+<p class="para">Observation de neurones dans le tissu nerveux :</p>
+<!-- CROP: 4983 1 10 0.12 0.212 0.469 0.377 4983_neurones_tissu -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_neurones_tissu.png" alt=""></figure>
+<!-- CROP: 4983 1 10 0.582 0.113 0.862 0.302 4983_corps_cellulaire_synapses -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_corps_cellulaire_synapses.png" alt=""></figure>
+<p class="para">Corps cellulaire d'un neurone et synapses (grossissement 15000x)</p>
+<p class="para">Les neurones ne sont pas séparés les uns des autres, ils sont reliés entre eux au niveau des</p>
+<p class="para"><b>synapses</b>. Chaque neurone peut établir des milliers de synapses avec d' autres neurones. Il en résulte des réseaux neuroniques très complexes</p>
+<p class="para">1 mm3 de substance grise du cortex peut contenir 5 milliards de synapses.</p>
+<p class="para">• Chaque neurone est en moyenne connecté à 10'000 de ses voisins</p>
+<p class="para">• Le nombre d'agencements possible des 10 à 100 milliards de cellules nerveuses qui</p>
+<p class="para">forment le cerveau dépasse le nombre total de particules atomiques contenues dans l'univers !</p>
+<!-- CROP: 4983 1 10 0.472 0.582 0.934 0.816 4983_types_synapses -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_types_synapses.png" alt=""></figure>
+<p class="para">La <b>synapse</b> est un simple contact entre la terminaison axonique d' un neurone <b>présynaptique</b> et un neurone <b>post-synaptique</b> (il ne s' agit pas d' un lien anatomique). La terminaison axonique peut être appliquée :</p>
+<p class="para">- Sur le corps cellulaire (ou soma) du neurone voisin : <b>synapse axo-somatique</b>.</p>
+<p class="para">- Sur une dendrite : <b>synapse axo-dendritique</b>.</p>
+<p class="para">- Sur l' axone : <b>synapse axo-axonique</b>.</p>
+<!-- page 11 -->
+<p class="para">Une synapse comprend :</p>
+<p class="para">- Un élément présynaptique.</p>
+<p class="para">- Un espace ou fente synaptique.</p>
+<p class="para">- Une membrane post-synaptique</p>
+<!-- CROP: 4983 1 11 0.498 0.032 0.88 0.185 4983_structure_synapse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_structure_synapse.png" alt=""></figure>
+<!-- CROP: 4983 1 11 0.086 0.203 0.652 0.472 4983_neurone_synapses_A1_A8 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_neurone_synapses_A1_A8.png" alt=""></figure>
+<!-- CROP: 4983 1 11 0.078 0.488 0.442 0.69 4983_doc5_fibre_motrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4983/4983_doc5_fibre_motrice.png" alt=""></figure>
+<p class="para"><b>Document 5 : ramification d'une fibre motrice (unité motrice) (X65)</b></p>
+<p class="para">. La jonction entre un neurone moteur et un muscle est une synapse neuromusculaire ou plaque motrice.</p>
+<p class="subhead t-red"><b>CONCLUSION</b></p>
+<p class="para">Le tissu nerveux est un tissu spécialisé dans la perception et l' intégration des informations grâce à 3 propriétés fondamentales des cellules nerveuses :</p>
+<p class="para">- <span class="t-red"><b>L'excitabilité</b></span> (réponse à un stimulus)</p>
+<p class="para">- <span class="t-red"><b>La conductibilité</b></span> : C'est la propagation de cette réponse de proche en proche sous la forme d'une variation de la polarité de la membrane plasmique (le potentiel d'action ou influx nerveux)</p>
+
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · CP NEURO TRANS SYNAP 4M 2425</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="Prof Ben Amor Mohamed Seif Eddine">
+<meta data-pagefind-meta="n[content]" content="4886">
+<meta data-pagefind-meta="title[content]" content="CP NEURO TRANS SYNAP 4M 2425">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · CP NEURO TRANS SYNAP 4M 2425" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>CP NEURO TRANS SYNAP 4M 2425</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Prof Ben Amor Mohamed Seif Eddine</span> <span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1tJZsbJ5-gGcYwo2YlxO90UlswS9z2cYR/view">↗ CP NEURO TRANS SYNAP 4M 2425.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1tJZsbJ5-gGcYwo2YlxO90UlswS9z2cYR/view">Amin Guermazi · Archive Bac 2025 › SVT / benamor</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: Prof Ben Amor Mohamed Seif Eddine -->
+<div class="exh"><span class="idx">Cours</span><h2>CP TRANS SYNAP</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4886.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Prof Ben Amor Mohamed Seif Eddine</span> <span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1tJZsbJ5-gGcYwo2YlxO90UlswS9z2cYR/view">↗ CP NEURO TRANS SYNAP 4M 2425.pdf</a></div>
+<!-- page 01 -->
+<p class="subhead t-red">Prof Ben Amor Mohamed Seif Eddine SVT CP TRANS SYNAP</p>
+<!-- CROP: 4886 1 1 0.060 0.128 0.380 0.365 4886_doc1_ultrastructure_synapse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_doc1_ultrastructure_synapse.png" alt=""></figure>
+<!-- CROP: 4886 1 1 0.382 0.132 0.825 0.373 4886_doc2_interpretation_synapse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_doc2_interpretation_synapse.png" alt=""></figure>
+<p class="subhead t-navy"><b>En activité</b></p>
+<!-- CROP: 4886 1 1 0.070 0.383 0.818 0.765 4886_doc3_fonctionnement_synapse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_doc3_fonctionnement_synapse.png" alt=""></figure>
+<p class="para">❶ arrivée d'un message nerveux Ou PA<br>❷ ouverture des CVD à Ca++<br>❸ pénétration du Ca<sup>2+</sup>suivie de l'exocytose<br>❹ libération puis fixation du neurotransmetteur sur les sites récepteurs de la membrane postsynaptique<br>❺ ouverture des canaux chimiodépendants et Mouvements d'ions ⟶ formation d'un PPS<br>❻ destruction enzymatique du neuro-transmetteur (par exemple l'acétylcholine par l'acétylcholinestérase).<br><span class="t-red"><b>7- Recapture du NT</b></span></p>
+<p class="para"><span class="t-red"><b>Délai synaptique = 0.5ms</b></span></p>
+<p class="para">doc.3 : fonctionnement d'une synapse neuro-neuronique: la transmission synaptique</p>
+<!-- page 02 -->
+<p class="subhead t-navy"><b>SYNAPSES EXCITATRICES ET SYNAPSES INHIBITRICES<br>POTENTIELS POSTSYNAPTIQUES</b></p>
+<!-- CROP: 4886 1 2 0.083 0.108 0.940 0.368 4886_doc1_dispositif_pps -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_doc1_dispositif_pps.png" alt=""></figure>
+<!-- CROP: 4886 1 2 0.115 0.376 0.932 0.665 4886_doc3_mecanismes_synapses -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_doc3_mecanismes_synapses.png" alt=""></figure>
+<table>
+<tr><th><span class="t-blue">Synapse excitatrice</span></th><th><span class="t-blue">Synapse inhibitrice</span></th></tr>
+<tr><td><b>-Fixation du NT excitateur (Acétylcholine = ACH) sur des Récepteurs spécifiques.<br>-Ouverture des CCD à Na+→<br>Entrée massive brusque de Na+<br>-Dépolarisation de la membrane post synaptique : PPSE</b></td><td><b>-Fixation du NT inhibiteur (GABA) sur des récepteurs spécifiques.<br>-Ouverture :<br>*des CCD à K+ : sortie de K+<br>*des CCD à Cl- : entrée de Cl-<br>-Hyperpolarisation de la membrane post synaptique : PPSI</b></td></tr>
+</table>
+<p class="para"><b>-Hydrolyse (inactivation) du NT</b> par une enzyme spécifique présente dans la fente synaptique<br><b>Exemple Acétylcholinestérase (ACHase).</b></p>
+<ul class="dash"><li><b>Recapture du NT puis Resynthèse.</b></li></ul>
+<!-- page 03 -->
+<div class="exsub"><span class="t-blue"><u>Exercice 1 :</u></span></div>
+<p class="para">Pour étudier quelques aspects du fonctionnement des synapses neurone uroniques, on a utilisé le montage expérimental du document 1 et on a réalisé les séries d’expériences suivantes :</p>
+<p class="para"><span class="t-red"><b><u>Expérience 1 :</u></b></span><br><b><u>Au temps T1 :</u></b> on injecte, à l’aide d’une micropipette, une dose convenable d’une substance X1 au niveau des fentes synaptiques F1 et F2 et on enregistre au niveau de l’oscilloscope (O) la ddp de la membrane du neurone M.<br><b><u>Au temps T2 :</u></b> on refait la même expérience mais en utilisant une substance X2.<br>Les résultats obtenus sont résumés par le tableau ci-dessous.</p>
+<!-- CROP: 4886 1 3 0.506 0.080 0.850 0.228 4886_ex1_doc1_montage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_ex1_doc1_montage.png" alt=""></figure>
+<p class="para">S<sub>1</sub>, S<sub>2</sub>, S<sub>3</sub> et S<sub>4</sub> : lieux de stimulations électriques<br>F<sub>1</sub> et F<sub>2</sub> : fentes synaptiques<br>N<sub>1</sub>, N<sub>2</sub>, N<sub>3</sub> et M : neurones<br>O : oscilloscope</p>
+<p class="para"><b>Document 1</b></p>
+<!-- CROP: 4886 1 3 0.075 0.349 0.818 0.501 4886_ex1_tableau_traces -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_ex1_tableau_traces.png" alt=""></figure>
+<p class="para"><b>1- Analysez</b> les données du document 3 afin de déduire :<br><b>a-</b> La nature des synapses N2-M et N3-M.<br><b>b-</b> Un rôle physiologique et une propriété pour chacune des substances X 1, X2. <b>Citez</b> des exemples.</p>
+<p class="para"><span class="t-red"><u>Expérience 2</u></span> : à l’aide d’une micropipette, on injecte dans la fente F1, une substance chimique Z, puis on stimule efficacement N2. L’enregistrement obtenu en O indique une ddp = - 70mv.</p>
+<p class="para"><b>2- Exploitez</b> les résultats obtenus en vue de proposer des hypothèses quant au mode d’action de la substance Z.</p>
+<p class="subhead t-red"><b><u>Rôle intégrateur du neurone postsynaptique</u></b></p>
+<!-- CROP: 4886 1 3 0.045 0.658 0.465 0.925 4886_neurone_integrateur -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_neurone_integrateur.png" alt=""></figure>
+<div class="data"><p class="para">La sommation des PPS (PPSE et/ou PPSI)<br><span class="t-red"><u>Sommation temporelle :</u></span><br>Une synapse activée de façon successive et rapprochée (<b>Sommation PPSG mb postsynaptique</b>)<br><span class="t-red"><u>Sommation Spatiale :</u></span><br>Plusieurs synapses activées simultanément 1 seule fois<br><b>(Sommation PPSG dans le cône axonique)</b><br><span class="t-red"><u>Sommation spatio-temporelle :</u></span><br><b>Plusieurs</b> synapses activées simultanément et successivement (train de PA par synapse)</p></div>
+<!-- page 04 -->
+<div class="exsub"><span class="t-blue"><u>Exercice 2 :</u></span></div>
+<p class="para">Afin de rechercher les conditions et les caractéristiques de l'élaboration d'un message post synaptique, on réalise les expériences suivantes sur les jonctions neuro neuronales illustrés dans <b>le Document 1</b>.<br>SA, SB, SC et SD : des stimulations électriques portées sur des terminaisons pré synaptiques.<br>Le <b>Document 2</b> montre les enregistrements obtenus au niveau des oscilloscopes O1, O2, O3, O4, O5 et O6.<br><u>Expérience 1 :</u> On stimule en SA, on recueille respectivement en O1 et O5 les tracés a1 et a2.<br><u>Expérience 2 :</u> On stimule en SB, on recueille respectivement en O3 et O5 les tracés b1et b2.<br><u>Expérience 3 :</u> On stimule en SC on recueille respectivement en O2 et O5 les tracés c1 et c2.<br><u>Expérience 4 :</u> On stimule en SD, on recueille respectivement en O4 et en O5 les tracés d1 et d2.<br>1- <b>Identifiez</b> les réponses a1 b1, c1et d1.<br>2- <b>Comparez</b> les réponses a1 et a2, b1 et b2, c1 et c2, d1 et d2. <b>Tirez</b> une conclusion.<br>3-<b>Indiquez tout en justifiant les</b> enregistrements obtenus en O5 lorsqu’on porte :</p>
+<table>
+<tr><td><b>a-</b> 3 stimulations très rapprochées en SC.<br><b>b-</b> Simultanément deux stimulations en SA et en SB.</td><td><b>c-</b> Simultanément des stimulations en SA, SB, SC et SD.<br><b>d-</b> Simultanément deux stimulations successives efficaces sur chaque des afférences SA, SC et SD</td></tr>
+</table>
+<p class="para"><b>4- Indiquez</b> dans quelle condition observe-t-on une réponse en O6. <b>Justifiez</b>.<br><b>5-Présentez</b> sous forme d'un tableau les différences de propriétés entre les réponses de <b>type a1</b> et la <b>réponse obtenue en O6.</b></p>
+<!-- CROP: 4886 1 4 0.046 0.438 0.634 0.906 4886_ex2_doc2_enregistrements -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_ex2_doc2_enregistrements.png" alt=""></figure>
+<!-- CROP: 4886 1 4 0.636 0.440 0.992 0.790 4886_ex2_doc1_montage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_ex2_doc1_montage.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para">← <b>Document 2</b></p>
+<div class="exsub"><span class="t-blue"><u>Exercice 3</u></span></div>
+<!-- page 05 -->
+<p class="para">On se propose de déterminer le rôle attribué à un neurone postsynaptique M dans la transmission du message nerveux. Pour se faire, un dispositif expérimental représenté dans le <b>document 2</b> a été utilisé<br>On porte des stimulations efficaces de même intensité I1 et I2 respectivement sur les terminaisons nerveuses A et B Les enregistrements obtenus au niveau des oscilloscopes O1, O2, O3, et O4 sont résumés dans le <b>document 3</b>.</p>
+<!-- CROP: 4886 1 5 0.048 0.155 0.335 0.309 4886_ex3_doc2_dispositif -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_ex3_doc2_dispositif.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>1- Analysez</b> le document 2 en vue d’identifier les tracés a et b obtenus au niveau de l’oscilloscope O3.<br><b>2- Déduisez</b> la nature des synapses A-M et B-M.<br><b>3- Expliquez</b> les enregistrements obtenus au niveau d’O4 pour les stimulations I1 et I2.</p>
+<!-- CROP: 4886 1 5 0.423 0.154 0.928 0.440 4886_ex3_doc3_enregistrements -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4886/4886_ex3_doc3_enregistrements.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para"><b>4- Proposez</b> :<br><b>a)</b> Une 1<sup>ère</sup> expérience permettant d’obtenir une variation de ddp au niveau de O4 en appliquant un nombre minimal de stimulations efficaces sur l’une des 2 terminaisons nerveuses A ou B. <b>Justifiez</b> votre réponse.<br><b>b)</b> Une 2<sup>ème</sup> expérience permettant d’obtenir une variation de ddp au niveau de O4 en appliquant un nombre minimal de stimulations efficaces sur les 2 terminaisons nerveuses A et B. <b>Justifiez</b> votre réponse.<br><b>c)</b> Représentez les enregistrements obtenus en O1, O2, O3 et O4 pour les deux expériences.<br><b>5-</b> Précisez le rôle joué par le neurone M postsynaptique.</p>
+<!-- page 06 -->
+<p class="consigne"><b>Complétez</b> le tableau suivant :</p>
+<table>
+<tr><th></th><th>PPSE</th><th>PPSI</th><th>Potentiel<br>LOCAL</th><th>PA</th></tr>
+<tr><td>Tracé</td><td></td><td></td><td></td><td></td></tr>
+<tr><td><b>Analyse</b></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><b>Lieu d’enregistrement</b></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><b>Canaux ioniques</b></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><b>Propriétés</b></td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+</section>
+
+</div>
+</body>
+</html>

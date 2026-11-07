@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Magazine+séries+devoirs — qcm</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="SBK">
+<meta data-pagefind-meta="n[content]" content="4942">
+<meta data-pagefind-meta="title[content]" content="Magazine+séries+devoirs — qcm">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Magazine+séries+devoirs — qcm" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Magazine+séries+devoirs — qcm</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">SBK</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1ETSros9uajGG0n3ht-u3qhB30i6KviAf/view">↗ 58._QCM 2019.pdf</a> <a href="https://drive.google.com/file/d/1Tmt4dFLasZWV5xgtZhFUhKwR98WEv2QA/view">↗ 59._QCM 2019  - Correction.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/1ETSros9uajGG0n3ht-u3qhB30i6KviAf/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1Tmt4dFLasZWV5xgtZhFUhKwR98WEv2QA/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: SBK -->
+<div class="exh"><span class="idx ex">Série</span><h2>Révision Générale QCM…. Bac Sc Exp</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4942.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">SBK</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1ETSros9uajGG0n3ht-u3qhB30i6KviAf/view">↗ 58._QCM 2019.pdf</a> <a href="https://drive.google.com/file/d/1Tmt4dFLasZWV5xgtZhFUhKwR98WEv2QA/view">↗ 59._QCM 2019  - Correction.pdf</a></div>
+<div class="exsub">58._QCM 2019</div>
+<!-- page 01 -->
+<p class="subhead"><b><i><span class="t-blue">Révision Générale QCM…. Bac Sc Exp</span></i></b></p>
+<p class="subhead"><b><span class="t-red">***Mai 2019***</span></b></p>
+<p class="consigne">Pour chacun des items de 1 à 8, il peut y avoir une (ou deux) réponse (s) correcte (s). Relevez sur votre copie le numéro de chaque item et indiquez dans chaque cas la (ou les deux) lettre (s) correspondant à la (ou aux deux) réponse (s) correcte (s).</p>
+<p class="consigne"><i>NB : Toute réponse fausse annule la note attribuée à l’item.</i></p>
+<table>
+<tr>
+<td><p class="para"><b>1.&nbsp;&nbsp;Chez la femme, la folliculogenèse :</b></p>
+<p class="para">a-&nbsp;&nbsp;se déroule en partie dans l’ovaire et s’achève dans la trompe ,</p>
+<p class="para">b-&nbsp;&nbsp;commence et s’achève dans l’ovaire ,</p>
+<p class="para">c-&nbsp;&nbsp;commence à partir de la puberté ,</p>
+<p class="para">d-&nbsp;&nbsp;s’interrompt pendant la grossesse.</p></td>
+<td><p class="para"><b>8. Les enzymes des granules corticaux :</b></p>
+<p class="para">a- sont libérées au moment de la fixation des spermatozoïdes sur la zone pellucide,</p>
+<p class="para">b- favorisent la pénétration des spermatozoïdes,</p>
+<p class="para">c- empêchent la polyspermie,</p>
+<p class="para">d- modifient les glycoprotéines (antigènes) situés sur la tête des spermatozoïdes.</p></td>
+</tr>
+<tr>
+<td colspan="2"><p class="para"><b>2.&nbsp;&nbsp;Le schéma ci-contre représente la phase de maturation de la spermatogenèse</b> :</p>
+<!-- CROP: 4942 1 1 0.655 0.280 0.760 0.328 4942_qcm2_maturation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4942/4942_qcm2_maturation.png" alt=""></figure>
+<p class="para">a-&nbsp;&nbsp;la cellule 1 est à (n) chromosomes dupliqués ,</p>
+<p class="para">b-&nbsp;&nbsp;la quantité d’ADN de la cellule 1 est 4 fois celle de la cellule 3 ,</p>
+<p class="para">c-&nbsp;&nbsp;la quantité d’ADN de la cellule 2 est la même que celle de la cellule 3 ,</p>
+<p class="para">d-&nbsp;&nbsp;le nombre de chromosomes de la cellule 2 est le même que celui de la cellule 3.</p></td>
+</tr>
+<tr>
+<td colspan="2"><p class="para"><b>3.&nbsp;&nbsp;Le schéma ci-contre représente&nbsp;&nbsp;une structure cellulaire prélevée de la trompe d’une femme le 15<sup>ème</sup> jour d’un cycle de 28 jours ,</b></p>
+<!-- CROP: 4942 1 1 0.630 0.358 0.745 0.430 4942_qcm3_structure_trompe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4942/4942_qcm3_structure_trompe.png" alt=""></figure>
+<p class="para">a-&nbsp;&nbsp;la cellule 4 et la cellule 2 ont la même quantité d’ADN ,</p>
+<p class="para">b-&nbsp;&nbsp;la cellule 1 et la cellule 4 ont le même nombre de chromosomes ,</p>
+<p class="para">c-&nbsp;&nbsp;la cellule 3 et la cellule 4 ont le même nombre de chromosomes ,</p>
+<p class="para">d-&nbsp;&nbsp;la cellule 3 et la cellule 4 ont la même quantité d’ADN.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>4.Chez une femme enceinte, entre la 2<sup>ème</sup> et la 11<sup>ème</sup> semaine de la grossesse, les évènements suivants aboutissent à l’avortement ,</b></p>
+<p class="para">a-&nbsp;&nbsp;l’ablation de l’hypophyse,</p>
+<p class="para">b-&nbsp;&nbsp;l’injection d’anticorps anti-LH ,</p>
+<p class="para">c-&nbsp;&nbsp;l’injection d’anticorps anti-HCG ,</p>
+<p class="para">d-&nbsp;&nbsp;l’ovariectomie bilatérale.</p></td>
+<td><p class="para"><b>9. Le placenta est un organe qui :</b></p>
+<p class="para">a- protège le fœtus contre tous les microbes,</p>
+<p class="para">b- laisse passer les drogues de la mère toxicomane vers le fœtus,</p>
+<p class="para">c- assure les échanges entre le sang maternel et le sang fœtal,</p>
+<p class="para">d- assure une fonction endocrine dès la fécondation.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>5.La pilule combinée a une action anti-nidatoire car elle :</b></p>
+<p class="para">a- stimule les contractions du myomètre,</p>
+<p class="para">b- bloque le cycle ovarien,</p>
+<p class="para">c- permet un développement anormal de l’endomètre,</p>
+<p class="para">d- contient des hormones de synthèse.</p></td>
+<td><p class="para"><b>10.les cellules de Leydig :</b></p>
+<p class="para"><b>a.</b>&nbsp;&nbsp;sont stimulées par la GnRH,</p>
+<p class="para"><b>b.</b>&nbsp;&nbsp;secrètent la LH,</p>
+<p class="para"><b>c.</b>&nbsp;&nbsp;sont stimulées par la testostérone,</p>
+<p class="para"><b>d.</b>&nbsp;&nbsp;sont douées d’une fonction endocrine testiculaire.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>6. La glaire cervicale devient perméable aux spermatozoïdes grâce à :</b></p>
+<p class="para">a- la progestérone,</p>
+<p class="para">b- l’œstradiol,</p>
+<p class="para">c- la HCG,</p>
+<p class="para">d- la LH.</p></td>
+<td><p class="para"><b>11. La probabilité des gamètes de types AB produits par un sujet de génotype&nbsp;&nbsp;Ab//aB est de 10%. Dans ce cas, la distance entre les 2 gènes est de :</b></p>
+<p class="para">a- 0 centimorgan,</p>
+<p class="para">b- 5 centimorgans,</p>
+<p class="para">c- 10 centimorgans,</p>
+<p class="para">d- 20 centimorgans.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>7. L’ablation de l’hypophyse chez une femelle gestante (enceinte) entraîne :</b></p>
+<p class="para">a- l’avortement,</p>
+<p class="para">b- la chute du taux de progestérone,</p>
+<p class="para">c- aucun effet sur la gestation,</p>
+<p class="para">d- la régression du corps jaune.</p></td>
+<td><p class="para"><b>12.Dans le cas de dihybridisme à gènes indépendants :</b></p>
+<p class="para">a-&nbsp;&nbsp;un individu simple hétérozygote produit 4 types de gamètes ;</p>
+<p class="para">b-&nbsp;&nbsp;les proportions de la F2 dans le cas de dominance sont de type ¼, ¼, ¼, ¼ ;</p>
+<p class="para">c-&nbsp;&nbsp;un mâle de drosophile double hétérozygote produit 4 types de gamètes ;</p>
+<p class="para">d-&nbsp;&nbsp;les loci des deux gènes se trouvent sur 2 chromosomes homologues.</p>
+<p class="para">e-</p></td>
+</tr>
+</table>
+<!-- page 02 -->
+<table>
+<tr>
+<td><p class="para"><b>13.Si la probabilité des gamètes <u>Ab</u> produits par un sujet de génotype Ab//aB est de 40%, dans ce cas :</b></p>
+<p class="para">a-&nbsp;&nbsp;il s’agit d’un cas de linkage absolu ;</p>
+<p class="para">b-&nbsp;&nbsp;le pourcentage des gamètes recombinés est de 10 % ;</p>
+<p class="para">c-&nbsp;&nbsp;la distance entre les deux gènes est de 40 centimorgans ;</p>
+<p class="para">d-&nbsp;&nbsp;la distance entre les deux gènes est de 20 centimorgans.</p></td>
+<td><p class="para"><b>21.Un test- cross est un croisement</b>:</p>
+<p class="para">a- entre un individu de phénotype connu avec un testeur récessif,</p>
+<p class="para">b- entre un individu de phénotype inconnu avec un testeur récessif ,</p>
+<p class="para">c- entre un individu de génotype inconnu avec un testeur récessif ,</p>
+<p class="para">d- entre un individu de génotype inconnu avec un testeur dominant.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>14.Le brassage interchromosomique:</b></p>
+<p class="para">a-&nbsp;&nbsp;est le résultat de la séparation aléatoire des chromosomes homologues,</p>
+<p class="para">b-&nbsp;&nbsp;favorise la variabilité génétique des gamètes,</p>
+<p class="para">c-&nbsp;&nbsp;est le résultat de crossing-over,</p>
+<p class="para">d-&nbsp;&nbsp;est un échange de fragments de chromatides entre chromosomes homologues.</p></td>
+<td><p class="para"><b>22. Une femme atteinte d’une maladie récessive&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;liée au sexe :</b></p>
+<p class="para">a-est issue obligatoirement d’un père atteint,</p>
+<p class="para">b-est issue&nbsp;&nbsp;d’une mère obligatoirement atteinte,</p>
+<p class="para">c-tous ses garçons sont atteints,</p>
+<p class="para">d-toutes ses filles sont atteintes.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>15.Le brassage intrachromosomique :</b></p>
+<p class="para">a-&nbsp;&nbsp;permet de séparer des gènes liés,</p>
+<p class="para">b-&nbsp;&nbsp;se produit au cours de l’anaphase équationnelle,</p>
+<p class="para">c-&nbsp;&nbsp;se produit au cours de la prophase équationnelle,</p>
+<p class="para">d-&nbsp;&nbsp;augmente la diversité génétique des gamètes.</p></td>
+<td><p class="para"><b>23.Quand les deux gènes sont liés :</b></p>
+<p class="para">a-la ségrégation des caractères se fait au hasard au cours de la méiose.</p>
+<p class="para">b-la troisième loi de Mendel est vérifiée.</p>
+<p class="para">c-la distance entre les deux gènes est égale au pourcentage des gamètes parentaux.</p>
+<p class="para">d-la distance entre les deux gènes est égale au pourcentage des gamètes recombinés.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>16. Les gamètes recombinés, produits par un individu de génotype Ab//aB&nbsp;&nbsp;son</b></p>
+<p class="para">a- Ab&nbsp;&nbsp;&nbsp;aB,</p>
+<p class="para">b- AB&nbsp;&nbsp;&nbsp;ab,</p>
+<p class="para">c- Aa&nbsp;&nbsp;&nbsp;Bb,</p>
+<p class="para">d- Aa&nbsp;&nbsp;&nbsp;Bb.</p></td>
+<td><p class="para"><b>24. L'anaphase I de la méiose est caractérisée par :</b></p>
+<p class="para">a- l'appariement des chromosomes homologues,</p>
+<p class="para">b- l'emplacement des chromosomes au milieu du fuseau,</p>
+<p class="para">c- la séparation des chromosomes homologues sans division des centromères,</p>
+<p class="para">d- la séparation des chromatides .</p></td>
+</tr>
+<tr>
+<td colspan="2"><p class="para"><b>17. Le document ci-contre présente la prophase I de méiose chez un individu M.<br>Chez cet individu, il peut y avoir :</b></p>
+<!-- CROP: 4942 1 2 0.752 0.535 0.890 0.605 4942_qcm17_prophase_I -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4942/4942_qcm17_prophase_I.png" alt=""></figure>
+<p class="para">a- un crossing – over entre les gènes (A, a) et (D, d),</p>
+<p class="para">b- formation de gamète ayant la combinaison allélique (a A D),</p>
+<p class="para">c- formation de 4 types de gamètes sans intervention de brassage&nbsp;&nbsp;intrachromosomique,</p>
+<p class="para">d- formation de gamète ayant la combinaison allélique (a B d).</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>18. Le diagnostic prénatal basé sur l’amniocentèse :</b></p>
+<p class="para">a- s’effectue à la 8<sup>ème</sup>&nbsp;&nbsp;semaine de grossesse,</p>
+<p class="para">b- s’effectue à partir de la 17<sup>ème</sup>&nbsp;&nbsp;semaine de grossesse,</p>
+<p class="para">c- consiste à prélever des cellules placentaires,</p>
+<p class="para">d- permet de pratiquer une analyse biochimique des rotéines maternelles.</p>
+<!-- PROOFREAD: 4942 part1 p02 — "rotéines": first letter cut by the cell edge, only "rotéines" visible -->
+</td>
+<td><p class="para"><b>25. Les mutations géniques, intervenant dans l’évolution des êtres vivants, conduisent à :</b></p>
+<p class="para">a- de nouveaux gènes,</p>
+<p class="para">b- des nouvelles versions d’un même gène,</p>
+<p class="para">c- la diversité phénotypique au sein d’une même espèce,</p>
+<p class="para">d- un changement du caryotype.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>19. Un individu atteint de trisomie 21, possède 3 allèles A. Ses parents sont hétérozygotes pour le gène (A, a). L’anomalie est due peut-être à une erreur en :</b></p>
+<p class="para">a- anaphase II de la méiose de la spermatogenèse,</p>
+<p class="para">b- anaphase I de la méiose de la spermatogenèse,</p>
+<p class="para">c- anaphase I de la méiose de l’ovogenèse,</p>
+<p class="para">d- anaphase II de la méiose de l’ovogenèse.</p></td>
+<td><p class="para"><b>26. Le passage du caryotype de la drosophile de 2n = 12 à&nbsp;&nbsp;2n = 8 est dû à la fusion de :</b></p>
+<p class="para">a- 2 paires de chromosomes en une seule,</p>
+<p class="para">b- 8 chromosomes homologues 2 à 2 en 4 chromosomes homologues 2 à 2,</p>
+<p class="para">c- 4 paires de chromosomes en 2 paires,</p>
+<p class="para">d- de 6 paires de chromosomes 2 à 2.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>20. Avec 2n = 8 chromosomes, on obtient grâce au brassage interchromosomique :</b></p>
+<p class="para">a- 16 types de gamètes parentaux,</p>
+<p class="para">b- 2 types de gamètes parentaux,</p>
+<p class="para">c- 14 types de gamètes recombinés,</p>
+<p class="para">d- 8 types de gamètes recombinés.</p></td>
+<td><p class="para"><b>27. La comparaison de séquences d'acides aminés de l'insuline chez trois espèces animales montre des similitudes et des différences. Le nombre de différences des acides aminés nous renseigne sur:</b></p>
+<p class="para">a- le degré de parenté entre les trois espèces,</p>
+<p class="para">b- l'existence d'une filiation entre les trois espèces,</p>
+<p class="para">c- la stabilité du génotype au cours des temps géologiques,</p>
+<p class="para">d- l'existence d'une molécule ancestrale commune aux 3 espèces.</p></td>
+</tr>
+</table>
+<!-- page 03 -->
+<table>
+<tr>
+<td colspan="2"><p class="para"><b>28.Plus le nombre de différences est grand entre deux molécules homologues existant chez deux espèces :</b></p>
+<p class="para">a- plus l’ancêtre commun est éloigné dans le temps,</p>
+<p class="para">b- plus l’ancêtre commun est proche dans le temps,</p>
+<p class="para">c- plus le degré de parenté est fort entre les deux espèces,</p>
+<p class="para">d- plus le degré de parenté est faible entre les deux espèces.</p></td>
+</tr>
+<tr>
+<td colspan="2"><p class="para"><b>29. Le document ci-contre présente l'histoire évolutive de quatre gènes. Le mécanisme de cette evolution:</b></p>
+<!-- CROP: 4942 1 3 0.758 0.186 0.912 0.248 4942_qcm29_histoire_genes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4942/4942_qcm29_histoire_genes.png" alt=""></figure>
+<p class="para">a- comporte 2 duplications et 2 mutations géniques,</p>
+<p class="para">b- comporte 2 duplications et 3 mutations géniques,</p>
+<p class="para">c- est une amplification génique,</p>
+<p class="para">d- contribue à une diminution de la taille de l'information génétique.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>30.Dans le cas du réflexe myotatique :</b></p>
+<p class="para">a-&nbsp;&nbsp;le stimulus est la contraction du muscle,</p>
+<p class="para">b-&nbsp;&nbsp;le stimulus est l’étirement du muscle,</p>
+<p class="para">c-&nbsp;&nbsp;l’arc réflexe est polysynaptique,</p>
+<p class="para">d-&nbsp;&nbsp;l’arc réflexe est monosynaptique.</p></td>
+<td><p class="para"><b>37. Un réflexe myotatique:</b></p>
+<p class="para">a- correspond à une contraction de deux muscles antagonistes,</p>
+<p class="para">b- correspond à la contraction d'un muscle en réponse à son étirement,</p>
+<p class="para">c- fait intervenir un circuit nerveux polysynaptique,</p>
+<p class="para">d- a pour centre la moelle épinière.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>31.Dans le cas du réflexe myotatique, l’innervation réciproque:</b></p>
+<p class="para">a- met en jeu deux synapses inhibitrices,</p>
+<p class="para">b- met en jeu deux synapses excitatrices,</p>
+<p class="para">c-met en jeu une synapse excitatrice et une autre inhibitrice,</p>
+<p class="para">d-rend plus efficace la réponse réflexe.</p></td>
+<td><p class="para"><b>38. Si on excite efficacement une fibre nerveuse après avoir bloqué les C.V.D. à Na<sup>+</sup> :</b></p>
+<p class="para">a- on enregistre un PA normal,</p>
+<p class="para">b- on enregistre un PA avec une amplitude plus élevé,</p>
+<p class="para">c- on enregistre un PA avec une amplitude plus faible,</p>
+<p class="para">d- on n’enregistre pas dans ce cas un PA.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>32.La stimulation du bout périphérique de la racine antérieure du nerf rachidien entraîne :</b></p>
+<p class="para">a- la contraction du muscle innervé par ce nerf</p>
+<p class="para">b- une perte de la motricité.</p>
+<p class="para">c- une sensation de douleur.</p>
+<p class="para">d- aucun effet.</p></td>
+<td><p class="para"><b>39. Le potentiel local :</b></p>
+<p class="para">a- peut être enregistré en tout point excité,</p>
+<p class="para">b- est obtenu sans stimulation efficace,</p>
+<p class="para">c- est capable de se propager avec une vitesse constante,</p>
+<p class="para">d- obéit à la loi de tout ou rien.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>33. La polarisation membranaire au repos :</b></p>
+<p class="para">a-est une caractéristique de toute cellule vivante.</p>
+<p class="para">b-est toujours constante à cause de l’imperméabilité de la membrane au ions Na+.</p>
+<p class="para">c-ne nécessite aucune dépense énergétique pour se maintenir.</p>
+<p class="para">d-est en relation avec la répartition ionique des ions Na+ et K+.</p></td>
+<td><p class="para"><b>40. Les canaux chimiodépendants à Cl<sup>-</sup> :</b></p>
+<p class="para">a- s’ouvrent suite à une entrée du neurotransmetteur dans l’élément postsynaptique,</p>
+<p class="para">b- assurent un transport passif des ions Cl<sup>-</sup>,</p>
+<p class="para">c- sont responsables de la dépolarisation du neurone postsynaptique,</p>
+<p class="para">d- existent au niveau des synapses excitatrices.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>34. Dans le réflexe myotatique, le neurone sensitif et le neurone moteur ont en commun :</b></p>
+<p class="para">a- un corps cellulaire étoilé,</p>
+<p class="para">b- un corps cellulaire unipolaire,</p>
+<p class="para">c- une fibre nerveuse logée dans le nerf rachidien,</p>
+<p class="para">d- une conduction centrifuge.</p></td>
+<td><p class="para"><b>41. L’augmentation de sécrétion d’adrénaline s’observe en cas d’une :</b></p>
+<p class="para">a- stimulation du ganglion étoilé,</p>
+<p class="para">b- hypertension,</p>
+<p class="para">c- baisse importante de la volémie,</p>
+<p class="para">d- hypersécrétion d’ADH.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>35. Les courants locaux :</b></p>
+<p class="para">a- naissent entre la zone réfractaire et la zone voisine au repos,</p>
+<p class="para">b- assurent la propagation du PA,</p>
+<p class="para">c- s’établissent entre le milieu intracellulaire et le milieu extracellulaire,</p>
+<p class="para">d-se caractérisent par l’attraction des charges positives par les charges négatives.</p></td>
+<td><p class="para">42. <b>Parmi les points communs entre le PPSE et le PPSI, on peut citer:</b></p>
+<p class="para">a- l'entrée des ions Na<sup>+</sup> dans le neurone postsynaptique,</p>
+<p class="para">b- l'entrée des ions Cl<sup>-</sup> dans le neurone postsynaptique,</p>
+<p class="para">c- la libération d'un neurotransmetteur dans la fente synaptique,</p>
+<p class="para">d- peut faire l'objet d'une sommation temporelle.</p></td>
+</tr>
+</table>
+<table>
+<tr>
+<td><p class="para"><b>36.La période réfractaire :</b></p>
+<p class="para">a- résulte de la propagation unidirectionnelle du message nerveux,</p>
+<p class="para">b- est à l'origine de la propagation unidirectionnelle du message nerveux,</p>
+<p class="para">c- s'explique par la fermeture momentanée des C.V.D. à Na<sup>+</sup>,</p>
+<p class="para">d- s'explique par l’ouverture momentanée des C.V.D. à K<sup>+</sup>.</p></td>
+</tr>
+</table>
+<!-- page 04 -->
+<table>
+<tr>
+<td><p class="para"><b>43.&nbsp;&nbsp;le réflexe rotulien est&nbsp;&nbsp;:</b></p>
+<p class="para">a-&nbsp;&nbsp;&nbsp;un réflexe&nbsp;&nbsp;volontaire.</p>
+<p class="para">b-&nbsp;&nbsp;un réflexe acquis.</p>
+<p class="para">c-&nbsp;&nbsp;un réflexe monosynaptique.</p>
+<p class="para">d-&nbsp;&nbsp;un réflexe myotatique.</p></td>
+<td><p class="para"><b>50. Le potentiel de récepteur :</b></p>
+<p class="para"><b>a-</b> est une légère modification de la ddp de repos,</p>
+<p class="para"><b>b-</b> naît au niveau du site générateur,</p>
+<p class="para"><b>c-</b> naît au niveau du site transducteur,</p>
+<p class="para"><b>d-</b> atteint le seuil au site générateur quelle que soit l’intensité de stimulation.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>44.le potentiel de repos s’explique par:</b></p>
+<p class="para">a-&nbsp;&nbsp;l’entrée des ions Na+ et K+ à travers la membrane cellulaire.</p>
+<p class="para">b-&nbsp;&nbsp;une inégalité de concentration des ions Na+ et K+ de part et d’autre de la membrane cellulaire.</p>
+<p class="para">c-&nbsp;&nbsp;un flux des ions Na+ et K+ à travers des canaux voltage dépendants.</p>
+<p class="para">d-&nbsp;&nbsp;un flux de Na+ et K+ à travers des canaux chimio dépendants</p></td>
+<td><p class="para"><b>51. Au niveau de la bande H d’un sarcomère on trouve :</b></p>
+<p class="para"><b>a-</b> des filaments d’actine et de myosine,</p>
+<p class="para"><b>b-</b> des filaments de myosine,</p>
+<p class="para"><b>c-</b> des filaments d’actine,</p>
+<p class="para"><b>d-</b> une strie Z.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>45. l’innervation réciproque :</b></p>
+<p class="para">a-&nbsp;&nbsp;met en jeu un circuit monosynaptique seulement.</p>
+<p class="para">b-&nbsp;&nbsp;fait intervenir un inter neurone inhibiteur qui s’intercale entre les motoneurones&nbsp;&nbsp;.</p>
+<p class="para">c-&nbsp;&nbsp;est l’origine du tonus musculaire.</p>
+<p class="para">d-&nbsp;&nbsp;&nbsp;fait intervenir un inter neurone inhibiteur qui s’intercal entre neurone (Ia) et le motoneurone&nbsp;&nbsp;.</p>
+<!-- PROOFREAD: 4942 part1 p04 — item 45 b/d: "s’intercale" / "s’intercal": end of the word cut by the cell border -->
+</td>
+<td><p class="para"><b>52. Les PPS sont sommables :</b></p>
+<p class="para"><b>a-</b> au niveau du neurone présynaptique,</p>
+<p class="para"><b>b-</b> car ils sont non propageables,</p>
+<p class="para"><b>c-</b> car ils n’ont pas de périodes réfractaires,</p>
+<p class="para"><b>d-</b> au niveau du neurone postsynaptique.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>46. La chaleur initiale de relâchement :</b></p>
+<p class="para">a- entraine le relâchement du muscle,</p>
+<p class="para">b- accompagne le relâchement du muscle,</p>
+<p class="para">c- suit le relâchement du muscle,</p>
+<p class="para">d- est la conséquence du relâchement du muscle.</p></td>
+<td><p class="para"><b>53.Au cours de la contraction musculaire :</b></p>
+<p class="para">a-&nbsp;&nbsp;l’actine glissent entre les myofilaments de myosine.</p>
+<p class="para">b-&nbsp;&nbsp;les&nbsp;&nbsp;myosines&nbsp;&nbsp;glissent entre les myofilaments d’actine</p>
+<p class="para">c-&nbsp;&nbsp;le sarcomère se raccourcit par raccourcissement des disques clairs.</p>
+<p class="para">d-&nbsp;&nbsp;le sarcomère se raccourcit par raccourcissement des disques sombres.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>47.Dans le réflexe myotatique, le neurone sensitif et le neurone moteur ont en commun :</b></p>
+<p class="para">a- un corps cellulaire étoilé,</p>
+<p class="para">b- un corps cellulaire unipolaire,</p>
+<p class="para">c- une fibre nerveuse logée dans le nerf rachidien,</p>
+<p class="para">d- une conduction centrifuge.</p></td>
+<td><p class="para"><b>54.La transmission du message nerveux au niveau de la plaque motrice fait intervenir :</b></p>
+<p class="para">a-&nbsp;&nbsp;un neurotransmetteur: la noradrénaline.</p>
+<p class="para">b-&nbsp;&nbsp;un neurotransmetteur: l’acétylcholine.</p>
+<p class="para">c-&nbsp;&nbsp;des canaux voltage-dépendants à Ca<sup>++</sup>.</p>
+<p class="para">d-&nbsp;&nbsp;&nbsp;des canaux chimio-dépendants à K<sup>+</sup> et Cl<sup>-</sup>.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>48. Si on excite efficacement une fibre nerveuse après avoir bloqué les C.V.D. à Na<sup>+</sup> :</b></p>
+<p class="para">a- on enregistre un PA normal,</p>
+<p class="para">b- on enregistre un PA avec une amplitude plus élevé,</p>
+<p class="para">c- on enregistre un PA avec une amplitude plus faible,</p>
+<p class="para">d- on n’enregistre pas dans ce cas un PA.</p></td>
+<td><p class="para"><b>55.Le relâchement de la fibre musculaire est caractéris par:</b></p>
+<!-- PROOFREAD: 4942 part1 p04 — item 55 "caractéris": end of the word cut by the cell border -->
+<p class="para">a-la fixation de l’ATP sur les têtes de myosine.</p>
+<p class="para">b-l’hydrolyse d’ATP.</p>
+<p class="para">c-l’attachement des têtes de myosine à l’actine.</p>
+<p class="para">d-le retour des ions Ca++ aux citernes du réticulum sarcoplasmique.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>49. On appelle unité motrice :</b></p>
+<p class="para">a-&nbsp;&nbsp;l’ensemble des motoneurones qui commandent la contraction d’un même muscle.</p>
+<p class="para">b-&nbsp;&nbsp;le dispositif fonctionnel qui unit une terminaison axonique à une fibre musculaire striée.</p>
+<p class="para">c-&nbsp;&nbsp;l’ensemble des ramifications axoniques qui innervent la mêm fibre musculaire striée.</p>
+<!-- PROOFREAD: 4942 part1 p04 — item 49 c "mêm": end of the word cut by the cell border -->
+<p class="para">d-&nbsp;&nbsp;un motoneurone et l’ensemble des fibres musculaires striées qu’il innerve.</p></td>
+<td><p class="para"><b>56.La régénération lente d’ATP dans le muscle squelettique en contraction est assurée par la(les) réactions(s) suivante(s):</b></p>
+<p class="para">a-&nbsp;&nbsp;ATP + H<sub>2</sub>O ⟶ ADP + P .</p>
+<p class="para">b-&nbsp;&nbsp;&nbsp;ADP + ADP ⟶ AMP + ATP .</p>
+<p class="para">c-&nbsp;&nbsp;glucose-P + ADP ⟶ acide pyruvique + ATP .</p>
+<p class="para">d-&nbsp;&nbsp;Phosphocréatine + ADP ⟶ créatine + ATP</p></td>
+</tr>
+</table>
+<!-- page 05 -->
+<table>
+<tr>
+<td><p class="para"><b>57. Parmi les substances suivantes, celle(s) qui a(ont) pour effet la diminution de la pression artérielle est(sont):</b></p>
+<p class="para">a-&nbsp;&nbsp;la noradrénaline,</p>
+<p class="para">b-&nbsp;&nbsp;l’aldostérone,</p>
+<p class="para">c-&nbsp;&nbsp;l’ADH,</p>
+<p class="para">d-&nbsp;&nbsp;l’acétylcholine.</p></td>
+<td><p class="para"><b>65. L’expérience de Loewi a pour but (ou objectif) de préciser :</b></p>
+<p class="para">a- le rôle des nerfs cardiaques,</p>
+<p class="para">b- le rôle des nerfs sensitifs,</p>
+<p class="para">c- le sens de conduction des nerfs cardiovasculaires,</p>
+<p class="para">d- le mode d’action des nerfs cardiaques.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>58. la stimulation des nerfs de Héring et de cyon, entraîne:</b></p>
+<p class="para">a- une diminution du rythme cardiaque,</p>
+<p class="para">b- une augmentation du rythme cardiaque,</p>
+<p class="para">c-une augmentation de la fréquence des PA au niveau des nerfs pneumogastriques,</p>
+<p class="para">d- une augmentation de la fréquence des PA au niveau des nerfs orthosympathiques cardiaques.</p></td>
+<td><p class="para"><b>66.La noradrénaline :</b></p>
+<p class="para">a- un effet cardiomodérateur,</p>
+<p class="para">b- agit sur les cellules musculaires cardiaques,</p>
+<p class="para">c- est libérée suite à l'activation du centre vasomoteur,</p>
+<p class="para">d- est libérée par les terminaisons nerveuses des fibres parasympathiques cardiaques.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>59. L’augmentation de la pression artérielle au niveau du sinus carotidien :</b></p>
+<p class="para">a-stimule la sécrétion d’adrénaline ,</p>
+<p class="para">b-conduit à l’augmentation de la fréquence des potentiels d’action au niveau du nerf de Héring ,</p>
+<p class="para">c-conduit à la diminution de la fréquence des potentiels d’action au niveau du nerf X ,</p>
+<p class="para">d-peut être corrigée par une vasodilatation.</p></td>
+<td><p class="para"><b>67. L’excitation électrique du centre vasomoteur chez un chien dont les ganglions étoilés sont détruits entraine :</b></p>
+<p class="para">a- une accélération du rythme cardiaque,</p>
+<p class="para">b- une vasoconstriction,</p>
+<p class="para">c- une augmentation de la fréquence des PA sur le nerf X,</p>
+<p class="para">d- aucun effet.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>60. Une hémorragie provoque l’activation:</b></p>
+<p class="para">a-&nbsp;&nbsp;du système sympathique,</p>
+<p class="para">b-&nbsp;&nbsp;du système parasympathique.</p>
+<p class="para">c-&nbsp;&nbsp;des nerfs X.</p>
+<p class="para">d-&nbsp;&nbsp;des nerfs splanchniques.</p></td>
+<td><p class="para"><b>68.L’hypertension stimule :</b></p>
+<p class="para">a- le système nerveux parasympathique,</p>
+<p class="para">b- le système nerveux orthosympathique,</p>
+<p class="para">c- le système rénine-angiotensine,</p>
+<p class="para">d- le complexe hypothalamo-hypophysaire.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>61. Une élévation de la pression artérielle au niveau du sinus carotidien entraîne :</b></p>
+<p class="para">a-&nbsp;&nbsp;une diminution de la fréquence des potentiels d’action au niveau des nerfs pneumogastriques,</p>
+<p class="para">b-&nbsp;&nbsp;une stimulation des nerfs de Cyon et de Héring,</p>
+<p class="para">c-&nbsp;&nbsp;une augmentation de la fréquence des potentiels d’action au niveau des nerfs orthosympathiques,</p>
+<p class="para">d-&nbsp;&nbsp;une inhibition du centre vasomoteur.</p></td>
+<td><p class="para"><b>69</b>.<b>La cocaïne est une drogue qui agit sur les synapses en</b> :</p>
+<p class="para">a-&nbsp;&nbsp;&nbsp;favorisant la sécrétion de la dopamine.</p>
+<p class="para">b-&nbsp;&nbsp;dégradant la dopamine au niveau de la fente synaptique.</p>
+<p class="para">c-&nbsp;&nbsp;se fixant sur les récepteurs de la dopamine au niveau de l membrane post-synaptique.</p>
+<p class="para">d-&nbsp;&nbsp;se fixant sur les récepteurs de la dopamine au niveau de l membrane pré-synaptique.</p>
+<!-- PROOFREAD: 4942 part1 p05 — item 69 c/d "de l": end of the word cut by the cell border -->
+</td>
+</tr>
+<tr>
+<td><p class="para"><b>62</b>. <b>L’augmentation de la fréquence des potentiels d’actions au niveau de l’interneurone inhibiteur entraine :</b></p>
+<p class="para">a-&nbsp;&nbsp;un ralentissement du rythme cardiaque,</p>
+<p class="para">b- une augmentation du rythme cardiaque,</p>
+<p class="para">c-&nbsp;&nbsp;une vasoconstriction,</p>
+<p class="para">d- une vasodilatation.</p></td>
+<td><p class="para"><b>70.L’hypertension stimule :</b></p>
+<p class="para">a- le système nerveux parasympathique,</p>
+<p class="para">b- le système nerveux orthosympathique,</p>
+<p class="para">c- le système rénine-angiotensine,</p>
+<p class="para">d- le complexe hypothalamo-hypophysaire.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>63. L’angiotensine intervient dans la régulation de la pression artérielle :</b></p>
+<p class="para">a- en cas d'hypertension,</p>
+<p class="para">b- en cas d'hypotension,</p>
+<p class="para">c- afin de stimuler la sécrétion d'adrénaline,</p>
+<p class="para">d- afin de stimuler la vasoconstriction des artérioles.</p></td>
+<td><p class="para"><b>71.Le cortisol intervient dans le stress:</b></p>
+<p class="para">a-comme étant une hormone sécrétée par l’hypophyse.</p>
+<p class="para">b-comme étant une hormone sécrétée par la zone corticale des glandes surrénales.</p>
+<p class="para">c-en mobilisant&nbsp;&nbsp;le système immunitaire pour s’opposer aux adressions externes.</p>
+<p class="para">d-en augmentant la glycémie.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>64. La crosse aortique :</b></p>
+<p class="para">a- est innervé par le nerf X,</p>
+<p class="para">b- possède des barorécepteurs sensible à l’étirement,</p>
+<p class="para">c- est le siège d’une transduction sensorielle,</p>
+<p class="para">d- est le point de départ des nerfs de Cyon.</p></td>
+<td><p class="para"><b>72.Parmi les substances suivantes, celle (s) qui représente (ent) une (des) drogue (s) est (sont):</b></p>
+<p class="para">a-&nbsp;&nbsp;la dopamine,</p>
+<p class="para">b-&nbsp;&nbsp;la morphine,</p>
+<p class="para">c-&nbsp;&nbsp;la caféine,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d-l’adrénaline.</p></td>
+</tr>
+</table>
+<!-- page 06 -->
+<table>
+<tr>
+<td><p class="para"><b>73.La cocaïne est une drogue qui agit sur les synapses en :</b></p>
+<p class="para">a-favorisant l’action euphorisante de la dopamine,</p>
+<p class="para">b-dégradant la dopamine au niveau de la fente synaptique,</p>
+<p class="para">c-se fixant sur les récepteurs de la dopamine au niveau de la membrane postsynaptique,</p>
+<p class="para">d-se fixant sur les transporteurs de la dopamine au niveau de la membrane présynaptique.</p></td>
+<td><p class="para"><b>81. L’allergie est une :</b></p>
+<p class="para"><b>a-</b> réponse immunitaire excessive inadaptée contre un antigène virulent,</p>
+<p class="para"><b>b-</b> déficience acquise du système immunitaire,</p>
+<p class="para"><b>c-</b> hypersensibilité qui fait intervenir des IgE et des mastocytes libérant l’histamine,</p>
+<p class="para"><b>d-</b> hyposensibilité qui fait intervenir des IgE et des plasmocytes libérant la Perforine.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>74.Le stress :</b></p>
+<p class="para">a-&nbsp;&nbsp;met en jeu uniquement le système nerveux,</p>
+<p class="para">b-&nbsp;&nbsp;met en jeu uniquement le système endocrinien,</p>
+<p class="para">c-&nbsp;&nbsp;met en jeu le système nerveux et le système endocrinien,</p>
+<p class="para">d-&nbsp;&nbsp;affaiblit le système immunitaire.</p></td>
+<td><p class="para"><b>82.Le support de la mémoire immunitaire est un ensemble :</b></p>
+<p class="para"><b>a-</b> d’anticorps à longue durée de vie,</p>
+<p class="para"><b>b-</b> de cellules effectrices,</p>
+<p class="para"><b>c-</b> de cellules spécifiques de l’antigène,</p>
+<p class="para"><b>d-</b> de cellules nerveuses.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>75.Le stress est une réaction de défense de l’organisme faisant intervenir :</b></p>
+<p class="para">a-&nbsp;&nbsp;la GnRH,</p>
+<p class="para">b-&nbsp;&nbsp;le cortisol,</p>
+<p class="para">c-&nbsp;&nbsp;la thyroxine,</p>
+<p class="para">d-&nbsp;&nbsp;la FSH.</p></td>
+<td><p class="para"><b>83.Certains sujets naissent sans thymus. Les conséquences observées sont :</b></p>
+<p class="para"><b>a-</b> absence des lymphocytes B,</p>
+<p class="para"><b>b-</b> absence des lymphocytes T,</p>
+<p class="para"><b>c-</b> absence des macrophages,</p>
+<p class="para"><b>d-</b> absence des RIMC.</p></td>
+</tr>
+<tr>
+<td colspan="2"><p class="para"><b>76. Dans la phase d’alarme, les informations parcourent le circuit suivant :</b></p>
+<p class="para">a- cortex cérébral → hypothalamus → système limbique → organes de sens → système orthosympathique,</p>
+<p class="para">b- organes de sens → cortex cérébral → système limbique → hypothalamus → système orthosympathique,</p>
+<p class="para">c- hypothalamus → organes de sens → système orthosympathique → système limbique →&nbsp;&nbsp;cortex cérébral,</p>
+<p class="para">d- organes de sens → système orthosympathique → système limbique → cortex cérébral →&nbsp;&nbsp;&nbsp;&nbsp;hypothalamus.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>77.La sérothérapie consiste à l’injection à un individu malade d’un sérum contenant des:</b></p>
+<p class="para">a-&nbsp;&nbsp;anticorps spécifiques de la maladie ;</p>
+<p class="para">b-&nbsp;&nbsp;microbes tués ou atténués ;</p>
+<p class="para">c-&nbsp;&nbsp;lymphocytes B ;</p>
+<p class="para">d-&nbsp;&nbsp;lymphocytes T.</p></td>
+<td><p class="para"><b>84. Les cellules cibles de l’interleukine 1 sont :</b></p>
+<p class="para"><b>a-</b> les cellules infectées,</p>
+<p class="para"><b>b-</b> les LB,</p>
+<p class="para"><b>c-</b> les LT,</p>
+<p class="para"><b>d-</b> les plasmocytes.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>78. Le VIH :</b></p>
+<p class="para">a-&nbsp;&nbsp;est un virus à ARN,</p>
+<p class="para">b-&nbsp;&nbsp;est un virus à ADN,</p>
+<p class="para">c-&nbsp;&nbsp;possède 2 molécules de transcriptase réverse capables de transcrire l’ARN en ADN,</p>
+<p class="para">d-&nbsp;&nbsp;possède 2 molécules de transcriptase réverse capables de transcrire l’ADN en ARN.</p></td>
+<td><p class="para"><b>85.Dans la réponse immunitaire, la molécule d'anticorps peut jouer le rôle :</b></p>
+<p class="para"><b>a-</b> d’un récepteur,</p>
+<p class="para"><b>b-</b> d’un effecteur,</p>
+<p class="para"><b>c-</b> de marqueur,</p>
+<p class="para"><b>d-</b> de régulateur.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>79.Les allergènes :</b></p>
+<p class="para">a-&nbsp;&nbsp;sont des anticorps,</p>
+<p class="para">b-&nbsp;&nbsp;déclenchent chez toutes les personnes des chocs anaphylactiques,</p>
+<p class="para">c-&nbsp;&nbsp;peuvent être des substances médicamenteuses,</p>
+<p class="para">d-&nbsp;&nbsp;peuvent être des protéines végétales.</p></td>
+<td><p class="para"><b>86.Un sérum se distingue d’un vaccin par :</b></p>
+<p class="para"><b>a-</b> ses effets immédiats,</p>
+<p class="para"><b>b-</b> son immunité active,</p>
+<p class="para"><b>c-</b> sa mémoire immunitaire,</p>
+<p class="para"><b>d-</b> son but curatif.</p></td>
+</tr>
+<tr>
+<td><p class="para"><b>80.Le complément est un :</b></p>
+<p class="para"><b>a-</b> ensemble d’hormones,</p>
+<p class="para"><b>b-</b> ensemble d’enzymes,</p>
+<p class="para"><b>c-</b> est activé lors de la phase d’induction de la RIMH,</p>
+<p class="para"><b>d-</b> est activé lors de la phase effectrice de la RIMH.</p></td>
+<td><p class="para"><b>87. La phase effectrice d’une RIMC se caractérise par :</b></p>
+<p class="para"><b>a-</b> la formation de complexes immuns,</p>
+<p class="para"><b>b-</b> la sécrétion de Perforine,</p>
+<p class="para"><b>c-</b> l’activation du complément,</p>
+<p class="para"><b>d-</b> la cytolyse des cellules saines.</p></td>
+</tr>
+</table>
+<div class="exsub">59._QCM 2019  - Correction</div>
+<!-- page 01 -->
+<p class="subhead"><b><i><span class="t-blue">Correction du&nbsp;&nbsp;QCM…. Bac Sc Exp</span></i></b></p>
+<p class="subhead"><b><span class="t-red">***Mai 2019***</span></b></p>
+<table>
+<tr><td><b>1</b></td><td><b>2</b></td><td><b>3</b></td><td><b>4</b></td><td><b>5</b></td><td><b>6</b></td><td><b>7</b></td><td><b>8</b></td><td><b>9</b></td><td><b>10</b></td><td><b>11</b></td><td><b>12</b></td><td><b>13</b></td><td><b>14</b></td><td><b>15</b></td></tr>
+<tr><td>b</td><td>b-d</td><td>c</td><td>c-d</td><td>c</td><td>b</td><td>c</td><td>c</td><td>b-c</td><td>d</td><td>d</td><td>c</td><td>d</td><td>a-b</td><td>a-d</td></tr>
+<tr><td><b>16</b></td><td><b>17</b></td><td><b>18</b></td><td><b>19</b></td><td><b>20</b></td><td><b>21</b></td><td><b>22</b></td><td><b>23</b></td><td><b>24</b></td><td><b>25</b></td><td><b>26</b></td><td><b>27</b></td><td><b>28</b></td><td><b>29</b></td><td><b>30</b></td></tr>
+<tr><td>b</td><td>c-d</td><td>b</td><td>a-d</td><td>a</td><td>c</td><td>a-c</td><td>a-d</td><td>a-c</td><td>b-c</td><td>b-c</td><td>a</td><td>a-d</td><td>b-c</td><td>b-d</td></tr>
+<tr><td><b>31</b></td><td><b>32</b></td><td><b>33</b></td><td><b>34</b></td><td><b>35</b></td><td><b>36</b></td><td><b>37</b></td><td><b>38</b></td><td><b>39</b></td><td><b>40</b></td><td><b>41</b></td><td><b>42</b></td><td><b>43</b></td><td><b>44</b></td><td><b>45</b></td></tr>
+<tr><td>c-d</td><td>a-c</td><td>a-d</td><td>c</td><td>b-d</td><td>b-c</td><td>b-d</td><td>d</td><td>a</td><td>b</td><td>c</td><td>c-d</td><td>c-d</td><td>b</td><td>d</td></tr>
+</table>
+<table>
+<tr><td><b>46</b></td><td><b>47</b></td><td><b>48</b></td><td><b>49</b></td><td><b>50</b></td><td><b>51</b></td><td><b>52</b></td><td><b>53</b></td><td><b>54</b></td><td><b>55</b></td><td><b>56</b></td><td><b>57</b></td><td><b>58</b></td><td><b>59</b></td><td><b>60</b></td></tr>
+<tr><td>b</td><td>c</td><td>d</td><td>d</td><td>a-c</td><td>b</td><td>d</td><td>a-c</td><td>b-c</td><td>d</td><td>c</td><td>d</td><td>a-c</td><td>b-d</td><td>a-d</td></tr>
+<tr><td><b>61</b></td><td><b>62</b></td><td><b>63</b></td><td><b>64</b></td><td><b>65</b></td><td><b>66</b></td><td><b>67</b></td><td><b>68</b></td><td><b>69</b></td><td><b>70</b></td><td><b>71</b></td><td><b>72</b></td><td><b>73</b></td><td><b>74</b></td><td><b>75</b></td></tr>
+<tr><td>b-d</td><td>a-d</td><td>b-d</td><td>c-d</td><td>a-d</td><td>b-c</td><td>b</td><td>a</td><td>d</td><td>a</td><td>b-d</td><td>b-c</td><td>a-d</td><td>c-d</td><td>b-c</td></tr>
+<tr><td><b>76</b></td><td><b>77</b></td><td><b>78</b></td><td><b>79</b></td><td><b>80</b></td><td><b>81</b></td><td><b>82</b></td><td><b>83</b></td><td><b>84</b></td><td><b>85</b></td><td><b>86</b></td><td><b>87</b></td></tr>
+<tr><td>b</td><td>a</td><td>a-c</td><td>c-d</td><td>b-d</td><td>c</td><td>c</td><td>b-d</td><td>c</td><td>a-d</td><td>a-d</td><td>b</td></tr>
+</table>
+
+</section>
+
+</div>
+</body>
+</html>

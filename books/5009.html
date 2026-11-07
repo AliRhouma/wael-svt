@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · des series de revision taki — prototype énoncé</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="5009">
+<meta data-pagefind-meta="title[content]" content="des series de revision taki — prototype énoncé">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="chapter[content]" content="Génétique humaine">
+<meta data-pagefind-filter="chapter[content]" content="Procréation (fécondation, nidation, maîtrise)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · des series de revision taki — prototype énoncé" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>des series de revision taki — prototype énoncé</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com · 73.832.000 · Prof Mme Nadia B.</span> <span class="tg">Série</span><span class="tg">Cours</span><span class="tg">Révision</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1aIDAj7HxVOMOJYnY3YYKt_e-q7n0G_Ux/view">↗ Prototype 1 - énoncé.pdf</a> <a href="https://drive.google.com/file/d/1HJWcOSPv1XjLVQoU0SjIBrpEO11G30OS/view">↗ Prototype 5 - énoncé.pdf</a> <a href="https://drive.google.com/file/d/1GRknqXHMnMImJkMu9C5tnW6ii5K8XBiG/view">↗ Prototype 5 corrigé.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (3)</b><ul><li><a href="https://drive.google.com/file/d/1aIDAj7HxVOMOJYnY3YYKt_e-q7n0G_Ux/view">Maram Belgacem · Bac math 2025 ( what you really need) › Svt : cours et remarques importantes / des series de revision taki</a></li><li><a href="https://drive.google.com/file/d/1HJWcOSPv1XjLVQoU0SjIBrpEO11G30OS/view">Maram Belgacem · Bac math 2025 ( what you really need) › Svt : cours et remarques importantes / des series de revision taki</a></li><li><a href="https://drive.google.com/file/d/1GRknqXHMnMImJkMu9C5tnW6ii5K8XBiG/view">Mohamed Amine Hammami · Bac 2025 › Svt / Révision / 5</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: Taki Academy · www.takiacademy.com · 73.832.000 · Prof Mme Nadia B. -->
+<div class="exh"><span class="idx ex">Série</span><h2>RÉVISION</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/5009.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com · 73.832.000 · Prof Mme Nadia B.</span> <span class="tg">Série</span><span class="tg">Cours</span><span class="tg">Révision</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1aIDAj7HxVOMOJYnY3YYKt_e-q7n0G_Ux/view">↗ Prototype 1 - énoncé.pdf</a> <a href="https://drive.google.com/file/d/1HJWcOSPv1XjLVQoU0SjIBrpEO11G30OS/view">↗ Prototype 5 - énoncé.pdf</a> <a href="https://drive.google.com/file/d/1GRknqXHMnMImJkMu9C5tnW6ii5K8XBiG/view">↗ Prototype 5 corrigé.pdf</a></div>
+<div class="exsub">Prototype 1 - énoncé</div>
+<!-- page 01 -->
+<p class="subhead t-red">RÉVISION</p>
+<p class="subhead t-navy">SVT</p>
+<p class="para">Classe : 4<sup>ème</sup> Maths</p>
+<p class="para">Série : Prototype 1 (énoncé)</p>
+<p class="para">Nom du prof : Prof Mme Nadia B.</p>
+<!-- page 02 -->
+<div class="exsub">Exercice 1 · 20 min · 05 pts</div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes. Sur votre copie, reportez le numéro de chaque item et indiquez dans chaque cas la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).</p>
+<p class="consigne"><b>NB :</b> <u>Toute réponse fausse annule la note attribuée à l'item.</u></p>
+<p class="para"><span class="t-blue"><b>1) La paroi du tube séminifère :</b></span><br>
+<b>a-</b> est épaisse chez un cryptorchide adulte,<br>
+<b>b-</b> est le lieu de la spermatogenèse,<br>
+<b>c-</b> contient des cellules endocrines,<br>
+<b>d-</b> est le siège de la production de testostérone.</p>
+<p class="para"><span class="t-blue"><b>2) Les enzymes des granules corticaux :</b></span><br>
+<b>a-</b> sont libérées au moment de la fixation des spermatozoïdes sur la zone pellucide,<br>
+<b>b-</b> favorisent la pénétration des spermatozoïdes,<br>
+<b>c-</b> empêchent la polyspermie,<br>
+<b>d-</b> dégradent les récepteurs protéiques de la zone pellucide.</p>
+<p class="para"><span class="t-blue"><b>3) Les récepteurs sensoriels impliqués dans le réflexe de retrait de la main, sont :</b></span><br>
+<b>a-</b> localisés au niveau de la peau,<br>
+<b>b-</b> localisés au niveau du muscle fléchisseur,<br>
+<b>c-</b> des terminaisons dendritiques des neurones moteurs,<br>
+<b>d-</b> des terminaisons axoniques des neurones sensitifs.</p>
+<p class="para"><span class="t-blue"><b>4) La greffe sous-cutanée d'un fragment de testicule d'un mâle pubère castré :</b></span><br>
+<b>a-</b> corrige sa stérilité,<br>
+<b>b-</b> restaure ses caractères sexuels secondaires,<br>
+<b>c-</b> provoque l'augmentation des secrétions hypophysaires de FSH et de LH,<br>
+<b>d-</b> provoque les mêmes effets que les injections d'extraits testiculaires.</p>
+<p class="para"><span class="t-blue"><b>5) Dans une synapse neuro-neuronique :</b></span><br>
+<b>a-</b> la transmission du message nerveux est unidirectionnelle,<br>
+<b>b-</b> le neurotransmetteur diffuse à partir d'une dendrite,<br>
+<b>c-</b> la libération du neurotransmetteur assure l'ouverture des C.V.D à Ca<sup>2+</sup>,<br>
+<b>d-</b> le neurotransmetteur libéré est toujours l'acétylcholine.</p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">Exercice 2 · 15 min · 04 pts</div>
+<p class="consigne">Le cycle sexuel chez la femme se caractérise par plusieurs événements.<br>
+Recopiez puis complétez le tableau suivant par ce qui convient.</p>
+<!-- page 03 -->
+<table>
+<tr><th>Evénement du cycle</th><th>Définition</th><th>Facteur(s) déclenchant(s)</th></tr>
+<tr><td><b>Ovulation</b></td><td></td><td></td></tr>
+<tr><td><b>Menstruation</b></td><td></td><td></td></tr>
+<tr><td><b>Silence utérin</b></td><td></td><td></td></tr>
+<tr><td><b>Atrésie folliculaire</b></td><td></td><td></td></tr>
+</table>
+<div class="exsub">Exercice 3 · 30 min · 06 pts</div>
+<p class="para">On se propose d'étudier quelques aspects de la reproduction humaine.<br>
+Les courbes <b>C1</b> et <b>C2</b> du document 1 montrent l'évolution du taux d'une hormone sexuelle chez deux femmes <b>A</b> et <b>B</b> du 1<sup>er</sup> septembre jusqu'au 15 octobre.</p>
+<!-- CROP: 5009 1 3 0.180 0.535 0.822 0.749 5009_p1_doc1_taux_hormone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5009/5009_p1_doc1_taux_hormone.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<p class="consigne"><span class="t-blue">1)</span> À partir de l'exploitation des courbes <b>C1</b> et <b>C2</b>, identifiez l'hormone sexuelle dosée chez ces deux femmes.<br>
+<span class="t-blue">2)</span> Le document 2 présente deux calendriers relatifs aux deux femmes A et B pendant les mois de septembre et Octobre.</p>
+<!-- page 04 -->
+<!-- CROP: 5009 1 4 0.112 0.075 0.888 0.236 5009_p1_doc2_calendriers -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5009/5009_p1_doc2_calendriers.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="consigne">A partir de l'exploitation des documents 1 et 2 :<br>
+<span class="t-blue">a-</span> faites correspondre les courbes <b>C1</b> et <b>C2</b> aux femmes <b>A</b> et <b>B</b>,<br>
+<span class="t-blue">b-</span> déterminez pour chaque femme la durée du cycle et la (ou les) date(s) de l'ovulation.<br>
+<span class="t-blue">3)</span> Chez les femmes <b>A</b> et <b>B</b> on peut observer le long du cycle, dans l'ovaire, les structures S<sub>1</sub>, S<sub>2</sub>, S<sub>3</sub> et S<sub>4</sub> représentées par le document 3.</p>
+<!-- CROP: 5009 1 4 0.165 0.400 0.833 0.550 5009_p1_doc3_structures -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5009/5009_p1_doc3_structures.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne"><span class="t-blue">a-</span> Identifiez ces structures.<br>
+<span class="t-blue">b-</span> Reproduisez le tableau suivant et complétez-le en donnant le nom des structures présentes chez chaque femme pendant les dates proposées.</p>
+<table>
+<tr><th>Dates</th><th>9 Septembre</th><th>17 Septembre</th></tr>
+<tr><td><b>Structures observées dans l'ovaire de la femme A</b></td><td></td><td></td></tr>
+<tr><td><b>Structures observées dans l'ovaire de la femme B</b></td><td></td><td></td></tr>
+</table>
+<!-- page 05 -->
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<div class="exsub">Exercice 3 · 45 min · 07 pts</div>
+<p class="para">Une maladie héréditaire touche certains individus chez trois familles différentes appelées <b>F<sub>1</sub></b>, <b>F<sub>2</sub></b> et <b>F<sub>3</sub></b>. Le document 1 présente leurs arbres généalogiques respectifs.</p>
+<!-- CROP: 5009 1 5 0.100 0.216 0.900 0.452 5009_p1_doc1_arbres_genealogiques -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5009/5009_p1_doc1_arbres_genealogiques.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<p class="consigne"><span class="t-blue">1)</span> Parmi les trois généalogies, déterminez laquelle (ou lesquelles) qui permet (ou permettent) de déduire si la maladie est récessive ou dominante. Justifiez votre réponse.</p>
+<p class="consigne"><span class="t-blue">2)</span> À partir du document 1, indiquez si le gène en question est porté par un autosome ou un chromosome sexuel.<br>
+<span class="t-blue">3)</span> Pour préciser la réponse à la question précédente, on a réalisé l'électrophorèse des fragments d'ADN correspondants aux allèles du gène qui contrôle cette maladie chez les deux parents <b>P<sub>1</sub></b> et <b>P<sub>2</sub></b> de la 1<sup>ère</sup> génération de la famille F<sub>3</sub>.<br>
+Le document 2 illustre les résultats.</p>
+<!-- CROP: 5009 1 5 0.340 0.639 0.660 0.753 5009_p1_doc2_electrophorese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5009/5009_p1_doc2_electrophorese.png" alt=""></figure>
+<p class="subhead">Document 2</p>
+<p class="consigne">Analysez les résultats du document 2 afin de :<br>
+- préciser l'allèle normal et celui responsable de la maladie,<br>
+- localiser le gène responsable de cette maladie,<br>
+- reconnaitre les parents P<sub>1</sub> et P<sub>2</sub>.<br>
+<span class="t-blue">4)</span> Ecrivez les génotypes possibles ou certains des individus de phénotypes inconnus II<sub>2</sub> de la famille F<sub>1</sub> et II<sub>1</sub> de la famille F<sub>2</sub>.</p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">Prototype 5 - énoncé</div>
+<!-- page 01 (part2) -->
+<p class="subhead t-red">RÉVISION</p>
+<p class="subhead t-navy">SVT</p>
+<p class="para">Classe : 4<sup>ème</sup> Maths</p>
+<p class="para">Série : Prototype 5 (énoncé)</p>
+<p class="para">Nom du prof : Mme Nadia B.</p>
+<!-- page 02 (part2) -->
+<div class="exsub">Exercice 1 · 22 min · 06 pts</div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes. Sur votre copie, reportez le numéro de chaque item et indiquez dans chaque cas la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).</p>
+<p class="consigne"><b>NB :</b> <u>Toute réponse fausse annule la note attribuée à l'item.</u></p>
+<p class="para"><span class="t-blue"><b>1) En considérant que 2Q représente la quantité d'ADN correspondante à 2n chromosomes simples, alors :</b></span><br>
+<b>a-</b> l'ovocyte II possède 2Q quantité d'ADN,<br>
+<b>b-</b> le spermatozoïde possède Q quantité d'ADN,<br>
+<b>c-</b> le premier globule polaire possède Q  quantité d'ADN,<br>
+<b>d-</b> le deuxième globule polaire possède 2Q quantité d'ADN.</p>
+<p class="para"><span class="t-blue"><b>2) Un faible taux plasmatique de testostérone :</b></span><br>
+<b>a-</b> accentue le freinage sur le complexe hypothalamo-hypophysaire,<br>
+<b>b-</b> provoque une diminution  de la sécrétion de LH et une augmentation de la sécrétion de FSH,<br>
+<b>c-</b> est à l'origine d'une augmentation de la sécrétion de la GnRH,<br>
+<b>d-</b> induit une levée de l'inhibition sur l'axe hypothalamo-hypophysaire.</p>
+<p class="para"><span class="t-blue"><b>3) Une jeune femme a eu des règles successivement le 03 janvier et le premier février, dans ce cas la durée de son cycle est de :</b></span><br>
+<b>a-</b> 27 jours,<br>
+<b>b-</b> 28 jours,<br>
+<b>c-</b> 29 jours,<br>
+<b>d-</b> 30 jours.</p>
+<p class="para"><span class="t-blue"><b>4) Les enzymes des granules corticaux :</b></span><br>
+<b>a-</b> sont libérées au moment de la fixation des spermatozoïdes sur la zone pellucide,<br>
+<b>b-</b> modifient les glycoprotéines situées sur la tête du spermatozoïde,<br>
+<b>c-</b> modifient les récepteurs protéiques situés sur la zone pellucide,<br>
+<b>d-</b> empêche la monospermie.</p>
+<p class="para"><span class="t-blue"><b>5) Un circuit neuronique de 30 cm de long comportant 4 synapses, est parcouru par un message nerveux de vitesse 60 m/s. Sachant que le délai synaptique est de 0,5 ms, alors le temps du parcours est :</b></span><br>
+<b>a-</b> 7,5 ms,<br>
+<b>b-</b> 7 ms,<br>
+<b>c-</b> 6,5 ms,<br>
+<b>d-</b> 6 ms.</p>
+<!-- page 03 (part2) -->
+<p class="para"><span class="t-blue"><b>6) Dans le réflexe à point de départ cutané, la coordination de l'activité des muscles antagonistes s'explique par :</b></span><br>
+<b>a-</b> l'innervation réciproque qui assure la coordination des mouvements des muscles antagonistes,<br>
+<b>b-</b> la présence de synapses excitatrices et une synapse inhibitrice,<br>
+<b>c-</b> la mise en jeu de deux synapses inhibitrices dans le circuit nerveux du muscle contracté,<br>
+<b>d-</b> l'activation des motoneurones des deux muscles antagonistes.</p>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 2 · 15 min · 04 pts</div>
+<p class="para">Le document 1 représente trois structures observables à des endroits différents de l'appareil génital de la femme.</p>
+<!-- CROP: 5009 2 3 0.112 0.360 0.888 0.543 5009_p2_doc1_structures_ABC -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5009/5009_p2_doc1_structures_ABC.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<p class="consigne"><span class="t-blue">1)</span> Légendez ce document par ce qui convient.<br>
+<span class="t-blue">2) a-</span> Nommez les cellules X, Y et Z.<br>
+<span class="t-blue">b-</span> Localisez les structures A B et C.<br>
+<span class="t-blue">3)</span> Expliquez le déterminisme hormonal de l'évènement ayant permis l'obtention de la structure B.<br>
+<span class="t-blue">4)</span> Indiquez la succession des évènements permettant le passage de la structure B à la structure C.</p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">Exercice 3 · 25 min · 05 pts</div>
+<p class="para">Nous cherchons à comprendre les causes de l'absence prolongée de menstruation chez certaines femmes. Pour cela, des examens cliniques ont été effectués sur deux femmes, A et B, qui présentent ce trouble.</p>
+<!-- page 04 (part2) -->
+<p class="subhead t-navy"><span class="t-blue"><b>Examen 1 :</b></span></p>
+<p class="para">La mesure du taux sanguin des hormones ovariennes chez une femme ayant un cycle sexuel normal, ainsi que chez les deux femmes A et B, donne les résultats présentés dans le document 4.</p>
+<p class="subhead"><b>Document 4</b></p>
+<!-- CROP: 5009 2 4 0.162 0.212 0.846 0.530 5009_p2_doc4_hormones_ovariennes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5009/5009_p2_doc4_hormones_ovariennes.png" alt=""></figure>
+<p class="consigne">1) À partir des données fournies par le document 1<br>
+a- comparez les résultats des dosages du taux sanguin des hormones ovariennes chez les 3 femmes.<br>
+b- Proposez une explication quant à l'absence de menstruation chez les 2 femmes A et B.</p>
+<p class="subhead t-navy"><span class="t-blue"><b>Examen2 :</b></span></p>
+<p class="para">Le dosage des hormones hypophysaires FSH et LH durant un mois a permis de déterminer les concentrations moyennes de ces hormones , les résultats sont représentés par les histogrammes du document 5 :</p>
+<p class="subhead"><b>Document 5</b></p>
+<!-- CROP: 5009 2 4 0.358 0.705 0.756 0.910 5009_p2_doc5_FSH_LH -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5009/5009_p2_doc5_FSH_LH.png" alt=""></figure>
+<!-- page 05 (part2) -->
+<p class="consigne">2) À partir de l'exploitation des examens 2 et 3, précisez la cause de l'absence prolongée de menstruation chez chacune des 2 femmes A et B.<br>
+3) Proposer un traitement permettant à de rétablir l'activité sexuelle normale chez l'une des 2 femmes (A ou B) que vous préciserez justifiez votre réponse .</p>
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<div class="exsub">Exercice 4 · 25 min · 05 pts</div>
+<p class="para">On se propose de déterminer le mode de transmission d'une maladie héréditaire. L'arbre généalogique du document 1 est celui d'une famille dont certains membres sont atteints par cette maladie.</p>
+<!-- CROP: 5009 2 5 0.255 0.338 0.670 0.463 5009_p2_ex4_doc1_arbre -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5009/5009_p2_ex4_doc1_arbre.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<p class="consigne"><b>1)</b> Discutez chacune des hypothèses suivantes :<br>
+<b>Hypothèse 1 :</b> l'allèle de la maladie est récessif porté par un autosome.<br>
+<b>Hypothèse 2 :</b> l'allèle de la maladie est dominant porté par un autosome.<br>
+<b>Hypothèse 3 :</b> l'allèle de la maladie est récessif porté par le chromosome sexuel X.<br>
+<b>Hypothèse 4 :</b> l'allèle de la maladie est dominant porté par le chromosome sexuel X.<br>
+Pour déterminer la localisation du gène en question ,4 électrophorèses ont été proposer (document 2)</p>
+<!-- CROP: 5009 2 5 0.112 0.650 0.912 0.888 5009_p2_ex4_doc2_electrophoreses -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5009/5009_p2_ex4_doc2_electrophoreses.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<!-- page 06 (part2) -->
+<p class="consigne">2) a- identifiez, parmi les deux allèles A1et A2, celui qui correspond à l'allèle normal et celui correspond à l'allèle de la maladie. Justifiez<br>
+b- Faites correspondre à chaque hypothèse retenue, dans la 1<sup>er</sup> question, l'électrophorèse convenable toute en justifiant votre réponse.</p>
+<p class="para">La mère I2 est enceinte, elle est inquiète quant à l'état de son futur bébé. Pour se rassurer elle consulte son médecin qui propose un diagnostic prénatal de l'ADN et du caryotype.<br>
+Les résultats du diagnostic ont montré que le futur bébé est un garçon de génotype hétérozygote. :</p>
+<p class="consigne">3) En se basant sur ses résultats :</p>
+<ul class="b">
+<li>Préciser la ou les hypothèse (s) à retenir</li>
+<li>Quelle conclusion pouvez-vous tirer quant à l'état de santé du fœtus.</li>
+</ul>
+<p class="para">Le dénombrement des 2 allèles du gène responsable de la maladie chez tous les individus de la famille (y compris le fœtus) a donné les résultats qui figurent dans le tableau du document 3 :</p>
+<table>
+<tr><th>Allèles du gène</th><th>Nombre total des allèles</th></tr>
+<tr><td><b>A1</b></td><td><b>7</b></td></tr>
+<tr><td><b>A2</b></td><td><b>3</b></td></tr>
+</table>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne">4) Exploitez les résultats du document 3 ainsi que celles des questions précédentes en vue de préciser l'hypothèse à retenir.</p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">Prototype 5 corrigé</div>
+<!-- page 01 (part3) -->
+<p class="subhead t-red">RÉVISION</p>
+<p class="subhead t-navy">SVT</p>
+<p class="para">Classe : 4<sup>ème</sup> Maths</p>
+<p class="para">Série : Prototype 5 (corrigé)</p>
+<p class="para">Nom du prof : Prof Taki Academy</p>
+<!-- page 02 (part3) -->
+<div class="exsub">Exercice 1 · 22 min · 06 pts</div>
+<table>
+<tr><th>Items</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+<tr><td><span class="t-red"><b>Réponses</b></span></td><td><span class="t-red"><b>a - b</b></span></td><td><span class="t-red"><b>c - d</b></span></td><td><span class="t-red"><b>c</b></span></td><td><span class="t-red"><b>c</b></span></td><td><span class="t-red"><b>b</b></span></td><td><span class="t-red"><b>a - b</b></span></td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 2 · 15 min · 04 pts</div>
+<p class="para"><span class="t-blue"><b>1)</b></span></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+<tr><td>Noyau</td><td>Une paire de chromosomes homologues</td><td>Zone pellucide</td><td>Premier globule polaire</td><td>Granules corticaux</td><td>Pronucléus mâle</td></tr>
+</table>
+<p class="para"><span class="t-blue"><b>2)a-</b></span></p>
+<table>
+<tr><td><b>Cellule X :</b><br>Ovocyte I</td><td><b>Cellule Y :</b><br>Ovocyte II bloqué en métaphase II</td><td><b>Cellule C :</b><br>Ovotide ou ovule</td></tr>
+</table>
+<p class="para"><span class="t-blue"><b>b-</b></span></p>
+<table>
+<tr><th>Structure A</th><th>Structure B</th><th>Structure C</th></tr>
+<tr><td>Cette structure est observée dans l'ovaire à l'intérieur des follicules ovariens en évolution.</td><td>Cette structure peut être observée :<br>- dans un follicule mûr quelques heures avant l'ovulation.<br>- dans le pavillon puis la trompe après ovulation.</td><td>Cette structure est observée dans le tiers supérieur de la trompe après fécondation.</td></tr>
+</table>
+<p class="para"><span class="t-blue"><b>3)</b></span> Déterminisme hormonal de l'ovulation :<br>
+A la fin de la phase folliculaire, le follicule mûr secrète une forte dose d'œstrogènes qui exerce un rétrocontrôle positif (RC+) sur le complexe hypothalamo-hypophysaire. Ce (RC+) entraine un pic de FSH et surtout un pic de LH qui déclenche l'ovulation à l'origine de l'expulsion de la structure B.</p>
+<p class="para"><span class="t-blue"><b>4)</b></span></p>
+<ul class="dash">
+<li>Arrivée des spermatozoïdes autour de l'ovocyte II (structure B) et leur piégeage entre les cellules de la corona radiata.</li>
+<li>Rétraction des cellules de la corona radiata amenant les spermatozoïdes au contact de l'ovocyte II.</li>
+<li>Réaction acrosomique.</li>
+<li>Fusion des deux membranes plasmiques des deux gamètes.</li>
+<li>Entrée du noyau et du centriole du spermatozoïde dans le cytoplasme ovocytaire.</li>
+<li>Réaction corticale.</li>
+<li>Achèvement de la 2<sup>ème</sup> division de méiose aboutissant à l'expulsion du 2<sup>ème</sup> globule polaire.</li>
+<li>Formation des 2 pronucléi et donc de la structure C.</li>
+</ul>
+<!-- page 03 (part3) -->
+<p class="para">-</p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">Exercice 3 · 25 min · 05 pts</div>
+<p class="para">1)<br>
+a- <b>Comparaison :</b> Chez une femme ayant un cycle sexuel normal, la sécrétion des hormones ovariennes varie au cours du cycle. En revanche, chez les femmes A et B, le taux de ces hormones reste très faible et constant.<br>
+b- <b>Explication :</b><br>
+- chez la femme à cycle normal, le taux élevé des hormones ovariennes le long du cycle entraîne le développement de l'endomètre utérin et sa chute vers la fin du cycle provoque la destruction de la muqueuse utérine d'où la menstruation<br>
+- l'absence de menstruations chez les deux femmes A et B s'explique par la sécrétion très faible des hormones ovariennes ne permettant donc pas le développement de la muqueuse utérine</p>
+<p class="para">2)<br>
+- <b>Femme A</b> : absence de follicules et de corps jaune au niveau des ovaires ; cette femme est ménopausée ; ceci explique le taux faible des hormones ovariennes et l'hypersécrétion des gonadostimulines par l'hypophyse (92 mU/ml pour la FSH au lieu de 32 et 60 mU/ml de LH au lieu de 30) ; en effet, l'hypophyse se trouve libérée de l'inhibition normalement exercée par les ovaires.<br>
+- <b>Femme B</b> : le taux faible de gonadostimulines (12mU/ml de FSH au lieu de 32 et 10 mU/ml de LH au lieu de 30) entraîne l'absence du développement des follicules d'où le taux faible des hormones ovariennes et l'arrêt du cycle et l'absence de menstruation ; cette femme présente alors un trouble de fonctionnement de l'hypophyse (ou du complexe hypothalamo-hypophysaire).</p>
+<p class="para">3)<br>
+- <b>Chez la femme A</b>, ménopausée, le stock de follicules est épuisé, il n'est pas possible de lui rétablir une activité sexuelle normale.<br>
+- <b>Chez la femme B</b>, ayant des ovaires renfermant des follicules primaires, on peut rétablir une activité sexuelle normale en lui administrant des doses précises de gonadostimulines semblables à celles de la femme à cycle sexuel normal.</p>
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<div class="exsub">Exercice 4 · 25 min · 05 pts</div>
+<p class="para">1) <b>Hypothèse 1 :</b> II2 malade homozygote doit hériter l'allèle normal de son père I1 sain qui doit être hétérozygote ce qui est possible donc l'hypothèse est à <b>retenir.</b><br>
+<b>Hypothèse 2 :</b> La fille II1 saine homozygote doit hériter l'allèle normal de sa mère I2 malade qui doit être hétérozygote ce qui est possible donc l'hypothèse est à <b>retenir.</b><br>
+<b>Hypothèse 3 :</b> Le père I1 sain ne donne que des filles saines c'est le cas de II1 et la mère malade I2 ne donne que des garçons malades c'est le cas de II2 donc l'hypothèse est à <b>retenir.</b></p>
+<!-- page 04 (part3) -->
+<p class="para"><b>Hypothèse 4 :</b> La fille II1 saine homozygote doit hériter l'allèle normal de sa mère I2 malade qui doit être hétérozygote ce qui est possible donc l'hypothèse est à <b>retenir.</b><br>
+<b>NB : Tout autre raisonnement logique est accepté.</b><br>
+2)a-D 'après l'électrophorèse 1 l'individu I1 montre une seule tâche qui correspond à l'allèle A1 or il est sain donc <b>A1 correspond à l'allèle normal</b> d'où <b>A2 correspond à l'allèle muté.</b><br>
+b- <b>L'électrophorèse 1 correspond à l'hypothèse 3</b> : II1 hétérozygote sain donc la maladie est récessive et II2 n'a pas hérité l'allèle A1 de son père donc la maladie est portée par X.<br>
+<b>L'électrophorèse 2 correspond à l'hypothèse 2</b> : II2 est de sexe masculin hétérozygote et malade donc la maladie est dominante autosomale.<br>
+<b>L'électrophorèse 3 correspond à l'hypothèse 1</b> : I1 est de sexe masculin hétérozygote et sain donc la maladie est récessive autosomale.<br>
+<b>L'électrophorèse 4 correspond à l'hypothèse 4</b> : : I2 hétérozygote malade donc la maladie est dominante et II2 n'a pas hérité l'allèle A1 de son père donc la maladie est portée par X.<br>
+<b>NB : Tout autre raisonnement logique est accepté.</b><br>
+3)<br>
+*Puisque le fœtus est de sexe masculin et hétérozygote donc la <b><u>maladie est autosomale</u></b> d'où les <b>hypothèses 1 et 2 sont à retenir</b> et les hypothèses 3 et 4 à rejeter.<br>
+*Si la maladie héréditaire est <b><u>récessive le fœtus sera sain</u></b> cependant si elle <b><u>est dominante</u></b> il <b><u>sera malade</u></b> puisqu'il est hétérozygote.<br>
+4)<br>
+*Si la maladie est dominante autosomale, d'après l'électrophorèse 2 :</p>
+<table>
+<tr><th>Allèles du gène</th><th>Nombre total des allèles</th></tr>
+<tr><td><b>A1</b></td><td><b>7</b></td></tr>
+<tr><td><b>A2</b></td><td><b>3</b></td></tr>
+</table>
+<p class="para"><b>Hypothèse à retenir</b><br>
+*Si la maladie est récessive autosomale, d'après l'électrophorèse 3 :</p>
+<table>
+<tr><th>Allèles du gène</th><th>Nombre total des allèles</th></tr>
+<tr><td><b>A1</b></td><td><b>3</b></td></tr>
+<tr><td><b>A2</b></td><td><b>7</b></td></tr>
+</table>
+<p class="para"><b>Hypothèse à rejeter</b><br>
+<b>Conclusion : hypothèse 2 est à retenir</b></p>
+
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Exercices — neurophysiologie</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Lycée Ibn Rachik">
+<meta data-pagefind-meta="n[content]" content="4763">
+<meta data-pagefind-meta="title[content]" content="Exercices — neurophysiologie">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Exercices — neurophysiologie" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Exercices — neurophysiologie</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Lycée Ibn Rachik · Prof : Frikha Habib</span> <span class="tg">Exercices</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1hVrKghJAckf0Z_Rm-pSOIy_IclFvyO_2/view">↗ 6. Neurophysiologie (2) .pdf</a> <a href="https://drive.google.com/file/d/1Y3OUojduAzzRP8np6ZXZnvHaz9E6V_hi/view">↗ 6. Neurophysiologie (3) .pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (4)</b><ul><li><a href="https://drive.google.com/file/d/1hVrKghJAckf0Z_Rm-pSOIy_IclFvyO_2/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / Exercices -20230823T190557Z-001 / Exercices</a></li><li><a href="https://drive.google.com/file/d/1N5k5qfZeRL31aqPgrKwQO5VaapNU208j/view">une · Bac science 2026 › bac 2026 / SVT / mr kharrat</a></li><li><a href="https://drive.google.com/file/d/1Y3OUojduAzzRP8np6ZXZnvHaz9E6V_hi/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / Exercices -20230823T190557Z-001 / Exercices</a></li><li><a href="https://drive.google.com/file/d/1mWxDAknDAlwpIL352EpZiyM5fvfSRRmh/view">une · Bac science 2026 › bac 2026 / SVT / mr kharrat</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: Lycée Ibn Rachik · Prof : Frikha Habib -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série 7</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4763.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Lycée Ibn Rachik · Prof : Frikha Habib</span> <span class="tg">Exercices</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1hVrKghJAckf0Z_Rm-pSOIy_IclFvyO_2/view">↗ 6. Neurophysiologie (2) .pdf</a> <a href="https://drive.google.com/file/d/1Y3OUojduAzzRP8np6ZXZnvHaz9E6V_hi/view">↗ 6. Neurophysiologie (3) .pdf</a></div>
+<div class="exsub">6. Neurophysiologie (2) </div>
+<!-- page 01 -->
+<div class="data"><p class="para">Niveau : 4<sup>ème</sup> Sc. Ex</p><p class="para">Chapitre : Tissu nerveux</p></div>
+<!-- NOTE: handwritten annotations written over the printed questions (p01, p02…) are left out -->
+<div class="exsub"><u>Exercice N° 1</u></div>
+<p class="consigne">Repérer parmi les affirmations ci-dessous celles qui sont exactes :</p>
+<ol class="qn">
+<li><b>La moelle épinière :</b>
+<ol type="a"><li>est formée de substance grise externe et de substance blanche interne</li>
+<li>est une partie du système nerveux qui assure la liaison entre les nerfs et l'encéphale</li>
+<li>est un centre nerveux.</li></ol></li>
+<li><b>Le tissu nerveux :</b>
+<ol type="a"><li>est formé par des neurones</li>
+<li>est un tissu épithélial</li>
+<li>est un ensemble de cellules nerveuses et de cellules gliales qui forme un tissu conjonctif.</li></ol></li>
+<li><b>Un neurone :</b>
+<ol type="a"><li>prend toujours naissance dans la substance grise</li>
+<li>prend naissance au niveau du cerveau et son prolongement se trouve dans le nerf</li>
+<li>est l'unité de structure et de fonctionnement du système nerveux</li>
+<li>ne fait synapse qu'avec un autre neurone.</li></ol></li>
+<li><b>Un axone :</b>
+<ol type="a"><li>est toujours myélinisé</li>
+<li>est toujours localisé dans la substance blanche</li>
+<li>peut constituer une voie sensitive</li>
+<li>peut recevoir le message nerveux provenant d'autres neurones</li></ol></li>
+<li><b>Une synapse axo-somatique :</b>
+<ol type="a"><li>est une jonction entre la terminaison axonique d'un neurone et le corps cellulaire d'un autre neurone</li>
+<li>est une jonction entre la terminaison axonique d'un neurone et l'axone d'un autre neurone</li>
+<li>est observable au niveau de la substance blanche d'un centre nerveux</li>
+<li>est observable au niveau de la substance blanche et de la substance grise d'un CN</li></ol></li>
+<li><b>Une section de la racine antérieure d'un nerf rachidien entraîne une dégénérescence</b>
+<ol type="a"><li>du bout central de cette racine antérieure</li>
+<li>du bout périphérique de cette racine antérieure</li>
+<li>du bout central et du bout périphérique de cette racine antérieure</li>
+<li>des fibres sensitives du nerf rachidien</li></ol></li>
+<li><b>Dans une fibre nerveuse myélinisée</b>
+<ol type="a"><li>il n'y a pas de cellules de Schwann</li>
+<li>la myéline forme une couche continue d'un bout à l'autre de la fibre</li>
+<li>la myéline est interrompue au niveau des étranglements de Ranvier</li></ol></li>
+<li><b>Une section de la racine postérieure d'un nerf rachidien (voir schéma ci-contre) entraîne une dégénérescence</b>
+<!-- CROP: 4763 1 1 0.615 0.595 0.965 0.700 4763_p01_moelle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p01_moelle.png" alt=""></figure>
+<ol type="a"><li>du bout central de cette racine postérieure</li>
+<li>du bout périphérique de cette racine postérieure</li>
+<li>du bout central et du bout périphérique de cette racine postérieure</li>
+<li>des fibres sensitives du nerf rachidien</li></ol></li>
+<li><b>La coupe histologique ci-contre est réalisée au niveau :</b>
+<!-- CROP: 4763 1 1 0.645 0.700 0.930 0.828 4763_p01_coupe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p01_coupe.png" alt=""></figure>
+<ol type="a"><li>d'une substance grise</li>
+<li>d'une substance blanche</li>
+<li>d'un nerf</li>
+<li>d'un ganglion spinal</li></ol></li>
+<li><b>Un nerf rachidien est un ensemble de fibres :</b>
+<ol type="a"><li>dites centrales</li>
+<li>formées de prolongements axoniques et dendritiques</li>
+<li>formées uniquement de prolongements axoniques</li>
+<li>entourées toujours de 2 gaines</li></ol></li>
+</ol>
+<!-- page 02 -->
+<div class="exsub"><u>Exercice N° 2</u></div>
+<p class="consigne">Les documents suivants représentent quelques aspects de la structure du système nerveux.</p>
+<!-- CROP: 4763 1 2 0.060 0.088 0.865 0.308 4763_p02_docs1-5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p02_docs1-5.png" alt=""></figure>
+<p class="consigne">1) Légendez ces documents.</p>
+<p class="consigne">2) Les documents 3, 4 et 5 résultent d'observations microscopiques de fragments prélevés de certaines zones figurant dans le document 2. Faites correspondre les structures observées aux zones du document 2.</p>
+<p class="consigne">3) Proposez une observation clinique et une observation expérimentale confirmant la continuité entre les structures des documents 3, 4 et 5.</p>
+<p class="consigne">4) Le document 6 représente un neurone avec ses principales ultra structures. Annotez ce document.</p>
+<!-- CROP: 4763 1 2 0.290 0.305 0.905 0.800 4763_p02_doc6 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p02_doc6.png" alt=""></figure>
+<div class="exsub"><u>Exercice N° 3</u></div>
+<p class="para">« Sur un fond jaune, d'une translucidité parfaite apparaissent clairsemés des filaments noirs, lisses et minces ou épineux et épais ; des corps noirs triangulaires, étoilés fusiformes ; on dirait des dessins à l'encre de Chine sur papier transparent. Ainsi l'imprégnation argentique a fait cette dissection fine.</p>
+<p class="para">Et voici cette cellule aux multiples branches …, cette fibre lisse et égale qui, née de la cellule, s'en éloigne à des distances énormes et, tout d'un coup, s'épanouit en une gerbe d'innombrables fibres bourgeonnantes »</p>
+<ol class="qn">
+<li>Quelle est la nature des cellules décrites dans le texte ? (dégagez du texte ses caractéristiques)</li>
+<li>Par des schémas donnez les différents types de ces cellules et précisez leur localisation.</li>
+</ol>
+<!-- page 03 -->
+<div class="exsub"><u>Exercice N° 4</u></div>
+<p class="consigne">I- Les schémas 1 et 2 du document ci-contre représentent différents aspects du tissu nerveux au niveau du nerf rachidien et de la moelle épinière.</p>
+<!-- CROP: 4763 1 3 0.345 0.045 0.878 0.193 4763_p03_schemas1-2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p03_schemas1-2.png" alt=""></figure>
+<p class="consigne">1) Faites correspondre chaque schéma à chacune des deux parties du système nerveux.</p>
+<p class="consigne">2) Annotez ces schémas.</p>
+<p class="consigne">3) Faites un schéma d'interprétation pour chacun des éléments 4 et 10.</p>
+<p class="consigne">II- Le document 1 présente une chaîne neuronique incomplètement schématisée. Les sections S<sub>1</sub> et S<sub>2</sub> pratiquées en deux endroits différents montrent une dégénérescence dans les régions hachurées alors que les autres régions restent intactes.</p>
+<!-- CROP: 4763 1 3 0.437 0.198 0.878 0.290 4763_p03_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p03_doc1.png" alt=""></figure>
+<ol class="qn">
+<li>Interprétez ces résultats.</li>
+<li>Reproduisez le document 1 en complétant les structures qui composent cette chaîne.</li>
+</ol>
+<!-- PROOFREAD: 4763 part1 p03 — "document 1" : the number after "document" is overwritten by hand (looks like a bold 1) -->
+<div class="exsub"><u>Exercice N° 5</u></div>
+<p class="consigne">On réalise chez un chat anesthésié, à des niveaux différents de la moelle épinière, les sections 1, 2 et 3 indiquées sur les schémas du document 2. Sur les schémas, les fibres dégénérées sont représentées en hachures.</p>
+<p class="consigne">1) Quelle conclusion doit-on tirer de la comparaison des résultats des sections 2 et 3 ?</p>
+<p class="consigne">2) Quel renseignement donne la section 1 ?</p>
+<p class="consigne">3) Quelle est la section qui permet d'affirmer que les fibres de la racine dorsale et celles de la racine ventrale ne sont pas en continuité mais appartiennent à deux neurones différents ?</p>
+<p class="consigne">4) On réalise une section 4 sur le nerf rachidien juste avant sa division en deux racines. Quelle est la conséquence ?</p>
+<!-- CROP: 4763 1 3 0.252 0.415 0.762 0.518 4763_p03_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p03_doc2.png" alt=""></figure>
+<div class="exsub"><u>Exercice N° 6</u></div>
+<p class="consigne">Afin de préciser le rôle des racines rachidiennes, on a réalisé les expériences consignées dans le tableau ci-dessous. Complétez ce tableau.</p>
+<table>
+<tr><th colspan="2">Expérience</th><th colspan="2">Résultat</th><th>Conclusion</th></tr>
+<tr><td rowspan="4">Racine antérieure</td><td rowspan="2">Section</td><td>Immédiat</td><td>1</td><td>2</td></tr>
+<tr><td>Après des jours</td><td>3</td><td>4</td></tr>
+<tr><td>Stimulation immédiate du BC</td><td colspan="2">5</td><td rowspan="2">7</td></tr>
+<tr><td>Stimulation immédiate du BP</td><td colspan="2">6</td></tr>
+<tr><td rowspan="4">Racine postérieure</td><td rowspan="2">Section de part et d'autre du ganglion spinal</td><td>Immédiat</td><td>8</td><td>9</td></tr>
+<tr><td>Après des jours</td><td>10</td><td>11</td></tr>
+<tr><td>Stimulation immédiate du BC</td><td colspan="2">12</td><td rowspan="2">14</td></tr>
+<tr><td>Stimulation immédiate du BP</td><td colspan="2">13</td></tr>
+</table>
+<!-- page 04 -->
+<!-- NOTE: entirely handwritten correction page (notebook). Faint pencil scribbles at the top of the page (illegible) and the margin "X" mark are not transcribed -->
+<p class="subhead t-red"><u>Série 7</u></p>
+<p class="subhead t-navy"><span class="t-red"><u>Exercice n°1 :</u></span></p>
+<p class="para">1) c &nbsp; 2) a-c &nbsp; 3) c &nbsp; 4) c-d &nbsp; 5) a<br>
+6) b &nbsp; 7) c &nbsp; 8) a &nbsp; 9) a &nbsp; 10) b</p>
+<!-- PROOFREAD: 4763 part1 p04 — "6) b" : the handwritten number looks like "5)" -->
+<p class="subhead t-navy"><span class="t-red"><u>Exercice n°2 :</u></span></p>
+<p class="para">1) 1. cerveau &nbsp; 2. cervelet &nbsp; (Doc 1)<br>
+3. bulbe rachidien 4. moelle. E &nbsp; 5. nerfs rachidiens<br>
+(Doc 2 :) 6. nerf rachidien 7. ganglion spinal<br>
+8. substance blanche 9. substance grise<br>
+10. racine postérieure 11. racine antérieure<br>
+12. Moelle Epinière<br>
+(Doc 3 :) 13. Corps cellulaire 14. C gliale<br>
+15. noyau &nbsp; 16. tissu conjonctif<br>
+(Doc 4 :) 17. Gaine de myéline 18. noyau d'une cellule de schwann<br>
+19. gaine de schwann 20. axone (ou dendrite)<br>
+21. fibres nerveuses centrales (Doc 5)</p>
+<!-- PROOFREAD: 4763 part1 p04 — "4. moelle. E", "14. C gliale" : uncertain handwriting -->
+<p class="para">2). Le document 3 est une observation microscopique de la SG de la ME indiquée sur le doc 2 par la flèche 9<br>
+• Le document 4 est le schéma d'une fibre nerveuse périfrique (flèche 6)<br>
+• Le document 5 est une observation microscopique de la SB de la ME (flèche 8)</p>
+<p class="para">3). Observation médicale : la poliomyélite<br>
+• Observation expérimentale : Exp de Waller (voir cours)</p>
+<p class="para">4) 1. corps cellulaire 2. dendrite 3. fibre nerveuse 4. Corps de Nissl 5. mitochondries<br>
+6. noyau 7. nucléole 8. neurofibrilles<br>
+9. axone 10. gaine de myéline 11. gaine de schwann 12. noeuds de Ranvier<br>
+13. arborisation terminale 14. boutons synaptiques</p>
+<!-- PROOFREAD: 4763 part1 p04 — "périfrique", "mitochondries", "noeuds de Ranvier" : best reading of handwriting -->
+<p class="subhead t-navy"><span class="t-red"><u>Exercice n°4 :</u></span></p>
+<p class="para">I- 1) schéma 1 : ME<br>
+schéma 2 : nerf rachidien.</p>
+<p class="para">2) 1. corps cellulaire 2. C gliales 3. axone<br>
+4. fibres nerveuses centrales 5. dendrites<br>
+6. faisceau de fibres 7. vaisseaux sanguin<br>
+8. Gaines de myéline et de schwann<br>
+9. axone (ou dendrite) 10. fibre nerveuse périfique</p>
+<p class="para">3)</p>
+<!-- CROP: 4763 1 4 0.570 0.455 0.890 0.547 4763_p04_fnc -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p04_fnc.png" alt=""></figure>
+<p class="para">Section d'une f.n.c (élément 4)</p>
+<!-- PROOFREAD: 4763 part1 p04 — "(élément 4)" : faded, the number is barely visible -->
+<!-- CROP: 4763 1 4 0.515 0.583 0.985 0.818 4763_p04_fnp -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p04_fnp.png" alt=""></figure>
+<p class="para">Section d'une f.n.p (élément 10)</p>
+<!-- page 05 -->
+<p class="para">II - 1) La dégénérescence des fibres nerveuses dans la partie hachurée s'explique par le fait que ces fibres ne sont plus en contact avec les corps cellulaires nuclées. Ces derniers ce trouvent dans les centres nerveux : dans le cortex cérébral pour les fibres qui relient ce cortex à la ME et dans la ME pour les fibres qui relient cette moelle aux muscles</p>
+<p class="para">2)</p>
+<!-- CROP: 4763 1 5 0.060 0.325 0.478 0.527 4763_p05_chaine -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p05_chaine.png" alt=""></figure>
+<!-- page 06 -->
+<p class="subhead t-navy"><span class="t-red"><u>Exercice n°5 :</u></span></p>
+<p class="para">1) Les sections 2 et 3 indiquent que les fibres nerveuses constituants la racine dorsale dépendent du corps cellulaire situé dans le ganglion spinal correspondant.</p>
+<p class="para">2) La section 1 provoque la dégeneressence des fibres du côté périférique ⇒ Les fibres de la racine antérieure dépendent du corps cellulaire situé en amont de la section 1 (Dans la substance grise médullaire ou dans le ganglion spinal)</p>
+<!-- NOTE: a small interlinear note above "en amont" ("aval ≠ …", partly in Arabic) is left out -->
+<p class="para">3) La section 3 effectuée seule n'entraîne pas la dégeneressence des fibres de la racine antérieure ⇒ cette section permet d'affirmer que les fibres des deux racines appartiennent à des neurones différents.</p>
+<p class="para">4) La section 4 provoque la dégeneressance de toutes les fibres au bout périférique du nerf sectionné, celle des deux racines reste vivante.</p>
+<!-- PROOFREAD: 4763 part1 p06 — "dégeneressence" / "dégeneressance", "périférique", "constituants" : spelling read from handwriting -->
+<!-- page 07 -->
+<div class="exsub"><u>xercice 6</u></div>
+<!-- PROOFREAD: 4763 part1 p07 — "xercice 6" : the first letter is hidden by a folded page at the left edge -->
+<p class="para"><b>1 :</b> Toute la région du corps innervée par le nerf rachidien sectionné perd sa motricité mais la sensibilité est maintenue.</p>
+<p class="para"><b>2 :</b> La racine antérieure ne renferme que des fibres nerveuses responsables de la motricité</p>
+<p class="para"><b>3 :</b> Les fibres nerveuses dégénèrent dans le bout périphérique de la racine antérieure sectionnée et dans la moitié antérieure du nerf rachidien</p>
+<p class="para"><b>4 :</b> Les corps cellulaires des fibres de la racine antérieure sont localisés dans la substance grise de la moelle épinière : il s'agit des corps cellulaire multipolaires de la corne antérieure (motoneurones α)</p>
+<p class="para"><b>5 :</b> Aucun effet</p>
+<p class="para"><b>6 :</b> Des contractions musculaires au niveau de la partie correspondante</p>
+<p class="para"><b>7 :</b> La racine antérieure conduit un message nerveux centrifuge (ou efférent ou moteur) et ne conduit pas de message nerveux centripète</p>
+<p class="para"><b>8 :</b> La région du corps innervée par le nerf rachidien perd toute sensibilité, la motricité est maintenue</p>
+<p class="para"><b>9 :</b> La racine postérieure ne renferme que des fibres nerveuses responsables de la sensibilité</p>
+<p class="para"><b>10 :</b> Les fibres nerveuses dégénèrent de part et d'autre du ganglion spinal et dans la moitié postérieure du nerf rachidien</p>
+<p class="para"><b>11 :</b> Les corps cellulaires des fibres de la racine postérieure sont localisés dans le ganglion spinal : il s'agit des corps cellulaire unipolaires ou en T (neurones sensitif)</p>
+<p class="para"><b>12 :</b> Sensation douloureuse</p>
+<p class="para"><b>13 :</b> Aucun effet</p>
+<p class="para"><b>14 :</b> Les fibres de la racine postérieure conduisent le message nerveux centripète (ou afférent ou sensitif) et ne conduisent pas le message nerveux dans le sens centrifuge</p>
+
+
+<div class="exsub">6. Neurophysiologie (3) </div>
+<!-- page 01 -->
+<div class="data"><p class="para">Série 8</p><p class="para">Niveau : 4<sup>ème</sup> Sc. Ex.</p><p class="para">Chapitre : Réflexes myotatiques</p></div>
+<div class="exsub"><u>Exercice N° 1</u></div>
+<p class="para">La membrane de la fibre nerveuse est le siège de plusieurs mouvements ioniques dus à diverses forces : forces de diffusion, forces électrostatiques et transport actif. Ces forces sont à l'origine d'une perméabilité sélective de cette membrane, responsable d'un potentiel de repos constant.</p>
+<p class="consigne"><b>1)</b> Définir le potentiel de repos et préciser sa valeur.</p>
+<p class="consigne"><b>2)</b> Reproduire et compléter le tableau suivant en précisant les différentes forces à l'origine des mouvements ioniques à travers la membrane de la fibre nerveuse.</p>
+<!-- CROP: 4763 2 1 0.090 0.220 0.910 0.462 4763_p2_01_tableau_membrane -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_01_tableau_membrane.png" alt=""></figure>
+<p class="consigne"><b>3)</b> Préciser à quelle condition ces forces permettent elles le maintien du potentiel de repos à une valeur constante.</p>
+<p class="consigne"><b>4)</b> Parmi les caractéristiques ci-dessous, indiquer celles qui correspondent aux pompes Na<sup>+</sup>/K<sup>+</sup> et celles qui correspondent aux canaux de fuite :</p>
+<p class="para"><b>a)</b> Nécessitent de l'énergie<br>
+<b>b)</b> Sont fermées au repos<br>
+<b>c)</b> Maintiennent les gradients de concentration des ions Na<sup>+</sup> et K<sup>+</sup> de part et d'autre de la membrane plasmique<br>
+<b>d)</b> Assurent l'échange des ions Na<sup>+</sup> et K<sup>+</sup> selon le gradient de concentration<br>
+<b>e)</b> Sont bloquées en présence d'un poison métabolique<br>
+<b>f)</b> Modifient leur activité lorsque la membrane de la cellule nerveuse est excitée.</p>
+<div class="exsub"><u>Exercice N° 2</u></div>
+<p class="para">On veut déterminer l'origine du potentiel de repos. Pour cela on a réalisé les expériences suivantes.</p>
+<p class="subhead t-navy"><b><u>Expérience 1</u></b></p>
+<p class="para">On mesure les concentrations en ions Na<sup>+</sup> et K<sup>+</sup> à l'intérieur et à l'extérieur d'un axone géant de Calmar. On rappelle que le milieu extracellulaire a une composition ionique pratiquement identique à celle de l'eau de mer. Les résultats des mesures sont consignés dans le tableau ci-dessous.</p>
+<table>
+<tr><th>Ions</th><th>Dans le cytoplasme de l'axone</th><th>Dans l'eau de mer</th></tr>
+<tr><td><b>Na<sup>+</sup></b></td><td>50 (millimoles/l)</td><td>450 (millimoles/l)</td></tr>
+<tr><td><b>K<sup>+</sup></b></td><td>400 (millimoles/l)</td><td>10 (millimoles/l)</td></tr>
+</table>
+<p class="para">On a constaté que la composition ionique de part et d'autre de la membrane reste invariable au repos.</p>
+<p class="consigne">1) Analyser ces résultats.<br>
+2) Proposer une hypothèse relative à l'origine du potentiel de repos.</p>
+<p class="subhead t-navy"><b><u>Expérience 2</u></b></p>
+<p class="para">On vide l'axone de la fibre nerveuse de son cytoplasme et on le remplace par un liquide dont la concentration en ions K<sup>+</sup> est variable entre 0 et 600 millimoles/l. La concentration en ions K<sup>+</sup> externe est maintenue constante et égale à 10 millimoles/l. On mesure, pour chaque valeur de la concentration en ions K<sup>+</sup> interne, la valeur de potentiel de repos. Le résultat est donné par le document 1.</p>
+<!-- page 02 -->
+<!-- CROP: 4763 2 2 0.195 0.050 0.772 0.218 4763_p2_02_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_02_document1.png" alt=""></figure>
+<p class="consigne"><b>3)</b> Analyser la courbe obtenue. Votre hypothèse émise en <b>2)</b> se trouve-t-elle confirmée ?</p>
+<p class="subhead t-navy"><b><u>Expérience 3</u></b></p>
+<p class="para">L'utilisation de Na<sup>+</sup> radioactif a montré que la membrane de l'axone est perméable à cet ion dans les deux sens. L'utilisation d'un inhibiteur métabolique (qui bloque l'activité des mitochondries donc la production de l'ATP) arrête la sortie du sodium mais n'altère pas son entrée.</p>
+<p class="subhead t-navy"><b><u>Expérience 4</u></b></p>
+<p class="para">L'utilisation de K<sup>+</sup> radioactif a montré que la membrane de l'axone est perméable à cet ion dans les deux sens. L'utilisation d'un inhibiteur métabolique arrête l'entrée du potassium mais n'altère pas sa sortie.</p>
+<p class="consigne"><b>4)</b> Préciser pour chaque ion les types de transports membranaires mis en évidence par ces deux dernières expériences. Faire un schéma simple montrant ces différents transports.</p>
+<p class="consigne"><b>5)</b> À partir des résultats de ces différentes expériences et de vos connaissances, préciser l'origine du potentiel de repos.</p>
+<div class="exsub"><u>Exercice N° 3</u></div>
+<p class="para"><b>I-</b> Afin de déterminer l'origine des potentiels transmembranaires de la cellule nerveuse, on réalise les expériences suivantes :</p>
+<p class="para"><u>Expérience 1 :</u> La recherche des [Na<sup>+</sup>] et [K<sup>+</sup>] dans l'axone et le milieu extracellulaire pour une fibre de Calmar non stimulée a donné les résultats du document 1 ci-contre.</p>
+<table>
+<tr><th>Ions</th><th>dans l'axone<br>(en millimoles.l<sup>-1</sup>)</th><th>dans l'eau de mer<br>(en millimoles.l<sup>-1</sup>)</th></tr>
+<tr><td>Na<sup>+</sup></td><td>50</td><td>460</td></tr>
+<tr><td>K<sup>+</sup></td><td>400</td><td>10</td></tr>
+</table>
+<p class="para">Document 1</p>
+<p class="para"><u>Expérience 2 :</u> Un axone de Calmar est immergé dans un liquide physiologique renfermant <sup>24</sup>Na. Il accumule peu à peu le sodium radioactif. Après transfert dans un milieu identique dépourvu de sodium radioactif, on mesure la sortie du sodium vers le milieu extracellulaire à partir du temps t<sub>0</sub> (voir document 2).</p>
+<ul class="dash">
+<li>Au temps t = 100 minutes, on additionne du DNP.</li>
+<li>Au temps t = 200 minutes, on retire le DNP puis on rince le milieu et on remet le liquide physiologique normal.</li>
+</ul>
+<!-- CROP: 4763 2 2 0.570 0.525 0.903 0.687 4763_p2_02_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_02_document2.png" alt=""></figure>
+<p class="para"><u>Expérience 3 :</u> Un deuxième axone est rendu radioactif par le même protocole expérimental … et on fait varier la composition du milieu comme suit (voir document 3).</p>
+<ul class="dash">
+<li>Au temps t = 1 h, addition du DNP ;</li>
+<li>Au temps t = 3 h, addition d'une petite quantité d'AMP ;</li>
+<li>Au temps t = 4 h, addition d'une petite quantité d'ATP ;</li>
+<li>Au temps t = 6 h, retrait du DNP, rinçage du milieu et remise du liquide physiologique normal.</li>
+</ul>
+<p class="para"><u>Expérience 4 :</u> Un troisième axone est rendu radioactif par le même protocole expérimental. On retire le K<sup>+</sup> dans l'intervalle de temps (100 – 150) minutes. Il est enfin placé dans un milieu normal (document 4).</p>
+<p class="consigne">Interprétez cette série d'expériences d'après les résultats obtenus.</p>
+<!-- NOTE: handwritten annotation written over Document 4 ("relation entre K+ et Na+ par la pompe") left out -->
+<!-- CROP: 4763 2 2 0.110 0.725 0.530 0.885 4763_p2_02_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_02_document3.png" alt=""></figure>
+<!-- CROP: 4763 2 2 0.522 0.725 0.908 0.887 4763_p2_02_document4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_02_document4.png" alt=""></figure>
+<!-- page 03 -->
+<p class="para"><u>Expérience 2</u> : A l'aide du montage schématisé dans le document 3, on applique une excitation efficace sur l'axone et on enregistre les phénomènes électriques grâce à 3 électrodes réceptrices R<sub>A</sub>, R<sub>B</sub> et R<sub>C</sub> placées aux points A, B et C situés à des distances différentes des électrodes excitatrices S<sub>1</sub> et S<sub>2</sub> comme indiqué sur le document 3.</p>
+<p class="para">On donne les distances :<br>
+S<sub>2</sub> – A = 18 mm ;<br>
+S<sub>2</sub> – B = 36 mm ;<br>
+S<sub>2</sub> – C = 54 mm.</p>
+<p class="para">Les enregistrements obtenus sont consignés sur le document 4.</p>
+<p class="consigne">Montrer que l'influx nerveux se propage le long de la fibre avec la même vitesse.</p>
+<!-- CROP: 4763 2 3 0.337 0.064 0.902 0.236 4763_p2_03_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_03_document3.png" alt=""></figure>
+<!-- CROP: 4763 2 3 0.337 0.236 0.902 0.413 4763_p2_03_document4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_03_document4.png" alt=""></figure>
+<p class="para"><b>II-</b> Pour comprendre la nature du phénomène électrique accompagnant la naissance du potentiel d'action, on étudie le comportement de la membrane de la fibre nerveuse vis-à-vis des ions Na<sup>+</sup> et K<sup>+</sup> entrant dans la composition du milieu intracellulaire et du milieu extracellulaire.</p>
+<p class="para"><u>Expérience</u> : On porte une stimulation efficace sur l'axone et on mesure, en fonction du temps, les concentrations intracellulaires des ions Na<sup>+</sup> et K<sup>+</sup>.</p>
+<p class="para">On note alors les variations de ces concentrations représentées par le document 5.</p>
+<!-- NOTE: handwritten word "stim" written on Document 5 left out (kept only inside the crop) -->
+<!-- CROP: 4763 2 3 0.434 0.426 0.902 0.583 4763_p2_03_document5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_03_document5.png" alt=""></figure>
+<p class="consigne"><b>1)</b> Analyser les 2 courbes du document 5. Quelle conclusion peut-on faire quant à la perméabilité de la membrane cellulaire vis-à-vis des ions Na<sup>+</sup> et K<sup>+</sup> suite à la stimulation ?</p>
+<p class="consigne"><b>2)</b> Le tableau ci-après représente le nombre de certains types de canaux ioniques ouverts en un point de la fibre nerveuse en fonction des phases d'un potentiel d'action.</p>
+<p class="consigne"><b>a)</b> Etablir la relation entre l'état des 2 types de canaux et les phases du potentiel d'action.<br>
+<b>b)</b> Déduire la nature des 2 types de canaux en tenant compte de la réponse à la question <b>1)</b> et expliquer les conditions de leur fonctionnement.</p>
+<p class="consigne"><b>3)</b> Définir le potentiel d'action en se rapportant aux phénomènes ioniques.</p>
+<table>
+<tr><th></th><th colspan="4">Phase 1</th><th colspan="3">Phase 2</th><th colspan="4">Phase 3</th></tr>
+<tr><td><b>ddp trans-membranaire<br>(mv)</b></td><td>- 70</td><td>- 60</td><td>- 50</td><td>0</td><td>+ 30</td><td>0</td><td>- 50</td><td>- 70</td><td>- 75</td><td>- 72</td><td>- 70</td></tr>
+<tr><td><b>Canaux de type 1</b></td><td>0</td><td>0</td><td>5</td><td>20</td><td>38</td><td>20</td><td>5</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td><b>Canaux de type 2</b></td><td>0</td><td>0</td><td>0</td><td>0</td><td>5</td><td>18</td><td>20</td><td>19</td><td>12</td><td>0</td><td>0</td></tr>
+</table>
+<div class="exsub"><u>Exercice N° 5</u></div>
+<p class="para">Un corpuscule de Pacini avec sa fibre est isolé et placé dans du liquide physiologique ; on fait les expériences suivantes :</p>
+<p class="para"><b>1) Expérience 1 :</b> On implante une microélectrode réceptrice R<sub>1</sub> en un point de la fibre comme le montre le document 1. On exerce sur la capsule conjonctive des pressions croissantes (P<sub>1</sub> ⟶ P<sub>4</sub>) de même durée et on enregistre l'activité de la fibre grâce à un oscilloscope. On obtient les enregistrements du document 2.</p>
+<p class="consigne">Que peut-on déduire à partir de l'analyse des enregistrements obtenus ?</p>
+<!-- page 04 -->
+<!-- NOTE: this image carries printed page number 3 (image p03 carries printed page number 4); pages kept in image order -->
+<p class="para"><b>II- 1)</b> On mesure conjointement les variations de la perméabilité de la membrane de l'axone aux ions Na<sup>+</sup> et K<sup>+</sup> afin de déterminer l'origine de la variation du potentiel de membrane suite à une stimulation efficace (voir document 4 ci-après).</p>
+<p class="para"><b>2)</b> Pour confirmer le rôle du Na<sup>+</sup> et du K<sup>+</sup> dans le déroulement du potentiel d'action, on réalise une série d'expériences sur un mollusque marin.</p>
+<p class="para">Le document 5 présente les résultats obtenus dans les différentes conditions.</p>
+<p class="consigne">En vous appuyant sur les documents 4 et 5 et sur vos connaissances, dégagez les caractéristiques ioniques du potentiel d'action</p>
+<!-- CROP: 4763 2 4 0.084 0.148 0.421 0.360 4763_p2_04_document4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_04_document4.png" alt=""></figure>
+<!-- CROP: 4763 2 4 0.423 0.148 0.905 0.363 4763_p2_04_document5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_04_document5.png" alt=""></figure>
+<div class="exsub"><u>Exercice N° 4</u></div>
+<p class="para"><b>I-</b> On se propose d'étudier quelques propriétés de la fibre nerveuse.</p>
+<p class="para"><u>Expérience 1</u> : Un axone de calmar est placé dans le dispositif expérimental représenté par le document 1.</p>
+<ul class="dash">
+<li>Au temps t<sub>0</sub>, on place R<sub>1</sub> à la surface de l'axone.</li>
+<li>Au temps t<sub>1</sub>, on introduit R<sub>1</sub> à l'intérieur de l'axone.</li>
+<li>Au temps t<sub>2</sub>, t<sub>3</sub>, t<sub>4</sub>, t<sub>5</sub> et t<sub>6</sub>, on applique sur l'axone 5 stimulations isolées d'intensité croissante (de i<sub>1</sub> à i<sub>5</sub> ). R<sub>1</sub> étant toujours introduite à l'intérieur de l'axone.</li>
+</ul>
+<!-- CROP: 4763 2 4 0.423 0.382 0.896 0.563 4763_p2_04_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_04_document1.png" alt=""></figure>
+<p class="para">Les enregistrements obtenus sont consignés dans le document 2.</p>
+<p class="consigne"><b>1) a)</b> Nommer, en le justifiant, les phénomènes électriques enregistrés aux temps t<sub>1</sub>, t<sub>2</sub>, t<sub>3</sub>, t<sub>4</sub> et t<sub>5</sub> .<br>
+<b>b)</b> Dégager les caractéristiques de ces phénomènes à partir de l'analyse des enregistrements.<br>
+<b>c)</b> Quelles autres caractéristiques peut-on dégager si on sait que seules des dépolarisations de même amplitude que d, e et f sont enregistrées aux temps t<sub>4</sub>, t<sub>5</sub> et t<sub>6</sub> en un point éloigné des électrodes stimulatrices ?<br>
+<b>d)</b> Quel serait l'aspect des enregistrements d, e et f si on réduisait au minimum la vitesse de balayage de l'oscilloscope.</p>
+<p class="consigne"><b>2)</b> Reproduire l'enregistrement d et analyser-le, en précisant les modifications des charges électriques de part et d'autre de la membrane de l'axone par rapport au repos.</p>
+<!-- CROP: 4763 2 4 0.365 0.567 0.905 0.880 4763_p2_04_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_04_document2.png" alt=""></figure>
+<!-- page 05 -->
+<!-- CROP: 4763 2 5 0.066 0.055 0.527 0.280 4763_p2_05_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_05_document1.png" alt=""></figure>
+<!-- CROP: 4763 2 5 0.527 0.055 0.917 0.277 4763_p2_05_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_05_document2.png" alt=""></figure>
+<p class="para"><b>2) Expérience 2 :</b> On implante 2 microélectrodes réceptrices R<sub>1</sub> et R<sub>2</sub> dans la fibre telles que R<sub>1</sub> est à l'extrémité (dans le corpuscule) et R<sub>2</sub> au niveau du 1<sup>er</sup> nœud de Ranvier.</p>
+<p class="para">On soumet le corpuscule à des stimulations d'intensités croissantes (P<sub>1</sub> ⟶ P<sub>4</sub>). Le document 3 présente les phénomènes électriques enregistrés respectivement en R<sub>1</sub> et R<sub>2</sub>.</p>
+<p class="consigne">Analyser les enregistrements obtenus. Que peut-on en déduire ?</p>
+<!-- CROP: 4763 2 5 0.469 0.276 0.914 0.482 4763_p2_05_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_05_document3.png" alt=""></figure>
+<p class="consigne"><b>3)</b> En utilisant les conclusions précédentes et en vous aidant de vos connaissances, expliquer comment un message nerveux prend naissance au niveau du récepteur soumis à des stimulations de plus en plus intenses.</p>
+<p class="consigne"><b>4)</b> Expliquer, schéma à l'appui, le mécanisme de la conduction du message nerveux le long de la fibre issue du corpuscule de Pacini.</p>
+<div class="exsub"><u>Exercice N°6</u></div>
+<!-- NOTE: handwritten circles around answer letters and handwritten margin notes on this QCM (p05–p06) left out -->
+<p class="consigne">Chaque série d'affirmations peut comporter une ou plusieurs réponses exactes. Repérer les affirmations correctes :</p>
+<p class="subhead t-navy"><i>1) <u>Le potentiel de repos</u></i></p>
+<p class="para">a) est lié à une répartition ionique inégale de part et d'autre de la membrane plasmique<br>
+b) est stable pour une cellule non stimulée car la membrane plasmique est imperméable aux ions<br>
+c) est maintenu stable grâce au fonctionnement de la pompe Na<sup>+</sup>/K<sup>+</sup><br>
+d) est maintenu grâce à une consommation d'énergie<br>
+e) résulte de transports ioniques passif et actif.</p>
+<p class="subhead t-navy"><i>2) <u>Le potentiel d'action</u></i> :</p>
+<p class="para">a) est une modification brève du potentiel de repos, sa durée étant de l'ordre de la milliseconde,<br>
+b) a une amplitude qui décroît progressivement le long de la fibre nerveuse excitée,<br>
+c) est liée à des mouvements ioniques intenses mais brefs au travers de la zone membranaire excitée,<br>
+d) correspond à une augmentation de la polarisation membranaire qui passe de 70 mv à 100 mv,<br>
+e) ne peut se propager que dans un seul sens le long d'une fibre nerveuse isolée.</p>
+<p class="subhead t-navy"><i>3) <u>Les récepteurs sensoriels</u></i> :</p>
+<p class="para">a) sont des structures nerveuses capables de détecter des stimuli, c'est à dire des variations de leur environnement,<br>
+b) sont le lieu de transduction<br>
+c) émettent des « trains » de potentiels d'action lorsqu'ils sont excités,<br>
+d) ont une fréquence d'émission de potentiels d'action constante pour un récepteur donné,<br>
+e) présentent une modification de leur polarisation membranaire qui dépend de l'intensité du stimulus,<br>
+f) donnent naissance à un message, appelé potentiel de récepteur, qui se propage en direction des centres nerveux.</p>
+<p class="subhead t-navy"><i>4) <u>La période réfractaire</u></i> :</p>
+<p class="para">a) est la période de temps pendant laquelle la fibre est excitable<br>
+b) est la période de temps pendant laquelle la fibre est inexcitable</p>
+<!-- page 06 -->
+<p class="para">c) impose le sens de propagation du message nerveux le long de la fibre nerveuse<br>
+d) rend les canaux de fuite inactivés</p>
+<p class="subhead t-navy"><i>5) <u>Lorsque le seuil de dépolarisation est atteint</u></i> :</p>
+<p class="para">a) la membrane devient très perméable aux ions K<sup>+</sup> qui entrent massivement,<br>
+b) il y a ouverture des canaux K<sup>+</sup> puis des canaux Na<sup>+</sup> voltage-dépendants,<br>
+c) il y a ouverture des canaux Na<sup>+</sup> puis des canaux K<sup>+</sup> voltage-dépendants,<br>
+d) la membrane devient imperméable aux ions Na<sup>+</sup> mais perméable aux ions K<sup>+</sup>,<br>
+e) un potentiel d'action est créé,<br>
+f) les gradients de concentration ioniques de part et d'autre de la membrane s'inversent.</p>
+<p class="subhead t-navy"><i>6) <u>Un récepteur sensoriel</u></i> :</p>
+<p class="para">a) est une terminaison dendritique spécialisée<br>
+b) est toujours localisé à la périphérie de l'organisme,<br>
+c) stimulé, il est le siège de la naissance d'un potentiel de récepteur,<br>
+d) envoie au centre nerveux un message codé en amplitude,<br>
+e) ne présente pas de potentiel de repos.</p>
+<p class="subhead t-navy"><i>7) <u>Les canaux de fuite</u></i> :</p>
+<p class="para">a) sont localisés uniquement sur la membrane post-synaptique,<br>
+b) nécessitent l'arrivée d'un potentiel d'action pour être activés,<br>
+d) sont ouverts en permanence,<br>
+e) assurent l'échange des ions Na<sup>+</sup> et K<sup>+</sup> selon leurs gradients de concentration.</p>
+<p class="subhead t-navy"><i>8) <u>Lorsqu'une cellule est au repos</u></i> :</p>
+<p class="para">a) la diffusion des ions à travers la membrane est passive,<br>
+b) la diffusion des ions est active,<br>
+c) il n'y a pas diffusion d'ions,<br>
+d) la diffusion des ions Na<sup>+</sup> est plus importante que celle des ions K<sup>+</sup> ,<br>
+e) la diffusion des ions est la même pour les deux types d'ions,<br>
+f) la diffusion des ions K<sup>+</sup> est plus importante que celle des ions Na<sup>+</sup>,<br>
+g) les canaux de fuite sont toujours ouverts,<br>
+h) les canaux Na<sup>+</sup> et K<sup>+</sup> voltage-dépendants sont fermés.</p>
+<p class="subhead t-navy"><i>9) <u>On stimule une fibre isolée avec des stimulations d'intensités croissantes (S<sub>1</sub> &lt; S<sub>2</sub> &lt; S<sub>3</sub>). L'enregistrement suivant, réalisé sur une fibre isolée, montre</u></i> :</p>
+<!-- CROP: 4763 2 6 0.624 0.440 0.885 0.548 4763_p2_06_qcm9_enregistrement -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_06_qcm9_enregistrement.png" alt=""></figure>
+<p class="para">a) qu'au repos, le potentiel de la face interne de la membrane est inférieur au potentiel de la face externe de la membrane,<br>
+b) que la fibre nerveuse obéit à la loi du tout ou rien,<br>
+c) que l'amplitude du potentiel d'action dépend de l'intensité de la stimulation,<br>
+d) que le seuil de potentiel est situé au dessus de – 60 mv.</p>
+<p class="subhead t-navy"><i>10) <u>Au cours d'un potentiel d'action, il y a entrée massive de Na<sup>+</sup></u></i> :</p>
+<p class="para">a) par les canaux de fuite,<br>
+b) par la pompe Na<sup>+</sup> / K<sup>+</sup>,<br>
+c) par les canaux voltage-dépendants,<br>
+d) en contre partie de la sortie massive de K<sup>+</sup>.</p>
+<p class="subhead t-navy"><i>11) <u>Dans les conditions physiologiques, la propagation des messages nerveux le long d'une fibre est toujours unidirectionnelle car</u></i> :</p>
+<p class="para">a) il existe une période réfractaire,<br>
+b) la fibre nerveuse obéit à la loi du tout ou rien,<br>
+c) la gaine de myéline s'oppose à la propagation en sens inverse,<br>
+d) elle est imposée par les courants locaux.</p>
+<p class="subhead t-navy"><i>12) <u>Suite à une stimulation électrique, on enregistre le potentiel d'action d'une fibre nerveuse isolée. Les électrodes réceptrices sont placées de 1,2 cm entre les enregistrements 1 et 2 ci-contre. Dans ces conditions</u></i> :</p>
+<!-- CROP: 4763 2 6 0.624 0.555 0.881 0.714 4763_p2_06_qcm12_enregistrement1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_06_qcm12_enregistrement1.png" alt=""></figure>
+<!-- CROP: 4763 2 6 0.624 0.712 0.881 0.868 4763_p2_06_qcm12_enregistrement2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_06_qcm12_enregistrement2.png" alt=""></figure>
+<p class="para">a) la vitesse de propagation est de 12 m/s,<br>
+b) la vitesse de propagation est de 20 m/s,<br>
+c) la vitesse de propagation est de 24 m/s,<br>
+d) la vitesse de propagation est de 40 m/s,</p>
+<!-- page 07 -->
+<div class="exsub"><u>Exercice N° 7</u></div>
+<p class="para">Dans tout centre nerveux, chaque neurone élabore des messages à partir des informations issues des différents autres neurones avec lesquels il est connecté.</p>
+<p class="consigne"><b>Montrez comment se réalise la transmission synaptique et l'intégration des différents messages nerveux reçus par un neurone.</b></p>
+<p class="para">L'exposé s'appuiera sur des schémas clairs et soigneusement annotés.<br>
+Les mécanismes ioniques ne sont pas attendus.</p>
+<div class="exsub"><u>Exercice N° 8</u></div>
+<p class="para">On se propose maintenant d'étudier la transmission du message nerveux à un motoneurone. Pour cela, on considère 4 terminaisons nerveuses A, B, C et D appartenant à des neurones présynaptiques différents reliés à un motoneurone M (voir la figure du document 1).</p>
+<!-- CROP: 4763 2 7 0.255 0.155 0.907 0.380 4763_p2_07_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_07_document1.png" alt=""></figure>
+<p class="para">On enregistre les phénomènes électriques au niveau du motoneurone M suite à des stimulations électriques efficaces de même intensité et durée portées sur les fibres présynaptiques A, B, C et D dans différentes conditions, comme indiqué dans la figure du document 2</p>
+<!-- NOTE: handwritten note written inside Document 2 (bottom right) left out -->
+<!-- CROP: 4763 2 7 0.110 0.405 0.905 0.865 4763_p2_07_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_07_document2.png" alt=""></figure>
+<p class="consigne">Analysez les phénomènes électriques enregistrés de l'étape 1 à l'étape 8. Qu'en déduirez-vous ?</p>
+<!-- page 08 -->
+<div class="exsub"><u>Exercice N° 9</u></div>
+<p class="para">Les neurones du ganglion abdominal de l'Aplysie (mollusque marin) sont accessibles à l'expérimentation électrophysiologique.</p>
+<p class="para">Les synapses s'effectuent à l'intérieur de ganglions qui sont périphériques. Soit la structure au niveau du ganglion schématisée dans le document 1.</p>
+<!-- CROP: 4763 2 8 0.467 0.051 0.934 0.239 4763_p2_08_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_08_document1.png" alt=""></figure>
+<p class="para"><b>1)</b> Lorsque la microélectrode E<sub>1</sub> pénètre dans le corps cellulaire du neurone NS, on enregistre sur O<sub>1</sub> la partie X du document 2. lorsqu'il y a stimulation du neurone NS en A, on enregistre sur O<sub>1</sub> la partie Y du document 1.</p>
+<p class="consigne">Analyser successivement les deux parties X et Y.</p>
+<!-- CROP: 4763 2 8 0.609 0.239 0.931 0.414 4763_p2_08_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_08_document2.png" alt=""></figure>
+<p class="para"><b>2)</b> Lorsqu'on fait varier expérimentalement la concentration intracellulaire en K<sup>+</sup> en le remplaçant progressivement par du Na<sup>+</sup>, on obtient après une nouvelle stimulation en A les enregistrements A, B et C du document 3.</p>
+<p class="para">A : K<sup>+</sup> à concentration habituelle.<br>
+B : ¼ du K<sup>+</sup> est remplacé par du Na<sup>+</sup>.<br>
+C : ½ du K<sup>+</sup> est remplacé par du Na<sup>+</sup>.</p>
+<p class="consigne">Analyser ces données et préciser de quoi dépend l'amplitude du potentiel d'action dans un neurone.</p>
+<!-- CROP: 4763 2 8 0.664 0.414 0.931 0.553 4763_p2_08_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_08_document3.png" alt=""></figure>
+<p class="para"><b>3)</b> Dans des expériences, on constate que l'Aplysie présente une réaction de défense simple qui consiste à rétracter les branchies sous l'effet de stimulus appliqué sur le siphon (document 1).Si l'on excite de façon répétée le siphon, cette réaction disparaît.</p>
+<p class="para">Pour préciser ce phénomène, les neurophysiologistes ont travaillé sur le ganglion dans lequel on a mis en évidence les relations entre neurone NS et NM (document 1)</p>
+<p class="para"><b>a)</b> Une stimulation supraliminaire appliquée sur le neurone NS en A donne sur O<sub>1</sub> le tracé du document 4 (a) et sur O<sub>2</sub> le tracé du document 4(b)</p>
+<p class="consigne">Que peut-on dire quant au rôle du neurone NS et quant à la réponse du neurone NM ?</p>
+<p class="para"><b>b)</b> Si l'on applique une excitation supraliminaire sur NS toutes les 10 secondes pendant 15 fois (suffisamment espacées dans le temps), on obtient sur O<sub>2</sub> l'enregistrement du document 5.</p>
+<p class="consigne">Expliquer le mécanisme de la transmission synaptique en vous aidant d'un schéma bien annoté.</p>
+<p class="consigne">Quelles hypothèses peut-on formuler quant à la variation de la réponse de NM ?</p>
+<!-- CROP: 4763 2 8 0.376 0.566 0.929 0.725 4763_p2_08_document4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_08_document4.png" alt=""></figure>
+<p class="para"><b>c)</b> Pour vérifier l'une de ces hypothèses, on réalise l'expérience suivante :</p>
+<p class="para">On fait varier la concentration de Ca<sup>++</sup> dans la fente synaptique de NS-NM, on obtient sur O<sub>2</sub> les enregistrements du document 6 après stimulation NS à la concentration c<sub>1</sub> de Ca<sup>++</sup> et à la concentration 5 c<sub>1</sub> de Ca<sup>++</sup>.</p>
+<p class="consigne">Ces résultats peuvent-ils donner une réponse à l'une des hypothèses proposées ? Expliquer.</p>
+<!-- CROP: 4763 2 8 0.097 0.756 0.476 0.878 4763_p2_08_document5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_08_document5.png" alt=""></figure>
+<!-- CROP: 4763 2 8 0.476 0.756 0.927 0.878 4763_p2_08_document6 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_08_document6.png" alt=""></figure>
+<!-- page 09 -->
+<div class="exsub"><u>Exercice N° 10</u></div>
+<p class="para">A l'aide du dispositif expérimental indiqué dans le document 1, on se propose d'étudier quelques particularités du fonctionnement d'un réseau neuronique.</p>
+<p class="para">Dans ce but, on réalise l'expérience suivante :</p>
+<p class="para">On porte sur le neurone A une seule stimulation (st) (voir document 1) et on enregistre le potentiel de membrane:</p>
+<ul class="dash">
+<li>au niveau du corps cellulaire du neurone C (au moyen de l'oscilloscope O<sub>2</sub>),</li>
+<li>au niveau de l'axone du neurone D (au moyen de l'oscilloscope O<sub>6</sub>)</li>
+</ul>
+<p class="para">Les résultats sont consignés dans le tableau ci-contre :</p>
+<!-- CROP: 4763 2 9 0.588 0.086 0.905 0.258 4763_p2_09_tableau_enregistrements -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_09_tableau_enregistrements.png" alt=""></figure>
+<!-- CROP: 4763 2 9 0.095 0.243 0.881 0.530 4763_p2_09_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_09_document1.png" alt=""></figure>
+<ol class="qn">
+<li>Nommez, en justifiant votre réponse, les phénomènes enregistrés en O<sub>2</sub> et en O<sub>6</sub>.</li>
+<li>Déduisez la nature de chacun des neurones A et B.</li>
+<li>Ces enregistrements permettent-ils de déduire la nature des neurones C et D ? Justifiez.</li>
+<li>Schématisez les enregistrements obtenus sur les écrans des oscilloscopes O<sub>1</sub>, O<sub>3</sub>, O<sub>4</sub>, O<sub>5</sub> et O<sub>7</sub>. Justifiez.</li>
+<li>Le document 2 présente deux microphotographies d'une synapse entre les neurones B et C.</li>
+</ol>
+<!-- CROP: 4763 2 9 0.181 0.605 0.837 0.748 4763_p2_09_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_09_document2.png" alt=""></figure>
+<p class="consigne">a) Annotez ce document.<br>
+b) Mettez en évidence les différences entre ces deux microphotographies.<br>
+c) En vous basant sur votre réponse à la question précédente (b) et sur l'enregistrement obtenu en O<sub>2</sub>, faites un schéma fonctionnel commenté montrant les étapes de la transmission du message nerveux entre les neurones B et C.</p>
+<div class="exsub"><u>Exercice N° 11</u></div>
+<p class="para">Afin de comprendre les caractéristiques de l'élaboration du message nerveux au niveau des jonctions neuro-neuronales, on réalise le dispositif expérimental indiqué par le document 3.</p>
+<p class="para">Dans ce but, on porte des stimulations efficaces et isolées en S<sub>1</sub> et S<sub>2</sub>. Les valeurs des potentiels enregistrés sont indiquées dans les tableaux du document 4.</p>
+<!-- page 10 -->
+<p class="consigne"><b>1)</b> Expliquer la différence qui existe entre les potentiels enregistrés en E<sub>1</sub> à la suite de la stimulation de S<sub>1</sub> et en E'<sub>1</sub> à la suite de la stimulation S<sub>2</sub><br>
+<b>2)</b> Exploiter la variation des potentiels enregistrés en E<sub>2</sub> et en E<sub>3</sub> à la suite des stimulations S<sub>1</sub> et S<sub>2</sub>.<br>
+<b>3)</b> Tracer l'enregistrement que l'on peut obtenir en E<sub>2</sub> si on porte simultanément les 2 stimulations S<sub>1</sub> et S<sub>2</sub>. Justifier.<br>
+<b>4)</b> Représenter ce que l'on peut observer en E<sub>2</sub> et E<sub>3</sub> si on porte 3 stimulations S<sub>1</sub> très rapprochées. Justifier.</p>
+<!-- CROP: 4763 2 10 0.084 0.108 0.916 0.366 4763_p2_10_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_10_document3.png" alt=""></figure>
+<table>
+<tr><th>Electrode d'enregistrement</th><th>ddp (mv) enregistrée après S<sub>1</sub></th></tr>
+<tr><td>E<sub>1</sub></td><td>- 60</td></tr>
+<tr><td>E<sub>2</sub></td><td>- 63</td></tr>
+<tr><td>E<sub>3</sub></td><td>- 70</td></tr>
+</table>
+<table>
+<tr><th>Electrode d'enregistrement</th><th>ddp (mv) enregistrée après S<sub>2</sub></th></tr>
+<tr><td>E'<sub>1</sub></td><td>- 75</td></tr>
+<tr><td>E<sub>2</sub></td><td>- 72</td></tr>
+<tr><td>E<sub>3</sub></td><td>- 70</td></tr>
+</table>
+<p class="para">Document 4</p>
+<div class="exsub"><u>Exercice N° 12</u></div>
+<p class="para">Les neurones des centres nerveux de la moelle épinière tel le neurone A présenté sur le document 1, intègrent des messages nerveux de diverses origines et assurent ainsi des réponses coordonnées des organes effecteurs.</p>
+<!-- CROP: 4763 2 10 0.270 0.480 0.916 0.710 4763_p2_10_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_10_document1.png" alt=""></figure>
+<p class="para"><b>1)</b> On applique dans la zone délimitée, à la même concentration molaire, deux types de neurotransmetteurs. On obtient les tracés du document 2.</p>
+<p class="consigne"><b>a)</b> A partir d'une étude rigoureuse du document 2, déduire :</p>
+<ul class="dash">
+<li>les effets et le lieu d'action des substances utilisées ;</li>
+<li>la nature des synapses concernées.</li>
+</ul>
+<p class="consigne"><b>b)</b> Pour chacune de ces substances, proposer une explication sur son mode d'intervention au niveau des membranes cellulaires.</p>
+<!-- CROP: 4763 2 10 0.078 0.717 0.901 0.870 4763_p2_10_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_10_document2.png" alt=""></figure>
+<!-- page 11 -->
+<p class="para"><b>2)</b> On porte des stimulations d'intensité constante sur les éléments B, C et D. Les enregistrements obtenus sont groupés dans le tableau du document 3.</p>
+<p class="consigne"><b>a)</b> A partir d'une comparaison des résultats des expériences α et β, proposer une hypothèse concernant le rôle du neurone C.<br>
+<b>b)</b> Quelles propriétés du neurone A montrent les expériences γ et δ ?</p>
+<!-- CROP: 4763 2 11 0.087 0.105 0.919 0.366 4763_p2_11_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_11_document3.png" alt=""></figure>
+<div class="exsub"><u>Exercice N° 13</u></div>
+<p class="para">On s'intéresse aux mécanismes qui assurent la transmission de l'information entre les neurones. Le document 1 montre le montage expérimental sur lequel on réalise plusieurs expériences.</p>
+<!-- CROP: 4763 2 11 0.087 0.414 0.451 0.601 4763_p2_11_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_11_document1.png" alt=""></figure>
+<!-- CROP: 4763 2 11 0.451 0.409 0.912 0.601 4763_p2_11_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_11_document2.png" alt=""></figure>
+<p class="subhead t-navy"><i><u>1<sup>ère</sup> série d'expériences</u></i></p>
+<p class="para">On stimule en S<sub>1</sub> puis en S<sub>2</sub>, on obtient les résultats du document 2.</p>
+<ol class="qn">
+<li>Les stimulations en S<sub>1</sub> puis en S<sub>2</sub> sont-elles efficaces ? Justifiez votre réponse.</li>
+<li>Analysez ces tracés. Que peut-on déduire ?</li>
+<li>Interprétez les phénomènes électriques postsynaptiques obtenus.</li>
+</ol>
+<p class="subhead t-navy"><i><u>2<sup>ème</sup> série d'expériences</u></i></p>
+<p class="para">A l'aide de micropipettes, on dépose de fortes doses de substances variées au niveau des fentes synaptiques F<sub>1</sub> ou F<sub>2</sub>. On enregistre la réponse obtenue en O<sub>1</sub>. Puis immédiatement on pratique des stimulations efficaces en S<sub>1</sub> et en S<sub>2</sub> et on enregistre la nouvelle réponse. Les réponses quand elles ont lieu sont comparables à celles obtenues dans la première série d'expériences. Les résultats sont récapitulés dans le tableau suivant.</p>
+<table>
+<tr><th rowspan="2">Substance déposée</th><th colspan="2">Avant stimulation</th><th colspan="2">Après stimulation</th></tr>
+<tr><th>Fente synaptique</th><th>Réponse en O<sub>1</sub></th><th>Stimulation</th><th>Réponse en O<sub>1</sub></th></tr>
+<tr><td rowspan="2"><b>X</b></td><td>F<sub>1</sub></td><td>Pas de réponse</td><td>S<sub>1</sub></td><td>Réponse</td></tr>
+<tr><td>F<sub>2</sub></td><td>Pas de réponse</td><td>S<sub>2</sub></td><td>Pas de réponse</td></tr>
+<tr><td rowspan="2"><b>Y</b></td><td>F<sub>1</sub></td><td>Pas de réponse</td><td>S<sub>1</sub></td><td>Pas de réponse</td></tr>
+<tr><td>F<sub>2</sub></td><td>Pas de réponse</td><td>S<sub>2</sub></td><td>Réponse</td></tr>
+</table>
+<p class="consigne"><b>1)</b> Quelles conclusions pouvez-vous dégager à partir de l'exploitation des résultats avant et après stimulations.<br>
+<b>2)</b> Formulez des hypothèses concernant l'action des substances X et Y.</p>
+<!-- page 12 -->
+<p class="subhead t-navy"><i><u>3<sup>ème</sup> série d'expériences</u></i></p>
+<p class="consigne">On porte des stimulations simultanées ou successives en S<sub>1</sub> et en S<sub>2</sub>. Le protocole expérimental ainsi que les résultats figurent dans le document 3. Exploitez ces tracés et dégagez pour chaque expérience le rôle du neurone M.</p>
+<!-- CROP: 4763 2 12 0.080 0.090 0.920 0.344 4763_p2_12_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_12_document3.png" alt=""></figure>
+<div class="exsub"><u>Exercice N° 14</u></div>
+<!-- NOTE: handwritten circles around answer letters and handwritten notes on this QCM (p12–p13) left out -->
+<p class="consigne">Chaque série d'affirmations peut comporter une ou plusieurs réponses exactes. Repérez les affirmations correctes :</p>
+<p class="subhead t-navy"><i>1) <u>Au niveau d'une synapse</u></i> :</p>
+<p class="para">a) la transmission du message nerveux est assurée dans un sens précis grâce à un neurotransmetteur stocké dans la terminaison axonique post-synaptique,<br>
+b) la libération de ce neurotransmetteur obéit à la loi du tout ou rien,<br>
+c) le neurotransmetteur est rapidement inactivé dans la fente synaptique,<br>
+d) le neurotransmetteur se fixe sur des récepteurs membranaires post-synaptiques,<br>
+e) le neurotransmetteur est libéré par une dendrite,<br>
+f) la fixation du neurotransmetteur sur les récepteurs membranaires post-synaptiques modifie le potentiel de membrane.</p>
+<p class="subhead t-navy"><i>2) <u>Un neurone</u></i> :</p>
+<p class="para">a) reçoit généralement, à un instant donné, des informations provenant de plusieurs neurones,<br>
+b) réalise un grand nombre de contacts synaptiques, tous de type excitateur ou tous de type inhibiteur suivant le neurone considéré,<br>
+c) émet des potentiels d'action conduits par son axone dès que des potentiels post-synaptiques excitateurs apparaissent au niveau du corps cellulaire,<br>
+d) intègre les potentiels post-synaptiques excitateurs et inhibiteurs,<br>
+e) libère par ses terminaisons le même neurotransmetteur.</p>
+<p class="subhead t-navy"><i>3) <u>Dans une synapse</u></i> :</p>
+<p class="para">a) la circulation du message nerveux est unidirectionnelle,<br>
+b) le neurotransmetteur diffuse à partir d'une terminaison axonique,<br>
+c) la fixation du neuromédiateur ouvre des canaux voltage-dépendants,<br>
+d) l'ouverture des canaux chimio-dépendants précède celle des canaux Ca<sup>++</sup> voltage-dépendants.</p>
+<p class="subhead t-navy"><i>4) <u>Une synapse neuro-neuronique</u></i> :</p>
+<p class="para">a) est une jonction entre deux dendrites,<br>
+b) est une jonction entre une dendrite et un axone,<br>
+c) est activée suite à l'arrivée d'un PA dans l'élément pré synaptique,<br>
+d) est excitatrice ou inhibitrice selon la nature du neuromédiateur.</p>
+<p class="subhead t-navy"><i>5) <u>Le potentiel post-synaptique (PPS)</u></i> :</p>
+<p class="para">a) est codé en modulation de fréquence<br>
+b) résulte de l'action d'un neurotransmetteur<br>
+c) est propageable sur une longue distance en conservant la même amplitude<br>
+d) fait intervenir des canaux chimio-dépendants</p>
+<p class="subhead t-navy"><i>7) <u>Un axone</u></i> :</p>
+<p class="para">a) est toujours myélinisé,<br>
+b) possède des canaux voltage-dépendant à Ca<sup>++</sup>,<br>
+c) peut constituer un élément post-synaptique,<br>
+d) conduit l'influx nerveux grâce à un neuromédiateur.</p>
+<!-- page 13 -->
+<p class="subhead t-navy"><i>8) <u>On stimule l'axone du neurone A (figure 1 ci-contre). Au niveau des synapses, on enregistre les potentiels membranaires des neurones B et D et on obtient les enregistrements suivants. Dans ce cas</u></i> :</p>
+<!-- CROP: 4763 2 13 0.531 0.078 0.903 0.244 4763_p2_13_figure1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_13_figure1.png" alt=""></figure>
+<p class="para">a) la synapse A-C est inhibitrice<br>
+b) l'augmentation de la fréquence de stimulation en A peut entraîner l'apparition d'un potentiel d'action en D<br>
+c) l'augmentation de la fréquence de stimulation en A peut entraîner l'apparition d'un potentiel d'action en b<br>
+d) le tracé obtenu en B est un PPS résultant d'une sommation spatiale.</p>
+<p class="subhead t-navy"><i>9) <u>L'intégration postsynaptique</u></i> :</p>
+<p class="para">a) s'effectue en tous points du neurone postsynaptique<br>
+b) implique une sommation spatiale ou/et temporelle<br>
+c) entraîne l'émission d'un ou plusieurs potentiels d'action postsynaptiques si le seuil de potentiel est atteint.<br>
+d) n'a lieu que lorsque des synapses inhibitrices sont mises en jeu</p>
+<div class="exsub"><u>Exercice N° 15</u></div>
+<p class="para">Chez l'Homme, la percussion du tendon du muscle antérieur de la cuisse au dessous de la rotule entraîne toujours l'extension de la jambe (document 1)</p>
+<!-- CROP: 4763 2 13 0.531 0.328 0.916 0.563 4763_p2_13_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_13_document1.png" alt=""></figure>
+<p class="consigne"><b>1)</b> Identifiez cette réaction<br>
+<b>2)</b> Préciser les caractéristiques de ce type de réaction.</p>
+<p class="para"><b>3)</b> Les expériences suivantes permettent de comprendre comment se comportent les muscles antagonistes M<sub>1</sub> et M<sub>2</sub>.</p>
+<p class="para">La stimulation des fibres nerveuses issues du muscle M<sub>1</sub> (stimulation S<sub>1</sub>, document (2a)) entraîne l'activité d'un motoneurone M innervant ce muscle. L'enregistrement de cette activité figure sur le document (2 b<sub>1</sub>).</p>
+<p class="para">La stimulation des fibres nerveuses issues du muscle M<sub>2</sub> (stimulation S<sub>2</sub>, document (2a)) entraîne un changement de l'état électrique de ce même motoneurone, visualisé sur le document (2 b<sub>2</sub>)</p>
+<p class="consigne">Par une étude méthodique, précisez quel(s) renseignement(s) apporte cette série d'expériences.</p>
+<p class="consigne"><b>4)</b> Indiquez, enfin, sur un schéma légendé, les éléments et les voies nerveuses qui interviennent dans cette réaction d'extension de la jambe suite à la percussion du tendon du muscle M<sub>1</sub>.</p>
+<!-- CROP: 4763 2 13 0.115 0.597 0.372 0.772 4763_p2_13_document2a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_13_document2a.png" alt=""></figure>
+<!-- CROP: 4763 2 13 0.372 0.597 0.889 0.775 4763_p2_13_document2b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_13_document2b.png" alt=""></figure>
+<div class="exsub"><u>Exercice N° 16</u></div>
+<p class="para">On se propose d'étudier quelques propriétés du réflexe myotatique. Pour ce faire, on a réalisé la série d'expériences suivante :</p>
+<p class="subhead t-navy"><u>Première expérience</u></p>
+<p class="para">On utilise la préparation représentée par le document 1 qui comporte :</p>
+<ul class="b">
+<li>un muscle M dont un des tendons a été disséqué et relié à un dispositif d'étirement</li>
+</ul>
+<!-- page 14 -->
+<ul class="b">
+<li>le nerf mixte qui relie ce muscle à la moelle épinière</li>
+<li>un dispositif d'enregistrement (composé d'une micro électrode insérée dans le nerf, d'une electrode de référence et d'un oscilloscope cathodique)</li>
+</ul>
+<!-- NOTE: handwritten marks on this page (e.g. "PA" in the margin, a line drawn through question 3°) b)) left out; the printed text is kept -->
+<p class="consigne"><b>1°)</b> Précisez la nature des fibres nerveuses composant ce type de nerf</p>
+<p class="para"><b>2°)</b> On étire le muscle M de façon modérée et on enregistre dans une fibre sensorielle contenue dans le nerf les décharges provoquées par des étirements de plus en plus importants (figure du document 2).</p>
+<p class="consigne"><b>a)</b> Précisez la nature de la fibre sensorielle ou est réalisé l'enregistrement.<br>
+<b>b)</b> Quel est le récepteur sensoriel qui est à l'origine des influx enregistrés ?<br>
+<b>c)</b> Analysez les trois enregistrements obtenus.</p>
+<p class="para"><b>3°)</b> La figure du document 3 représente l'enregistrement sur cette même préparation :</p>
+<ul class="dash">
+<li>de l'étirement du muscle concerné,</li>
+<li>de la décharge de la fibre sensorielle concernée.</li>
+</ul>
+<p class="consigne"><b>a)</b> Analysez les modifications de la décharge en fonction de l'état du muscle.<br>
+<b>b)</b> Interprétez le rôle physiologique de la décharge produite à l'état initial.</p>
+<!-- CROP: 4763 2 14 0.081 0.241 0.478 0.591 4763_p2_14_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_14_document1.png" alt=""></figure>
+<!-- CROP: 4763 2 14 0.478 0.247 0.910 0.447 4763_p2_14_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_14_document2.png" alt=""></figure>
+<!-- CROP: 4763 2 14 0.478 0.447 0.894 0.594 4763_p2_14_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_14_document3.png" alt=""></figure>
+<p class="subhead t-navy"><b><u>Deuxième expérience</u> :</b></p>
+<p class="para">Lorsqu'on soumet ce muscle à un bref étirement on constate que ce dernier se contracte de façon automatique.</p>
+<p class="para">Deux microélectrodes (R1 et R2) sont placées respectivement (en A et en B) à l'intérieur des racines dorsale et ventrale. Elles sont destinées à l'enregistrement des potentiels d'action provoqués par cet étirement (dans une fibre de la racine dorsale et dans une fibre de la racine ventrale).</p>
+<p class="para">Le document 4 représente le dispositif expérimental utilisé.<br>
+Le document 5 représente les enregistrements obtenus (les flèches indiquent l'instant où l'étirement a été réalisé).</p>
+<p class="consigne"><b>1)</b> Décrire les phases d'un potentiel d'action en vous basant sur les enregistrements du document 5.<br>
+<b>2)</b> Sachant que le délai synaptique est de 0,5 ms , proposez une interprétation concernant la différence de latence entre les enregistrements PA et PB .<br>
+<b>3)</b> Représentez par un schéma le circuit nerveux expliquant la réponse du muscle à l'étirement.</p>
+<p class="subhead t-navy"><b><u>Troisième expérience</u> :</b></p>
+<p class="para">On se propose de comparer l'activité de deux muscles antagonistes chez l'homme :</p>
+<ul class="dash">
+<li>le biceps, fléchisseur de l'articulation du coude</li>
+<li>le triceps, extenseur de l'articulation du coude (document 6).</li>
+</ul>
+<p class="para">On place un poids important au niveau de l'avant bras. Ceci provoque l'étirement du biceps.</p>
+<p class="consigne"><b>1)</b> Indiquez et expliquez l'effet de cette stimulation sur l'activité des deux muscles<br>
+<b>2)</b> En partant de la représentation des deux muscles indiqués par le document 17, établir un schéma de synthèse fonctionnel et commenté, des circuits nerveux mis en jeu depuis l'étirement du biceps jusqu'à la réponse de ce muscle et celle du muscle antagoniste</p>
+<!-- page 15 -->
+<!-- CROP: 4763 2 15 0.093 0.055 0.496 0.400 4763_p2_15_document4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_15_document4.png" alt=""></figure>
+<!-- CROP: 4763 2 15 0.496 0.055 0.903 0.400 4763_p2_15_document5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_15_document5.png" alt=""></figure>
+<!-- CROP: 4763 2 15 0.093 0.403 0.912 0.644 4763_p2_15_document6 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_15_document6.png" alt=""></figure>
+<div class="exsub"><u>Exercice N° 17</u></div>
+<!-- NOTE: handwritten circles around answer letters and handwritten corrections/notes on this QCM (p15–p16) left out -->
+<p class="consigne">Chaque série d'affirmations peut comporter une ou plusieurs réponses exactes. Repérez les affirmations correctes.</p>
+<p class="subhead t-navy"><i>1- <u>Un réflexe myotatique</u></i> :</p>
+<p class="para">a) correspond à une contraction musculaire indépendante des centres nerveux<br>
+b) est la contraction d'un muscle en réponse à son propre étirement<br>
+c) est un réflexe conditionnel<br>
+d) a ses récepteurs dans la peau<br>
+e) est un réflexe proprioceptif<br>
+f) est un réflexe médullaire<br>
+g) est un réflexe polysynaptique<br>
+h) intervient dans le maintien de la posture</p>
+<p class="subhead t-navy"><i>2- <u>La racine postérieure médullaire</u></i> :</p>
+<p class="para">a) est une racine mixte<br>
+b) conduit l'influx nerveux moteur<br>
+c) contient uniquement des fibres qui conduisent des influx centripètes<br>
+d) contient les corps cellulaires des neurones sensitifs</p>
+<p class="subhead t-navy"><i>3- <u>Les neurones constituant l'arc réflexe myotatique</u></i> :</p>
+<p class="para">a) comportent un neurone sensitif, un neurone moteur et un ou plusieurs interneurones<br>
+b) sont les neurones sensitifs des racines dorsales des nerfs rachidiens<br>
+c) sont connectés au niveau de la substance grise de la moelle épinière<br>
+d) communiquent entre eux grâce à des synapses qui permettent aux neurones moteurs de transmettre des informations aux neurones sensitifs.</p>
+<!-- page 16 -->
+<!-- NOTE: this page is a handwritten correction (notebook page); transcribed as best reading -->
+<p class="subhead t-red"><u>Série n° 8</u></p>
+<p class="subhead t-navy"><span class="t-red"><u>Exercice n°1 :</u></span></p>
+<p class="para">1) Le potentiel de repos est le ddp qui existe de part et d'autre de la membrane du neurone, de valeur -70mV</p>
+<p class="para">2)</p>
+<!-- CROP: 4763 2 16 0.128 0.262 0.447 0.403 4763_p2_16_ex1_tableau -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_16_ex1_tableau.png" alt=""></figure>
+<p class="para"><span class="t-red">→ : Transport actif</span><br>
+<span class="t-green">→ : Transport passif (diffusion)</span><br>
+<span class="t-blue">→ : forces électrostatiques</span></p>
+<p class="para">3) Le PR se maintien à une valeur constante (-70mV) lorsque la résultante de ces forces est nulle pour chaque ion.</p>
+<p class="para">4) <u>Pompe Na<sup>+</sup>/K<sup>+</sup></u> : a . c . e . f.<br>
+<u>C.F</u> : d</p>
+<!-- page 17 -->
+<div class="exsub"><u>Exercice 3</u></div>
+<p class="subhead t-red"><b>I-</b></p>
+<p class="subhead t-navy"><b><i><u>Expérience 1</u></i></b></p>
+<ul class="b">
+<li><i><u>Document 1</u> :</i> Le MEC est très riche en Na<sup>+</sup>, le MIC est très riche en K<sup>+</sup></li>
+</ul>
+<p class="subhead t-navy"><b><i><u>Expérience 2</u></i></b></p>
+<ul class="b">
+<li>Le Na<sup>+</sup> entre dans l'axone par diffusion (suivant le gradient de concentration)</li>
+<li><i><u>Document 2</u> :</i></li>
+</ul>
+<p class="para">- <u>De t = 0 à t = 100 minutes</u> : Un flux sortant de Na<sup>+</sup>contre le gradient de concentration. Ce flux diminue légèrement au cours du temps (de 50 coups par minute à 40 coups par minute)</p>
+<p class="para"><i><u>Conclusion 1</u> :</i> La membrane est perméable au Na<sup>+</sup> dans les deux sens.</p>
+<p class="para">- <u>De t = 100 à t = 200 minutes</u> : En présence de DNP, la sortie de Na<sup>+</sup> est fortement diminuée (elle passe à moins de 2 coups par minute)<br>
+- <u>A partir de t = 200 minutes</u> : Le retrait de DNP relance de nouveau la sortie de Na<sup>+</sup></p>
+<p class="subhead t-navy"><b><i><u>Expérience 3</u></i></b></p>
+<ul class="b">
+<li><i><u>Document 3</u> :</i></li>
+</ul>
+<p class="para">- <u>A t = 1 heure</u> : L'addition de DNP diminue fortement la sortie de Na<sup>+</sup> contre le gradient de concentration.<br>
+- <u>A t = 3 heures</u> : L'addition de l'AMP n'augmente pas cette sortie de Na<sup>+</sup><br>
+- <u>A t = 4 heures</u> : La sortie de Na<sup>+</sup> reprend si on fournit à l'axone de l'ATP (source d'énergie)</p>
+<p class="para"><i><u>Conclusion 2</u> :</i></p>
+<ul class="b">
+<li>La sortie de Na<sup>+</sup> contre le gradient de concentration ne peut se faire qu'en présence d'ATP, il s'agit donc d'un <u>transport actif</u>.</li>
+<li>Il semble que le DNP freine l'activité des mitochondries dont le rôle est la production d'ATP, source immédiate d'énergie utilisée par la cellule nerveuse.</li>
+</ul>
+<p class="subhead t-navy"><b><i><u>Expérience 4</u></i></b></p>
+<ul class="b">
+<li><i><u>Document 4</u> :</i> La sortie active de Na<sup>+</sup> est fortement diminuée en absence de K<sup>+</sup> dans le LEC (de t = 100 à t = 150 min). Cette sortie reprend en replaçant l'axone dans un milieu contenant le K<sup>+</sup>.</li>
+</ul>
+<p class="para"><i><u>Conclusion 3</u> :</i> La sortie active de Na<sup>+</sup> nécessite la présence de K<sup>+</sup> dans le LEC : elle semble être couplée à une entrée active de K<sup>+</sup>.</p>
+<p class="para"><i><u>Conclusion générale</u> :</i> La cellule nerveuse maintient de part et d'autre de sa membrane plasmique une différence de concentration ionique et, par suite, une ddp (PR) grâce à des transporteurs membranaires nécessitant un apport d'énergie et permettant la sortie de Na<sup>+</sup> et l'entrée de K<sup>+</sup>, c'est la pompe <u>Na<sup>+</sup>/K<sup>+</sup></u>.</p>
+<p class="subhead t-red"><b>II-</b></p>
+<ul class="b">
+<li><i><u>Document 5</u> :</i> Le PA s'explique par l'ouverture successive de canaux (dits voltage dépendant) à Na<sup>+</sup> puis à K<sup>+</sup></li>
+</ul>
+<ul class="dash">
+<li>L'ouverture brève de CVD à Na<sup>+</sup> permet l'entrée massive de cet ion ce qui explique la phase de dépolarisation.</li>
+<li>L'ouverture prolongée de CVD à K<sup>+</sup> permet la sortie de cet ion ce qui explique les phases de repolarisation et d'hyperpolarisation.</li>
+</ul>
+<p class="para">Ceci est confirmé par résultats des expériences A, B et C du <i><u>document 6</u></i>. En effet :</p>
+<p class="para">✓ <u>L'expérience C</u> montre que la fermeture des canaux à K<sup>+</sup> par le TEA ne modifie pas la dépolarisation mais ralentit considérablement la repolarisation et annule l'hyperpolarisation. Ces deux derniers phénomènes dépendent donc des ions K<sup>+</sup> contrairement à la dépolarisation.<br>
+✓ <u>L'expérience B</u> montre que le blocage de la fermeture des canaux à Na<sup>+</sup> modifie très peu le PA : seule la repolarisation est ralentie.</p>
+<p class="para"><i><u>Conclusion</u> :</i> Si un stimulus ramène le potentiel de la membrane jusqu'au seuil (- 50 mv), il se produit une ouverture brève de CVD à Na<sup>+</sup> à l'origine d'une entrée massive de Na<sup>+</sup> qui provoque une dépolarisation importante, c'est le <u>PA</u>.</p>
+<p class="para">L'inversion de la polarité de la membrane provoque l'ouverture plus prolongée de CVD à K<sup>+</sup> à l'origine des phases de repolarisation et d'hyperpolarisation.</p>
+<!-- page 18 -->
+<div class="exsub"><u>Exercice 4</u></div>
+<p class="subhead t-red"><b>I-</b></p>
+<p class="subhead t-navy"><b><i><u>Expérience 1</u></i></b></p>
+<p class="para"><b>1) a)</b></p>
+<ul class="b">
+<li>De t<sub>0</sub> à t<sub>1</sub>, les deux électrodes R<sub>1</sub> et R<sub>2</sub> étant à la surfece de l'axone, on enregistre une ddp nulle (partie (a) du tracé) ⟹ les points de la surface de la fibre sont isopotentiels. <!-- PROOFREAD: 4763 part2 p18 — "de" partly blotted --></li>
+<li>Au temps t<sub>1</sub>, quand R<sub>1</sub> est introduite dans l'axone, on enregistre une ddp = - 70 mv<br>
+Au repos, la fibre nerveuse présente une ddp transmembranaire, c'est le PR indiquant que le MIC est plus électronégatif que le MEC. La membrane est polarisée, elle est chargée positivement à la surface, négativement de l'intérieur.<br>
+<u>A t<sub>1</sub></u>:</li>
+</ul>
+<!-- CROP: 4763 2 18 0.222 0.185 0.560 0.220 4763_p2_18_ex4_mb_polarisee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_18_ex4_mb_polarisee.png" alt=""></figure>
+<ul class="b">
+<li><u>b, c, d, e et f sont des dépolarisations</u></li>
+</ul>
+<ul class="dash">
+<li>b et c sont des potentiels locaux car se sont des dépolarisations de faible amplitude qui n'ont pas aboutit à l'inversion de la polarisation de repos (le MIC est toujours plus électronégatif que le MEC)</li>
+<li>d, e et f sont des PA car se sont des dépolarisations de forte amplitude (100 mv) aboutissant à l'inversion de la polarisation membranaire de repos (le MIC est électropositif, le MEC est électronégatif)</li>
+</ul>
+<p class="para"><b>b)</b></p>
+<ul class="b">
+<li>Les stimulations S<sub>1</sub> et S<sub>2</sub> de plus faible intensité ont engendré chacune un potentiel local (PL) sans déclencher un PA. L'amplitude du PL est plus importante pour S<sub>2</sub> (15 mv) que pour S<sub>1</sub> (13 mv)<br>
+⟹ { - la production d'un PL ne nécessite pas une intensité seuil<br>
+- le PL est graduable, il n'obéit pas à la loi du tout ou rien</li>
+<li>La stimulation S<sub>3</sub> d'intensité supérieure à celle de S<sub>2</sub> a engendré un PL de plus grande amplitude suivi immédiatement d'un PA<br>
+⟹ { - la naissance d'un PA exige que le PL atteigne le seuil de – 50 mv appelé seuil de potentiel ou seuil de déclenchement d'un PA<br>
+- la naissance d'un PA nécessite une intensité seuil de stimulation.</li>
+<li>Les stimulations S<sub>4</sub> et S<sub>5</sub> d'i ntensité supérieure à celle de S<sub>3</sub> ont engendré chacune un PL suivi d'un PA qui a la même amplitude malgré l'augmentation de l'amplitude de stimulation.<br>
+⟹ - le PA est non graduable, il obéit à la loi du tout ou rien</li>
+</ul>
+<p class="para"><b>c)</b></p>
+<ul class="b">
+<li>Le PL ne s'enregistre que près de son lieu de naissance (près des électrodes stimulatrices), il n'est pas donc propageable, son amplitude s'amortie en s'éloignant.</li>
+<li>Le PA est propageable sans amortissement (sans perte d'amplitude) puisqu'il s'enregistre identique à lui-même en tout point éloigné des électrodes stimulatrices.</li>
+</ul>
+<p class="para"><b>d)</b><br>
+Si on avait réduit au minimum la vitesse de balayage, les PA (d, e et f) se présenteraient sous forme de bâtonnets d'amplitude 100 mv.</p>
+<p class="para"><b>2)</b></p>
+<!-- CROP: 4763 2 18 0.335 0.692 0.674 0.880 4763_p2_18_ex4_pa -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_18_ex4_pa.png" alt=""></figure>
+<!-- page 19 -->
+<p class="para">✓ <u>A</u> : PR = - 70 mv<br>
+La membrane est chargée positivement de l'extérieur, négativement de l'intérieur.<br>
+✓ <u>AB</u> : PL (prépotentiel) qui atteint le seuil de potentiel (- 50 mv)<br>
+✓ <b><u>BCD</u></b> : phase de dépolarisation au cours de laquelle la négativeté interne diminue, s'annule (en C) puis s'inverse en positivité atteignant la valeur de + 30 mv</p>
+<!-- CROP: 4763 2 19 0.305 0.124 0.522 0.150 4763_p2_19_ex4_mb_inversee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p2_19_ex4_mb_inversee.png" alt=""></figure>
+<p class="para">✓ <b><u>DEF</u></b> : phase de repolarisation aucours de laquelle la positivité interne diminue, s'annule (en E) puis s'inverse en négativité qui augmente jusqu'à atteindre le PR (le MIC redevient chargé négativement par rapport au MEC)</p>
+<p class="subhead t-navy"><b><i><u>Expérience 2</u></i></b></p>
+<p class="para">V = Δd/Δt (m/s)</p>
+<p class="para">* <u>V<sub>1</sub> (AB)</u> | Δd<sub>1</sub> = S<sub>2</sub>B – S<sub>2</sub>A = (36 -18) . 10<sup>-3</sup> m = 18 . 10<sup>-3</sup> m<br>
+| Δt<sub>1</sub> = (1 – 0,7) . 10<sup>-3</sup> s = 0,3 . 10<sup>-3</sup> s<br>
+* <u>V<sub>2</sub> (BC)</u> | Δd<sub>2</sub> = S<sub>2</sub>C – S<sub>2</sub>B = (54 - 36) . 10<sup>-3</sup> m = 18 . 10<sup>-3</sup> m<br>
+| Δt<sub>2</sub> = (1,3 – 1) . 10<sup>-3</sup> s = 0,3 . 10<sup>-3</sup> s<br>
+V<sub>1</sub> = V<sub>2</sub> = 18 . 10<sup>-3</sup> / 0,3 . 10<sup>-3</sup> = 60 m/s<br>
+⟹ La vitesse de propagation du PA est constante tout le long de la fibre.</p>
+<p class="subhead t-red"><b>II- 1)</b></p>
+<p class="para">⊠ <b><i><u>Analyse</u></i></b></p>
+<p class="para">✓ <i><u>Avant la stimulation</u></i><br>
+Concentration intracellulaire en Na<sup>+</sup> : 2 unités arbitraires (U.A)<br>
+Concentration intracellulaire en K<sup>+</sup> : 8 U.A<br>
+⟹ Le MIC est plus concentré en K<sup>+</sup> qu'en Na<sup>+</sup><br>
+✓ <i><u>Après la stimulation</u></i></p>
+<ul class="b">
+<li><u>De 0 à 0,4 ms</u>, il y a :
+<ul class="dash"><li>augmentation de la concentration du MIC en Na<sup>+</sup> qui passe de 2 à 6,5 U.A</li>
+<li>la concentration du MIC en K<sup>+</sup> reste à peu près constante</li></ul></li>
+<li><u>De 0,4 à 1 ms</u>, il y a :
+<ul class="dash"><li>diminution de la concentration du MIC en Na<sup>+</sup> (de 6,5 à 2 U.A)</li>
+<li>diminution de la concentration du MIC en K<sup>+</sup> (de 8 à 6 U.A)</li></ul></li>
+<li><u>De 1 à 1,2 ms</u>, il y a :
+<ul class="dash"><li>retour de la concentration du MIC en Na<sup>+</sup> à la valeur initiale (2 U.A)</li>
+<li>augmentation de la concentration du MIC en K<sup>+</sup> (retour à la valeur initiale de 8 U.A)</li></ul></li>
+</ul>
+<p class="para">⊠ <b><i><u>Conclusion</u></i></b><br>
+La stimulation a provoqué une modification de la perméablilité membranaire aux ions Na<sup>+</sup> et K<sup>+</sup>, il y a entrée massive et rapide de Na<sup>+</sup> qui est suivie d'une sortie plus lente de K<sup>+</sup>.</p>
+<p class="para"><b>2) a)</b></p>
+<p class="para">⊠ <b><i><u>Au cours de la phase de dépolarisation (phase 1)</u></i></b></p>
+<ul class="dash">
+<li>les canaux de type 1 s'ouvrent à partir de – 50 mv avec un maximum (38) à + 30 mv</li>
+<li>les canaux de type 2 sont fermés</li>
+</ul>
+<p class="para">⊠ <b><i><u>Au cours de la phase de repolarisation (phase 2)</u></i></b></p>
+<ul class="dash">
+<li>les canaux 1 se ferment progressivement</li>
+<li>les canaux 2 s'ouvrent à partir de + 30 mv avec un maximum (20) à – 50 mv</li>
+</ul>
+<p class="para">⊠ <b><i><u>Au cours de la phase d'hyperpolarisation (phase 3)</u></i></b></p>
+<ul class="dash">
+<li>les canaux 1 sont fermés</li>
+<li>les quelques canaux 2 encore ouverts se ferment progressivement</li>
+</ul>
+<p class="para"><b>b)</b> Suite à la stimulation efficace, les canaux de type 1 s'ouvrent les 1<sup>er</sup> à partir de – 50 mv puis les canaux de type 2 à partir de + 30 mv, il s'agit de canaux dont le fonctionnement dépend de la valeur de la ddp transmembranaire, il sont dits canaux voltage-dépendant (CVD)<br>
+Les canaux de type 1 sont responsables de l'entrée de Na<sup>+</sup>, se sont des CVD à Na<sup>+</sup><br>
+Les canaux de type 2 font sortir K<sup>+</sup>, ce sont des CVD à K<sup>+</sup></p>
+<p class="para"><b>3)</b> Le PA est une inversion brutale et momentanée de la polarisation membranaire de repos qui est due à un changement de sa perméabilité aux ions Na<sup>+</sup> et K<sup>+</sup> et qui est lié à l'ouverture séquentielle de CVD à Na<sup>+</sup> puis de CVD à K<sup>+</sup>.</p>
+<!-- page 20 -->
+<div class="exsub"><u>Exercice 5</u></div>
+<p class="subhead t-navy"><b>1) <i><u>Expérience 1</u></i></b></p>
+<p class="para">* <i><u>Analyse</u></i></p>
+<!-- PROOFREAD: 4763 part2 p20 — the symbol before "2 PA / s", "16 PA / s", "24 PA / s" is printed as a box-like glyph "⊔" (probably a missing "≈") -->
+<p class="para">- Pour la pression P<sub>1</sub> = 0,2 g, on n'enregistre aucun PA dans la fibre.<br>
+- Pour P<sub>2</sub> = 0,6 g, on enregistre un message nerveux sous forme d'un train de PA de même amplitude et de faible fréquence (⊔ 2 PA / s)<br>
+- Pour P<sub>3</sub> = 4 g, on enregistre un message nerveux sous forme d'un train de PA de même amplitude et de fréquence plus élevée (⊔ 16 PA / s)<br>
+- Pour P<sub>4</sub> = 13 g, on enregistre un message nerveux sous forme d'un train de PA de très haute fréquence (⊔ 24 PA / s)</p>
+<p class="para">* <i><u>Déduction</u></i></p>
+<p class="para">✓ Le récepteur ne peut émettre un message nerveux vers les centres nerveux qu'à partir d'une intensité seuil de stimulation.<br>
+0,2g ≺ <i>Iseuil</i> ≺ 0,6g<br>
+I seuil = intensité minimale de stimulation pouvant engendrer un PA.<br>
+P<sub>1</sub> : intensité infraliminaire.<br>
+P<sub>2</sub> : liminaire ou légèrement supraliminaire.<br>
+P<sub>3</sub> et P<sub>4</sub> : intensités supraliminaires.<br>
+✓ Le message nerveux est codé en modulation de fréquence des PA.</p>
+<p class="subhead t-navy"><b>2) <i><u>Expérience 2</u></i></b></p>
+<p class="para">* <i><u>Analyse</u></i></p>
+<p class="para">- Pour la pression P<sub>1</sub> = 0,2 g, on enregistre en R<sub>1</sub> une dépolarisation (potentiel de récepteur) de faible amplitude qui atteint le 1<sup>er</sup> nœud de Ranvier avec une amplitude plus faible.<br>
+- Pour P<sub>2</sub> = 0,6 g, le potentiel de récepteur provoqué par la stimulation est plus ample en R<sub>1</sub>, il atteint le seuil de potentiel en R<sub>2</sub> et déclenche un PA d'amplitude = 100 mv.<br>
+- Pour P<sub>3</sub> et P<sub>4</sub> ≻ P<sub>2</sub> , on enregistre en R<sub>1</sub> un potentiel de récepteur de plus en plus ample qui atteint le seuil de potentiel en R<sub>2</sub> et déclenche un PA d'amplitude 100 mv.</p>
+<p class="para">* <i><u>Déduction</u></i></p>
+<p class="para">✓ Le potentiel de récepteur est un potentiel local :</p>
+<ul class="dash">
+<li>il ne nécessite pas une intensité seuil pour se produire</li>
+<li>s'amortie en s'éloignant de son lieu de naissance (corpuscule)</li>
+<li>graduable : son amplitude dépende de l'intensité de la stimulation</li>
+</ul>
+<p class="para">✓ Un PA ne peut prendre naissance au niveau du 1<sup>er</sup> nœud de Ranvier que pour une intensité seuil (ou ≻ seuil) pour laquelle le potentiel de récepteur atteint le seuil de – 50 mv<br>
+✓ L'extrémité de la fibre est un <u>site transducteur</u> c.a.d site de conversion de l'énergie du stimulus en un signal électrique (le potentiel de récepteur)<br>
+✓ Le 1<sup>er</sup> nœud de Ranvier où est né le message nerveux est un site générateur.<br>
+✓ Le PA obéit à la loi du tout ou rien, il a la même amplitude malgré l'augmentation de l'intensité du stimulus.</p>
+<p class="para"><b>3)</b> * Une stimulation mécanique de faible intensité déclenche un potentiel de récepteur de faible amplitude à l'extrémité de la fibre.</p>
+<p class="para">* Les stimulations d'intensités croissantes produisent des potentiels de récepteur de plus en plus amples. Quand le potentiel de récepteur atteint le seuil de potentiel au niveau du 1<sup>er</sup> nœud de Ranvier, il y a ouverture des CVD à Na<sup>+</sup> et entrée massive de cet ion, un PA prend naissance.</p>
+<p class="para">* A partir de l'intensité seuil, quand on augmente l'intensité de stimulation, la fréquence des PA nés au niveau du 1<sup>er</sup> nœud de Ranvier est d'autant plus importante que le potentiel de récepteur est ample. Un train de PA de même amplitude caractérisé par sa fréquence se propage vers les centres nerveux les renseignant sur l'intensité du stimulus appliqué sur le récepteur.</p>
+<p class="para"><b>4)</b> <b><i><u>Mécanisme de la conduction saltatoire du PA le long de la fibre myélinisée afférente du corpuscule de Pacini</u></i></b></p>
+<p class="para"><b><u>Schéma + commentaire</u></b></p>
+<p class="para">* L'arrivée d'un PA en une zone de la fibre nerveuse crée entre cette zone et la zone voisine des <u>courants électriques locaux</u> (attraction des charges positives par les charges négatives), ce qui entraîne une dépolarisation de cette zone.</p>
+<p class="para">* La zone qui vient d'être le siège d'un PA reste inexcitable pendant un certain temps, c'est la <u>période réfractaire</u> expliquée par la fermeture des CVD à Na<sup>+</sup> qui restent inactivables pendant cette période ce qui impose une <u>conduction unidirectionnelle</u> du PA.</p>
+<p class="para">* Dans le cas d'une fibre myélinisée, la gaine de myéline est un isolant électrique, ce qui impose la conduction saltatoire des charges d'un nœud de Ranvier à un autre (seul lieu où sont localisés les CVD).</p>
+
+
+<!-- page 21 -->
+<div class="exsub"><u>Exercice 8</u></div>
+<p class="para">1)</p>
+<p class="subhead t-navy">☒ <u><i>Etapes 1, 2 et 3</i></u></p>
+<p class="para">L'excitation de chacune des terminaisons axoniques A, B et C engendre au niveau de la cellule postsynaptique (M) une dépolarisation (<u>PPSE</u>) qui est inférieure au seuil (- 50 mv) et qui n'est pas enregistrée au niveau de R<sub>2</sub> (loin de son lieu de naissance)</p>
+<p class="para">⟹ {</p>
+<ul class="dash">
+<li>Les synapses A–M, B–M et C–M sont des synapses excitatrices</li>
+<li>Le PPSE est non propageable (potentiel local)</li>
+</ul>
+<p class="subhead t-navy">☒ <u><i>Etape 4</i></u></p>
+<p class="para">L'excitation de la terminaison axonique D engendre au niveau de M une hyperpolarisation (<u>PPSI</u>) qui n'est pas enregistrée au niveau de R<sub>2</sub></p>
+<p class="para">⟹ {</p>
+<ul class="dash">
+<li>La synapses D – M est des inibitrice</li>
+<li>Le PPSI est non propageable (potentiel local)</li>
+</ul>
+<p class="subhead t-navy">☒ <u><i>Etape 5</i></u></p>
+<p class="para">L'excitation 2 fois succesives de A engendre au niveau de M un PPSE global par <u>sommation temporelle</u> des 2 PPSE individuels. Ce PPSE global est inférieur au seuil.</p>
+<p class="subhead t-navy">☒ <u><i>Etape 6</i></u></p>
+<p class="para">La <u>sommation temporelle</u> de 3 PPSE individuels donne un PPSE global ≥ seuil, un PA propageable (enregistré au niveau de R<sub>1</sub> puis de R<sub>2</sub>) prend alors naissance.</p>
+<p class="subhead t-navy">☒ <u><i>Etape 7</i></u></p>
+<p class="para">L'excitation simultanée des 3 terminaisons excitatrices A, B et C engendre au niveau de M un PPSE global ≥ seuil par <u>sommation spatiale</u> de 3 PPSE individuels. Un PA propageable prend alors naissance.</p>
+<p class="subhead t-navy">☒ <u><i>Etape 8</i></u></p>
+<p class="para">L'activation simultanée de 2 synapses excitatrices A–M et B–M et de la synapse inhibitrice D–M engendre au niveau de M un PPSE global ≺ seuil et non propageable par <u>sommation spatiale</u> de 2 PPSE et d'un PPSI.</p>
+<p class="subhead t-navy">☒ <u><i>Conclusion</i></u></p>
+<p class="para">Le neurone postsynaptique M a un rôle intégrateur : au niveau de son cône axonique se fait la sommation (spatiale et/ou temporelle) de tous les PPS résultant de l'activation simultanée et/ou successive de neurones présynaptiques. Un PA postsynaptique apparaît au niveau du motoneurone M si la résultante des PPS atteint le seuil de déclenchement de PA qui est de – 50 mv.</p>
+<!-- page 22 -->
+<div class="exsub"><u>Exercice 9</u></div>
+<p class="para">1) * Suite à l'introduction de l'électrode réceptrice E<sub>1</sub> dans le corps cellulaire, on enregistre une ddp traduisant une différence de polarité entre la surface de la membrane et le MIC. Cette ddp est appelée potentiel de repos qui est égale à – 70 mv.</p>
+<p class="para">* Après une stimulation efficace, un PA apparaît et se propage. Il atteint l'électrode réceptrice E<sub>1</sub> après un temps de latence AB. Il se fait au niveau de cette électrode une dépolarisation (phase BC) au cours de laquelle la négativité interne diminue, s'annule puis s'inverse en positivité.</p>
+<p class="para">Cette phase est suivie d'une repolarisation (phase CD) au cours de laquelle la négativité interne augmente et d'une phase d'hyperpolarisation (phase DE) avant le retour au potentiel de repos initial.</p>
+<!-- CROP: 4763 2 22 0.330 0.240 0.690 0.435 4763_p22_pa -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p22_pa.png" alt=""></figure>
+<p class="para">2) Si K<sup>+</sup> interne est remplacé par Na<sup>+</sup>, l'amplitude du PA diminue.</p>
+<p class="para">A mesure que la concentration interne de Na<sup>+</sup> augmente avant l'excitation, à mesure que le PA diminue d'amplitude. D'autre part, la dépolarisation apparaît de façon plus tardée et plus lente.</p>
+<p class="para">⟹ L'amplitude du PA dépend :</p>
+<ul class="dash">
+<li>de la différence de concentration en Na<sup>+</sup> entre les deux milieux intra et extracellulaires (le MEC doit être plus riche en Na<sup>+</sup>)</li>
+<li>de la différence de concentration en K<sup>+</sup> entre les deux milieux intra et extracellulaires (le MIC doit être plus riche en K<sup>+</sup>)</li>
+<li>du flux entrant de Na<sup>+</sup> qui est en relation avec la différence entre les deux milieux.</li>
+</ul>
+<p class="para">3) a) L'excitation en A du neurone NS a donné un PA propageable. Les terminaisons du neurone NS ont diminué la négativité interne au niveau du neurone NM. Il s'agit d'un effet <u>excitateur</u> et la réponse du NM est un <u>PPSE</u> qui reste inférieur au seuil.</p>
+<p class="para">b) <u><b><i>Schéma illustrant la transmission synaptique avec explication.</i></b></u></p>
+<p class="para"><u><b><i>Hypothèses</i></b></u></p>
+<p class="para">Les stimulations répétées portées sur NS ont donné des PPSE de moins en moins amples.</p>
+<p class="para"><u><i>H<sub>1</sub></i></u> : La quantité de neurotransmetteur au niveau du bouton synaptique diminue.</p>
+<p class="para"><u><i>H<sub>2</sub></i></u> : La quantité des ions Ca<sup>++</sup> au niveau de la fente synaptique diminue.</p>
+<p class="para">c) En augmentant la concentration du Ca<sup>++</sup> dans la fente synaptique, l'amplitude du PPSE obtenu au niveau de NM après stimulation de NS augmente.</p>
+<p class="para">⟹ C'est la diminution de la concentration de Ca<sup>++</sup> de la fente synaptique qui est à l'origine de la baisse de l'amplitude des PPSE ⟹ <u>l'hypothèse H<sub>2</sub> est validée</u>.</p>
+<!-- page 23 -->
+<!-- PROOFREAD: 4763 part2 p23 — subscript "1" after E, E' and S is printed like a comma in this font ("E,,", "S, en E,,"); read as E<sub>1</sub>, E'<sub>1</sub>, S<sub>1</sub> -->
+<div class="exsub"><u><i>Exercice 11</i></u></div>
+<ol class="qn">
+<li>Au niveau de E<sub>1</sub>, on enregistre une diminution de la négativité interne (de – 70 à – 60 mv), il s'agit d'une légère dépolarisation d'amplitude 10 mv qui tend à rapprocher le potentiel de la membrane postsynaptique du seuil et la rendre plus excitable, c'est un PPSE.<br>
+Au niveau de E'<sub>1</sub>, on enregistre une augmentation de la négativité interne (de – 70 à – 75 mv), il s'agit d'une légère hyperpolarisation d'amplitude 5 mv qui tend à éloigner le potentiel de la membrane postsynaptique du seuil et la rendre moins excitable, c'est un PPSI.</li>
+<li>Suite à la stimulation S<sub>1</sub> en E<sub>1</sub>, on a un PPSE d'amplitude 7 mv et un PR en E<sub>3</sub>.<br>
+Suite à la stimulation S<sub>2</sub> en E'<sub>1</sub>, on a un PPSI d'amplitude 2 mv et un PR en E<sub>3</sub>.<br>
+Les PPS en se propageant vers le cône axonique diminuent d'amplitude, ils sont non propageables.</li>
+<li>La sommation spatiale d'un PPSE d'amplitude 7 mv et d'un PPSI d'amplitude 2 mv donne un PPSE global d'amplitude 5 mv qui n'atteint pas le seuil.</li>
+<li>Il s'agit d'une sommation temporelle de trois PPSE d'amplitude 7 mv chacun. On obtient un PPSE global d'amplitude 21 mv qui atteint le seuilet déclenche un PA postsynaptique en E<sub>2</sub>. Le PA étant propageable en gardant la même amplitude, il sera enregistré en E<sub>3</sub>.</li>
+</ol>
+<!-- NOTE: a strip of another sheet lying under this one is visible at the bottom of the photo ("est plus ample que celui enregistré en O1 ⟹ le lieu de genès…", cut off) — not transcribed, not part of this page -->
+<!-- page 24 -->
+<div class="exsub"><u>Exercice 12</u></div>
+<p class="para">1) a) <u><b><i>Application de l'acétylcholine (Ach)</i></b></u></p>
+<p class="para">En O<sub>1</sub> et O<sub>4</sub>, on enregistre une légère dépolarisation (PPSE) ⟹ l'Ach est un neurotransmetteur excitateur.</p>
+<p class="para">En O<sub>2</sub> et O<sub>3</sub>, on enregistre un PR</p>
+<p class="para">⟹ <u><i>Lieu d'action de l'Ach</i></u> : Synapse D – A (entre les neurones D et A). En effet, le PPSE enregistré en O<sub>4</sub> est plus ample que celui enregistré en O<sub>1</sub> ⟹ le lieu de genèse de ce PPSE est la membrane post-synaptique de la synapse D – A. Ce PPSE se propage avec amortissement jusqu'en O<sub>1</sub>. Il s'agit d'un potentiel local.</p>
+<p class="para">La synapse D – A est donc excitatrice.</p>
+<p class="para"><u><b><i>Application du GABA</i></b></u></p>
+<p class="para">En O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub> on enregistre une légère hyperpolarisation (PPSI) et en O<sub>4</sub> on enregistre un PR</p>
+<p class="para">⟹ le GABA est un neurotransmetteur inhibiteur.</p>
+<p class="para">⟹ <u><i>Lieu d'action du GABA</i></u> : Synapse B – A (entre les neurones B et A) et synapse C – D (entre les neurones C et D) qui sont toutes les deux des synapses inhibitrices.</p>
+<p class="para">b) * L'Ach se fixe sur des récepteurs spécifiques se trouvant au niveau de la membrane de A (au dessous de D). Sa fixation provoque l'ouverture de CCD à Na<sup>+</sup> ce qui permet une entrée de cet ion dans A d'où une dépolarisation locale (PPSE)</p>
+<p class="para">* Le GABA se fixe sur des récepteurs spécifiques se trouvant au niveau de la membrane de A (au dessous de B) et de la membrane de D (au dessous de C). Sa fixation provoque l'ouverture d'autres CCD. Il en résulte une sortie de K<sup>+</sup> et une entrée de Cl<sup>-</sup> d'où une hyperpolarisation locale (PPSI)</p>
+<p class="para">2) a) Le PPSE obtenu à la suite de S<sub>C+D</sub> (en O<sub>1</sub> et O<sub>4</sub>) est moins ample que celui obtenu à la suite de S<sub>D</sub> seulement. On peut déduire alors que que le neurone C est un neurone inhibiteur. En effet, la stimulation de C fait augmenter la négativité interne de D et par conséquent, cela freine l'exocytose du neurotransmetteur excitateur à l'extrémité de D à la suite de sa stimulation, d'où la diminution de l'amplitude du PPSE en O<sub>4</sub> et en O<sub>1</sub>.</p>
+<!-- PROOFREAD: 4763 part2 p24 — "Expérience γ" is followed by a small accent-like mark (γ´ ?) -->
+<p class="para">b) <u><b><i>Expérience γ</i></b></u></p>
+<p class="para">A la suite de deux stimulations <u>successives</u> de D (2 PA en O<sub>3</sub>), on enregistre en O<sub>4</sub> 2 PPSE succesifs qui s'additionnent algébriquement et engendrent dans le cône axonique de A un PPSE global d'amplitude suffisante pour déclencher un PA postsynaptique.</p>
+<p class="para">⟹ Il y a dans ce cas <u>sommation temporelle</u> de 2 PPSE.</p>
+<p class="para"><u><b><i>Expérience δ</i></b></u></p>
+<p class="para">A la suite de la stimulation <u>simultanée</u> de B et D (donc activation de 2 synapses inverses en même temps), on enregistre un PPSE en O<sub>4</sub>, un PPSI en O<sub>2</sub> et un PR en O<sub>1</sub>, donc les deux PPS inverses se sont ajoutés, ils sont de même amplitude.</p>
+<p class="para">⟹ Il y a dans ce cas <u>sommation spatiale</u> de 2 PPS (d'un PPSE et d'un PPSI).</p>
+<p class="para"><u><b><i>Conclusion</i></b></u></p>
+<p class="para">Le neurone postsynaptique A joue un rôle intégrateur, il est le siège de sommations spatiales et temporelles des différents PPS. Il ne peut être activé (naissance de PA) que si la sommation donne un PPSE global d'amplitude suffisante (atteint le seuil de – 50 mv), sinon, il reste au repos.</p>
+<!-- page 25 -->
+<div class="exsub"><u>Exercice 13</u></div>
+<p class="subhead t-navy"><u><b><i>1<sup>ère</sup> série d'expériences</i></b></u></p>
+<p class="para"><b>1)</b> Les stimulations sont efficaces puisque chacune a entraîné une modification de la ddp au niveau du neurone postsynaptique, ce qui montre que chaque stimulation a engendré un PA qui s'est propagé jusqu'au bouton synaptique.</p>
+<p class="para"><b>2)</b></p>
+<table>
+<tr><th>Analyse</th><th>Conclusion</th></tr>
+<tr><td>La stimulation en S<sub>1</sub> a engendré au niveau du cône axonique de M une légère hyperpolarisation d'amplitude 15 mv. Il s'agit d'un PPSI enregistré par O<sub>1</sub> mais non enregistré par O<sub>2</sub>.</td><td><ul class="b"><li>La synapse N – M est inhibitrice</li><li>Le PPSI est non propageable</li></ul></td></tr>
+<tr><td>La stimulation en S<sub>2</sub> a engendré au niveau du cône axonique de M une légère dépolarisation d'amplitude 15 mv. Il s'agit d'un PPSE enregistré par O<sub>1</sub> mais non enregistré par O<sub>2</sub>.</td><td><ul class="b"><li>La synapse N – M est excitatrice</li><li>Le PPSE est non propageable</li></ul></td></tr>
+</table>
+<p class="para"><b>3)</b> Les PPS s'expliquent chacun par un mouvement ionique à travers de la membrane postsynaptique :</p>
+<p class="para"><u><i>* Pour le PPSI</i></u> : La fixation du neurotransmetteur inhibiteur, libéré par N<sub>1</sub>, sur la membrane postsynaptique de M, provoque l'ouverture de CCD à Cl<sup>-</sup> permettant l'entrée de cet ion et / ou à K<sup>+</sup> permettant la sortie de ce dernier ion de M d'où l'augmentation de sa négativité interne.</p>
+<p class="para"><u><i>* Pour le PPSE</i></u> : La fixation du neurotransmetteur inhibiteur, libéré par N<sub>2</sub>, sur la membrane postsynaptique de M, provoque l'ouverture de CCD à Na<sup>+</sup> permettant l'entrée de cet ion dans M d'où la diminution de sa négativité interne.</p>
+<p class="subhead t-navy"><u><b><i>2<sup>ème</sup> série d'expériences</i></b></u></p>
+<p class="para"><b>1)</b> * <u><i>Avant stimulation</i></u> : Le dépôt de la substance X ou Y en F<sub>1</sub> ou en F<sub>2</sub>, sans stimulation, n'a engendré aucune variation de la ddp postsynaptique. On déduit que X et Y n'ont pas la propriété de neurotransmetteur au niveau de ces synapses (ou ils sont des neurotransmetteurs mais n'ont pas de récepteurs au niveau de ces synapses).</p>
+<p class="para">* <u><i>Après stimulation</i></u> :</p>
+<p class="para">- Le dépôt de la substance X en F<sub>1</sub> n'empêche pas la naissance d'un PPSI en M après la stimulation S<sub>1</sub>, mais une fois déposée dans la fente F<sub>2</sub>, elle empêche la naissance de PPSE en M après la stimulation S<sub>2</sub>.</p>
+<p class="para">On conclut que X a bloqué la transmission synaptique au niveau de la synapse excitatrice.</p>
+<p class="para">- Le dépôt de la substance Y en F<sub>2</sub> n'empêche pas la naissance d'un PPSE en M après la stimulation S<sub>2</sub>, mais une fois déposée dans la fente F<sub>1</sub>, elle empêche la naissance de PPSI en M après la stimulation S<sub>1</sub>.</p>
+<p class="para">On conclut que Y a bloqué la transmission synaptique au niveau de la synapse inhibitrice.</p>
+<p class="para"><b>2)</b> <u><i>Hypothèse 1</i></u> : X et Y (individuellement) jouent le rôle d'une enzyme qui dégrade le neurotransmetteur juste au moment de son exocytose.</p>
+<p class="para"><u><i>Hypothèse 2</i></u> : X et Y (individuellement) sont des molécules ayant une configuration spatiale analogue à celle des neurotransmetteurs des synapses bloqués, ils occupent les récepteurs de la membrane postsynaptique sans pouvoir ouvrir les CCD.</p>
+<!-- NOTE: two handwritten lines added by a reader between the printed lines ("Hyp3: X et Y dénaturent les récepteurs." / "Hyp4: X et Y bloquent l'ouverture des CCD.") and pen marks on the printed text are left out -->
+<p class="subhead t-navy"><u><b><i>3<sup>ème</sup> série d'expériences</i></b></u></p>
+<table>
+<tr><th>Expérience</th><th>Exploitation des tracés</th><th>Conclusion</th></tr>
+<tr><td><b>1</b></td><td>Les deux stimulations successives en S<sub>2</sub> ont engendré un PA postsynaptique précédé par un PPSE global qui atteint – 50 mv obtenu par sommation de 2 PPSE successifs.</td><td>Le neurone postsynaptique M a effectué une sommation temporelle de 2 PPSE successifs, il assure un rôle intégrateur.</td></tr>
+<tr><td><b>2</b></td><td>Les stimulations simultanées des neurones présynaptiques N<sub>1</sub> et N<sub>2</sub> n'ont pas modifié la ddp de M qui reste au potentiel de repos.</td><td>M a effectué une sommation spatiale d'un PPSE et d'un PPSI créés simultanément et dont la somme est nulle.</td></tr>
+<tr><td><b>3</b></td><td>Les 3 stimulations successives de N<sub>1</sub> ont engendré en M un PPSI global de grande amplitude qui éloigne le potentiel de la membrane du seuil.</td><td>M a effectué une sommation temporelle de 3 PPSI successifs, sa négativité interne augmente.</td></tr>
+<tr><td><b>4</b></td><td>L'ensemble de ces stimulations portées sur les neurones présynaptiques N<sub>1</sub> et N<sub>2</sub> ont un engendré au niveau de M un PA postsynaptique précédé d'un PPSE global qui atteint le seuil de potentiel.</td><td>M a effectué d'abord une sommation spatiale d'un PPSE et d'un PPSI de même amplitude , et créés simultanément puis immédiatement une sommation temporelle de 2 PPSE créés successivement. Il s'agit d'une sommation spatio-temporelle.</td></tr>
+</table>
+<!-- page 26 -->
+<!-- ROTATE: 4763 part2 p26 180 -->
+<div class="exsub"><u>Exercice 16</u></div>
+<p class="subhead t-navy"><u><b><i>1<sup>ère</sup> expérience</i></b></u></p>
+<p class="para"><b>1)</b> Le nerf mixte qui relie le muscle à la moelle épinière est un nerf rachidien composé de fibres sensitives et de fibres motrices.</p>
+<p class="para"><b>2) a)</b> La fibre sensorielle issue du muscle est la fibre sensitive Ia.</p>
+<p class="para"><b>b)</b> Le récepteur sensoriel à l'origine des influx enregistrés est le fuseau neuro-musculaire (FNM)</p>
+<p class="para"><b>c)</b> Ces enregistrements sont des messages nerveux sensitifs. Chacun est formé par un train de potentiel d'action.<br>
+L'amplitude est constante quel que soit l'intensité de l'étirement, la fréquence augmente avec l'intensité de l'étirement.<br>
+Le message nerveux est codé en <u>modulation de fréquence.</u></p>
+<p class="para"><b>3)</b> <u><i>Analyse du document 3</i></u></p>
+<p class="para">- Lorsque le muscle est au repos, on enregistre un train de PA de faible fréquence. Le récepteur fusorial est actif.<br>
+- Au cours de l'étirement, on constate que la fréquence des PA augmente.<br>
+- Lorsque l'étirement est maintenu, la fréquence des PA diminue mais reste supérieure à celle du message nerveux au repos.</p>
+<p class="para"><u><i>Conclusion</i></u></p>
+<p class="para">Le FNM est un récepteur sensible à l'étirement. Il renseigne sur la longueur et la variation de la longueur du muscle.</p>
+<p class="subhead t-navy"><u><b><i>2<sup>ème</sup> expérience</i></b></u></p>
+<p class="para"><b>1)</b> L'étirement du muscle entraîne une variation de la ddp de la membrane de la fibre. On y reconnaît les phases suivantes :<br>
+- le temps de latence : temps mis par le PA pour arriver à l'électrode réceptrice,<br>
+- la dépolarisation au cours de laquelle la négativité interne diminue, s'annule puis s'inverse en positivité,<br>
+- la repolarisation au cours de laquelle la négativité interne augmente progressivement,<br>
+- l'hyperpolarisation pendant laquelle la négativité interne continue d'augmenter avant le retour au potentiel de repos.</p>
+<p class="para"><b>2)</b> La différence de latence entre le P<sub>A</sub> et le P<sub>B</sub> est : L<sub>2</sub> – L<sub>1</sub> = 1,75 – 1 = 0,75 ms</p>
+<p class="para">Il s'explique par le <u>délai synaptique</u> (0,5 ms) qui correspond au franchissement d'une <b>seule synapse</b> et du <u>temps de conduction</u> entre R<sub>1</sub> et R<sub>2</sub> (0,25 ms)</p>
+<p class="para">La liaison est donc <b>monosynaptique.</b></p>
+<p class="para"><b>3)</b> <u><i>Schéma du circuit nerveux</i></u></p>
+<!-- CROP: 4763 2 26 0.150 0.360 0.730 0.513 4763_p26_circuit -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p26_circuit.png" alt=""></figure>
+<p class="para">Le schéma doit comporter la légende suivante :</p>
+<p class="para">FNM, Fibre sensitive Ia, Nerf rachidien, Ganglion spinal, Racine postérieure, Racine antérieure, Moelle épinière, Substance grise, Substance blanche, Fibre motrice α</p>
+<p class="para">⟵ Message nerveux sensitif ➞ Messge nerveux moteur (+) Synapse excitatrice</p>
+<p class="subhead t-navy"><u><b><i>3<sup>ème</sup> expérience</i></b></u></p>
+<p class="para"><b>1)</b> L'étirement du biceps provoque simultanément la contraction de ce muscle (fléchisseur) et le relâchement du triceps (extenseur) : la réponse des muscles antagonistes est donc <u>coordonnées</u> afin de permettre la contraction efficace du muscle étiré. En effet, le message né de l'excitation des fuseaux neuromusculaires du biceps active les motoneurones de ce muscle, ce qui provoque sa contraction réflexe et par <u>innervation réciproque</u> (intervention d'interneurones inhibiteurs) il inhibe les motoneurones du muscle antagoniste.</p>
+<p class="para"><b>2)</b> <u><i>Schéma montrant l'innervation réciproque</i></u></p>
+<!-- CROP: 4763 2 26 0.220 0.640 0.830 0.890 4763_p26_innervation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4763/4763_p26_innervation.png" alt=""></figure>
+
+</section>
+
+</div>
+</body>
+</html>

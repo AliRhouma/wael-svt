@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bibliothèque SVT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f8f8;--panel:#fff;--fg:#0f2a31;--fg2:#3f5b62;--fg3:#7c959b;--hair:#dbe6e7;--acc:#067360;--acc2:#0fab8f;--dark:#045260;--chip:#e7f4f1;--mark:#ffe58a}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1b1f;--panel:#132a30;--fg:#e6f1f2;--fg2:#b4cdd1;--fg3:#7f9ca1;--hair:#24434a;--acc:#2cc9a8;--acc2:#0fab8f;--dark:#7fe0cb;--chip:#17383a;--mark:#6b5a12}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Sora,system-ui,sans-serif;line-height:1.6}
+header{background:linear-gradient(135deg,#0fab8f,#045260);color:#fff;padding:28px 16px 64px}
+header .in{max-width:1180px;margin:0 auto}
+header h1{margin:0;font-size:clamp(24px,4vw,34px);font-weight:800}
+header p{margin:4px 0 0;opacity:.9}
+.search{max-width:1180px;margin:-40px auto 0;padding:0 16px}
+.search input{width:100%;font:inherit;font-size:18px;padding:16px 20px;border-radius:14px;border:1px solid var(--hair);background:var(--panel);color:var(--fg);box-shadow:0 6px 24px rgba(4,82,96,.12);outline:none}
+.search input:focus{border-color:var(--acc2)}
+.wrap{max-width:1180px;margin:20px auto 60px;padding:0 16px;display:grid;grid-template-columns:290px 1fr;gap:20px;align-items:start}
+aside{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:14px;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+.grp{border-bottom:1px solid var(--hair);padding:8px 0 12px}
+.grp:last-child{border:0}
+.grp h3{margin:4px 0 8px;font-size:15px;color:var(--dark);display:flex;justify-content:space-between;align-items:center}
+.grp h3 button{font:inherit;font-size:12px;border:0;background:none;color:var(--acc);cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:13px;border:1px solid var(--hair);background:var(--bg);color:var(--fg2);border-radius:999px;padding:3px 10px;cursor:pointer}
+.chip b{font-weight:600;color:var(--fg3);margin-inline-start:4px}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.chip.on b{color:#e8fff9}
+.chip.zero{opacity:.4}
+.more{font:inherit;font-size:12px;margin-top:6px;border:0;background:none;color:var(--acc);cursor:pointer}
+.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:var(--fg2);font-size:14px;flex-wrap:wrap;gap:8px}
+.bar button{font:inherit;font-size:13px;border:1px solid var(--hair);background:var(--panel);color:var(--fg2);border-radius:8px;padding:4px 10px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{display:block;background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:14px;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--acc2);transform:translateY(-2px)}
+.kind{display:inline-block;font-size:12px;font-weight:700;background:var(--acc);color:#fff;border-radius:6px;padding:1px 8px}
+.card h2{font-size:16px;margin:8px 0 6px;color:var(--fg);font-weight:700;overflow-wrap:anywhere}
+.meta{font-size:12.5px;color:var(--fg3)}
+.meta span{display:inline-block;background:var(--chip);color:var(--fg2);border-radius:6px;padding:0 6px;margin:2px 4px 2px 0}
+.ex{font-size:13.5px;color:var(--fg2);margin-top:8px;border-top:1px dashed var(--hair);padding-top:8px}
+.ex mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
+.empty{text-align:center;color:var(--fg3);padding:40px 0}
+.load{display:block;margin:16px auto 0;font:inherit;border:1px solid var(--acc);color:var(--acc);background:var(--panel);border-radius:10px;padding:8px 22px;cursor:pointer}
+.ftoggle{display:none}
+@media (max-width:860px){.wrap{grid-template-columns:1fr}aside{position:static;max-height:none;display:none}aside.open{display:block}.ftoggle{display:inline-block}}
+</style>
+</head>
+<body>
+<header><div class="in"><h1>Bibliothèque SVT</h1><p>Sciences de la vie et de la Terre, 4ème année : cours, résumés, séries, devoirs, sujets de bac et corrections — cherchez dans le contenu ou filtrez par chapitre, type et ressource</p></div></header>
+<div class="search"><input id="q" type="search" placeholder="Rechercher dans tous les documents… (ex. : potentiel d’action, réflexe myotatique, synapse)" autocomplete="off"></div>
+<div class="wrap">
+  <aside id="filters"></aside>
+  <main>
+    <div class="bar"><div id="count"></div><div><button class="ftoggle" id="ft">Filtres ☰</button> <button id="reset">Tout effacer</button></div></div>
+    <div class="grid" id="res"></div>
+    <button class="load" id="more" hidden>Afficher plus</button>
+  </main>
+</div>
+<script type="module">
+const GROUPS=[['k','type','Type'],['c','chapter','Chapitre'],['r','resource','Ressource'],['s','section','Section']];
+const SHOW=12, PAGE=60;
+const sel={k:new Set(),c:new Set(),r:new Set(),s:new Set()};
+const expanded={};
+let cat=[],pf=null,searchSeq=0,current=[],shown=0;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const vals=(b,g)=>Array.isArray(b[g])?b[g]:[b[g]];
+const match=(b,skip)=>GROUPS.every(([g])=>g===skip||!sel[g].size||vals(b,g).some(v=>sel[g].has(v)));
+
+function drawFilters(base,pfc){
+  $('filters').innerHTML=GROUPS.map(([g,key,label])=>{
+    const cnt=new Map();
+    if(pfc) for(const [v,n] of Object.entries(pfc[key]||{})) cnt.set(v,n);
+    else for(const b of base) if(match(b,g)) for(const v of new Set(vals(b,g))) cnt.set(v,(cnt.get(v)||0)+1);
+    const all=new Map(); for(const b of cat) for(const v of vals(b,g)) all.set(v,(all.get(v)||0)+1);
+    let keys=[...all.keys()].sort((a,b)=>(all.get(b)-all.get(a))||a.localeCompare(b,'fr'));
+    const lim=expanded[g]?keys.length:SHOW;
+    const chips=keys.slice(0,lim).map(v=>{const n=cnt.get(v)||0;return `<button class="chip${sel[g].has(v)?' on':''}${n?'':' zero'}" data-g="${g}" data-v="${esc(v)}">${esc(v)}<b>${n}</b></button>`}).join('');
+    const more=keys.length>SHOW?`<button class="more" data-more="${g}">${expanded[g]?'Afficher moins':'Tout afficher ('+keys.length+')'}</button>`:'';
+    return `<div class="grp"><h3>${label}${sel[g].size?`<button data-clear="${g}">Effacer</button>`:''}</h3><div class="chips">${chips}</div>${more}</div>`;
+  }).join('');
+}
+function card(b,ex){
+  return `<a class="card" href="books/${b.n}.html"><span class="kind">${esc(b.k)}</span><h2>${esc(b.t)}</h2><div class="meta">${b.c.map(x=>`<span>${esc(x)}</span>`).join('')}<br>${esc(b.r)}${b.s.length?' · '+b.s.map(esc).join(', '):''}</div>${ex?`<div class="ex">${ex}</div>`:''}</a>`;
+}
+function renderList(items,isSearch){
+  current=items;shown=0;$('res').innerHTML='';
+  $('count').textContent=(isSearch?'Résultats : ':'Documents : ')+items.length;
+  if(!items.length) $('res').innerHTML='<div class="empty">Aucun résultat.</div>';
+  more();
+}
+async function more(){
+  const slice=current.slice(shown,shown+PAGE);shown+=slice.length;
+  const html=[];
+  for(const it of slice){
+    if(it.data){const d=await it.data();const b=byN.get(+d.meta.n);if(b)html.push(card(b,d.excerpt));}
+    else html.push(card(it));
+  }
+  $('res').insertAdjacentHTML('beforeend',html.join(''));
+  $('more').hidden=shown>=current.length;
+}
+let byN=new Map();
+async function update(){
+  const q=$('q').value.trim();
+  if(!q){drawFilters(cat);renderList(cat.filter(b=>match(b)),false);return;}
+  const seq=++searchSeq;
+  if(!pf){pf=await import('./pagefind/pagefind.js');await pf.options({excerptLength:28});}
+  const filters={};for(const [g,key] of GROUPS) if(sel[g].size) filters[key]={any:[...sel[g]]};
+  const r=await pf.debouncedSearch(q,{filters},250);
+  if(r===null||seq!==searchSeq)return;
+  drawFilters(null,r.filters);
+  renderList(r.results,true);
+}
+document.addEventListener('click',e=>{
+  const c=e.target.closest('.chip');
+  if(c){const s=sel[c.dataset.g];s.has(c.dataset.v)?s.delete(c.dataset.v):s.add(c.dataset.v);update();return;}
+  const m=e.target.closest('[data-more]');if(m){expanded[m.dataset.more]=!expanded[m.dataset.more];update();return;}
+  const cl=e.target.closest('[data-clear]');if(cl){sel[cl.dataset.clear].clear();update();}
+});
+$('q').addEventListener('input',update);
+$('more').addEventListener('click',more);
+$('reset').addEventListener('click',()=>{for(const g in sel)sel[g].clear();$('q').value='';update();});
+$('ft').addEventListener('click',()=>$('filters').classList.toggle('open'));
+cat=await (await fetch('data/catalog.json')).json();
+cat.sort((a,b)=>a.n-b.n);byN=new Map(cat.map(b=>[b.n,b]));
+update();
+</script>
+</body>
+</html>

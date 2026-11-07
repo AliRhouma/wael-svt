@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Thème 4 _Neurophysiologie — série</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4773">
+<meta data-pagefind-meta="title[content]" content="Thème 4 _Neurophysiologie — série">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Muscle squelettique (contraction)">
+<meta data-pagefind-filter="chapter[content]" content="Régulation de la pression artérielle">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Thème 4 _Neurophysiologie — série" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Thème 4 _Neurophysiologie — série</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com · 73.832.000</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/11DZgTUtLlc8zAp7TbrD46-HJ_dDtEvKk/view">↗ série 1.pdf</a> <a href="https://drive.google.com/file/d/1R_mpYpKRc-t6O-weJUQTUGsgLaplkMS-/view">↗ corrigé série 1.pdf</a> <a href="https://drive.google.com/file/d/1GbpBAMKdyJgqNtPGfS_RRxmONB74jzL6/view">↗ série 2.pdf</a> <a href="https://drive.google.com/file/d/1tskLzAGPSMuQpoKA3AhpEtKg080uYA77/view">↗ corrigé série 2.pdf</a> <a href="https://drive.google.com/file/d/1HPlGGXl7sw9mq8jPg30wLAmF-8YukSiw/view">↗ série 4.pdf</a> <a href="https://drive.google.com/file/d/1HgeSvDWucf4oINSCKkDPvWhZaS7fse44/view">↗ série 5.pdf</a> <a href="https://drive.google.com/file/d/16k_aoIvDF4XUPxy2j5h7OZEQfjQuu52W/view">↗ corrigé série 5.pdf</a> <a href="https://drive.google.com/file/d/1iSg3bVB7288OZPHfdnnUZwxeRGwu-TpP/view">↗ série 6.pdf</a> <a href="https://drive.google.com/file/d/1zx3vRRxdiliVAsHTNak1_H7fra1eVQ-L/view">↗ série 7.pdf</a> <a href="https://drive.google.com/file/d/1KJ73QF6HUgrvmPoBLTJ5JtS9z1tlkJwe/view">↗ série 8.pdf</a> <a href="https://drive.google.com/file/d/1cGflk53PSwUSPTSvjSPXS9jxp-u9A0Ji/view">↗ corrigé série 8.pdf</a> <a href="https://drive.google.com/file/d/1FSQsrmp1GsAWbiSpvMIlvnVx4SVNqwQq/view">↗ série 9.pdf</a> <a href="https://drive.google.com/file/d/18To0ImcSAGQZRUg0EZdtCsomqUz747wb/view">↗ corrigé série 9.pdf</a> <a href="https://drive.google.com/file/d/1oOD6iW6yCMDq0L2tDIQDZqBmO7HVn7HU/view">↗ série 10.pdf</a> <a href="https://drive.google.com/file/d/1061psjVer9Yin58pBndE1UrKEReT_sH6/view">↗ corrigé série 10.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (51)</b><ul><li><a href="https://drive.google.com/file/d/11DZgTUtLlc8zAp7TbrD46-HJ_dDtEvKk/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1zFhXbBmI_8BzR9SvAfGQg780wGaM9W2M/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1raI_UCz7WBAK2XaQqPtd2PtJStdraoQZ/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1nSWY09svgWt0XhK_Ten_4ibURrXpIc8O/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/17sAeUOj7hu3qSpqnVnHWBPbjR6lBJKoi/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1Ub56U4h4Ph3WuiaaYJsg8JbRab-S4F08/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1R_mpYpKRc-t6O-weJUQTUGsgLaplkMS-/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1gk4piXa75q68ejEsW0kjycbTyMHoVu2C/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/19_tmW6981jipVyN7kwkUBsJI9BPwcDN-/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1GbpBAMKdyJgqNtPGfS_RRxmONB74jzL6/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/14Nh1MvhCxDrIfzLd6kzu0lKx089j64YR/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1bnYgaqUyjQGVeDcUzul0fR6rUZbky8Zc/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1tskLzAGPSMuQpoKA3AhpEtKg080uYA77/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1yI_VY3dcY3Zf1YnHf_ITnSAYv1LdhnLB/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/16JUW0_h3aOpnqCPT3Vk1wDMbefQZqHOQ/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1HPlGGXl7sw9mq8jPg30wLAmF-8YukSiw/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1ckg13oEyVvbDmVqt-Kkg0GXFy61fd-w7/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1YhQqdmvY_IzM3n3swyWSRGH4pWf2wPge/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1HgeSvDWucf4oINSCKkDPvWhZaS7fse44/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1Syw_rHwGWhzXYZ-fkpWn6z_ucWRuFME7/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/14KGxFI1f4mkmeA2qoh4z18sUGmOj_C3L/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/16k_aoIvDF4XUPxy2j5h7OZEQfjQuu52W/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1-638n7u68gUfj82XLGCh2M0PBaoOHl4c/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1kspe1jYAijZnat98iFBNAkmFb0q6lRIA/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1czBR6LSfzuh5mclRveNGxOq6L8oRus7y/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1DG-1xGqRv6GLniz4zC_dvjdyIG4Tgq5W/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/18yevwlG1cfWh0JNaAsRBqF6WnIFCgZJb/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1iSg3bVB7288OZPHfdnnUZwxeRGwu-TpP/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1MejwiK_rF6zDD9G5PnZetk1upucqKRxl/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1Wg4HiaszaEx3Pk8jdVu4qOzJZbotLpRR/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1zx3vRRxdiliVAsHTNak1_H7fra1eVQ-L/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1CzqG0d3ZDog07QE3AGetW_wxv6-uCcoV/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1IhczdqM90jxBNr49wKoZQe0Z5ziRG2Ar/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1KJ73QF6HUgrvmPoBLTJ5JtS9z1tlkJwe/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1uMFXjAuW33TZ_5sujcCcVAPv17lN1GLJ/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1jY8GGJv3h0UJhxiS1PKhBUd97VZxuTw_/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1cGflk53PSwUSPTSvjSPXS9jxp-u9A0Ji/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1OVGWFoBUqnbSBKR3Zgdm5PYi8Dx5ofbT/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1hnko2e8BAJsURpjIvXrvfRz8l3HQuLTb/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1FSQsrmp1GsAWbiSpvMIlvnVx4SVNqwQq/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1oSLEi_lKfF7voEo6ejpMQGhLgnqms1Wq/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1CDKkfdg227lWeCh7MnNvPLj61oTff2u_/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/18To0ImcSAGQZRUg0EZdtCsomqUz747wb/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1PdvtI6WVwfyYK6WhTjH6pKP2wWY1smlO/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1INIRzX6dQ-eixGHdHbZaFOU4phyDZAo3/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1oOD6iW6yCMDq0L2tDIQDZqBmO7HVn7HU/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1S88X96g1btaezxkOe7IAA5X2y09AfZ1_/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1VouWGenMSrii_ui092MC_r2fishzIYfM/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1061psjVer9Yin58pBndE1UrKEReT_sH6/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT-section science / SVT / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1uKIbFptlVmuyriplD1iv4cqSaJGi5N3K/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / mes documents / svt / svt top :taki+autres prof / SVT:section math+science exp / séries / Thème 4 _Neurophysiologie</a></li><li><a href="https://drive.google.com/file/d/1CwcCOonsbB9Q8n0H76bFyimhki9D35M0/view">Asu bac math pilote · Asu Bac 2025 pilote › SVT / séries / Thème 4 _Neurophysiologie</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: Taki Academy · www.takiacademy.com · 73.832.000 -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série 19 : Réflexe myotatique</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4773.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com · 73.832.000</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/11DZgTUtLlc8zAp7TbrD46-HJ_dDtEvKk/view">↗ série 1.pdf</a> <a href="https://drive.google.com/file/d/1R_mpYpKRc-t6O-weJUQTUGsgLaplkMS-/view">↗ corrigé série 1.pdf</a> <a href="https://drive.google.com/file/d/1GbpBAMKdyJgqNtPGfS_RRxmONB74jzL6/view">↗ série 2.pdf</a> <a href="https://drive.google.com/file/d/1tskLzAGPSMuQpoKA3AhpEtKg080uYA77/view">↗ corrigé série 2.pdf</a> <a href="https://drive.google.com/file/d/1HPlGGXl7sw9mq8jPg30wLAmF-8YukSiw/view">↗ série 4.pdf</a> <a href="https://drive.google.com/file/d/1HgeSvDWucf4oINSCKkDPvWhZaS7fse44/view">↗ série 5.pdf</a> <a href="https://drive.google.com/file/d/16k_aoIvDF4XUPxy2j5h7OZEQfjQuu52W/view">↗ corrigé série 5.pdf</a> <a href="https://drive.google.com/file/d/1iSg3bVB7288OZPHfdnnUZwxeRGwu-TpP/view">↗ série 6.pdf</a> <a href="https://drive.google.com/file/d/1zx3vRRxdiliVAsHTNak1_H7fra1eVQ-L/view">↗ série 7.pdf</a> <a href="https://drive.google.com/file/d/1KJ73QF6HUgrvmPoBLTJ5JtS9z1tlkJwe/view">↗ série 8.pdf</a> <a href="https://drive.google.com/file/d/1cGflk53PSwUSPTSvjSPXS9jxp-u9A0Ji/view">↗ corrigé série 8.pdf</a> <a href="https://drive.google.com/file/d/1FSQsrmp1GsAWbiSpvMIlvnVx4SVNqwQq/view">↗ série 9.pdf</a> <a href="https://drive.google.com/file/d/18To0ImcSAGQZRUg0EZdtCsomqUz747wb/view">↗ corrigé série 9.pdf</a> <a href="https://drive.google.com/file/d/1oOD6iW6yCMDq0L2tDIQDZqBmO7HVn7HU/view">↗ série 10.pdf</a> <a href="https://drive.google.com/file/d/1061psjVer9Yin58pBndE1UrKEReT_sH6/view">↗ corrigé série 10.pdf</a></div>
+
+
+<div class="exsub">série 1</div>
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-blue"><b>SVT</b></span></p>
+<p class="subhead t-navy"><span class="t-blue">Bac Sc Exp (Top 50 – Gr 1)</span></p>
+<p class="subhead t-navy"><span class="t-blue"><b>Série 19 : Réflexe myotatique</b></span></p>
+<p class="para"><span class="t-gold">Lundi 30/01/2023</span></p>
+<p class="para">Sousse (Khezama - Sahloul) Nabeul / Sfax / Bardo / Menzah El Aouina Ezzahra / CUN / Bizerte / Gafsa / Kairouan / Medenine / Kébili / Monastir Gabes / Djerba</p>
+<!-- page 02 -->
+<div class="exsub">Exercice 1 &nbsp; 25 min &nbsp; 04 pts</div>
+<p class="para"><b>A)</b> Le document 1 ci-dessous, est un schéma simplifié d’un neurone qui intervient dans le réflexe myotatique. Il est divisé en cinq parties selon leur emplacement dans le tissu nerveux.</p>
+<!-- CROP: 4773 1 2 0.180 0.175 0.862 0.348 4773_p1_02_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p1_02_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para"><b>1)</b> Reconnaissez ce neurone et nommez ces différentes parties en reportant sur votre copie les lettres A, B, C, D, E et F en précisant leur emplacement respectif.</p>
+<p class="para"><b>B)</b> Le document 2 illustre les mouvements ioniques de <b>Na<sup>+</sup></b> et de <b>K<sup>+</sup></b> à travers trois structures A’, B’ et C’ d’une portion de la membrane d’une fibre nerveuse.</p>
+<!-- CROP: 4773 1 2 0.174 0.470 0.862 0.630 4773_p1_02_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p1_02_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para">2) Nommez les structures A’, B’ et C’ du document 2.</p>
+<p class="para">3) Exploitez les informations dégagées du document 2 et vos connaissances en vue de</p>
+<p class="para">a- préciser les deux types de transports ioniques présents dans ce document ainsi que leurs effets.</p>
+<p class="para">b- déterminer l’état de la fibre nerveuse. Justifiez votre réponse.</p>
+<p class="para">4) Expliquez le résultat du blocage de :</p>
+<p class="para">a- la structure B’ en absence de stimulation.</p>
+<p class="para">b- la structure C’ suite à une stimulation efficace.</p>
+<!-- page 03 -->
+<div class="exsub">Exercice 2 &nbsp; 30 min &nbsp; 05 pts</div>
+<ol class="qn">
+<li>Sur un chat, après avoir réalisé la section <b>S</b> des racines rachidiennes comme indiqué dans le document 1, on porte des stimulations efficaces aux endroits désignés par <b>E<sub>1</sub></b> et <b>E<sub>2</sub>.</b></li>
+</ol>
+<!-- CROP: 4773 1 3 0.277 0.191 0.770 0.392 4773_p1_03_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p1_03_doc1.png" alt=""></figure>
+<p class="para">Document 1</p>
+<p class="para">Complétez le tableau 1 en reportant les enregistrements obtenus sur chacun des oscilloscopes O<sub>1</sub> et O<sub>2</sub> tout en justifiant votre réponse.</p>
+<table>
+<tr><th rowspan="5"><b>Section S (tableau 1)</b></th><th><b><u>Stimulation en E1</u></b><br><b>Les enregistrements obtenus (en mV) sur les écrans de O<sub>1</sub> et O<sub>2</sub> sont :</b></th><th><b><u>Stimulation en E2</u></b><br><b>Les enregistrements obtenus (en mV) sur les écrans de O<sub>1</sub> et O<sub>2</sub> sont :</b></th></tr>
+<tr><td>Ecran O<sub>1</sub> :</td><td>Ecran O<sub>1</sub> :</td></tr>
+<tr><td>Justification :<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………</td><td>Justification :<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………</td></tr>
+<tr><td>Ecran O<sub>2</sub> :</td><td>Ecran O<sub>2</sub> :</td></tr>
+<tr><td>Justification :<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………</td><td>Justification :<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………</td></tr>
+</table>
+<!-- page 04 -->
+<p class="para"><b>2)</b> Au cours de la naissance du message nerveux au niveau d’un recepteur sensoriel, existe deux types de codages de l’information nerveuse.<br>Complétez le tableau 2 de la feuille annexe par ce qui convient.</p>
+<table>
+<tr><th><b>Type de codage</b></th><th><b>Lieu<br>du codage</b></th><th><b>Résultat<br>du codage</b></th><th><b>Signification<br>du codage</b></th></tr>
+<tr><td><b>Type 1</b><br>Codage en<br>…………………</td><td>……………………<br>……………………<br>……………………<br>……………………<br>……………………<br>……………………</td><td>……………………<br>……………………<br>……………………<br>……………………<br>……………………<br>……………………</td><td>……………………………………………<br>……………………………………………<br>……………………………………………<br>……………………………………………<br>……………………………………………<br>……………………………………………</td></tr>
+<tr><td><b>Type 2</b><br>Codage en<br>…………………</td><td>……………………<br>……………………<br>……………………<br>……………………<br>……………………<br>……………………</td><td>……………………<br>……………………<br>……………………<br>……………………<br>……………………<br>……………………</td><td>……………………………………………<br>……………………………………………<br>……………………………………………<br>……………………………………………<br>……………………………………………<br>……………………………………………</td></tr>
+</table>
+<p class="para">Tableau 2</p>
+<div class="exsub">Exercice 3 &nbsp; 35 min &nbsp; 06 pts</div>
+<p class="para">Dans le but d’étudier certaines activités de la fibre nerveuse on réalise les expériences suivantes :</p>
+<ul class="b">
+<li>Au temps t<sub>1</sub>, on porte sur la fibre nerveuse une stimulation efficace.</li>
+<li>Au temps t<sub>5</sub>, on place la fibre nerveuse en présence des cyanures qui tuent la cellule.<br>Le document 1 suivant montre les résultats des mesures des concentrations des ions Na<sup>+</sup> et K<sup>+</sup> à l’interieur de cette fibre :</li>
+</ul>
+<!-- CROP: 4773 1 4 0.138 0.641 0.834 0.872 4773_p1_04_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p1_04_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<ol class="qn">
+<li>Identifiez C1 et C2.</li>
+</ol>
+<!-- page 05 -->
+<ol class="qn" start="2">
+<li>Comment expliquez-vous la concentration des ions entre t<sub>0</sub> et t<sub>1</sub> ?</li>
+<li>Nommez la ddp au temps t<sub>1</sub>.</li>
+<li>Précisez, en le justifiant, la valeur de la ddp au temps t<sub>1</sub> ; t<sub>2</sub> ; t<sub>3</sub> et t<sub>4</sub>.</li>
+<li>Représentez à l’aide d’un schéma clair et bien légendé, la structure de la membrane entre le temps t<sub>1</sub> et t<sub>2</sub> puis entre le t<sub>2</sub> et t<sub>3</sub>.</li>
+<li>Décrivez l’activité de la membrane de la fibre qui est à l’origine des échanges ionique entre le temps t<sub>3</sub>et t<sub>4</sub>.</li>
+<li>a- Expliquez les cause à l’origine de l’évolution de la concentration interne des ions Na<sup>+</sup> et K<sup>+</sup> entre t<sub>5</sub> et t<sub>6</sub>.</li>
+</ol>
+
+
+<div class="exsub">corrigé série 1</div>
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-blue"><b>SVT</b></span></p>
+<p class="subhead t-navy"><span class="t-blue">Bac Sc Exp (Top 50 _ Gr 1 )</span></p>
+<p class="subhead t-navy"><span class="t-blue"><b>Correction série 19 : SNX</b></span></p>
+<p class="para"><span class="t-gold">Lundi 30/01/2023</span></p>
+<p class="para">Sousse (Khezama - Sahloul) Nabeul / Sfax / Bardo / Menzah El Aouina Ezzahra / CUN / Bizerte / Gafsa / Kairouan / Medenine / Kébili / Monastir Gabes / Djerba</p>
+<!-- page 02 -->
+<div class="exsub">Exercice 1 &nbsp; 50 min &nbsp; 07 pts</div>
+<p class="para"><b>A)</b> 1)neurone sensitif Ia</p>
+<table>
+<tr><th><span class="t-blue"><b>A</b></span></th><th><span class="t-blue"><b>B</b></span></th><th><span class="t-blue"><b>C</b></span></th><th><span class="t-blue"><b>D</b></span></th><th><span class="t-blue"><b>E</b></span></th><th><span class="t-blue"><b>F</b></span></th></tr>
+<tr><td><b>Terminaison dendritique</b></td><td>dendrite</td><td>Corps cellulaire unipolaire</td><td>Axone</td><td>Fibre nerveuse centrale</td><td>Arborisation terminale</td></tr>
+<tr><td><b>Récepteurs sensoriels : FNM</b></td><td>Nef rachidienne<br>+<br>Racine postérieure</td><td>Ganglion spinal</td><td>Racine postérieure</td><td>Substance blanche de la moelle épinière</td><td>Substance grise de la moelle épinière</td></tr>
+</table>
+<p class="para"><b>B)</b> 2)</p>
+<table>
+<tr><th><span class="t-blue"><b>A’</b></span></th><th><span class="t-blue"><b>B’</b></span></th><th><span class="t-blue"><b>C’</b></span></th></tr>
+<tr><td><b>Canaux de fuite de Na<sup>+</sup> et K<sup>+</sup></b></td><td>Pompe Na<sup>+</sup>/K<sup>+</sup></td><td>Canaux voltages dépendants (CVD) à Na<sup>+</sup> et K<sup>+</sup></td></tr>
+</table>
+<p class="para">3)a-</p>
+<table>
+<tr><td><span class="t-red"><b>Transport passif</b></span></td><td><b>Transport qui ne nécessite aucun apport d’énergie, dans le sens du gradient de concentration :</b>
+<ul class="dash">
+<li><b>pour les canaux de fuite : entrée de Na+ et sortie de K<sup>+</sup>.</b></li>
+<li><b>pour les CVD à Na<sup>+</sup> : entrée de Na<sup>+</sup>.</b></li>
+</ul></td></tr>
+<tr><td><span class="t-red"><b>Transport actif</b></span></td><td>Transport contre le gradient de concentration, pompe Na<sup>+</sup>/K<sup>+</sup>, assurant &lt;la sortie de 3 Na<sup>+</sup> et l’entrée de 2 K<sup>+</sup>, c’est un transport qui nécessite de l’énergie (ATP).</td></tr>
+</table>
+<p class="para">b- la fibre nerveuse en phase de dépolarisation car il y a entrée de Na+ à travers les CVD à Na<sup>+</sup></p>
+<p class="para">4) a- Blocage de B’ : en absence de stimulation, seuls les canaux de fuite restent fonctionnels assurant une entrée de Na+ et sortie de K+ dans le sens de gradient de concentration jusqu’à un équilibre ionique.</p>
+<p class="para">b- Blocage de CVD à la suite d’une stimulation : dans ce cas la pompe Na+/K+ assure un mouvement ionique contre le gradient de concentration de Na+ et K+ conduisant à un déséquilibre ionique, c’est l’état de repos.</p>
+<!-- page 03 -->
+<div class="exsub">Exercice 2 &nbsp; 40 min &nbsp; 05 pts</div>
+<p class="para">1)</p>
+<table>
+<tr><th rowspan="5"><b>.Section S</b></th><th><b><u>Stimulation en E1</u></b><br><b>Les enregistrements obtenus (en mV) sur les écrans de O<sub>1</sub> et O<sub>2</sub> sont :</b></th><th><b><u>Stimulation en E2</u></b><br><b>Les enregistrements obtenus (en mV) sur les écrans de O<sub>1</sub> et O<sub>2</sub> sont :</b></th></tr>
+<tr><td>Ecran O<sub>1</sub> :<!-- CROP: 4773 2 3 0.212 0.252 0.382 0.324 4773_p2_03_e1_o1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p2_03_e1_o1.png" alt=""></figure></td><td>Ecran O<sub>1</sub> :<!-- CROP: 4773 2 3 0.620 0.252 0.832 0.324 4773_p2_03_e2_o1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p2_03_e2_o1.png" alt=""></figure></td></tr>
+<tr><td>Justification :<br>L’excitation efficace en E<sub>1</sub> crée un PA qui peut être enregistré en O<sub>1</sub> car il s’agit de fibre sensitive centripète.</td><td>Justification :<br>On enregistre un PR car la racine antérieure conduit les PA dans un seul sens centrifuge.</td></tr>
+<tr><td>Ecran O<sub>2</sub> :<!-- CROP: 4773 2 3 0.192 0.410 0.403 0.482 4773_p2_03_e1_o2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p2_03_e1_o2.png" alt=""></figure></td><td>Ecran O<sub>2</sub> :<!-- CROP: 4773 2 3 0.620 0.410 0.832 0.482 4773_p2_03_e2_o2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p2_03_e2_o2.png" alt=""></figure></td></tr>
+<tr><td>Justification :<br>Puisque O<sub>2</sub> est placé au niveau du bout périphérique de la racine ventrale le PA ne peut pas l’atteindre, il est arrêté par la section S d’où le PR.</td><td>Justification :<br>L’excitation E<sub>2</sub> est appliquée au niveau du bout central de la racine ventrale centrifuge or la section empêche la conduction du PA d’une façon centrifuge.</td></tr>
+</table>
+<p class="para"><span class="t-red"><b>2)</b></span></p>
+<table>
+<tr><th><b>Type de codage</b></th><th><b>Lieu<br>du codage</b></th><th><b>Résultat<br>du codage</b></th><th><b>Signification<br>du codage</b></th></tr>
+<tr><td><b>Type 1</b><br>Codage en<br><b>amplitude</b></td><td>Site transducteur</td><td>Un potentiel de récepteur</td><td>L’amplitude du potentiel de récepteur obtenue est proportionnelle à l’intensité du stimulus appliqué au niveau du site transducteur.</td></tr>
+<tr><td><b>Type 2</b><br>Codage en<br><b>fréquence</b></td><td>Site générateur</td><td>Un train de PA</td><td>La fréquence des PA du message nerveux obtenue au niveau du site générateur est proportionnelle à l’amplitude du potentiel de récepteur enregistré au niveau du site transducteur.</td></tr>
+</table>
+<!-- page 04 -->
+<div class="exsub">Exercice 3 &nbsp; 40 min &nbsp; 05 pts</div>
+<ol class="qn">
+<li>Entre to et t1 on a une concentration importante pour C1 et faible pour C2 et on sait qu’au repos que le milieu intracellulaire de la fibre nerveuse est riche en K+ et pauvre en Na+ donc : C1 = K+ et C2 = Na+</li>
+<li>Entre to et t1, on a un état de repos : la concentration intracellulaire de K+ est importante et celle de Na+ est faible càd juste avant l’excitation efficace en t1 .</li>
+<li>A t1 : potentiel de repos.</li>
+<li>- à t1 : ddp = -70 mv car on a un état de repos de plus on a un déséquilibre ionique.<br>- à t2 : ddp = +30 mv car on a un équilibre ionique et surtout la concentration intracellulaire de Na+ est maximale.<br>- à t3 : ddp = -70 mv car on a un déséquilibre ionique et surtout la concentration intracellulaire de K+ est minimale.<br>- à t4 : ddp = -70 mv car on a un déséquilibre ionique, comme à t1 (au repos), càd retour à l’état ionique initiale.</li>
+</ol>
+<p class="para">5)</p>
+<p class="para">- entre t1 et t2 : on a une augmentation de la concentration intracellulaire de Na+ car il y a entrée de Na+ à travers les CVD à Na+ : Dépolarisation</p>
+<!-- CROP: 4773 2 4 0.312 0.505 0.845 0.670 4773_p2_04_fig1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p2_04_fig1.png" alt=""></figure>
+<ul class="dash">
+<li>Entre t2 et t3 : on a une diminution de la concentration intracellulaire de K+ donc il y a une sortie de K+ à travers des CVD à K+ : c’est la repolarisation et l’hyperpolarisation.</li>
+</ul>
+<!-- CROP: 4773 2 4 0.358 0.726 0.845 0.913 4773_p2_04_fig2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p2_04_fig2.png" alt=""></figure>
+<!-- page 05 -->
+<ol class="qn" start="5">
+<li>Entre t3 et t4 : on a une augmentation de la concentration intracellulaire de K+ et diminution de la concentration intracellulaire de Na+, donc il y a entrée de K+ et sortie de Na+ : c’est un transport couplé assuré par la pompe Na+/K+ ( entrée de 2 K+ face à la sortie de 3 Na+) , jusqu’à retour à la concentration ionique intiale : c’est la période réfratctaire durant la quelle la fibre nerveuse devienne innexcitable.</li>
+<li>A t5, la cyanure tue la cellule, dans ce cas la cellule devinne non fonctionnelle et pas de production d’ATP, dans ce cas il y a blocage de la pompe Na+/K+ et seuls les canaux de fuite restent fonctionnels assurant l’entrée de Na+ et la sortie de K+ jusqu’à un équilibre ionique à t6.<br>A t6 : ddp = 0 mv, car on un équilibre ionique et mort de la cellule</li>
+</ol>
+
+
+<div class="exsub">série 2</div>
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-blue"><b>SVT</b></span></p>
+<p class="subhead t-navy"><span class="t-blue">Bac Sc Exp (Top 50 – Gr 1)</span></p>
+<p class="subhead t-navy"><span class="t-blue"><b>Série 20 : Réflexe myotatique</b></span></p>
+<p class="para"><span class="t-gold">Lundi 06/02/2023</span></p>
+<p class="para">Sousse (Khezama - Sahloul) Nabeul / Sfax / Bardo / Menzah El Aouina Ezzahra / CUN / Bizerte / Gafsa / Kairouan / Medenine / Kébili / Monastir Gabes / Djerba</p>
+<!-- page 02 -->
+<!-- NOTE: highlighter marks (yellow/green) over some words on pages 02–04 are not reproduced -->
+<div class="exsub">Exercice 1 &nbsp; 25 min &nbsp; 04 pts</div>
+<p class="para">Dans les conditions physiologiques normales, la propagation du message nerveux le long de la fibre nerveuse et sa transmission à travers les synapses se font dans un seul sens.</p>
+<p class="para"><b>1) a-</b> Expliquez, schéma à l’appui, le mécanisme de la propagation du message nerveux le long d’une fibre nerveuse non myélinisée.</p>
+<p class="para"><b>b-</b> Expliquez pourquoi la vitesse de propagation du message nerveux est plus élevée sur les fibres myélinisées que sur les fibres non myélinisées.</p>
+<p class="para"><b>2) a-</b> Précisez les étapes successives de la transmission du message nerveux à travers une synapse neuroneuronique excitatrice.</p>
+<p class="para"><b>b-</b> Cites, dans un tableau, les différences structurales et fonctionnelles qui existent entre une synapse neuroneuronique excitatrice et celle inhibitrice.</p>
+<div class="exsub">Exercice 2 &nbsp; 35 min &nbsp; 05 pts</div>
+<p class="para">La perméabilité membranaire du neurone à certains ions est assurée par plusieurs types de canaux ioniques. Deux types de canaux ioniques sont responsables de la naissance du message nerveux et de transmission synaptique.</p>
+<!-- CROP: 4773 3 2 0.240 0.472 0.864 0.633 4773_p3_02_fig1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p3_02_fig1.png" alt=""></figure>
+<p class="para">1) Citez les différents exemples de canaux que vous connaissez pour chaque type.</p>
+<p class="para">2) Localisez tous ces canaux sur le schéma suivant, que vous reproduisez sur votre copie.</p>
+<p class="para">3) Précisez dans un tableau les conditions et les conséquences du fonctionnement de chacun des canaux que vous avez cités précédemment.</p>
+<!-- page 03 -->
+<div class="exsub">Exercice 3 &nbsp; 35 min &nbsp; 06 pts</div>
+<p class="para">Chez l’homme un coup sec porté sur le tendon d’Achille entraine l’extension du pied (document 1)</p>
+<!-- NOTE: handwritten annotations drawn over Document 1 (coloured lines, "extenseur", "fléchisseur", "BP", "BC") are part of the scanned figure and remain in the crop; they are not transcribed -->
+<!-- CROP: 4773 3 3 0.138 0.190 0.861 0.387 4773_p3_03_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p3_03_doc1.png" alt=""></figure>
+<p class="para">Document 1</p>
+<p class="para">1)Précisez, en justifiant votre réponse la nature de cette réaction,</p>
+<p class="para">2) Afin de préciser les circuits neuroniques impliqués dans cette réaction , on réalise une série d’expériences sur les neurones N1, N2 et N3 innervant les muscles M1 et M2 de certains sujets accidentés chez qui les sections S1, S2 et S3 peuvent être observées.</p>
+<p class="para"><span class="t-red"><b>NB- Les trois sections ne peuvent pas être observées en même temps.</b></span></p>
+<table>
+<tr><th><span class="t-blue">Niveau de section</span></th><th colspan="2"><span class="t-blue">S<sub>1</sub></span></th><th colspan="2"><span class="t-blue">S<sub>2</sub></span></th><th colspan="2"><span class="t-blue">S<sub>3</sub></span></th></tr>
+<tr><td rowspan="2"><b>Stimulation du bout central du neurone sectionné ( BC)</b></td><td><b>M<sub>1</sub></b></td><td><b>M<sub>2</sub></b></td><td><b>M<sub>1</sub></b></td><td><b>M<sub>2</sub></b></td><td><b>M<sub>1</sub></b></td><td>M<sub>2</sub></td></tr>
+<tr><td>+</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td><b>Stimulation du bout périphérique du neurone sectionné ( BP)</b></td><td>-</td><td>-</td><td>+</td><td>-</td><td>-</td><td>+</td></tr>
+</table>
+<p class="para"><span class="t-red"><b>NB : + : contraction du muscle - : pas de contraction du muscle</b></span></p>
+<!-- CROP: 4773 3 3 0.705 0.700 0.969 0.880 4773_p3_03_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p3_03_doc2.png" alt=""></figure>
+<p class="para">Document 2</p>
+<p class="para">Analysez ces résultats et que peut-on déduire à propos des types de ces trois neurones et nommer les.</p>
+<p class="para">3) Dans les muscles M1 et M2 on distingue plusieurs structures dont la structure F indiquée par le document 2</p>
+<p class="para">a- Légendez le document 2.</p>
+<p class="para">b- La variation de la fréquence des potentiels d’action qui se propagent le long de la fibre issue de la structure F est indiquée dans le tableau suivant :</p>
+<!-- page 04 -->
+<table>
+<tr><th><span class="t-blue"><b><i>Longueur de la structure F</i></b></span></th><th><b>60mm</b></th><th><b>65 mm</b></th><th><b>70 mm</b></th><th><b>50 mm</b></th></tr>
+<tr><td><span class="t-blue"><b><i>Fréquence des potentiels d’action propagés en2(doc 2)</i></b></span></td><td><b>30 /s</b></td><td><b>45/s</b></td><td><b>100/s</b></td><td><b>0/s</b></td></tr>
+</table>
+<!-- PROOFREAD: 4773 part3 p04 — "en2" : the "2" is handwritten (black ink) into the printed cell -->
+<p class="para"><span class="t-red"><b>NB- au repos la longueur de la structure f est 60mm</b></span></p>
+<p class="para">Exploitez ce tableau à fin d’identifier la structure F, indiquer à quelle catégorie ou type de récepteur appartient-elle ? et expliquez ses rôles dans l’élaboration de l’extension du pied suite au coup porté sur le tendon d’Achille.</p>
+
+
+<div class="exsub">corrigé série 2</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 _ Gr 1 )</p>
+<p class="subhead t-red">Correction Série 20 : SNX</p>
+<p class="para"><span class="t-gold">Jeudi 09/02/2023</span></p>
+<!-- NOTE: cover page branding (Taki Academy logo, www.takiacademy.com, branch list, phone number, "2023" badge) not transcribed — publisher header/footer -->
+<!-- page 02 -->
+<div class="exsub">Exercice 1 25 min 04 pts</div>
+<p class="para"><span class="t-red"><b>1) a-</b></span></p>
+<!-- CROP: 4773 4 2 0.145 0.155 0.855 0.380 4773_p4_02_propagation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p4_02_propagation.png" alt=""></figure>
+<div class="data"><p class="para">Propagation <b>unidirectionnelle</b> grâce à la <b>période réfractaire</b> du PA le de <b>proche en proche,</b> vue <b>l’absence de myéline,</b> le long du neurone dans les conditions naturelles donc c’est une propagation de proche en proche unidirectionnelle.</p></div>
+<p class="para">b- la propagation du message nerveux et plus rapide dans une fibre myélinisée qu'une fibre amyélinisée car il est saltatoire  de nœud de Ranvier à un autre.</p>
+<p class="para">2)  a- les étapes d'une synapse excitatrice sont :</p>
+<ul class="b">
+<li>Arrivée d'un PA au niveau du bouton synaptique.</li>
+<li>Ouverture des canaux voltage dépendant (CVD) à Ca2+ et entrée massive et passive de cet ion dans le bouton synaptique.</li>
+<li>Libération par exocytose d'un neurotransmetteur excitateur dans la fente synaptique.</li>
+<li>Fixation du neurotransmetteur excitateur sur les récepteurs spécifiques post- synaptiques.</li>
+<li>Ouverture des canaux chimio-dépendants (CCD) à Na+ d'où entrée passive de Na+ et par la suite naissance d'un PPSE.</li>
+<li>Hydrolyse du neurotransmetteur par une enzyme spécifique où récapituration.</li>
+</ul>
+<p class="para">b-</p>
+<table>
+<tr><th>Synapse excitatrice</th><th>Synapse inhibitrice</th></tr>
+<tr><td><ul class="b"><li>Neurotransmetteur excitateur.</li><li>CCD à Na+ au niveau de la membrane post-synaptique.</li><li>Entrée passive de Na+ dans l’élément post-synaptique.</li><li>Naissance d’un PPSE.</li></ul></td><td><ul class="b"><li>Neurotransmetteur inhibiteur.</li><li>CCD à K+ et à Cl- au niveau de la membrane post-synaptique.</li><li>Sortie passive de K+ et entrée de Cl-.</li><li>Naissance d’un PPSI.</li></ul></td></tr>
+</table>
+<!-- page 03 -->
+<div class="exsub">Exercice 2 40 min 05 pts</div>
+<p class="para"><b>1)</b></p>
+<table>
+<tr><th colspan="2">Naissance du potentiel d’action</th><th colspan="3">Transmission du potentiel d’action</th></tr>
+<tr><td>CVD Na<sup>+</sup></td><td>CVD K<sup>+</sup></td><td>CVD Ca<sup>2+</sup></td><td>CCD Na<sup>+</sup></td><td>CCD K<sup>+</sup>et Cl<sup>-</sup></td></tr>
+</table>
+<p class="para"><b>2)</b></p>
+<!-- CROP: 4773 4 3 0.230 0.265 0.765 0.418 4773_p4_03_canaux -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p4_03_canaux.png" alt=""></figure>
+<p class="para"><b>3)</b></p>
+<table>
+<tr><th><span class="t-red">Canaux</span></th><th><span class="t-red">Conditions de fonctionnement</span></th><th><span class="t-red">Conséquences de fonctionnement</span></th></tr>
+<tr><td><b>CVD à Na<sup>+</sup></b></td><td>La ddp atteint le seuil de potentiel (-50 mV)</td><td>- Entrée massive et passive de Na<sup>+</sup><br>- Dépolarisation de la membrane</td></tr>
+<tr><td><b>CVD à K<sup>+</sup></b></td><td>- Fermeture des CVD à Na<sup>+</sup><br>- La ddp atteint une valeur de +30 mV</td><td>- Sortie passive de K<sup>+</sup><br>- Repolarisation de la membrane</td></tr>
+<tr><td><b>CVD à Ca<sup>2+</sup></b></td><td>Arrivée d’un potentiel d’action présynaptique</td><td>- Entrée  passive de Ca<sup>2+</sup><br>- Exocytose des vésicules synaptiques</td></tr>
+<tr><td><b>CCD à Na<sup>+</sup></b></td><td>Fixation du neurotransmetteur excitateur sur les récepteurs spécifiques postsynaptiques</td><td>- Entrée passive de Na<sup>+</sup><br>- Dépolarisation de la membrane postsynaptique et création d’un PPSE</td></tr>
+<tr><td><b>CCD à K<sup>+</sup>et Cl<sup>-</sup></b></td><td>Fixation du neurotransmetteur inhibiteur sur les récepteurs spécifiques postsynaptiques</td><td>- Entrée passive de Cl<sup>-</sup> et sortie passive de K<sup>+</sup><br>- Hyperpolarisation de la membrane postsynaptique et création d’un PPSI</td></tr>
+</table>
+<!-- page 04 -->
+<div class="exsub">Exercice 3 40 min 05 pts</div>
+<p class="para">Il s’agit d’un réflexe myotatique, car il y a contraction du muscle extenseur suite à son propre étirement.</p>
+<table>
+<tr><th>Analyse</th><th>Conclusion</th></tr>
+<tr><td><b>Exp 1</b> : La section S1 au niveau de N1 innervant M1 (extenseur) :<br>La stimulation du BC engendre la contraction de M1.<br>La stimulation du BP ne provoque aucune contraction de M1.</td><td>N1 est un neurone afférant donc N1 est le neurone sensitif Ia innervant le muscle extenseur M1.</td></tr>
+<tr><td><b>Exp 2</b> : La section S2 au niveau de N2 innervant M1 (extenseur) :<br>La stimulation du BC ne provoque aucune contraction de M1.<br>La stimulation du BP engendre la contraction de M1.</td><td>N2 est un neurone efférent donc N2 est le motoneurone α du muscle extenseur M1.</td></tr>
+<tr><td><b>Exp 3</b> : La section S3 au niveau de N3 innervant M2 (fléchisseur) :<br>La stimulation du BC ne provoque aucune contraction de M2.<br>La stimulation du BP engendre la contraction de M2.</td><td>N3 est un neurone efférent donc N2 est le motoneurone α du muscle fléchisseur M2.</td></tr>
+</table>
+<p class="para">3)  . <b>a-</b></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th></tr>
+<tr><td>Capsule conjonctive</td><td>Dendrite d’un neurone sensitif Ia</td><td>Fibre musculaire intrafusale</td></tr>
+</table>
+<p class="para"><b>b-</b></p>
+<table>
+<tr><th>analyse</th><th>Conclusion</th></tr>
+<!-- page 05 -->
+<tr><td><ul class="dash"><li>pour un étirement de 5 mm (65-60 = +5 mm) la fréquence de PA augmente de 30 à 45 /s</li><li>pour un étirement de 10 mm ( 70-60 = +10 mm) la fréquence de PA augmente de 30 à 100 PA/s</li><li>Pour une contraction de 5 mm (50-60 = -5 mm) il y a annulation delà fréquence de PA.</li></ul></td><td>F est un récepteur sensoriel sensible qu’a l’étirement donc F est le fuseau neuromusculaire qui est un mécanorécepteur (catégorie) dont ses rôles sont :<ul class="dash"><li>Convertie l’énergie mécanique (étirement) en énergie électrique : c’est la <b>transduction.</b></li><li>Informe le centre nerveux (moelle épinière) de l’état du muscle</li></ul></td></tr>
+</table>
+
+
+<div class="exsub">série 4</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 – Gr 1)</p>
+<p class="subhead t-red">Série 22 : Réflexe myotatique</p>
+<p class="para"><span class="t-gold">Lundi 20/02/2023</span></p>
+<!-- NOTE: cover page branding (Taki Academy logo, www.takiacademy.com, branch list, phone number, "2023" badge) not transcribed — publisher header/footer -->
+<!-- page 02 -->
+<div class="exsub">Exercice 1 25 min 04 pts</div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses  exactes.</p>
+<p class="consigne">Reportez sur votre copie, le numéro de chaque item et indiquez la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).</p>
+<p class="consigne"><b><u>NB-Toute réponse fausse annule la note attribuée à l’item considéré.</u></b></p>
+<p class="para"><span class="t-blue"><b>1)  Dans une cellule nerveuse au repos :</b></span><br>
+a-  les ions Na+ qui entrent et qui sortent ne sont pas à égalité,<br>
+b-  la membrane plasmique présente à la fois un transport passif et un transport actif,<br>
+c-  les canaux de fuites sont toujours fermés,<br>
+d- les canaux Na+ et K+ voltage dépendants sont ouverts.</p>
+<p class="para"><span class="t-blue"><b>2)  Dans une fibre myélinisée, Le message nerveux est plus rapide que dans une fibre amyélinisée car :</b></span><br>
+a-  la propagation du message nerveux se fait par les courants locaux,<br>
+b-  la propagation du message nerveux est saltatoire,<br>
+c-  le diamètre des fibres sans myéline est plus important que les fibres avec myéline,<br>
+d- les canaux voltage-dépendants n’existent que dans les nœuds de Ranvier.</p>
+<p class="para"><span class="t-blue"><b>3)  Quel sera le temps de parcours du message nerveux le long d’un circuit neuronique de 20 cm comportant 2 synapses, sachant que la vitesse le long de l’axone est de 40 m/s.</b></span><br>
+a-  4 ms,<br>
+b-  5 ms,<br>
+c-  6 ms,<br>
+d- 7 ms.</p>
+<p class="para"><span class="t-blue"><b>4) L’ordre décroissant de la vitesse du message nerveux dans les différentes fibres représentées ci-contre en coupe transversale est :</b></span><br>
+a- A B C D,<br>
+b- B A C D,<br>
+c- D C B A,<br>
+d- D C A B.</p>
+<!-- CROP: 4773 5 2 0.665 0.585 0.955 0.665 4773_p5_02_fibres -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_02_fibres.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>5) Un récepteur sensoriel</b></span> :<br>
+a- est toujours localisé à la périphérie de l’organisme,<br>
+b- stimulé, il est le siège de la naissance d’un potentiel de récepteur,<br>
+c- envoie au centre nerveux un message codé en amplitude,<br>
+d- ne présente pas de potentiel de repos.</p>
+<p class="para"><span class="t-blue"><b>6) Les canaux chimio-dépendants :</b></span><br>
+a-sont des protéines intégrées à la membrane cellulaire,<br>
+b- exigent un voltage seuil pour s’ouvrir,<br>
+c- assurent un transfert des ions sans dépense énergétique,<br>
+d-caractérisent les nœuds de Ranvier et les sites générateurs.</p>
+<p class="para"><span class="t-blue"><b>7) Dans un potentiel d’action, la repolarisation est le résultat :</b></span><br>
+a- d’une entrée de Na+ à l’intérieur de la fibre,<br>
+b- d’une sortie de K+ par les canaux voltage dépendants à K+,<br>
+c- d’un excès de K+ à l’extérieur de la membrane de la fibre,<br>
+d- d’une entrée de Clet d’une sortie de K+.</p>
+<!-- page 03 -->
+<p class="para"><span class="t-blue"><b>8) On enregistre au niveau du site transducteur d’un récepteur sensoriel stimulé de manière efficace :</b></span><br>
+a- une hyperpolarisation,<br>
+b- un potentiel d’action (PA),<br>
+c- un potentiel local de récepteur,<br>
+d- un potentiel postsynaptique excitateur (PPSE).</p>
+<div class="exsub">Exercice 2 50 min 08 pts</div>
+<p class="para">On se propose d’étudier quelques aspects de la communication nerveuse.<br>
+A) Un neurone D issu d’un récepteur connu fait jonction avec un neurone L comme le montre le schéma du document 1. On porte une stimulation efficace sur le neurone D et on enregistre la réponse sur trois oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>.<br>
+Les électrodes réceptrices d’O<sub>1</sub> et O<sub>2</sub> sont distantes de 5 mm et l’électrode réceptrice d’O<sub>1</sub> est située au-dessous de la zone de stimulation.</p>
+<!-- CROP: 4773 5 3 0.215 0.380 0.855 0.567 4773_p5_03_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_03_doc1.png" alt=""></figure>
+<p class="para">Document 1</p>
+<p class="para">Les enregistrements obtenus figurent dans le document 2.</p>
+<!-- CROP: 4773 5 3 0.230 0.655 0.855 0.848 4773_p5_03_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_03_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para">1) A partir de la comparaison des enregistrements obtenus en O1 et O2, déduisez les propriétés des signaux électriques observés.</p>
+<!-- page 04 -->
+<p class="para">2)  a- Calculez la vitesse de propagation du message nerveux au niveau du neurone D.<br>
+b- Le résultat de votre calcul est-il en accord avec la structure du neurone D comme le montre le document 2 ? Justifiez puis déduisez le mode de propagation du message au niveau du neurone D.<br>
+3) A partir de l’analyse de l’enregistrement obtenu en O3 déduisez l’action du neurone D sur le neurone L.<br>
+B) Les neurones D et L font partie d’un circuit neuronique existant dans la substance grise de la moelle épinière comme le montre le schéma du document 3.</p>
+<!-- CROP: 4773 5 4 0.140 0.228 0.823 0.403 4773_p5_04_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_04_doc3.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para">On réalise les expériences suivantes :</p>
+<ul class="b">
+<li><span class="t-blue"><b>Expérience 1</b></span> : on injecte, à la même quantité et de façon séparée, trois différents neurotransmetteurs (E, P et S) dans les zones d’injection des substances indiquées sur le document 3.</li>
+<li><span class="t-blue"><b>Expérience 2</b></span> : on stimule efficacement le récepteur du neurone D<br>Le document 4 suivant montre les enregistrements obtenus dans différentes conditions expérimentales :</li>
+</ul>
+<!-- CROP: 4773 5 4 0.130 0.585 0.862 0.825 4773_p5_04_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_04_doc4.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para">1) A partir de l’exploitation des enregistrements des expériences 1, 2 et 3 du document 4, déduisez l’effet et le lieu d’action de chacune des substances utilisées (E,P et S).<br>
+2) Expliquez les résultats de l’expérience 4.</p>
+<!-- page 05 -->
+<p class="para">3) En faisant un schéma simplifié des neurones (D,I et L), indiquez le sens de circulation des messages au niveau de ce circuit ainsi que la nature des différentes synapses par des signes       (+) et (–).</p>
+<div class="exsub">Exercice 2 45 min 07 pts</div>
+<p class="para">On se propose d'étudier certains aspects du mécanisme du réflexe myotatique à partir des résultats des expériences réalisées grâce au dispositif expérimental illustré par le document 1.</p>
+<!-- CROP: 4773 5 5 0.090 0.268 0.915 0.490 4773_p5_05_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_05_doc1.png" alt=""></figure>
+<p class="para">Document 1</p>
+<p class="para"><span class="t-red"><b>Expérience 1 :</b></span> On soumet le muscle extenseur à un étirement efficace. Les enregistrements obtenus au niveau des oscilloscopes O, O<sub>1</sub> et O<sub>2</sub> sont présentés dans le document 2.</p>
+<table>
+<tr><th>Oscilloscopes</th><th>O</th><th>O<sub>1</sub></th><th>O<sub>2</sub></th></tr>
+<tr><td><b>Enregistrements</b></td><td><!-- CROP: 4773 5 5 0.235 0.643 0.492 0.775 4773_p5_05_doc2_O --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_05_doc2_O.png" alt=""></figure></td><td><!-- CROP: 4773 5 5 0.500 0.643 0.722 0.775 4773_p5_05_doc2_O1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_05_doc2_O1.png" alt=""></figure></td><td><!-- CROP: 4773 5 5 0.730 0.643 0.968 0.775 4773_p5_05_doc2_O2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_05_doc2_O2.png" alt=""></figure></td></tr>
+</table>
+<p class="para"><b>Document 2</b></p>
+<ol class="qn">
+<li>Exploitez les résultats de l'expérience 1 et utilisez vos connaissances en vue :
+<ul class="dash">
+<li>de déduire la nature de chacune des synapses (N-N<sub>1</sub>), (N-I) et (I-N<sub>2</sub>)</li>
+<li>d'expliquer l'obtention de l'enregistrement au niveau de l'oscilloscope O</li>
+<li>de dégager le rôle du fuseau neuromusculaire.</li>
+</ul></li>
+</ol>
+<!-- page 06 -->
+<p class="para"><span class="t-red"><b>Expérience 2 :</b></span> On injecte, deux doses D<sub>1</sub> et D<sub>2</sub> (D<sub>2</sub>&gt;D<sub>1</sub>), d'un neurotransmetteur Nt<sub>1</sub> dans la fente synaptiques F<sub>1</sub> et d'un neurotransmetteur Nt<sub>2</sub> dans la fente synaptique F<sub>2</sub>. Ensuite, on enregistre les phénomènes électriques au niveau des oscilloscopes O<sub>1</sub> et O<sub>2</sub>.<br>
+Les enregistrements obtenus sont présentés dans le document 3.</p>
+<table>
+<tr><th>Oscilloscopes</th><th>O<sub>1</sub></th><th>O<sub>2</sub></th></tr>
+<tr><td><b>Enregistrements</b></td><td><!-- CROP: 4773 5 6 0.235 0.200 0.600 0.330 4773_p5_06_doc3_O1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_06_doc3_O1.png" alt=""></figure></td><td><!-- CROP: 4773 5 6 0.612 0.200 0.975 0.330 4773_p5_06_doc3_O2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p5_06_doc3_O2.png" alt=""></figure></td></tr>
+</table>
+<p class="para"><b>Document 3</b></p>
+<ol class="qn" start="2">
+<li>Comparez les résultats obtenus en vue de dégager :<br>
+a-  la nature de chacun des neurotransmetteurs Nt<sub>1</sub> et Nt<sub>2</sub><br>
+b-  la relation entre la dose du neurotransmetteur injectée et l'amplitude de la réponse obtenue.</li>
+</ol>
+<p class="para"><span class="t-red"><b>Expériences 3 et 4 :</b></span> On injecte dans la fente synaptique F<sub>1</sub>, à des doses suffisantes, deux substances chimiques radioactives A et B suivie ou non d'une stimulation efficace St. On suit la localisation de la radioactivité et on enregistre les phénomènes électriques au niveau de l'oscilloscope O<sub>1</sub>.<br>
+Les conditions expérimentales et les résultats obtenus sont regroupés dans le document 4.</p>
+<table>
+<tr><th colspan="2">Expériences</th><th>Localisation de la radioactivité</th><th>Enregistrements obtenus au Niveau de l’oscilloscope O<sub>1</sub></th></tr>
+<tr><td><b>3</b></td><td>Injection de la substance A Radioactive dans F1</td><td>Membrane postsynaptique</td><td>Potentiel d’action</td></tr>
+<tr><td><b>4</b></td><td>Injection de la sustance B radioactive dans F1 suivie de la stimulation St.</td><td>Membrane postsynaptique</td><td>Potentiel de repos</td></tr>
+</table>
+<p class="para"><b>Document 4</b></p>
+<ol class="qn" start="3">
+<li>A partir de l’exploitation des résultats des expériences 3 et 4 et des informations fournies par l’expérience 2, expliquez le mode d’action de chacune des substances A et B<br>
+<span class="t-red"><b>Expérience 5 :</b></span> On injecte de la choline radioactive dans la fente synaptique F<sub>3</sub>. La radioactivité est retrouvée au niveau des vésicules synaptiques N<sub>1</sub>.<br>
+Après étirement efficace du muscle extenseur, on détecte la radioactivité au niveau de F<sub>3</sub> ; puis au niveau de la membrane postsynaptique et enfin dans la terminaison axonique de N<sub>1</sub></li>
+<li>Expliquez les résultats de l’expérience 5</li>
+<li>A partir des informations tirées précédemment, et en faisant appel à vos connaissances, expliquez comment le fonctionnement des deux types de synapses : neuroneuronique et neuromusculaire aboutit à la contraction du muscle extenseur et au relâchement simultané du muscle fléchisseur à la suite de l’étirement efficace du muscle extenseur</li>
+</ol>
+
+
+<div class="exsub">série 5</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 – Gr 1)</p>
+<p class="subhead t-red">Série 23 : Muscle squelettique</p>
+<p class="para"><span class="t-gold">Lundi 27/02/2023</span></p>
+<!-- NOTE: cover page branding (Taki Academy logo, www.takiacademy.com, branch list, phone number, "2023" badge) not transcribed — publisher header/footer -->
+<!-- page 02 -->
+<div class="exsub">Exercice 1 45 min 07 pts</div>
+<p class="para">On se propose d’étudier les mécanismes de la naissance et de la transmission du message nerveux. Pour cela on utilise le dispositif expérimental représenté par le document 1.</p>
+<!-- CROP: 4773 6 2 0.190 0.160 0.812 0.330 4773_p6_02_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p6_02_doc1.png" alt=""></figure>
+<p class="para">Document 1</p>
+<p class="para">On réalise des expériences de stimulations sur des fibres nerveuses des neurones A, B et C du doc 1 puis on enregistre leurs réponses à l’aide des oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>. Les expériences réalisées et les enregistrements obtenus sont représentés dans le tableau du document 2.</p>
+<!-- CROP: 4773 6 2 0.088 0.433 0.935 0.920 4773_p6_02_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p6_02_doc2.png" alt=""></figure>
+<p class="para"><b><u>Document 2</u></b></p>
+<!-- page 03 -->
+<ol class="qn">
+<li>A partir des informations de l’expérience 1 et du tracé A<sub>1</sub>, dégagez une propriété de la fibre nerveuse.</li>
+<li>Analysez les résultats des expériences 1 et 2 en vue de déduire :
+<ul class="b">
+<li>une deuxième propriété de la fibre nerveuse.</li>
+<li>la nature de la synapse S<sub>1</sub>.</li>
+</ul></li>
+<li>Analysez les tracés C1, C2 et C3 en vue de déduire la nature de la synapse S<sub>2</sub>.</li>
+<li>Expliquez l’obtention du tracé D<sub>2</sub> en vue de : déduire la fonction du neurone C. La nature de la synapse S<sub>3</sub>.</li>
+<li><br>
+a-  A partir de vos connaissances et des informations tirées des expériences précédentes, expliquez l’obtention du tracé D<sub>3.</sub><br>
+b-  Représentez le phénomène qui se déroule au niveau du neurone B suite à la stimulation SB.</li>
+</ol>
+
+<div class="chtag"><span>Chapitre</span> Muscle squelettique (contraction)</div>
+
+<div class="exsub">Exercice 2 35 min 04 pts</div>
+<p class="para">Le document 1 représente deux électronographies d’une myofibrille  dans deux états différents : etats1 et états 2.Le document 2 représente deux coupes transversales de la même myofibrille réalisées selon le même plan. C<sub>1</sub> première coupe réalisée pendant l’état 1, C<sub>2</sub> deuxième coupe (selon le même plan) réalisée pendant l’état 2.</p>
+<table>
+<tr><td><!-- CROP: 4773 6 3 0.120 0.505 0.635 0.650 4773_p6_03_doc1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p6_03_doc1.png" alt=""></figure></td><td><!-- CROP: 4773 6 3 0.645 0.505 0.950 0.650 4773_p6_03_doc2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p6_03_doc2.png" alt=""></figure></td></tr>
+<tr><td><b>Document 1</b></td><td><b>Document 2</b></td></tr>
+</table>
+<ol class="qn">
+<li>Identifiez les structures A et B du document 1.</li>
+<li>Nommez les éléments 1 et 2 du document 2.</li>
+<li>a) Réalisez un schéma d’interprétation légendé et commenté du document 1 montrant le passage de l’état 1 a l’état 2.<br>
+b) représentez sur le schéma le plan de coupe permettant d’obtenir les coupes C1 et C2.</li>
+<li>La contraction de l’élément A du document 1 fait dégager de la chaleur.<br>
+Indiquez, dans l’ordre, les réactions biochimiques qui sont à l’origine de ces dégagements de chaleur.</li>
+</ol>
+<!-- page 04 -->
+<div class="exsub">Exercice 2 40 min 06 pts</div>
+<p class="para">On se propose d’étudier et de mesurer l’activité ionique, mécanique, électrique et thermique d’une fibre musculaire suite à sa stimulation efficace. Le document 1 représente les résultats obtenus.</p>
+<!-- CROP: 4773 6 4 0.145 0.218 0.855 0.385 4773_p6_04_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p6_04_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<ol class="qn">
+<li>Légendez, sur votre copie, le document 1.</li>
+<li>On place la fibre musculaire dans un milieu M1 en présence de glucose, puis on la stimule efficacement et on réalise les mêmes mesures.<br>
+Le document 2 montre les résultats obtenus.</li>
+</ol>
+<!-- CROP: 4773 6 4 0.155 0.515 0.855 0.658 4773_p6_04_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p6_04_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para">A partir du document 2, précisez :</p>
+<ul class="b">
+<li>de quel milieu s’agit-il ? Pourquoi ?</li>
+<li>la (ou les) réaction(s) chimique(s) qui a (ou ont) été éliminé .</li>
+</ul>
+<p class="para"><b>3)</b> On dispose d’un deuxième milieu M2 contenant un poison P<sub>1</sub> qui empêche l’utilisation de l’énergie chimique cellulaire. Une fibre musculaire est mise dans ce milieu puis elle subit une stimulation efficace.  Le document 3 illustre les résultats obtenus.</p>
+<!-- page 05 -->
+<!-- CROP: 4773 6 5 0.155 0.073 0.855 0.212 4773_p6_05_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p6_05_doc3.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para">Analysez cette expérience en vue :<br>
+- de déduire le mode d’action du poison P<sub>1</sub>,<br>
+- d’expliquer les résultats obtenus.<br>
+4) A partir des expériences précédentes et de vos   connaissances, citez la succession des événements qui se déroulent dans la fibre musculaire à partir du moment de l’apparition de la courbe n°1 jusqu’à l’apparition de la courbe n° 6 du document 1. (avec  détails excessifs et les réactions chimiques).</p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">corrigé série 5</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Bac Sc Exp (Top 50 _ Gr 1 )</p>
+<p class="subhead t-red">Correction Série 23 : SNX</p>
+<p class="para"><span class="t-gold">Lundi 20/02/2023</span></p>
+<!-- NOTE: cover page branding (Taki Academy logo, www.takiacademy.com, branch list, phone number, "2023" badge) not transcribed — publisher header/footer -->
+<!-- page 02 -->
+<div class="exsub">Exercice 1 45 min 07 pts</div>
+<!-- NOTE: coloured highlighting (yellow, cyan, green, magenta backgrounds) on some words of the correction not reproduced -->
+<table>
+<tr><th>Analyse</th><th>Conclusion</th></tr>
+<tr><td><b>1°/</b><br>La stimulation du neurone A entraîne une dépolarisation de 15 mv (-55-(-70) = +15mv).</td><td>La fibre nerveuse répond à une stimulation, elle est <b><u>excitable</u>.</b></td></tr>
+<tr><td><b>2°/</b><br><span class="t-red"><b>Exp.1</b></span> : La stimulation d’intensité I1 portée sur le neurone A permet l’enregistrement :<ul class="b"><li>en O1 : une dépolarisation qui n’atteignant pas le seuil de -50 mv.</li><li>en O2 et O3 : un PR ( -70 mv).</li></ul><span class="t-red"><b>Exp.2</b></span> : La stimulation d’intensité I2 &gt; I1 portée en A permet d’enregistrer :<ul class="b"><li>en O1 : une dépolarisation qui atteint le seuil de -50 mv et déclenche un PA (100 mv)</li><li>en O2 :  une dépolarisation postsynaptique (un PPSE).</li><li>En O3 un PR ( -70 mv).</li></ul></td><td><ul class="b"><li>Propriété de la fibre nerveuse : elle a un seuil de potentiel nécessaire pour le déclenchement de PA. Aussi on peut déduire qu’elle est conductrice du PA</li><li>La synapse S1  est excitatrice puisqu’on enregistré un PPSE en O2.</li></ul></td></tr>
+<tr><td>3°/ Analyse des résultats de l’expérience 3 :<br>Les 2 stimulations d’intensité I2 très rapprochées en A, sont à l’origine<ul class="b"><li>En O1 : 2 PA sont enregistrés</li><li>en O2 : on enregistre un PPSE global qui atteint le seuil e<!-- PROOFREAD: 4773 part7 p02 — "le seuil e" text cut by the table cell edge --> qui résulte de la sommation temporelle des 2 PPSE successifs ; ce PPSE est à l’origine  du PA.</li><li>En O3 : le tracé C3 obtenu représente un PPSE d’amplitude 13 mv environ.</li></ul></td><td>La synapse S2 est <b>excitatrice</b>.</td></tr>
+<tr><td>4°/ Explication des résultats de l’expérience 4 :<br>Le tracé D2 enregistré en O2 suite à 2 stimulations simultanées de A et B d’intensité I2 est un PPSE global d’amplitude 5mv ; cette diminution d’amplitude s’explique par la sommation spatiale d’un PPSE et d’un PPSI.</td><td><ul class="b"><li>Le neurone C est un neurone intégrateur.</li><li>La synapse S3 est inhibitrice.</li></ul></td></tr>
+</table>
+<p class="para"><b>5°/ a-</b> Dans les conditions expérimentales (expérience 4), le message nerveux se propage dans les deux sens d’où l’obtention du tracé D3.<br>
+<b>b-</b></p>
+<!-- page 03 -->
+<!-- CROP: 4773 7 3 0.140 0.072 0.860 0.345 4773_p7_03_propagation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p7_03_propagation.png" alt=""></figure>
+
+<div class="chtag"><span>Chapitre</span> Muscle squelettique (contraction)</div>
+
+<div class="exsub">Exercice 2 35 min 04 pts</div>
+<p class="para"><b>1)</b></p>
+<table>
+<tr><th><span class="t-red">Structures</span></th><th><span class="t-red">Noms</span></th><th><span class="t-red">Justification</span></th></tr>
+<tr><td>A</td><td>Sarcomère au repos</td><td rowspan="2">Car il y a raccourcissement de la bande H et rapprochement des deux strie Z successives l’un de l’autre</td></tr>
+<tr><td>B</td><td>Sarcomère contracté</td></tr>
+</table>
+<p class="para">2) 1 : myofilament épais de myosine          2 : myofilament fin d’actine<br>
+3) a- + b</p>
+<!-- CROP: 4773 7 3 0.143 0.576 0.855 0.806 4773_p7_03_sarcomere -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p7_03_sarcomere.png" alt=""></figure>
+<p class="para">4)<br>
+<span class="t-blue"><b>Hydrolyse de l’ATP :</b></span> <b>ATP + H2O <span class="t-red"><u>ATP ase</u></span>→ ADP + P+ Energie</b><br>
+<b>( une partie est convertie en énergie initiale de contraction)</b><br>
+<b>Régénération de l’ATP :</b></p>
+<ul class="b">
+<li><span class="t-blue"><b>Voies rapides</b></span> <b>: ADP+PC <span class="t-red"><u>créatine Kinase</u></span>→ ATP +C  + chaleur initiale de relâchement</b></li>
+<!-- page 04 -->
+<li><b>ADP+ ADP <span class="t-red">myokinase</span>→ ATP +AMP</b></li>
+</ul>
+<p class="para"><span class="t-blue"><b>Voie lente :</b></span></p>
+<ul class="b">
+<li><b>glycogène + Pi → glucose-P <span class="t-red">glycolyse</span>→ acide pyruvique + 2 ATP</b></li>
+<li><b>Respiration cellulaire (réaction aérobique : avec O2) :<br>
+acide pyruvique + O2 → H2O + CO2 + ATP + chaleur retardée.</b></li>
+</ul>
+<div class="exsub">Exercice 2 50 min 08 pts</div>
+<p class="para"><b>1)</b></p>
+<table>
+<tr><th><span class="t-blue">1</span></th><th><span class="t-blue">2</span></th><th><span class="t-blue">3</span></th><th><span class="t-blue">4</span></th><th><span class="t-blue">5</span></th><th><span class="t-blue">6</span></th></tr>
+<tr><td>PAm</td><td>Concentration sarcoplasmique en Ca<sup>2+</sup></td><td>Chaleur initiale de contraction</td><td>Secousse musculaire</td><td>Chaleur initiale de relâchement</td><td>Chaleur retardée</td></tr>
+</table>
+<p class="para"><b>2)</b> Le document 2 montre que la fibre musculaire placée dans un milieu M1  en présence de glucose puis stimulée efficacement se contracte avec dégagement de la chaleur initiale mais disparition de la chaleur retardée donc  il y a <b>disparition de la respiration cellulaire</b> et par la suite M1 est un milieu <b>dépourvu en O<sub>2</sub> (anaérobique)</b>, car c’est l’oxydation des acides pyruviques, provenant de la glycolyse, dans les mitochondries qui est responsable de la libération de la chaleur retardée.</p>
+<p class="para"><b>3)</b> La stimulation d’une fibre musculaire placée dans un milieu M2  contenant un poison qui empêche l’utilisation de l’énergie montre :<br>
+- Naissance d’un PAm.<br>
+- Libération des ions Ca<sup>2+</sup> dans le sarcoplasme sans retour dans les citernes.<br>
+- Disparition de la contraction et de dégagement des chaleurs.<br>
+Donc ce poison empêche l’hydrolyse de l’ATP :<br>
+- La stimulation provoque la naissance de PAm responsable de la libération des ions Ca<sup>2+</sup> dans le sarcoplasme.<br>
+- L’absence de l’hydrolyse d’ATP  empêche le glissement d’actine entre la myosine d’où l’absence de contraction et de libération de la chaleur de contraction.<br>
+- L’absence de régénération explique la disparition de la chaleur de relâchement  et de la chaleur retardée.<br>
+- En présence de ce poison, la fibre n’utilise pas l’ATP donc il n’y a pas retour de Ca<sup>2+</sup> dans les citernes qui se fait par transport actif.</p>
+<p class="para"><b>4)</b><br>
+- naissance d’un PAm qui se propage le long du sarcolemme.<br>
+- libération de Ca<sup>2+</sup> dans le sarcoplasme.<br>
+- démasquage des sites de fixation des têtes de myosine sur l’actine.<br>
+- fixation du complexe ATP-myosine sur l’actine ce qui active le pouvoir ATPasique de la myosine.<br>
+- hydrolyse de l’ATP d’où pivotement des têtes de myosine et glissement d’actine accompagné de libération de la chaleur de contraction.</p>
+<!-- page 05 -->
+<!-- CROP: 4773 7 5 0.135 0.068 0.895 0.140 4773_p7_05_hydrolyse_atp -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p7_05_hydrolyse_atp.png" alt=""></figure>
+<p class="para">- régénération rapide de l’ATP par la voie de phosphocréatine qui libère la chaleur initiale de relâchement :</p>
+<!-- CROP: 4773 7 5 0.145 0.193 0.890 0.276 4773_p7_05_regeneration_rapide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p7_05_regeneration_rapide.png" alt=""></figure>
+<p class="para">- régénération lente de l’ATP par respiration cellulaire et dégagement  de la chaleur retardée. :<br>
+acide pyruvique + O<sub>2</sub> → H<sub>2</sub>O + CO<sub>2</sub> + ATP + <b>chaleur retardée</b>. -</p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">série 6</div>
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-blue"><b>SVT</b></span></p>
+<p class="subhead t-navy"><span class="t-blue">Bac Sc Exp (Top 50 – Gr 1)</span></p>
+<p class="subhead t-navy"><span class="t-blue"><b>Série 24 : DS n°2 (Neuro)</b></span></p>
+<p class="para"><span class="t-gold">Lundi 06/03/2023</span></p>
+<!-- NOTE: cover page branding (Taki Academy logo, www.takiacademy.com, branch list, phone number, "2023" badge) not transcribed — publisher header/footer -->
+<!-- page 02 -->
+<div class="exsub">Exercice 1 45 min 07 pts</div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes.<br>
+Reportez sur votre copie, le numéro de chaque item et indiquez la (ou les) lettre(s)</p>
+<p class="para"><span class="t-blue"><b>1) Un potentiel de récepteur et un potentiel local ont en commun :</b></span></p>
+<p class="para"><b>a-</b> la variation de la différence de potentiel membranaire,<br>
+<b>b-</b> une amplitude constante,<br>
+<b>c-</b> la propagation sur une fibre nerveuse,<br>
+<b>d-</b> la présence d'un temps de latence.</p>
+<p class="para"><span class="t-blue"><b>2) Le transport des ions K<sup>+</sup> du milieu extracellulaire vers le milieu intracellulaire peut être bloqué ou très réduit par :</b></span></p>
+<p class="para"><b>a-</b> l'élimination de Na<sup>+</sup> extracellulaire,<br>
+<b>b-</b> la diminution de K<sup>+</sup> intracellulaire,<br>
+<b>c-</b> l'augmentation de Na<sup>+</sup> intracellulaire<br>
+<b>d-</b> l'arrêt de synthèse de l'énergie par la cellule.</p>
+<p class="para"><span class="t-blue"><b>3) Le potentiel de repos d'une fibre nerveuse isolée non myélinisée :</b></span></p>
+<p class="para"><b>a-</b> peut être mesuré entre deux électrodes disposées à la surface de la fibre,<br>
+<b>b-</b> dépend de la concentration des ions chlores de part et d'autre de la membrane,<br>
+<b>c-</b> tend à s'annuler quand on bloque la pompe à Sodium-Potassium,<br>
+<b>d-</b> ne consomme pas d'énergie puisque la fibre est inactive.</p>
+<p class="para"><span class="t-blue"><b>4) Au niveau d'une fibre nerveuse, la valeur absolue de l’amplitude du potentiel d'action né d'une stimulation efficace est :</b></span></p>
+<p class="para"><b>a-</b> proportionnelle à l’intensité de la stimulation,<br>
+<b>b-</b> constante,<br>
+<b>c-</b> variable en fonction de la nature de la stimulation,<br>
+<b>d-</b> indépendante de la fréquence de la stimulation.</p>
+<p class="para"><span class="t-blue"><b>5) La phase de repolarisation d'un potentiel d'action est le résultat d’une :</b></span></p>
+<p class="para"><b>a-</b> entrée massive de Na<sup>+</sup> à l'intérieur de la fibre à travers des canaux voltage dépendants,<br>
+<b>b-</b> sortie de Na<sup>+</sup> de la fibre à travers des canaux voltage dépendants,<br>
+<b>c-</b> entrée massive de K<sup>+</sup> à l'intérieur de la fibre à travers des canaux voltage dépendants,<br>
+<b>d-</b> sortie de K<sup>+</sup> de la fibre à travers des canaux voltage dépendants.</p>
+<p class="para"><span class="t-blue"><b>6) Un message nerveux parcourt une chaîne neuronique longue de 4 cm en 3 ms. Sachant que sa vitesse V est de 20 ms<sup>-1</sup>, dans ce cas, cette chaine comporte :</b></span></p>
+<p class="para"><b>a-</b> 1 seul neurone,<br>
+<b>b-</b> 2 neurones,<br>
+<b>c-</b> 3 neurones,<br>
+<b>d-</b> 4 neurones.</p>
+<p class="para"><span class="t-blue"><b>7) Les canaux chimiodépendants à Cl<sup>-</sup> :</b></span></p>
+<p class="para"><b>a-</b> s’ouvrent suite à une entrée du neurotransmetteur dans l’élément postsynaptique,<br>
+<b>b-</b> assurent un transport passif des ions Cl<sup>-</sup>,<br>
+<b>c-</b> sont responsables de la dépolarisation du neurone postsynaptique,<br>
+<b>d-</b> existent au niveau des synapses excitatrices.</p>
+<p class="para"><span class="t-blue"><b>8) La période réfractaire :</b></span></p>
+<p class="para"><b>a-</b> résulte de la propagation unidirectionnelle du message nerveux,<br>
+<b>b-</b> est à l'origine de la propagation unidirectionnelle du message nerveux,<br>
+<b>c-</b> s'explique par la fermeture momentanée des C.C.D. à Na<sup>+</sup>,<br>
+<b>d-</b> s'explique par l’ouverture momentanée des C.V.D. à K<sup>+</sup>.</p>
+<!-- page 03 -->
+
+<div class="chtag"><span>Chapitre</span> Muscle squelettique (contraction)</div>
+
+<div class="exsub">Exercice 2 35 min 04 pts</div>
+<p class="para">La contraction musculaire se fait selon un mécanisme dans lequel se succèdent divers phénomènes.<br>
+Le document 1, présente schématiquement, les phénomènes qui se succèdent au cours de la secousse musculaire.<br>
+<b>1)</b> Complétez le document 1 :<br>
+<b>a-</b> donnant une légende complète en face des numéros indiqués.<br>
+<b>b-</b> schématisant les éléments non représentés.<br>
+<b>c-</b> donnant les commentaires dans les encadrés.<br>
+<b>2)</b> Sur le document 2, écrivez les équations des réactions chimiques à l’origine des chaleurs dégagées lors de la secousse musculaire.</p>
+<!-- CROP: 4773 8 3 0.085 0.315 0.945 0.860 4773_p8_03_doc1_secousse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_03_doc1_secousse.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<!-- page 04 -->
+<div class="data"><p class="para">……………………………………………………………………………………………………………<br>
+……………………………………………………………………………………………………………<br>
+……………………………………………………………………………………………………………<br>
+……………………………………………………………………………………………………………<br>
+……………………………………………………………………………………………………………<br>
+……………………………………………………………………………………………………………<br>
+……………………………………………………………………………………………………………<br>
+……………………………………………………………………………………………………………<br>
+……………………………………………………………………………………………………………<br>
+……………………………………………………………………………………………………………<br>
+……………………………………………………………………………………………………………</p></div>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">Exercice 3 35 min 04 pts</div>
+<p class="para">Pour comprendre les conditions de naissance du potentiel d’action au niveau d’une fibre nerveuse, on a réalisé différentes expériences faites sur des axones géants de calmar dans différents milieux contenant de l’eau de mer et dont la composition change d’une expérience à l’autre. (Document 1)</p>
+<table>
+<tr><th>Expériences</th><th>Composition du milieu</th></tr>
+<tr><td><span class="t-blue"><b>Expérience 1</b></span></td><td>Milieu formé de l’eau de mer normale</td></tr>
+<tr><td><span class="t-blue"><b>Expérience 2</b></span></td><td>Milieu formé de <b>1/3</b> d’eau de mer et de <b>2/3</b> d’une solution isotonique de glucose</td></tr>
+<tr><td><span class="t-blue"><b>Expérience 3</b></span></td><td>Milieu formé de l’eau de mer additionnée d’un poison bloquant les CVD à K<sup>+</sup></td></tr>
+<tr><td><span class="t-blue"><b>Expérience 4</b></span></td><td>Milieu formé de l’eau de mer additionnée d’un poison bloquant les CVD à Na<sup>+</sup></td></tr>
+</table>
+<p class="para"><b>Document 1</b></p>
+<p class="para">Ensuite, dans chaque expérience, on porte sur l’axone une stimulation efficace.<br>
+Les enregistrements obtenus sur l’oscilloscope, figurent en désordre dans le document 2 de la feuille annexe.<br>
+<b>1)</b> Sur le tableau de la feuille annexe à rendre avec votre copie, faites correspondre chaque tracé du document 2 à son expérience du tableau et justifiez votre réponse.<br>
+<b>2)</b> Une autre fibre nerveuse de calmar est mise dans les conditions expérimentales de l’expérience 1 au niveau de laquelle on a placé quatre oscilloscopes successifs à des distances précises des électrodes stimulatrices voir document 3.</p>
+<!-- page 05 -->
+<!-- CROP: 4773 8 5 0.095 0.070 0.612 0.268 4773_p8_05_doc3_montage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_05_doc3_montage.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<!-- CROP: 4773 8 5 0.612 0.070 0.910 0.268 4773_p8_05_doc4_enregistrements -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_05_doc4_enregistrements.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para">On porte une stimulation efficace en S<sub>1</sub>S<sub>2</sub>. Le document 4 montre les résultats obtenus par superpositions des 4 écrans des oscilloscopes sur le même écran.<br>
+<b>a-</b> Sur le papier millimétré de la feuille annexe, tracez le graphe de la variation du temps de Latence en fonction de la distance qui sépare S<sub>1</sub>S<sub>2</sub> des électrodes réceptrices.<br>
+<b>b-</b> Montrez que le potentiel d’action se propage sur cette fibre nerveuse avec une vitesse constante.</p>
+<div class="exsub">Exercice 4 40 min 06 pts</div>
+<p class="para"><b>L’anxiété chronique</b> est un état de malaise psychique (stress) fréquemment accompagné de contractions brusques et imprévues des muscles squelettiques, localisées ou généralisées à tout le corps. Ces contractions musculaires peuvent être soignées par des médicaments antidépresseurs de la famille des <b>benzodiazépines</b>. Pour mieux comprendre les causes des contractions musculaires involontaires accompagnant l’anxiété et le mode d’action des benzodiazépines sur les centres nerveux, on réalise les expériences suivantes :<br>
+Le document 1 montre le montage expérimental et la localisation des expériences menées sur un motoneurone de la moelle épinière d’un mammifère.</p>
+<!-- CROP: 4773 8 5 0.140 0.645 0.885 0.888 4773_p8_05_ex4_doc1_montage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_05_ex4_doc1_montage.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<!-- page 06 -->
+<p class="para"><span class="t-blue"><b>1<sup>ère</sup> série d’expériences :</b></span> résultats expérimentaux de stimulations chez un mammifère.</p>
+<!-- CROP: 4773 8 6 0.100 0.092 0.900 0.408 4773_p8_06_ex4_doc2_tableau -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_06_ex4_doc2_tableau.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>1)</b> Analysez les résultats de la 1<sup>ère</sup> série d’expériences en vue de déduire les propriétés des phénomènes nerveux et musculaires obtenus, ainsi que la nature des synapses mises en jeu.</p>
+<p class="para"><span class="t-blue"><u>2<sup>ème</sup> série d’expériences</u></span> <b>: Reproduction expérimentale des signes de l’anxiété (stress) chez un mammifère.</b></p>
+<p class="para">On peut reproduire expérimentalement la situation de l’anxiété par injection de la picrotoxine (Toxine) dans la fente synaptique F. La picrotoxine se fixe sur les récepteurs membranaires du neurotransmetteur GABA.</p>
+<p class="para">Enregistrement en E1 de la polarisation suite à une stimulation St1, sans injection de  picrotoxine au niveau de <b>F</b> (courbe <b>1</b>) et avec injection de picrotoxine au niveau de <b>F</b> (courbe <b>2</b>).</p>
+<!-- CROP: 4773 8 6 0.440 0.570 0.905 0.758 4773_p8_06_ex4_doc3_courbes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_06_ex4_doc3_courbes.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para"><b>2)</b> Analysez les résultats de la 2<sup>ème</sup>  série d’expériences en vue de déduire les effets physiologiques de la picrotoxine et par suite du stress sur le système nerveux et ses manifestations au niveau de l’activité musculaire.</p>
+<p class="para"><span class="t-blue"><u>3<sup>ème</sup> série d’expériences</u></span> <b>: action des benzodiazépines.</b></p>
+<p class="para">Les benzodiazépines sont des tranquillisants utilisés contre l’anxiété qui se fixent de manière spécifique aux récepteurs membranaires du GABA (document 4)</p>
+<!-- page 07 -->
+<p class="para"><b>Enregistrement en E1 de la polarisation après injection du GABA au niveau de F en absence de benzodiazépines.</b></p>
+<!-- CROP: 4773 8 7 0.125 0.148 0.460 0.315 4773_p8_07_doc4_sans_benzo -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_07_doc4_sans_benzo.png" alt=""></figure>
+<p class="para"><b>Enregistrement en E1 de la polarisation après injection du GABA au niveau de F en présence de benzodiazépines.</b></p>
+<!-- CROP: 4773 8 7 0.530 0.148 0.865 0.310 4773_p8_07_doc4_avec_benzo -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_07_doc4_avec_benzo.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para"><b>3)</b> Analysez les résultats de la 3<sup>ème</sup>  série d’expériences en vue de déduire les effets physiologiques des benzodiazépines sur le système nerveux, sur l’activité musculaire et sur l’état psychologique de l’individu.<br>
+<b>4)</b> Le graphe du document 5 présente les résultats obtenus quant à la fixation du GABA sur ses récepteurs post synaptiques lors de la micro injection de benzodiazépines dans la fente synaptique F :</p>
+<!-- PROOFREAD: 4773 part8 p07 — "document 5 présente les" is crossed by a dashed line on the page (struck through?) -->
+<!-- CROP: 4773 8 7 0.215 0.487 0.785 0.660 4773_p8_07_doc5_fixation_gaba -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_07_doc5_fixation_gaba.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para">Expliquez, en exploitant les informations fournies par le document 6, le mode d’action synaptique des benzodiazépines.</p>
+<!-- page 08 -->
+<p class="subhead t-red"><b>Feuille annexe</b></p>
+<p class="subhead t-navy">A rendre avec votre copie</p>
+<p class="para">Nom et Prénom : ………………………………………………….   Classe :4<sup>ème</sup> Sc.Exp……</p>
+<!-- CROP: 4773 8 8 0.115 0.182 0.885 0.330 4773_p8_08_doc2_traces -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_08_doc2_traces.png" alt=""></figure>
+<p class="para">Document 2</p>
+<table>
+<tr><th>Expérience</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+<tr><td><b>Tracé</b></td><td>Tracé …</td><td>Tracé …</td><td>Tracé …</td><td>Tracé …</td></tr>
+<tr><td><b>Justification</b></td><td>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………</td><td>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………</td><td>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………</td><td>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………</td></tr>
+</table>
+<!-- CROP: 4773 8 8 0.205 0.670 0.800 0.942 4773_p8_08_papier_millimetre -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p8_08_papier_millimetre.png" alt=""></figure>
+
+
+<div class="exsub">série 7</div>
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-blue"><b>SVT</b></span></p>
+<p class="subhead t-navy"><span class="t-blue">Bac Sc Exp (Top 50 – Gr 1)</span></p>
+<p class="subhead t-navy"><span class="t-blue"><b>Série 25 : DS n°2 (Neuro)</b></span></p>
+<p class="para"><span class="t-gold">Lundi 13/03/2023</span></p>
+<!-- NOTE: cover page branding (Taki Academy logo, www.takiacademy.com, branch list, phone number, "2023" badge) not transcribed — publisher header/footer -->
+<!-- page 02 -->
+
+<div class="chtag"><span>Chapitre</span> Muscle squelettique (contraction)</div>
+
+<div class="exsub">Exercice 1 35 min 04 pts</div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes.<br>
+Reportez sur votre copie, le numéro de chaque item et indiquez-la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).</p>
+<p class="consigne"><b>NB : Toute réponse fausse annule la note attribuée à l’item considéré</b>.</p>
+<p class="para"><span class="t-blue"><b>1) Placé dans un milieu anaérobie, un muscle reste capable de régénérer l’ATP à partir de :</b></span></p>
+<p class="para"><b>a -</b> créatine,<br>
+<b>b -</b> la phosphocréatine,<br>
+<b>c -</b> glucose-phosphate,<br>
+<b>d -</b> l’adénosine monophosphate.</p>
+<p class="para"><span class="t-blue"><b>2) Au cours de la contraction musculaire, la régénération rapide de l’ATP est assurée par :</b></span></p>
+<p class="para"><b>a -</b> la respiration cellulaire,<br>
+<b>b -</b> la fermentation lactique,<br>
+<b>c -</b> la voie de la phosphocréatine,<br>
+<b>d -</b> l’association de deux molécules d’AMP.</p>
+<p class="para"><span class="t-blue"><b>3) La chaleur initiale de relâchement :</b></span></p>
+<p class="para"><b>a -</b> est le résultat de l’hydrolyse de phosphocréatine,<br>
+<b>b -</b> est le résultat de l’hydrolyse d’ADP,<br>
+<b>c -</b> fait intervenir la créatine kinase,<br>
+<b>d -</b> fait intervenir l'ATPase.</p>
+<p class="para"><span class="t-blue"><b>4) Ce qui caractérise la chaleur initiale par rapport à la chaleur retardée c’est qu’elle est :</b></span></p>
+<p class="para"><b>a -</b> aérobie,<br>
+<b>b -</b> anaérobie,<br>
+<b>c -</b> moins ample,<br>
+<b>d -</b> plus brève.</p>
+<p class="para"><span class="t-blue"><b>5) La chaleur initiale de la contraction musculaire</b></span></p>
+<p class="para">a-  est le résultat de l’hydrolyse de l’ATP,<br>
+b- est le résultat de la regénération de l’ATP,<br>
+c-   nécessite l’eau,<br>
+d-   nécessite l’oxygéne</p>
+<p class="para"><span class="t-blue"><b>6) Le document suivant représente en désordre quatre étapes à l’origine de la contraction musculaire.L’ordre chronologique normal de ces quatres étapes est :</b></span></p>
+<p class="para">a- A-B-D-C<br>
+b- A-D-B-C<br>
+c- C-B-D-A<br>
+d- B-D-A-C</p>
+<!-- CROP: 4773 9 2 0.398 0.730 0.868 0.803 4773_p9_02_etapes_contraction -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_02_etapes_contraction.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>7) La régénération lente d’ATP dans le muscle squelettique en contraction est assurée par la(les) réactions(s) suivante(s) :</b></span></p>
+<p class="para">a-   ATP + H<sub>2</sub>O ⟶ ADP + P ,<br>
+b-   ADP + ADP ⟶ AMP + ATP ,<br>
+c-   glucose-P + ADP ⟶ acide pyruvique + ATP ,<br>
+d-   Phosphocréatine + ADP ⟶ créatine + ATP.</p>
+<!-- page 03 -->
+<p class="para"><span class="t-blue"><b>8) Au cours de la contraction musculaire :</b></span></p>
+<p class="para">a-   les myofilaments d’actine glissent entre les myofilaments de myosine,<br>
+b-   les myofilaments de myosine glissent entre les myofilaments d’actine,<br>
+c-   le sarcomère se raccourcit par raccourcissement des disques clairs,<br>
+d-   le sarcomère se raccourcit par raccourcissement des disques sombres.</p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">Exercice 2 35 min 04 pts</div>
+<p class="para">On se propose d’enregistrer des potentiels au niveau de certaines structures nerveuses. Complétez le tableau 1.</p>
+<table>
+<tr><th><span class="t-blue">Potentiel</span></th><th><span class="t-blue">Nom</span></th><th><span class="t-blue">Lieu d’enregistrement</span></th><th><span class="t-blue">Conditions de naissance du potentiel ou d’enregistrement</span></th></tr>
+<tr><td><!-- CROP: 4773 9 3 0.110 0.362 0.295 0.492 4773_p9_03_potentiel1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_03_potentiel1.png" alt=""></figure></td><td>…………………<br>…………………<br>…………………<br>…………………</td><td>………………………<br>………………………<br>………………………<br>………………………<br>………………………<br>………………………</td><td>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………</td></tr>
+<tr><td><!-- CROP: 4773 9 3 0.110 0.518 0.295 0.652 4773_p9_03_potentiel2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_03_potentiel2.png" alt=""></figure></td><td>…………………<br>…………………<br>…………………<br>…………………<br>…………………</td><td>………………………<br>………………………<br>………………………<br>………………………<br>………………………<br>………………………<br>………………………</td><td>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………</td></tr>
+<tr><td><!-- CROP: 4773 9 3 0.110 0.688 0.295 0.820 4773_p9_03_potentiel3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_03_potentiel3.png" alt=""></figure></td><td>…………………<br>…………………<br>…………………<br>…………………<br>…………………<br>…………………</td><td>………………………<br>………………………<br>………………………<br>………………………<br>………………………<br>………………………<br>………………………<br>………………………</td><td>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………</td></tr>
+</table>
+<!-- page 04 -->
+<div class="exsub">Exercice 3 50 min 07 pts</div>
+<p class="para">Pour comprendre le mode d’action de certaines substances au niveau de la jonction neuromusculaire (curare, nicotine et ésérine), on réalise le dispositif expérimental ci-dessous et les deux séries d’expériences suivantes :</p>
+<!-- CROP: 4773 9 4 0.190 0.206 0.852 0.353 4773_p9_04_dispositif_jonction -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_04_dispositif_jonction.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>1<sup>ère</sup>  série d’expériences</b></span></p>
+<table>
+<tr><th><span class="t-blue">Expériences</span></th><th><span class="t-blue">Résultats</span></th></tr>
+<tr><td><b>a-</b>  Stimulation efficace de l’axone moteur en SA.</td><td>Contraction normale de la fibre musculaire.</td></tr>
+<tr><td><b>b-</b>  Dépôt de curare sur l’axone moteur et stimulation efficace en SA.</td><td>Contraction normale de la fibre musculaire.</td></tr>
+<tr><td><b>c-</b>  Injection de curare dans la fibre musculaire et stimulation efficace en SA.</td><td>Contraction normale de la fibre musculaire.</td></tr>
+<tr><td><b>d-</b> Dépôt de curare dans la jonction neuromusculaire et stimulation efficace en SA.</td><td>Pas de contraction de la fibre musculaire.</td></tr>
+<tr><td><b>e-</b> Dépôt de curare radioactif dans la jonction neuromusculaire.</td><td>La radioactivité se manifeste au niveau de la membrane post-synaptique.</td></tr>
+</table>
+<p class="para"><b>1)</b> À partir de l’analyse de ces résultats et en utilisant vos connaissances, expliquez le mode d’action du curare.</p>
+<p class="para"><span class="t-blue"><b>2<sup>ème</sup>  série d’expériences</b></span></p>
+<table>
+<tr><th><span class="t-blue">Expériences</span></th><th><span class="t-blue">Résultats</span></th></tr>
+<tr><td><b>a)</b> Dépôt de nicotine dans la jonction neuromusculaire sans aucune stimulation.</td><td>Contraction prolongée de la fibre musculaire.</td></tr>
+<tr><td><b>b)</b> Dépôt d'ésérine dans la jonction neuromusculaire et stimulation efficace en SA.</td><td>Contraction prolongée de la fibre musculaire.</td></tr>
+<tr><td><b>c)</b> Dépôt de curare puis de nicotine dans la jonction neuromusculaire et stimulation efficace en SA.</td><td><b>?</b></td></tr>
+</table>
+<p class="para"><b>2)</b> À partir des résultats des expériences (a) et (b) et en utilisant vos connaissances, expliquez pourquoi la contraction de la fibre musculaire est prolongée dans chacune des deux expériences, tout en précisant le rôle de la nicotine et de l’ésérine.<br>
+<b>3)</b> Quel doit être le résultat de l’expérience (c) ? Justifiez votre réponse.</p>
+<!-- page 05 -->
+<div class="exsub">Exercice 4 50 min 07 pts</div>
+<p class="para">Dans le but d'étudier quelques aspects du fonctionnement de la plaque motrice, on réalise les expériences suivantes :<br>
+<span class="t-blue"><b>Expériences 1 et 2 :</b></span> On réalise deux expériences de stimulation électrique sur une structure composée d'une fibre nerveuse innervant une fibre musculaire squelettique, dans des conditions expérimentales différentes et on enregistre la tension de la fibre musculaire.</p>
+<table>
+<tr><th><span class="t-blue">Expérience 1</span></th><th colspan="2"><span class="t-blue">Expérience 2</span></th></tr>
+<tr><td rowspan="2">On place la fibre nerveuse dans un liquide physiologique contenant la même substance X dont on veut déterminer le mode d’action. Ensuite, on applique une stimulation efficace St1 sur cette fibre nerveuse et on enregistre la tension de la fibre musculaire.
+<!-- CROP: 4773 9 5 0.060 0.390 0.395 0.488 4773_p9_05_exp1_montage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_05_exp1_montage.png" alt=""></figure></td><td colspan="2">On place la fibre musculaire et une partie de la fibre nerveuse dans le liquide physiologique contenant la même substance X.
+<!-- CROP: 4773 9 5 0.425 0.303 0.965 0.395 4773_p9_05_exp2_montage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_05_exp2_montage.png" alt=""></figure></td></tr>
+<tr><td>On applique une stimulation efficace St1 sur la fibre nerveuse et on enregistre la tension de la fibre musculaire.</td><td>On applique une stimulation efficace St2 directement  sur la fibre musculaire et on enregistre la tension de la fibre musculaire.</td></tr>
+<tr><th><span class="t-blue">Résultat</span></th><th colspan="2"><span class="t-blue">Résultats</span></th></tr>
+<tr><td><!-- CROP: 4773 9 5 0.050 0.528 0.340 0.628 4773_p9_05_resultat_exp1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_05_resultat_exp1.png" alt=""></figure></td><td><!-- CROP: 4773 9 5 0.425 0.528 0.660 0.628 4773_p9_05_resultat_exp2_st1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_05_resultat_exp2_st1.png" alt=""></figure></td><td><!-- CROP: 4773 9 5 0.700 0.528 0.945 0.628 4773_p9_05_resultat_exp2_st2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_05_resultat_exp2_st2.png" alt=""></figure></td></tr>
+</table>
+<p class="para"><b>Document 1</b></p>
+<p class="para">Le document 1 présente les expériences et les résultats obtenus.</p>
+<p class="para">1)  Exploitez les résultats de ces deux expériences en vue de déduire le lieu d'action de la substance X.<br>
+2)  Proposez trois hypothèses expliquant le mode d'action de la substance X sachant qu'elle n'a pas d'effet direct sur les flux ioniques.</p>
+<p class="para"><span class="t-blue"><b>Expérience 3</b></span><br>
+En utilisant le dispositif expérimental présenté par le document 3, on injecte la substance X dans l'élément présynaptique, puis on applique la simulation St<sub>1</sub> sur la fibre nerveuse et on enregistre le phénomène électrique au niveau de l'oscilloscope (O).</p>
+<!-- page 06 -->
+<!-- CROP: 4773 9 6 0.075 0.072 0.625 0.208 4773_p9_06_doc2_dispositif -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_06_doc2_dispositif.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<!-- CROP: 4773 9 6 0.628 0.072 0.940 0.208 4773_p9_06_doc3_enregistrement -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_06_doc3_enregistrement.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para">Le résultat obtenu est présenté par le document 3.<br>
+3)  Exploitez le résultat de l'expérience 2, en vue de préciser l'hypothèse (ou les hypothèses) à retenir parmi celles proposées précédemment.</p>
+<p class="para"><span class="t-blue"><b>Expérience 4, 5 et 6</b></span> :<br>
+en utilisant le même dispositif expérimental du document 2 on réalise des expériences de marquage radioactif et d'injection de certaines substances, puis on enregistre les phénomènes électriques musculaires au niveau de l'oscilloscope O<br>
+les conditions expérimentales et les résultats obtenus sans présentés par le document 4.</p>
+<table>
+<tr><th rowspan="2">Exp</th><th rowspan="2">Conditions expérimentales</th><th colspan="2">Résultats</th></tr>
+<tr><th>Localisation de la radioactivité</th><th>Enregistrements en (O)</th></tr>
+<tr><td>4</td><td><ul class="b"><li>Liquide physiologique dépourvu de la substance X</li><li>Injection d’acétylcholine radioactive (Ach*) au niveau de la fente synaptique.</li></ul></td><td><!-- CROP: 4773 9 6 0.485 0.485 0.695 0.592 4773_p9_06_exp4_radioactivite -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_06_exp4_radioactivite.png" alt=""></figure></td><td><!-- CROP: 4773 9 6 0.712 0.485 0.925 0.592 4773_p9_06_exp4_enregistrement -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_06_exp4_enregistrement.png" alt=""></figure></td></tr>
+<tr><td>5</td><td><ul class="b"><li>Liquide physiologique contenant la substance X radioactive. .</li><li>Injection d’acétylcholine  non radioactive (Ach) au niveau de la fente synaptique.</li></ul></td><td><!-- CROP: 4773 9 6 0.485 0.608 0.695 0.715 4773_p9_06_exp5_radioactivite -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_06_exp5_radioactivite.png" alt=""></figure></td><td><!-- CROP: 4773 9 6 0.712 0.608 0.925 0.715 4773_p9_06_exp5_enregistrement -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_06_exp5_enregistrement.png" alt=""></figure></td></tr>
+<tr><td>6</td><td><ul class="b"><li>Liquide physiologique dépourvu de la substance X.</li><li>Injection de la substance Y radioactive (Y*) au niveau de la fente synaptique.</li></ul></td><td><!-- CROP: 4773 9 6 0.485 0.727 0.695 0.832 4773_p9_06_exp6_radioactivite -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_06_exp6_radioactivite.png" alt=""></figure></td><td><!-- CROP: 4773 9 6 0.712 0.727 0.925 0.832 4773_p9_06_exp6_enregistrement -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p9_06_exp6_enregistrement.png" alt=""></figure></td></tr>
+</table>
+<p class="para"><b>Document 4</b></p>
+<!-- page 07 -->
+<p class="para">4)  À partir de l’analyse comparée des résultats des expériences 4, 5 et 6 :<br>
+a-  comparez le mode d’action des deux substances X et Y.<br>
+b-  expliquez l’obtention de l’enregistrement de l’expérience 5.<br>
+5)  En utilisant les informations tirées précédemment et en faisant appel à vos connaissances, expliquez le mécanisme de la transmission neuromusculaire suite à la stimulation St<sub>1</sub> de la fibre nerveuse.</p>
+
+<div class="chtag"><span>Chapitre</span> Muscle squelettique (contraction)</div>
+
+<div class="exsub">série 8</div>
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-blue"><b>SVT</b></span></p>
+<p class="subhead t-navy"><span class="t-blue">Bac Sc Exp (Top 50 – Gr 1)</span></p>
+<p class="subhead t-navy"><span class="t-blue"><b>Série 26 : Muscle squelettique</b></span></p>
+<p class="para"><span class="t-gold">Lundi 20/03/2023</span></p>
+<!-- NOTE: cover page branding (Taki Academy logo, www.takiacademy.com, branch list, phone number, "2023" badge) not transcribed — publisher header/footer -->
+<!-- page 02 -->
+<div class="exsub">Exercice 1 50 min 07 pts</div>
+<p class="para"><span class="t-red">I)</span> Le document 1 suivant montre une région d'une fibre musculaire observée au microscope électronique.<br>
+ 1) Légendez le document 1 en reportant sur votre copie les numéros (1 à 5) et les noms correspondants.</p>
+<!-- CROP: 4773 10 2 0.195 0.194 0.855 0.368 4773_p10_02_doc1_fibre_me -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_02_doc1_fibre_me.png" alt=""></figure>
+<p class="para">Document 1</p>
+<p class="para">2) La transmission neuromusculaire et la réponse de la fibre musculaire font intervenir des messagers intercellulaires, l’acétylcholine, et intracellulaires, le Ca<sup>2+</sup>.<br>
+Précisez pour chaque messager : le lieu de stockage, la condition de libération et le lieu et la conséquence de sa fixation.</p>
+<p class="para"><span class="t-red"><b>II)</b></span> Dans le but d’étudier les phénomènes énergétiques de la contraction musculaire, on réalise les expériences suivantes :</p>
+<p class="para"><b>1)</b>  <span class="t-blue"><b><u>Expérience 1 :</u></b></span> On mesure la tension d’une myofibrille placée dans un milieu de culture en deux temps :</p>
+<ul class="b">
+<li>au temps  t<sub>1</sub>, on ajoute de l’ATP.</li>
+<li>au  temps t<sub>2</sub>, on ajoute une substance qui bloque l’hydrolyse d’ATP.</li>
+<li>les résultats obtenus sont représentés dans le graphe du document 2.</li>
+</ul>
+<!-- CROP: 4773 10 2 0.265 0.630 0.808 0.773 4773_p10_02_doc2_tension -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_02_doc2_tension.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para">Analysez le graphe du document 1 en vue de dégager une condition de la contraction musculaire.</p>
+<p class="para"><b>2)</b>  <span class="t-blue"><b><u>Expérience 2</u></b></span> : On mesure le taux de quelques constituants du muscle dans différentes conditions. Le document 3a représente les taux de glycogène et d’ATP avant et après contraction musculaire.</p>
+<!-- page 03 -->
+<table>
+<tr><th></th><th>Glycogène (g/kg)</th><th>ATP (mMoles/Kg)</th></tr>
+<tr><td><b>Avant contraction</b></td><td>10.8</td><td>4 à 8</td></tr>
+<tr><td><b>Après contraction</b></td><td>8</td><td>4 à 8</td></tr>
+</table>
+<p class="para"><b>Document 3a</b></p>
+<p class="para">Le document 3b représente les taux d’ATP et de phosphocréatine dans le muscle au repos et lors d’un exercice musculaire de durée 6 minutes.</p>
+<!-- CROP: 4773 10 3 0.222 0.228 0.822 0.375 4773_p10_03_doc3b_atp_phosphocreatine -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_03_doc3b_atp_phosphocreatine.png" alt=""></figure>
+<p class="para"><b>Document 3b</b></p>
+<p class="para">a-  Analysez les résultats des documents 3a et 3b de l’expérience 2 en vue de dégager les sources de l’énergie musculaire.<br>
+b-  En confrontant vos réponses aux questions 1 et 2a, proposez une hypothèse en rapport avec les taux d’ATP.</p>
+<p class="para"><b>3)</b>  <span class="t-blue"><b><u>Expérience 3 :</u></b></span><br>
+On mesure la variation de la concentration d’oxygène et la production d’acide lactique en fonction de l’intensité de l’effort musculaire chez un individu.<br>
+Les résultats obtenus sont représentés dans les tracés du document 4.</p>
+<!-- CROP: 4773 10 3 0.188 0.574 0.856 0.740 4773_p10_03_doc4_acide_lactique_o2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_03_doc4_acide_lactique_o2.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para">Analysez les tracés du document 3 en vue de déduire la nature des réactions se déroulant au cours d’une activité musculaire.</p>
+<p class="para"><b>4)</b>  A partir de l’exploitation des informations tirées précédemment et en faisant appel à vos connaissances, déduisez les voies métaboliques utilisées par les cellules musculaires pour se procurer de l’énergie nécessaire à leur contraction.</p>
+<!-- page 04 -->
+<div class="exsub">Exercice 2 50 min 07 pts</div>
+<p class="para">Le botulisme est une maladie grave qui provoque la paralysie des muscles squelettiques et lisses. Elle devient mortelle lorsqu’elle affecte les muscles des organes vitaux. Cette maladie est due à des toxines appelées toxines botuliques, sécrétées par des bactéries : Clostridium botulinum. Ces bactéries se trouvent essentiellement dans des aliments carnés insuffisamment cuits ou mal conservés.<br>
+Par ailleurs, les toxines botuliques sont utilisées aussi bien en médecine thérapeutique, pour traiter certaines maladies qu’en médecine esthétique, pour gommer les traces du vieillissement.<br>
+On connait actuellement 7 types de toxines botuliques, dont 4 types sont la cause du botulisme chez l’Homme : les toxines botuliques A, B, E et F. Ces toxines sont des enzymes (protéases) qui agissent sur des protéines à différents niveaux. Afin de comprendre le mode d’action de ces toxines, on dispose de document 1 suivant :</p>
+<!-- CROP: 4773 10 4 0.142 0.383 0.860 0.700 4773_p10_04_doc1_plaque_motrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_04_doc1_plaque_motrice.png" alt=""></figure>
+<p class="para"><b><u>Document 1</u> :</b> schéma d’interprétation d’une plaque motrice</p>
+<p class="para"><b>1)</b> En vous basant sur vos connaissances, annotez le document 1 en reportant sur votre copie les numéros de 1 à 7.<br>
+<b>2)</b> En vous référant aux données précédentes, proposez trois hypothèses concernant les cellules cibles des toxines botuliques.</p>
+<!-- page 05 -->
+<table>
+<tr><th>Lieux d’injection<br>Activité musculaire</th><th>Dans l’élément présynaptique</th><th>Dans l’élément postsynaptique</th></tr>
+<tr><td>Activité musculaire (UA<sup>1</sup>) suite à une stimulation<sup>2</sup> efficace du motoneurone</td><td><!-- CROP: 4773 10 5 0.330 0.140 0.585 0.235 4773_p10_05_doc2_presynaptique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_05_doc2_presynaptique.png" alt=""></figure></td><td><!-- CROP: 4773 10 5 0.618 0.140 0.895 0.235 4773_p10_05_doc2_postsynaptique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_05_doc2_postsynaptique.png" alt=""></figure></td></tr>
+</table>
+<p class="para"><u>Document 2</u> : Effets des injections de faibles doses de toxines botuliques (A, B, E et F) sur l’activité musculaire.</p>
+<p class="para">3)  Tranchez entre les hypothèses émises précédemment en précisant la (les) structure (s) cellulaire (s) cible (s) des toxines botuliques.</p>
+<table>
+<tr><th></th><th><span class="t-blue">Sans injection de toxines botuliques dans l’élément présynaptique</span></th><th><span class="t-blue">Avec injection de toxines botuliques dans l’élément présynaptique</span></th></tr>
+<tr><td><span class="t-blue"><b>Évolution de la concentration en Ca <sup>++</sup> dans l’élément présynaptique suite à une stimulation efficace du motoneurone</b></span></td><td><!-- CROP: 4773 10 5 0.340 0.415 0.605 0.545 4773_p10_05_doc3_ca_sans_toxine -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_05_doc3_ca_sans_toxine.png" alt=""></figure></td><td><!-- CROP: 4773 10 5 0.650 0.418 0.925 0.548 4773_p10_05_doc3_ca_avec_toxine -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_05_doc3_ca_avec_toxine.png" alt=""></figure></td></tr>
+<tr><td><span class="t-blue"><b>Activités musculaires enregistrées</b></span></td><td><!-- CROP: 4773 10 5 0.340 0.572 0.605 0.685 4773_p10_05_doc3_tension_sans_toxine -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_05_doc3_tension_sans_toxine.png" alt=""></figure></td><td><!-- CROP: 4773 10 5 0.650 0.570 0.925 0.685 4773_p10_05_doc3_tension_avec_toxine -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_05_doc3_tension_avec_toxine.png" alt=""></figure></td></tr>
+</table>
+<p class="para"><u>Document 3</u> : Effets des injections de faibles doses de toxines botuliques (A, B, E et F) sur le flux ionique de Ca<sup>++</sup> et sur l’activité musculaire</p>
+<p class="para">4)  Quelles informations supplémentaires vous apportent les données du document 3 ?</p>
+<p class="para"><sup>1</sup> UA : unité arbitraire.<br>
+<sup>2</sup> Les stimulations du motoneurone dans toutes les expériences sont réalisées avant la diffusion de la toxine vers le milieu extracellulaire.</p>
+<!-- page 06 -->
+<!-- CROP: 4773 10 6 0.150 0.078 0.522 0.255 4773_p10_06_doc4_jonction -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_06_doc4_jonction.png" alt=""></figure>
+<p class="para"><b><u>Document 4</u> : Jonction neuromusculaire</b></p>
+<div class="data"><p class="para">Le phénomène 3 du document 1 fait intervenir 3 protéines :</p>
+<ul class="b">
+<li>P1 (synaptobrévine): protéine de la membrane de la vésicule synaptique,</li>
+<li>P2 (syntaxine) et P3 (protéine SNAP) : deux protéines de la membrane plasmique présynaptique (document 4).<br>
+Ces protéines interagissent et s’accrochent les unes aux autres permettant ainsi le déroulement du phénomène 3 du document 1.</li>
+</ul></div>
+<p class="para">Les toxines botuliques coupent les protéines au milieu de l’enchainement des acides aminés (endoprotéases). Les extrémités des nouveaux fragments polypeptidiques formés peuvent être reconnues par des anticorps spécifiques. Suite à des injections séparées de toxines botuliques A, B, E ou F dans l’élément présynaptique, on extrait le hyaloplasme et on le met en présence d’anticorps spécifiques aux fragments polypeptidiques correspondant à P1, P2 et P3. Les résultats sont consignés dans le tableau ci-après :</p>
+<table>
+<tr><th>Anticorps<br>Toxines</th><th><span class="t-blue">Anticorps spécifiques aux fragments de P1</span></th><th><span class="t-blue">Anticorps spécifiques aux fragments de P2</span></th><th><span class="t-blue">Anticorps spécifiques aux fragments de P3</span></th></tr>
+<tr><td><span class="t-blue">Toxine A</span></td><td>-</td><td>-</td><td>+</td></tr>
+<tr><td><span class="t-blue">Toxine B</span></td><td>+</td><td>-</td><td>-</td></tr>
+<tr><td><span class="t-blue">Toxine E</span></td><td>-</td><td>-</td><td>+</td></tr>
+<tr><td><span class="t-blue">Toxine F</span></td><td>+</td><td>-</td><td>-</td></tr>
+</table>
+<p class="para"><span class="data">-</span>  <span class="t-red">Absence de complexe immun ;</span> <span class="data">+</span>  <span class="t-red">présence de complexe immun.</span></p>
+<p class="para">5)  Quelles informations supplémentaires vous apportent ces derniers résultats ?<br>
+Le Botox est composé de toxine botulique de type A. Il est utilisé à des doses faibles (1/1000 de la dose toxique) dans plusieurs indications : <i>l’incontinence urinaire</i> d’origine neurologique (absence de contrôle volontaire de l’émission d’urine) due à des contractions involontaires de la vessie, <i>les rides d’expressions</i>  dues aux contractions incessantes des muscles du visage etc.</p>
+<table>
+<tr><th>Avant traitement par le Botox</th><th>Après traitement</th></tr>
+<tr><td><!-- CROP: 4773 10 6 0.245 0.695 0.485 0.765 4773_p10_06_avant_botox -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_06_avant_botox.png" alt=""></figure></td><td><!-- CROP: 4773 10 6 0.560 0.695 0.805 0.765 4773_p10_06_apres_botox -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p10_06_apres_botox.png" alt=""></figure></td></tr>
+<tr><td><b>Rides de la patte d’oie</b></td><td><b>effacement des rides</b></td></tr>
+</table>
+<p class="para">6)  Expliquez le mode d’action et les effets du Botox sur l’une des indications citées précédemment.</p>
+
+
+<div class="exsub">corrigé série 8</div>
+<!-- page 01 -->
+<p class="subhead t-navy"><span class="t-blue">Bac Sc Exp</span> <span class="t-gold">(Top 50)</span> &nbsp;&nbsp;&nbsp; <span class="t-blue">Séance directe</span> <span class="t-gold">(20/03/2023)</span></p>
+<!-- CROP: 4773 11 1 0.09 0.145 0.905 0.535 4773_p11_01_couverture -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p11_01_couverture.png" alt=""></figure>
+<div dir="rtl" lang="ar">
+<p class="para"><span class="t-red">السلام عليكم و رحمة الله وبركاته</span></p>
+<p class="para"><span class="t-blue">مرحبا بكم جميعا بعض الدقائق و نبداو ان شاء الله ...</span> <span class="t-red"><b>19h30</b></span></p>
+</div>
+<!-- page 02 -->
+<!-- ROTATE: 4773 part11 p02 180 -->
+<!-- PROOFREAD: 4773 part11 p02 — handwritten correction (read from a 180° rotated copy); spelling of handwriting is a best reading -->
+<p class="subhead t-red"><span class="t-red">Exercice 1</span></p>
+<p class="para"><span class="t-red">1)</span> 1 : 1/2 I (1/2 DC)<br>
+2 : sarcomère (1/2 I + A + 1/2 I)<br>
+3 : disque sombre (DS) : A<br>
+4 : strie Z<br>
+5 : Reticulum endoplasmique (citerne à Ca<sup>2+</sup>)</p>
+<p class="para"><span class="t-red">2)</span></p>
+<table>
+<tr><th><span class="t-red">messagers</span></th><th><span class="t-red">Lieu de stockage</span></th><th><span class="t-red">condition de libération</span></th><th><span class="t-red">Lieu + conséquences de fixation</span></th></tr>
+<tr><td>acétylcholine</td><td>vésicule synaptique (bouton présynaptique</td><td>arrivée du PA nerveux au niveau du bouton synaptique ⇒ ouverture des CVD à Ca<sup>2+</sup> ⇒ entrée du Ca<sup>2+</sup></td><td>se fixe sur les récepteurs spécifiques postsynaptiques d'où ouverture des CCD à Na<sup>+</sup> ⇒ entrée massive de Na<sup>+</sup></td></tr>
+<tr><td>Ca<sup>2+</sup></td><td>citerne à Ca<sup>2</sup> (RE)</td><td>arrivée d'un PA au niveau des tubules transverses</td><td>se fixe sur les sites d'actine, d'où démasquage d'où fixation du complexe ATP-myosine sur l'actine ⇒ activation de l'ATPase</td></tr>
+</table>
+<!-- page 03 -->
+<!-- PROOFREAD: 4773 part11 p03 — handwritten correction; "constant de 4 à 8 mMoles/kg" uncertain -->
+<p class="subhead t-red"><span class="t-red">II)</span></p>
+<p class="para"><span class="t-red">1)</span></p>
+<table>
+<tr><th><span class="t-red">Analyse</span></th><th><span class="t-red">conclusion</span></th></tr>
+<tr><td><span class="t-red"><u>Exp1</u> :</span><br>• à t1 : L'ajout de l'ATP donne une augmentation de la tension de myofibrille = contraction<br>• à t2 : l'ajout d'une substance bloquant l'hydrolyse de l'ATP provoque une chute brutale de la tension de myofibrille (Relâchement)</td><td><span class="t-green">La contraction musculaire nécessite une hydrolyse de l'ATP</span></td></tr>
+<tr><td><span class="t-red">2) <span class="t-red">(a)</span> Exp 2</span><br><u>doc 3.a</u> :<br>La contraction musculaire est suivit d'une ↓ du taux de glycogène de 10,8 à 8 g/kg alors que le taux d'ATP reste constant de 4 à 8 mMoles/kg</td><td><span class="t-green">La source de l'energie musculaire est le glycogène et son hydrolyse (glycogénolyse)</span></td></tr>
+<tr><td><u>doc 3b</u> : Au cours d'une activité musculaire de 6 mn on a une ↓ du taux de phosphocréatine de 75 mMoles/kg à 12,5 mMoles/kg</td><td><span class="t-green">La source de l'energie musculaire est l'hydrolyse de la</span></td></tr>
+</table>
+<!-- page 04 -->
+<!-- PROOFREAD: 4773 part11 p04 — handwritten; "constant de 25 mMoles/kg" (25?), "R° = de respiration c^aire" uncertain -->
+<!-- NOTE: pink highlighter marks over the handwritten words are left out -->
+<table>
+<tr><td>alors que le taux d'ATP reste constant de 25 mMoles/kg</td><td><span class="t-green">phosphocréatine</span></td></tr>
+</table>
+<p class="para"><span class="t-red">(b)</span> Hypothèse : L'hydrolyse de l'ATP est suivit d'une regeneration d'ATP</p>
+<p class="para"><span class="t-red">3)</span></p>
+<table>
+<tr><th><span class="t-red">Analyse</span></th><th><span class="t-red">Conclusion</span></th></tr>
+<tr><td>- Pour un effort &lt; 418 j/kg on a une consommation d'O<sub>2</sub> cst de 20 ml/mn/kg alors que l'acide lactique 8 ml.</td><td></td></tr>
+<tr><td>• Pour un effort entre 418 et 830 j/kg on a une ↗ de la consommation d'O<sub>2</sub> alors que la production d'acide lactique reste nulle</td><td>on peut parler de R° = de respiration c<sup>aire</sup> (R° = aerobique) pour un effort modéré</td></tr>
+<tr><td>Pour un effort intense &gt; 830 j/kg on a une stabilité (cst) de la consommation d'O<sub>2</sub> alors que la production d'acide lactique ↗ proportionnellement avec l'effort pour atteindre 700 (mg/mn/kg)</td><td>Pour un effort physique intense on parle de R° = anaerobique = <span class="t-red">Fermentation lactique</span></td></tr>
+</table>
+<!-- page 05 -->
+<!-- PROOFREAD: 4773 part11 p05 — handwritten equations; best reading -->
+<!-- NOTE: pink highlighter marks over the handwritten words are left out -->
+<p class="para"><span class="t-green">(A)–(P) ATP &nbsp;&nbsp;&nbsp; (P<sub>i</sub>) phosphate inorganique</span></p>
+<p class="para"><span class="t-red">4)</span></p>
+<p class="para">* hydrolyse d'ATP<br>
+ATP + H<sub>2</sub>O —ATPase→ ADP + P<sub>i</sub> + E<br>
+* Regeneration d'ATP<br>
+→ par voie rapide<br>
+P-C + ADP —creatine kinase→ C + ATP + ch initial du relachement<br>
+ADP + ADP —myokinase→ AMP + ATP<br>
+→ par voie lente<br>
+Glycogene + P<sub>i</sub> → glucose-P —<span class="t-green">glycolyse</span>→ 2 acide pyruvique + 2 ATP<br>
+⊛ R° = aérobique (avec O<sub>2</sub>) : Mitochondrie<br>
+: Respiration c<sup>aire</sup> (oxydation)<br>
+acide pyruvique + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O + 36 ATP + chaleur retardée<br>
+⊛ Fermentation lactique, R° = anaerobique (sans O<sub>2</sub>)<br>
+acide pyruvique → acide lactique + 2 ATP</p>
+<!-- page 06 -->
+<!-- PROOFREAD: 4773 part11 p06 — handwritten correction; best reading -->
+<p class="subhead t-red"><span class="t-red">Exercice 2</span></p>
+<p class="para"><span class="t-red">1)</span> 1 : Arrivée d'un PA nerveux (influx nerveux) au niveau du bouton synaptique du motoneurone<br>
+2 : ouverture des CVD à Ca<sup>2+</sup> et entrée massive et passive de cet ion dans le bouton synaptique.<br>
+3 : Fusion des vesicules synaptique avec la membrane pré-synaptique et liberation par exocytose de l'acetylcholine dans la fente synaptique.<br>
+4 : Fixation de l'acetylcholine sur les recepteurs spécifiques post-synaptique.<br>
+5 : ouverture des CCD à Na<sup>+</sup> ⇒ entrée massive de cet ion dans le sarcoplasme et naissance d'un PAM<br>
+6 : Contraction musculaire<br>
+7 : Hydrolyse de l'acetylcholine et récupération par la terminaison pre-synaptique de la choline</p>
+<p class="para"><span class="t-red">2)</span> hyp 1 : Les toxines botuliques agissent sur les proteines des ç nerveuses (element pre-synaptique)<br>
+hyp 2 : Les toxines botuliques agissent sur les proteins des ç musculaire (éléments post-synap<br>
+hyp 3 : Les toxines botulique agissent sur les proteines des ç nerveuses et musculaire.</p>
+<!-- page 07 -->
+<!-- PROOFREAD: 4773 part11 p07 — handwritten; question number at top reads "2)" (probably meant 3)); best reading -->
+<p class="para"><span class="t-red">2)</span></p>
+<table>
+<tr><th><span class="t-red">Analyse.</span></th><th><span class="t-red">conclusion</span></th></tr>
+<tr><td>une stimulation efficace du motoneurone α :<br>• en injectant la toxine botulique dans l'element pre-synaptique ⇒ aucune variation de la tension musculaire ⇒ pas de contraction<br>• en injectant la toxine botulique dans le sarcoplasme provoque une secousse musculaire</td><td><span class="t-green">La toxine botulique agisse sur la proteine de l'element pré-synaptique nerveux</span><br><span class="t-red">⇒ Les hyp 2 + 3 sont à rejetées</span><br><span class="t-red">Donc l'hyp 1 est confirmée</span></td></tr>
+</table>
+<p class="para"><span class="t-red">4)</span> Les toxines botuliques n'agissent pas sur les CVD à Ca<sup>2+</sup> et l'entrée de cet ion mais cette toxine bloque la transmission synaptique.</p>
+<p class="para"><span class="t-red">5)</span> • Les toxines B et F agissent sur la proteine P<sub>1</sub><br>
+• Les toxines A et E agissent sur la proteine P<sub>3</sub><br>
+et aucune toxine n'agit sur P<sub>2</sub><br>
+<span class="t-green">⇒ Les neurotoxines B et F sont endoproteases<br>
+= enzyme capable de couper les proteines (P<sub>1</sub>)</span></p>
+<!-- page 08 -->
+<!-- PROOFREAD: 4773 part11 p08 — handwritten; "P3 = SNAP" and question number "6)" uncertain -->
+<p class="para"><span class="t-green">au milieu de l'enchainement des AA (P<sub>1</sub> = synaptobrevine) ⇒ Ce qui empêche l'exocytose de l'acetylcholine</span><br>
+<span class="t-red">⇒ Les neurotoxines A et E sont endoprotéases = enzyme capable de couper les proteine; P<sub>3</sub> = SNAP ⇒ Ce qui empiche l'exocytose de l'acetylcholine.</span></p>
+<p class="para"><span class="t-red">6)</span> ⇒ Impossibilité de la transmission synaptique neuro-musculaire ⇒ pas de contraction (paralysie)<br>
+• Dans le cas l'incontinence urinaire, le Botox inhibe la transmission synaptique neuro-musculaire et par la suite <span class="t-green">inhibe les contractions involontaires de la vessie<br>
+⇒ inhibe les mictions involontaires</span><br>
+• Dans le cas de rides d'expression, le Botox inhibe la transmission synaptique neuro-musculaire ⇒ Relachement des muscles du visage au niveau de rides.<br>
+⇒ effacer ces rides.</p>
+<p class="para">End</p>
+<p class="para">SBK</p>
+<!-- page 09 -->
+<!-- NOTE: empty dotted-line page, nothing written -->
+<!-- page 10 -->
+<!-- NOTE: empty dotted-line page, nothing written -->
+<!-- page 11 -->
+<!-- NOTE: empty dotted-line page, nothing written -->
+<!-- page 12 -->
+<!-- NOTE: empty dotted-line page, nothing written -->
+<!-- page 13 -->
+<!-- NOTE: empty dotted-line page, nothing written -->
+<!-- page 14 -->
+<!-- NOTE: empty dotted-line page, nothing written -->
+
+<div class="chtag"><span>Chapitre</span> Régulation de la pression artérielle</div>
+
+<div class="exsub">série 9</div>
+<!-- page 01 -->
+<!-- NOTE: cover footer (Taki Academy branches list, website and phone number) not transcribed — school contact/header, SOURCE not written per task -->
+<p class="subhead t-red"><span class="t-blue"><b>SVT</b></span></p>
+<p class="subhead t-navy"><span class="t-blue">Classe : 4<sup>ème</sup> Sc Exp (Top 50-Gr1)</span></p>
+<p class="subhead t-red"><span class="t-blue"><b>Série 27 : Régulation de la pression artérielle</b></span></p>
+<!-- page 02 -->
+<div class="exsub">ù Exercice 1 : 45 min 6 pts</div>
+<p class="para">On enregistre l’activité électrique d’une fibre d’un nerf de Héring, d’une fibre d’un nerf A et d’une fibre d’un nerf B cardiaque, dans trois conditions.<br>
+Le tableau ( <b>document 1</b> ) suivant résume les résultats obtenus :</p>
+<!-- CROP: 4773 12 2 0.135 0.172 0.903 0.392 4773_p12_02_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_02_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para"><b>NB- Les deux nerfs A et B sont efférents.</b></p>
+<ol class="qn">
+<li>Analysez les enregistrements de l’activité électrique de la fibre du nerf de Héring. Que peut-on déduire ?</li>
+<li>A partir de l’analyse des enregistrements de l’activité électrique des fibres du nerf A et du nerf B. Indiquez l’action des deux types de nerfs sur l’activité  cardiaque et la pression artérielle.</li>
+<li>a-Identifiez  ces deux nerfs.<br>b- Précisez le moyen par le quel agissent ces nerfs sur le cœur.</li>
+<li>Expliquez le mécanisme mis en jeu dans la régulation du rythme cardiaque suite à une hémorragie. Vous appuierez vos explications en représentant sur la figure du <b>document 2</b> par des flèches et des signes (+) et (-), les interactions mis en jeu et en complétant la légende.</li>
+</ol>
+<!-- CROP: 4773 12 2 0.137 0.632 0.862 0.912 4773_p12_02_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_02_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<!-- page 03 -->
+<div class="exsub">Exercice 2 : 50 min 7 pts</div>
+<p class="para">Chez l’homme, plusieurs facteurs peuvent provoquer la variation de la pression artérielle comme  l’effort musculaire et l’hémorragie. On se propose d’étudier le mécanisme mis en jeu dans le cas d’effort musculaire intense.</p>
+<p class="para"><b>1)</b> Le document 1 représente la variation de la pression artérielle avant, au moment et juste après une course.</p>
+<!-- CROP: 4773 12 3 0.231 0.255 0.769 0.398 4773_p12_03_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_03_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para">Analysez ce graphe du document 1. Que pouvez-vous en déduire ?</p>
+<p class="para"><b>2)</b> Le document 2 représente une partie de l’innervation intervenant dans la variation de la pression artérielle.<br>
+ Faites correspondre sur votre copie, à chaque numéro du document 2 une légende.</p>
+<p class="para"><b>3)</b> Afin de dégager le rôle de certains éléments indiqués sur le document 2, on réalise chez un mammifère un lapin, les deux séries d’expériences suivantes :<br>
+<span class="t-blue"><b><u>1<sup>ère</sup> série d’expériences</u></b></span> : On fait varier la pression artérielle dans le sinus carotidien ligaturé et on enregistre les messages nerveux se propageant au niveau des nerfs de Héring. Les résultats obtenus sont indiqués sur le document 3.</p>
+<!-- CROP: 4773 12 3 0.106 0.622 0.555 0.842 4773_p12_03_doc1b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_03_doc1b.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<!-- CROP: 4773 12 3 0.556 0.622 0.919 0.842 4773_p12_03_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_03_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>a-</b> Analysez ce document afin de dégager le rôle du sinus carotidien.</p>
+<!-- page 04 -->
+<p class="para"><span class="t-blue"><u>2<sup>ème</sup> série d’expérience :</u></span></p>
+<table>
+<tr><th rowspan="2"><span class="t-blue">N°=</span></th><th rowspan="2"><span class="t-blue">Nature de l’intervention réalisée sur l’animal</span></th><th colspan="2"><span class="t-blue">Résultats enregistrés</span></th></tr>
+<tr><th><span class="t-blue">Rythme cardiaque (batt/mn)</span></th><th><span class="t-blue">Vasomotricité des artérioles</span></th></tr>
+<tr><td><span class="t-blue">1</span></td><td><b>Animal témoin</b> : les nerfs cardiaques sont intacts ainsi que<br>les centres nerveux</td><td>80</td><td><!-- CROP: 4773 12 4 0.68 0.182 0.89 0.266 4773_p12_04_vaso1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_04_vaso1.png" alt=""></figure></td></tr>
+<tr><td><span class="t-blue">2</span></td><td>Stimulation du bout central du nerf de Héring ou du nerf de Cyon.</td><td>50</td><td><!-- CROP: 4773 12 4 0.68 0.274 0.89 0.38 4773_p12_04_vaso2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_04_vaso2.png" alt=""></figure></td></tr>
+<tr><td><span class="t-blue">3</span></td><td>Stimulation du bout périphérique du nerf sympathique</td><td>120</td><td><!-- CROP: 4773 12 4 0.68 0.392 0.89 0.471 4773_p12_04_vaso3 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_04_vaso3.png" alt=""></figure></td></tr>
+<tr><td><span class="t-blue">4</span></td><td>Stimulation du bout périphérique du nerf X.</td><td>50</td><td><!-- CROP: 4773 12 4 0.68 0.48 0.89 0.573 4773_p12_04_vaso4 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_04_vaso4.png" alt=""></figure></td></tr>
+<tr><td><span class="t-blue">5</span></td><td>Stimulation de la zone bulbaire.</td><td>50</td><td><!-- CROP: 4773 12 4 0.68 0.584 0.89 0.69 4773_p12_04_vaso5 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_04_vaso5.png" alt=""></figure></td></tr>
+<tr><td><span class="t-blue">6</span></td><td>Stimulation de la médullaire.</td><td>120</td><td><!-- CROP: 4773 12 4 0.68 0.7 0.89 0.777 4773_p12_04_vaso6 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p12_04_vaso6.png" alt=""></figure></td></tr>
+</table>
+<p class="para"><b>NB- la stimulation des bouts périphériques des nerfs de Héring et des nerfs de Cyon ainsi que la stimulation des bouts centraux du nerf X, des nerfs sympathiques n’ont pas d’effet sur le rythme cardiaque et la vasomotricité des artérioles.</b></p>
+<p class="para"><b>b-</b> Analysez les résultats de ces expériences afin de préciser le rôle des éléments 1, 2, 3, 5, 6, 8 et 9 du document 2.</p>
+<p class="para"><b>c-</b> En vous basant sur ce qui précèdes et sur vos connaissances, résumez à l’aide d’un schéma fonctionnel, la régulation de la pression artérielle suite à son augmentation dans l’éléments 4 du document 2</p>
+
+
+<div class="exsub">corrigé série 9</div>
+<!-- page 01 -->
+<!-- NOTE: cover footer (Taki Academy branches list, website and phone number) not transcribed — school contact/header, SOURCE not written per task -->
+<p class="subhead t-red"><span class="t-blue"><b>SVT</b></span></p>
+<p class="subhead t-navy"><span class="t-blue">Classe : 4<sup>ème</sup> Sc Exp (Top 50-Gr1)</span></p>
+<p class="subhead t-red"><span class="t-blue"><b>Corrigé de la série 27 : Régulation de pression artérielle</b></span></p>
+<!-- page 02 -->
+<div class="exsub">Exercice 1 : 45 min 6 pts</div>
+<table>
+<tr><th><span class="t-blue">Analyse</span></th><th><span class="t-blue">conclusions</span></th></tr>
+<tr><td>1) Au niveau du nerf de Hering on a :<ul class="b"><li>En cas d’hypotension : il y a diminution de la fréquence de PA de5  PA à 3 PA dont l’amplitude est constante.</li><li>En cas d’hypertension : il y a augmentation de la fréquence de PA de 5 PA à 11 PA dont l’amplitude est constante.</li></ul></td><td><ul class="b"><li>Nerf de Hering est un nerf cardiomoderateur à effet dépresseur (hypotenseur).</li><li>Il y a conversion de l’énergie mécanique en énergie électrique donc il existe des barorécepteurs assurant la transduction.</li><li>PA obeit à la loi de tout ou rien.</li><li>Le message nerveux (train de PA) est codé en modulation de fréquence de PA : codage.</li></ul></td></tr>
+<tr><td>2)<br>○ Au niveau du nerf A comme le nerf de Hering :<ul class="b"><li>En cas d’hypotension : il y a diminution de la fréquence de PA de 4 PA à 3 PA .</li><li>En cas d’hypertension : il y a augmentation de la fréquence de PA de 4 PA à 11 PA.</li></ul></td><td>Le nerf A est un nerf cardiomoderateur à effet dépresseur (hypotenseur).</td></tr>
+<tr><td>○ Au niveau du nerf B (l’opposé du nerf de Hering ) :<ul class="b"><li>En cas d’hypotension : il y a augmentation de la fréquence de PA de 3 PA à 8 PA .</li><li>En cas d’hypertension : il y a diminution de la fréquence de PA de 3 PA à 2 PA.</li></ul></td><td>Le nerf B est un nerf cardioaccélerateur à effet presseur (hypertenseur).</td></tr>
+</table>
+<p class="para">3) &nbsp; a-</p>
+<table>
+<tr><th><span class="t-blue">Nerf</span></th><th><span class="t-blue">Justification</span></th><th><span class="t-blue">Nom</span></th></tr>
+<tr><td>A</td><td>Un nerf cardiomoderateur à effet dépresseur, cardiaque et efférent</td><td>Nerf X</td></tr>
+<tr><td>B</td><td>Un nerf cardioaccélerateur à effet presseur, cardiaque et efférent</td><td>Nerf sympathique cardiaque</td></tr>
+</table>
+<p class="para">b-</p>
+<ul class="b">
+<li>Le nerf A (nerf X) agit sur le cœur par l’intermédiaire d’un neurotransmetteur à effet inhibiteur : l’acétylcholine.</li>
+<li>Le nerf B (nerf sympathique cardiaque) agit sur le cœur par l’intermédiaire d’un neurotransmetteur à effet excitateur : noradrénaline.</li>
+</ul>
+<!-- page 03 -->
+<p class="para">4) La <span class="t-red">diminution</span> de la pression artérielle (<span class="t-red">hypotension</span>) au niveau du sinus carotidien  et de la crosse aortique est détectée par les barorécepteurs   ce qui <span class="t-red">diminue</span> la transduction et par la suite la <span class="t-red">diminution</span> de la fréquence des potentiels d’action au niveau des nerfs de Cyon et de Hering.<br>
+Ce message  sensitif <span class="t-red">diminue</span> l’activation du centre bulbaire sensitif d’où <span class="t-red">diminution</span> de la fréquence des potentiels d’action au niveau des interneurones :</p>
+<ul class="b">
+<li>Excitateurs : ce qui <span class="t-red">diminue</span> l’activation du centre cardiomodérateur provoquant une <span class="t-red">diminution</span>  de la fréquence des potentiels d’action au niveau du nerf X <span class="t-blue">→</span> <span class="t-red">diminution</span>  de la sécrétion  de l’acéthylcholine, donc <span class="t-red">augmentation</span> du RC .</li>
+<li>Inhibiteur : <span class="t-red">levée</span> de l’inhibition du centre vasomoteur ce qui entraine <span class="t-red">augmentation</span> de la fréquence des potentiels d’action au niveau des neurones orthosympathiques, cardiaques, vasculaire et splanchnique et par la suite <span class="t-red">augmentation</span> de la sécrétion  de la noradrénaline provoquant  <span class="t-red">augmentation</span> du RC <span class="t-red">une vasoconstriction</span> et <span class="t-red">augmentation</span> de la sécrétion de l’adrénaline par la médullosurrénale <span class="t-red">augmentation</span> de la pression artérielle générale.</li>
+</ul>
+
+
+<div class="exsub">série 10</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Classe : 4<sup>ème</sup> Sc Exp (Top 50-Gr1)</p>
+<p class="subhead t-red">Série 28 : Régulation de la pression artérielle</p>
+<p class="para">Sousse (Khezama - Sahloul) Nabeul / Sfax / Bardo / Menzah El Aouina Ezzahra / CUN / Bizerte / Gafsa / Kairouan / Medenine / Kébili / Monastir Gabes / Djerba</p>
+<!-- page 02 -->
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">Exercice 1 : 35 min 4 pts</div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes. Reportez sur votre copie, le numéro de chaque item et indiquez-la (ou les) lettre(s) correspondant(s) à la (ou aux) réponse(s) exacte(s).<br>
+NB- <b>Toute réponse fausse annule la note attribuée à l’item considéré.</b></p>
+<p class="para"><b><span class="t-blue">1) La vasoconstriction des artérioles résulte de :</span></b><br>
+<b>a-</b> la levée de l’inhibition du centre vasomoteur,<br>
+<b>b-</b> l’activation du nerf sympathique cardiaque,<br>
+<b>c-</b> l’activation du nerf de Hering,<br>
+<b>d-</b> la libération de l’acétylcholine par le nerf Vague.</p>
+<p class="para"><b><span class="t-blue">2) Dans la fibre musculaire, l’oxygène est consommé afin de :</span></b><br>
+<b>a-</b> dégrader le glucose en acide pyruvique,<br>
+<b>b-</b> hydrolyser l’ATP,<br>
+<b>c-</b> dégrader l’acide pyruvique dans les mitochondries,<br>
+<b>d-</b> régénérer l’ATP à partir de créatine phosphate.</p>
+<p class="para"><b><span class="t-blue">3) La myokinase est une enzyme qui catalyse la réaction de</span> :</b><br>
+<b>a-</b> synthèse d’ATP à partir de la phosphocréatine,<br>
+<b>b-</b> réduction de l’acide pyruvique en acide lactique,<br>
+<b>c-</b> la respiration mitochondriale,<br>
+<b>d-</b> régénération anaérobie de l’ATP.</p>
+<p class="para"><b><span class="t-blue">4) Le PPM crée au niveau d’une fibre musculaire striée :</span></b><br>
+<b>a-</b> assure la contraction de la fibre musculaire,<br>
+<b>b-</b> déclenche un PA musculaire, s’il atteint le seuil au niveau du cône axonique,<br>
+<b>c-</b> fait suite à l’ouverture des CCD à Na+,<br>
+<b>d-</b> provoque la sortie des ions Ca<sup>2+</sup> à partir du réticulum sarcoplasmique.</p>
+<p class="para"><b><span class="t-blue">5) La stimulation des nerfs de Hering et de Cyon entraine une :</span></b><br>
+<b>a-</b> vasodilatation des artérioles,<br>
+<b>b-</b> augmentation de la libération de noradrénaline dans le muscle cardiaque,<br>
+<b>c-</b> diminution de la stimulation du centre vasomoteur,<br>
+<b>d-</b> augmentation de la fréquence des potentiels d’action au niveau du nerf splanchnique.</p>
+<p class="para"><b><span class="t-blue">6) En réponse à une hémorragie provoquée chez un chien :</span></b><br>
+<b>a-</b> la fréquence des potentiels d’action au niveau des nerfs afférents augmente,<br>
+<b>b-</b> le centre vasomoteur est plus inhibé,<br>
+<b>c-</b> l’amplitude des potentiels d’action augmente au niveau des fibres des nerfs sympathiques,<br>
+<b>d-</b> Le rythme cardiaque augmente.</p>
+<p class="para"><b><span class="t-blue">7) Une élévation de la pression artérielle au niveau du sinus carotidien entraîne une :</span></b><br>
+<b>a-</b> diminution de la fréquence des potentiels d’action au niveau des nerfs pneumogastriques,<br>
+<b>b-</b> activation des nerfs de Cyon et de Hering,<br>
+<b>c-</b> élévation de la fréquence des potentiels d’action au niveau des nerfs orthosympathiques,<br>
+<b>d-</b> inhibition du centre vasomoteur.</p>
+<p class="para"><b><span class="t-blue">8) À la suite de la stimulation du centre vasomoteur, on observe une :</span></b><br>
+<b>a-</b> vasodilatation,<br>
+<b>b-</b> hypertension,<br>
+<b>c-</b> hypersécrétion d’adrénaline,<br>
+<b>d-</b> hypotension.</p>
+<!-- page 03 -->
+
+<div class="chtag"><span>Chapitre</span> Régulation de la pression artérielle</div>
+
+<div class="exsub">Exercice 2 : 50 min 7 pts</div>
+<p class="para">Chez l’homme, plusieurs facteurs peuvent provoquer la variation de la pression artérielle comme  l’effort musculaire et l’hémorragie. On se propose d’étudier le mécanisme mis en jeu dans le cas d’effort musculaire intense.</p>
+<p class="para"><b>1)</b> Le document 1 représente la variation de la pression artérielle avant, au moment et juste après une course.</p>
+<!-- CROP: 4773 14 3 0.225 0.268 0.772 0.418 4773_p14_03_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p14_03_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para">Analysez ce graphe du document 1. Que pouvez-vous en déduire ?</p>
+<p class="para"><b>2)</b> Le document 2 représente une partie de l’innervation intervenant dans la variation de la pression artérielle.<br>
+ Faites correspondre sur votre copie, à chaque numéro du document 2 une légende.</p>
+<p class="para"><b>3)</b> Afin de dégager le rôle de certains éléments indiqués sur le document 2, on réalise chez un mammifère un lapin, les deux séries d’expériences suivantes :<br>
+<span class="t-blue"><u>1<sup>ère</sup> série d’expériences</u></span> : On fait varier la pression artérielle dans le sinus carotidien ligaturé et on enregistre les messages nerveux se propageant au niveau des nerfs de Héring. Les résultats obtenus sont indiqués sur le document 3.</p>
+<!-- CROP: 4773 14 3 0.102 0.636 0.556 0.860 4773_p14_03_doc1b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p14_03_doc1b.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<!-- CROP: 4773 14 3 0.555 0.636 0.922 0.860 4773_p14_03_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p14_03_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>a-</b> Analysez ce document afin de dégager le rôle du sinus carotidien.</p>
+<!-- page 04 -->
+<p class="para"><span class="t-blue"><u>2<sup>ème</sup> série d’expérience :</u></span></p>
+<table>
+<tr><th rowspan="2">N°=</th><th rowspan="2">Nature de l’intervention réalisée sur l’animal</th><th colspan="2">Résultats enregistrés</th></tr>
+<tr><th>Rythme cardiaque (batt/mn)</th><th>Vasomotricité des artérioles</th></tr>
+<tr><td>1</td><td><b>Animal témoin</b> : les nerfs cardiaques sont intacts ainsi que<br>les centres nerveux</td><td>80</td><td><!-- CROP: 4773 14 4 0.722 0.204 0.842 0.281 4773_p14_04_art1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p14_04_art1.png" alt=""></figure></td></tr>
+<tr><td>2</td><td>Stimulation du bout central du nerf de Héring ou du nerf de Cyon.</td><td>50</td><td><!-- CROP: 4773 14 4 0.712 0.300 0.862 0.396 4773_p14_04_art2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p14_04_art2.png" alt=""></figure></td></tr>
+<tr><td>3</td><td>Stimulation du bout périphérique du nerf sympathique</td><td>120</td><td><!-- CROP: 4773 14 4 0.730 0.415 0.848 0.487 4773_p14_04_art3 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p14_04_art3.png" alt=""></figure></td></tr>
+<tr><td>4</td><td>Stimulation du bout périphérique du nerf X.</td><td>50</td><td><!-- CROP: 4773 14 4 0.735 0.504 0.856 0.587 4773_p14_04_art4 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p14_04_art4.png" alt=""></figure></td></tr>
+<tr><td>5</td><td>Stimulation de la zone bulbaire.</td><td>50</td><td><!-- CROP: 4773 14 4 0.712 0.615 0.865 0.705 4773_p14_04_art5 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p14_04_art5.png" alt=""></figure></td></tr>
+<tr><td>6</td><td>Stimulation de la médullaire.</td><td>120</td><td><!-- CROP: 4773 14 4 0.730 0.720 0.845 0.793 4773_p14_04_art6 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p14_04_art6.png" alt=""></figure></td></tr>
+</table>
+<p class="para"><b>NB- la stimulation des bouts périphériques des nerfs de Héring et des nerfs de Cyon ainsi que la stimulation des bouts centraux du nerf X, des nerfs sympathiques n’ont pas d’effet sur le rythme cardiaque et la vasomotricité des artérioles.</b></p>
+<p class="para"><b>b-</b> Analysez les résultats de ces expériences afin de préciser le rôle des éléments 1, 2, 3, 5, 6, 8 et 9 du document 2.</p>
+<!-- page 05 -->
+<p class="para"><b>3)</b>        En vous basant sur ce qui précèdes et sur vos connaissances, résumez à l’aide d’un schéma fonctionnel, la régulation de la pression artérielle suite à son augmentation dans l’éléments 4  du document 2.</p>
+<div class="exsub">Exercice 3 : 40 min 6 pts</div>
+<p class="para">Dans le but d'étudier le mécanisme de la régulation nerveuse de la pression artérielle, plusieurs observations et expériences ont été réalisées.<br>
+Une personne adulte, en bonne santé, subit une petite hémorragie.<br>
+Le document 1 suivant montre les résultats de mesures de la pression artérielle maximale chez cette personne.</p>
+<table>
+<tr><th rowspan="2">Temps</th><th rowspan="2">Avant l’hémorragie</th><th colspan="3">Pendant l’hémorragie</th><th rowspan="2">5 mn après l’hémorragie</th></tr>
+<tr><td>à t = 1 mn</td><td>à t = 2 mn</td><td>à t = 3 mn</td></tr>
+<tr><td><b><span class="t-blue">Pression artérielle (mm Hg)</span></b></td><td>125</td><td>110</td><td>100</td><td>90</td><td>117</td></tr>
+</table>
+<p class="para">Document 1</p>
+<p class="para"><b>1)</b> Analysez ces mesures en vue d’expliquer les résultats obtenus.<br>
+<b>2)</b> Afin de comprendre le mécanisme correspondant, on réalise des expériences sur un chien anesthésié, chez lequel on a mis à nu certaines fibres de l'un des nerfs de Héring et de 2 nerfs cardiaques A et B. Les nerfs de Cyon et le 2<sup>ème</sup> nerf de Héring sont sectionnés. (Voir document 2)</p>
+<!-- CROP: 4773 14 5 0.203 0.554 0.845 0.806 4773_p14_05_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p14_05_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<!-- page 06 -->
+<p class="para">On isole le sinus carotidien par deux ligatures, et on y injecte un liquide physiologique afin d’y augmenter artificiellement la pression intra sinusale, et simultanément, on enregistre :<br>
+<b>* La fréquence des potentiels d’action au niveau :</b><br>
+- d’une fibre du nerf de Héring,<br>
+- d’une fibre d’un nerf cardiaque A,<br>
+- d’une fibre d’un nerf cardiaque B.<br>
+<b>* La variation de la pression artérielle générale au cours de l’expérience.</b><br>
+Les résultats sont consignés dans le tableau du document 3.</p>
+<table>
+<tr><th colspan="2">Pression intrasinusale en mm Hg</th><th>40</th><th>60</th><th>80</th><th>100</th><th>120</th><th>140</th><th>160</th></tr>
+<tr><td rowspan="3"><b><span class="t-blue">Fréquence des PA/s</span></b></td><td><b><span class="t-blue">Fibre du nerf de Héring</span></b></td><td>0</td><td>10</td><td>25</td><td>60</td><td>132</td><td>175</td><td>235</td></tr>
+<tr><td><b><span class="t-blue">Fibre du nerf cardiaque A</span></b></td><td>185</td><td>154</td><td>88</td><td>65</td><td>46</td><td>12</td><td>0</td></tr>
+<tr><td><b><span class="t-blue">Fibre du nerf cardiaque B</span></b></td><td>0</td><td>9</td><td>22</td><td>54</td><td>127</td><td>165</td><td>214</td></tr>
+<tr><td colspan="2"><b><span class="t-blue">Pression artérielle générale en mm Hg</span></b></td><td>160</td><td>150</td><td>130</td><td>115</td><td>100</td><td>90</td><td>80</td></tr>
+</table>
+<p class="para">Document 3</p>
+<p class="para"><b>a)</b> A partir de l’analyse des résultats enregistrés au niveau des différents nerfs et de vos connaissances, déduisez :<br>
+  - le rôle du sinus carotidien,<br>
+  - une propriété du message nerveux,<br>
+  - le nom de chacun des nerfs A et B.<br>
+<b>b)</b> Montrez que les enregistrements au niveau des nerfs A et B permettent d’expliquer la variation de la pression artérielle générale.<br>
+<b>3)</b> En utilisant les conclusions précédentes, et en faisant appel à vos connaissances, expliquez le mécanisme qui a permis la correction de la pression artérielle, 5 minutes après l’hémorragie.</p>
+
+
+<div class="exsub">corrigé série 10</div>
+<!-- page 01 -->
+<p class="subhead t-red">SVT</p>
+<p class="subhead t-navy">Classe : 4<sup>ème</sup> Sc Exp (Top 50-Gr1)</p>
+<p class="subhead t-red">Corrigé de la série 28 : Régulation de pression artérielle</p>
+<p class="para">Sousse (Khezama - Sahloul) Nabeul / Sfax / Bardo / Menzah El Aouina Ezzahra / CUN / Bizerte / Gafsa / Kairouan / Medenine / Kébili / Monastir Gabes / Djerba</p>
+<!-- page 02 -->
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">Exercice 1 : 35 min 4 pts</div>
+<table>
+<tr><th><b><u>N° item</u></b></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+<tr><td><b><u>Réponse</u></b></td><td>a</td><td>c</td><td>d</td><td>c</td><td>a-c</td><td>d</td><td>b-d</td><td>b-c</td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Régulation de la pression artérielle</div>
+
+<div class="exsub">Exercice 1 : 50 min 7 pts</div>
+<table>
+<tr><th><b>1)</b> <span class="t-red">Analyse</span></th><th><span class="t-red">Conclusion</span></th></tr>
+<tr><td>Avant la course <b>:</b> la pression artérielle est constante de l’ordre de X UI.<br><br>
+Durant la course : la pression artérielle augmente de X à 2X UI.<br><br>
+Après la course <b>: d</b>iminution de la pa et retour à l’état initial X UI.</td><td>L’effort à provoque une hypertension c’est l’état d’adaptation puis il y a régulation : <b>réflexe régulateur cardiomodérateur.</b></td></tr>
+</table>
+<table>
+<tr><th><b>2)</b> 1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+<tr><td>Bulbe rachidien ou centre bulbaire</td><td>Centre médullaire</td><td>Nerf de Héring</td><td>Sinus carotidien</td><td>Nerf de Cyon</td></tr>
+<tr><td><b>6</b></td><td><b>7</b></td><td><b>8</b></td><td colspan="2"><b>9</b></td></tr>
+<tr><td>Nerf X</td><td>Crosse aortique</td><td>Nerf orthosympathique cardiaque</td><td colspan="2">Nerf orthosympathique vasculaire</td></tr>
+</table>
+<table>
+<tr><th><b>3)</b> <span class="t-red">Analyse</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td><b>a-</b> <span class="t-red"><u>1<sup>ère</sup>série d’exp  :</u></span> On fait augmenter la pression artérielle de 0 à 200 mm Hg augmentation proportionnelle de la fréquence de PA dont l’amplitude est constante.</td><td>Il existe au niveau du sinus carotidien des barorécepteurs qui convertissent l’énergie mécanique (pression artérielle) en énergie électrique.</td></tr>
+<tr><td><b>b-</b><span class="t-red"><u>2<sup>ème</sup> série d’exp :</u></span><br>
+<span class="t-blue"><u>Exp1</u></span> : Chez l’animal témoin le rythme cardiaque est de  80 batt/mn.</td><td>Vasomotricité normale.</td></tr>
+</table>
+<!-- page 03 -->
+<table>
+<tr><td><span class="t-blue"><u>Exp 2</u></span> : La stimulation du BC du nerf de Héring ou  du nerf de Cyon<br>
+-     Diminution du rythme cardiaque  de 80 à 50 batt/mn.<br>
+-     Vasodilatation.</td><td>Les nerfs de Héring (3) et les nerfs  de Cyon (5) sont des  nerfs <b>afférents cardiomodérateurs</b> et <b>vasodilatateurs.</b></td></tr>
+<tr><td><span class="t-blue"><u>Exp 3</u></span> : La stimulation du BP du nerf sympathique cardiaque et artériel
+<ul class="b"><li>Augmentation du rythme cardiaque de  80 à 120 batt/mn.</li><li>Vasoconstriction.</li></ul></td><td>Les nerfs sympathiques ( 8 + 9 ) sont des nerfs efférents , cardioaccélerateurs et vasoconstricteurs</td></tr>
+<tr><td><span class="t-blue"><u>Exp 4</u></span> : La stimulation du BP du nerf X.
+<ul class="b"><li>Diminution du rythme cardiaque  de 80 à 50 batt/mn.</li><li>Aucun effet sur les artéroles.</li></ul></td><td>Les nerfs X (6) sont des  nerfs <b>efférents cardiomodérateurs.+</b></td></tr>
+<tr><td><span class="t-blue"><u>Exp 5</u></span> : La stimulation de la zone bulbaire.<br>
+*  Diminution du rythme cardiaque  de 80 à 50 batt/mn.<br>
+*  Vasodilatation.</td><td>Le bulbe rachidien renferme des centres cardiomodérateurs vasodilatateurs.</td></tr>
+<tr><td><span class="t-blue"><u>Exp 6</u></span> <b>:</b> La stimulation du centre médullaire.
+<ul class="b"><li>Augmentation du rythme cardiaque de  80 à 120 batt/mn.</li><li>Vasoconstriction.</li></ul></td><td>Le centre médullaire est un centre nerveux cardioaccélérateur vasoconstricteur.</td></tr>
+</table>
+<p class="para"><b>4)</b></p>
+<!-- CROP: 4773 15 3 0.100 0.586 0.882 0.903 4773_p15_03_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p15_03_schema.png" alt=""></figure>
+<!-- page 04 -->
+<div class="exsub">Exercice 3 : 40 min 6 pts</div>
+<p class="para">1) Avant l’hémorragie la pression maximale est de 125 mm Hg, c’est une valeur normale.<br>
+3 minutes après l’hémorragie, la pression maximale diminue de 125 à 90 mm Hg il s’agit d’une légère hypotension qui fait suite à une baisse de la volémie.<br>
+5 mn après l’hémorragie, la pression maximale augmente à 117 mm Hg.  On peut expliquer le retour à la normal par l’existante d’un mécanisme de régulation de l’hypotension.<br>
+2)</p>
+<table>
+<tr><th></th><th><span class="t-red">Analyse</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td><b><span class="t-red">Nerf de Héring</span></b></td><td>L’augmentation de la pression intrasinusale de 40 à 160 mm Hg entraîne une augmentation de la fréquence des PA de 0 à 235 PA/s</td><td>- Le Sinus carotidien contient des récepteurs : barorécepteurs assurant la transduction.<br>- Le message nerveux est codé en modulation de fréquence de PA.</td></tr>
+<tr><td><b><span class="t-red">Nerf A</span></b></td><td>L'augmentation de la pression intrasinusale de 40 à 160 mm Hg provoque la diminution de la fréquence des PA de 185 à 0 PA/s</td><td>Nerf <b>A</b> devient moins actif  en cas d’hypertension intrasinusale d’où le nerf <b>A</b> est le <b>sympathique cardiaque</b>.</td></tr>
+<tr><td><b><span class="t-red">Nerf B</span></b></td><td>L’augmentation de la pression intrasinusal de 40 à 160 mm Hg provoque l’augmentation de la fréquence des PA de 0 à 214 PA /s</td><td>Le nerf <b>B</b> devient très actif en cas d’hypertension intrasinusale d’où le nerf <b>B</b> est le <b>nerf  X</b></td></tr>
+</table>
+<p class="para">b) Au fur et à mesure que la pression intra-sinusale augmente, le nerf X devient de plus en plus actif donc la libération de plus en plus d’acétylcholine alors que le nerf sympathique, de moins en moins actif diminue sa libération de noradrénaline. Il en résulte une cardiomodération d’où la baisse de la pression générale de 160 à 80 mm Hg.<br>
+3) Schéma</p>
+<!-- page 05 -->
+<!-- CROP: 4773 15 5 0.083 0.067 0.940 0.470 4773_p15_05_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4773/4773_p15_05_schema.png" alt=""></figure>
+<p class="para"><b>NB- On acceptera aussi le schéma fonctionnel de la régulation cardiaque en cas d’hypotension.</b></p>
+<!-- page 06 -->
+<!-- NOTE: page 06 is blank (only running header/footer) — nothing to transcribe -->
+
+</section>
+
+</div>
+</body>
+</html>

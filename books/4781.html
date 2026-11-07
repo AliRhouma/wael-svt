@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Reo svt 26</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Correction">
+<meta data-pagefind-filter="resource[content]" content="Examens nationaux (Ministère de l&#x27;Éducation)">
+<meta data-pagefind-meta="n[content]" content="4781">
+<meta data-pagefind-meta="title[content]" content="Reo svt 26">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Immunité">
+<meta data-pagefind-filter="chapter[content]" content="Génétique humaine">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Reo svt 26" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Reo svt 26</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">République Tunisienne · Ministère de l’Enseignement Supérieur Et de la Recherche Scientifique · Université de Monastir · Concours de Réorientation Session 2026 · جامعة المنستير مناظرة إعادة التوجيه الجامعي دورة 2026</span> <span class="tg">Révision</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1gSTYNvitLM-Jguk_uPkQOOt6pHeKWY0b/view">↗ Screenshot_20260528_211451_Messenger.jpg</a> <a href="https://drive.google.com/file/d/1eCgYEf9CjHTI18qo5TB5BKDxZQWys-hw/view">↗ Screenshot_20260528_211459_Messenger.jpg</a> <a href="https://drive.google.com/file/d/1l6NbgDvIvzAi0BnZ-2Dq1Mlys14S7qei/view">↗ Screenshot_20260528_211502_Messenger.jpg</a> <a href="https://drive.google.com/file/d/15yY_fkN9L-e82XvciWeT-k2J8TGYszoJ/view">↗ Screenshot_20260528_211528_Messenger.jpg</a> <a href="https://drive.google.com/file/d/1KOPZeiCvMIqUIZzio2cGDgC7eq1JFyb-/view">↗ Screenshot_20260528_211532_Messenger.jpg</a> <a href="https://drive.google.com/file/d/1UUgcWxFevlmE-MmePKlHuJN_a0JzJnG3/view">↗ Screenshot_20260528_211540_Messenger.jpg</a> <a href="https://drive.google.com/file/d/1gLr6tAYpaLeBgWbCXyBQbi3ZTJKZCkg5/view">↗ Screenshot_20260528_211544_Messenger.jpg</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (7)</b><ul><li><a href="https://drive.google.com/file/d/1gSTYNvitLM-Jguk_uPkQOOt6pHeKWY0b/view">une · Bac science 2026 › Revision / Reo svt 26</a></li><li><a href="https://drive.google.com/file/d/1eCgYEf9CjHTI18qo5TB5BKDxZQWys-hw/view">une · Bac science 2026 › Revision / Reo svt 26</a></li><li><a href="https://drive.google.com/file/d/1l6NbgDvIvzAi0BnZ-2Dq1Mlys14S7qei/view">une · Bac science 2026 › Revision / Reo svt 26</a></li><li><a href="https://drive.google.com/file/d/15yY_fkN9L-e82XvciWeT-k2J8TGYszoJ/view">une · Bac science 2026 › Revision / Reo svt 26</a></li><li><a href="https://drive.google.com/file/d/1KOPZeiCvMIqUIZzio2cGDgC7eq1JFyb-/view">une · Bac science 2026 › Revision / Reo svt 26</a></li><li><a href="https://drive.google.com/file/d/1UUgcWxFevlmE-MmePKlHuJN_a0JzJnG3/view">une · Bac science 2026 › Revision / Reo svt 26</a></li><li><a href="https://drive.google.com/file/d/1gLr6tAYpaLeBgWbCXyBQbi3ZTJKZCkg5/view">une · Bac science 2026 › Revision / Reo svt 26</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: République Tunisienne · Ministère de l’Enseignement Supérieur Et de la Recherche Scientifique · Université de Monastir · Concours de Réorientation Session 2026 · جامعة المنستير مناظرة إعادة التوجيه الجامعي دورة 2026 -->
+<div class="exh"><span class="idx ex">Correction</span><h2>Corrigé</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4781.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">République Tunisienne · Ministère de l’Enseignement Supérieur Et de la Recherche Scientifique · Université de Monastir · Concours de Réorientation Session 2026 · جامعة المنستير مناظرة إعادة التوجيه الجامعي دورة 2026</span> <span class="tg">Révision</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1gSTYNvitLM-Jguk_uPkQOOt6pHeKWY0b/view">↗ Screenshot_20260528_211451_Messenger.jpg</a> <a href="https://drive.google.com/file/d/1eCgYEf9CjHTI18qo5TB5BKDxZQWys-hw/view">↗ Screenshot_20260528_211459_Messenger.jpg</a> <a href="https://drive.google.com/file/d/1l6NbgDvIvzAi0BnZ-2Dq1Mlys14S7qei/view">↗ Screenshot_20260528_211502_Messenger.jpg</a> <a href="https://drive.google.com/file/d/15yY_fkN9L-e82XvciWeT-k2J8TGYszoJ/view">↗ Screenshot_20260528_211528_Messenger.jpg</a> <a href="https://drive.google.com/file/d/1KOPZeiCvMIqUIZzio2cGDgC7eq1JFyb-/view">↗ Screenshot_20260528_211532_Messenger.jpg</a> <a href="https://drive.google.com/file/d/1UUgcWxFevlmE-MmePKlHuJN_a0JzJnG3/view">↗ Screenshot_20260528_211540_Messenger.jpg</a> <a href="https://drive.google.com/file/d/1gLr6tAYpaLeBgWbCXyBQbi3ZTJKZCkg5/view">↗ Screenshot_20260528_211544_Messenger.jpg</a></div>
+<!-- page 01 (part1) -->
+<table>
+<tr><th>Corrigé</th><th>Barème</th></tr>
+<tr><td>
+<p class="subhead t-red"><b>Première partie :</b> (8 points).</p>
+<p class="subhead t-navy"><b>I-QCM :</b> (4 points)</p>
+<table>
+<tr><th>Items</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+<tr><td>Réponses</td><td>a/b</td><td>a/c</td><td>c/d</td><td>b</td><td>c</td><td>a/c</td><td>d</td><td>c</td></tr>
+</table>
+</td><td>0.5×8=4pts.</td></tr>
+<tr><td>
+<p class="subhead t-navy"><b>QROC :</b> (4 points)</p>
+<p class="para"><b>1-</b></p>
+<table>
+<tr><th>Comparaison</th><th>O1</th><th>O2</th></tr>
+<tr><td><b>Similitudes</b></td><td colspan="2">Le phénomène électrique enregistré en O1 et O2 est <b>un PA</b> d’amplitude <b>(100mv)</b></td></tr>
+<tr><td><b>Différences</b></td><td>-Pas de temps de latence.<br>-Présence d’un pré-potentiel (potentiel local).</td><td>-Présence de temps de latence.<br>-Absence d’un pré-potentiel (potentiel local).</td></tr>
+</table>
+<p class="para"><b>Déduction :</b><br>
+- Le PA est <b>propageable.</b><br>
+- le pré-potentiel est <b>non propageable.</b><br>
+NB : on accepte toute autre réponse correcte.</p>
+</td><td>0.25×3=<br>0.75pt.<br>0.25×2=0.5pt.</td></tr>
+<tr><td>
+<p class="para"><b>2-</b><br>
+<b>a-</b> V= Δd/Δt = 510<sup>-3</sup> m / 410<sup>-3</sup>s = 1.25m/s.</p>
+</td><td>0.50 pt.</td></tr>
+<tr><td>
+<p class="para"><b>b-</b> Il s’agit d’une <b>vitesse faible</b> donc la propagation <b>du message nerveux est lente</b> ce qui est en accord avec la structure du <b>neurone D qui est amyélinisé</b>.</p>
+</td><td>0.25×3=0.75pt</td></tr>
+<tr><td>
+<p class="para"><b>c-</b> Le neurone D est amyélinisé donc le mode de propagation de l’influx nerveux se fait « <b>de proche en proche » ou continue.</b></p>
+</td><td>0.5pt.</td></tr>
+<tr><td>
+<p class="para"><b>3-</b> En O3 on a enregistré <b>une légère dépolarisation</b> de la membrane postsynaptique du neurone « L » <b>d’amplitude 18 mv</b> il s’agit d’un PPSE donc <b>le neurone L est un motoneurone ou interneurone inhibiteur ou excitateur.</b></p>
+</td><td>0. 5×2=1pt.</td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Immunité</div>
+
+<table>
+<tr><td>
+<p class="subhead t-red"><b>Deuxième partie :</b> (12 points).</p>
+<p class="subhead t-navy"><b>I/Immunité:</b> (6 points).</p>
+<p class="para"><b>1-</b></p>
+<table>
+<tr><th>Souris</th><th>Analyse</th><th>Déduction</th></tr>
+<tr><td>Lot 1</td><td>Après quelques semaines de l’implantation des cellules tumorales on note la régression de la tumeur alors il y a une réponse immunitaire déclenchée contre les cellules tumorales.</td><td rowspan="2">Le THC affaiblit la réponse immunitaire contre les cellules tumorales</td></tr>
+<tr><td>Lot 2</td><td>Après quelques semaines de l’implantation des cellules tumorales on note un développement de la tumeur alors pas de réponse immunitaire déclenchée contre les cellules tumorales.</td></tr>
+</table>
+<p class="para">Rq : accepter toute autre réponse qui évoque la relation entre le THC et la réponse immunitaire déclenchée contre les cellules tumorales.</p>
+</td><td>1+0.5=1.5pt</td></tr>
+</table>
+<!-- page 01 (part2) -->
+<table>
+<tr><td>
+<p class="para"><b>2- --</b></p>
+<table>
+<tr><th>Comparaison</th><th>Déduction</th></tr>
+<tr><td>-Chez les souris de deux lots, la prolifération des lymphocytes T augmente avec l’augmentation du nombre des cellules tumorales implantées.<br>
+-Cette augmentation est plus importante chez les souris du lot 1 (de 4000 à 20000) par rapport aux souris du lot 2dont l’augmentation est moins importante (de 2500 à 10000)</td><td>La prolifération des LT est plus importante en absence d<!-- PROOFREAD: 4781 part2 p01 — "en absence d" cut at the cell edge --><br>THC : Le THC inhibe la prolifération des LT</td></tr>
+</table>
+</td><td>0.5+0.5+0.5=<br>1.5 pt<!-- PROOFREAD: 4781 part2 p01 — barème "0.5+0.5+0.5=" partly cut at the page edge --></td></tr>
+<tr><td>
+<p class="para"><b>3-</b></p>
+<table>
+<tr><th>Comparaison</th><th>Explication</th></tr>
+<tr><td>-La concentration des interleukines dans la rate et au niveau de la tumeur chez le lot 2 est faible <b>(21.1 pg/ml/500mg dans la rate et 73.2pgLmpg/ml/10<sup>6</sup>mg)</b> par rapport au lot 1 dont la concentration est plus forte<br>
+<b>(37.3pg/ml/500mg dans la rate et 190pgLmpg/ml/10<sup>6</sup>mg)</b><!-- PROOFREAD: 4781 part2 p01 — "pgLmpg/ml/10^6mg" printed as such; exponent read as 6 --></td><td>Le THC diminue la sécrétion d’interleukines (par les LT4) donc diminution de la prolifération des LT (LT4 et LT8) et leur différenciation en cellules effectrices d’où la déficience de la RIMC par conséquent pas de destruction des cellules tumorales d’où le développement de la tumeur.</td></tr>
+</table>
+</td><td>0.5+1=1.5pt.</td></tr>
+<tr><td>
+<p class="para"><b>4- Réponse immunitaire anti-tumorale : RIMC.</b></p>
+<!-- CROP: 4781 2 1 0.225 0.405 0.835 0.925 4781_p2_rimc -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4781/4781_p2_rimc.png" alt=""></figure>
+</td><td>0.5x3=<br>1.5pt.</td></tr>
+</table>
+<!-- page 01 (part3) -->
+<!-- ROTATE: 4781 part3 p01 180 -->
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<table>
+<tr><td>
+<p class="subhead t-navy"><b>II/Génétique humaine:</b> (6 points).</p>
+<p class="para"><b>1- Mode de transmission de chaque maladie :.</b></p>
+<ul class="b">
+<li>F1 : - Le gène ne peut pas être porté par Y puisqu’il y a une fille malade, donc M3 ne correspond pas à F1.<br>
+- L’allèle responsable de la maladie ne peut pas être récessif porté par X puisqu’il y a une fille saine II3 hérite l’allèle responsable du phénotype sain au moins de l’un de deux parents qui devrait être sain ce qui n’est pas le cas car I1 et I2 sont atteints. Donc M1 ne correspond pas à F1.<br>
+<b>Alors la maladie qui existe chez F1 est autosomale dominant «M2».</b></li>
+<li>F2 : - Le gène est porté par Y puisque toutes les filles sont saines et le garçon malade II2 hérite l’allèle muté de son père qui est malade ce qui est vérifié.<br>
+Donc M1 ne correspond pas à F2.<br>
+<b>Alors la maladie qui existe chez F2 est portépar Y «M3».</b></li>
+<li>F3 : - Le gène ne peut pas être porté par Y puisqu’il y a une fille malade 2 donc M3 ne correspond pas à F3.<br>
+- L’allèle responsable de la maladie est récessif porté par X.<br>
+Donc M2 ne correspond pas à F3.<br>
+<b>Alors la maladie qui existe chez F3 est récesif porté par X «M1».</b><br>
+<b>NB : accepter tout autre raisonnement logique.</b></li>
+</ul>
+<!-- PROOFREAD: 4781 part3 p01 — small inserted words ("puisqu’il y a", "pas être", "phénotype", "car I1", "autosomale", "filles", "ce qui est vérifié", "récessif", "récesif", "logique") are tiny and partly blurred -->
+</td><td>0. 5×3=1.5 pts.</td></tr>
+<tr><td>
+<p class="para"><b>2- -</b><br>
+a- <b>Le fœtus est hétérozygote c.-à-d. présente les deux allèles (A1 et A2) donc le gène ne peut pas être porté par Y</b> car s’il est porté par Y les garçons seulement présentent 1 seul allèle.<br>
+<b>Donc le fœtus n’appartient pas à F2 d’où il peut être de F1 ou de F3</b> (à condition qu’il soit de sexe féminin).</p>
+</td><td>0. 75pt.</td></tr>
+<tr><td>
+<p class="para">b- <b>Si le fœtus appartient à F1</b> il sera <b>atteint</b> soit de sexe masculin ou féminin puisque l’allèle de la maladie est dominant autosomal.<br>
+<b>S’il appartient à F3</b> il sera de sexe féminin et sain puisque l’allèle de la maladie est récessif porté par X.</p>
+</td><td>1pt.</td></tr>
+<tr><td>
+<p class="para">3- <b>D’après le caryotype (document 8) le fœtus présente les chromosomes sexuels XY donc il est de sexe masculin</b> donc <b>n’appartient pas à F3</b> car le gène est porté par X et un garçon doit présenter un seul allèle et non pas deux (document 7).<br>
+<b>Le fœtus appartient alors à F1.</b></p>
+</td><td>0. 75pt</td></tr>
+<tr><td>
+<p class="para"><b>4-</b> Les deux sœurs présentent A1 et elles sont de phénotypes différents puisque l’allèle de la maladie M2 est dominant donc la fille II3 est homozygote saine donc :<br>
+<b>A1 est responsable du phénotype sain.</b><br>
+<b>A2 est responsable du phénotype atteint.</b><br>
+<b>Avec A2 domine A1.</b></p>
+</td><td>0.5pt.</td></tr>
+<tr><td>
+<p class="para">5- Génotypes:<br>
+I1 : A2//A1<br>
+I2 :A2//A1<br>
+Fœtus : A2//A1.<br>
+II1 : A2//A1.<br>
+II2 : A2//A2 ou A2//A1.<br>
+II3 : A1//A1.</p>
+</td><td>1.5pt.<br>(0.25x6)</td></tr>
+</table>
+<!-- page 01 (part4) -->
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<!-- NOTE: handwritten circles around answer letters, ticks and marks on the printed QCM are not transcribed -->
+<div class="data"><p class="para"><b>Épreuve de Sciences de la Vie et de la Terre (groupe N°1)</b><br>
+<b>Date de l’épreuve: 23/03/2026</b> <b>Durée : 2 Heures (de 09.00 à 11.00)</b><br>
+<b>Coefficient : 2</b></p></div>
+<p class="para"><i>(Le sujet comporte 4 pages numérotées de 1 à 4)</i></p>
+<p class="subhead t-red"><b><u>Première partie</u> :</b> (8 points)</p>
+<p class="subhead t-navy"><b>I-QCM :</b> (4 points).</p>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses correcte(s). Reportez sur votre copie, le numéro de chaque item et indiquez la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) correcte(s).<br>
+<b>NB : Toute réponse fausse annule la note attribuée à l’item.</b></p>
+<p class="para"><b>1- Une augmentation de la pression artérielle au niveau de la crosse aortique entraîne :</b><br>
+a- une stimulation de fibres parasympathiques motrices,<br>
+b- une vasodilatation des artères,<br>
+c- une stimulation des nerfs sympathiques moteurs,<br>
+d- une vasoconstriction des artères.</p>
+<p class="para"><b>2- Le raccourcissement d’un sarcomère :</b><br>
+a- résulte d’un glissement relatif des filaments d’actine par rapport aux filaments de myosine,<br>
+b- résulte d’un glissement relatif des filaments de myosine par rapport aux filaments d’actine,<br>
+c- nécessite la conversion de l’énergie chimique en énergie mécanique,<br>
+d- nécessite la conversion de l’énergie mécanique en énergie chimique.</p>
+<p class="para"><b>3- Le nerf de Cyon est un nerf :</b><br>
+a- moteur,<br>
+b- mixte,<br>
+c- sensitif,<br>
+d- dépresseur.</p>
+<p class="para"><b>4- Le document ci-dessous montre une portion de testicules chez quatre sujets différents.<br>
+La coupe qui correspond au testicule d’un sujet pubère ayant reçu une perfusion d’inhibine est :</b></p>
+<!-- CROP: 4781 4 1 0.060 0.605 0.905 0.744 4781_p4_testicules -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4781/4781_p4_testicules.png" alt=""></figure>
+<p class="para"><b>5- La pilule combinée :</b><br>
+a- active les ovaires,<br>
+b- inhibe la prolifération de l’endomètre,<br>
+c- stimule la prolifération de l’endomètre,<br>
+d- stimule l’axe hypothalamo-hypophysaire.</p>
+<!-- page 01 (part5) -->
+<p class="para"><b>6-L’adrénaline sécrétée par la médullo-surrénale provoque :</b><br>
+a- une accélération du rythme cardiaque,<br>
+b- une vasodilatation,<br>
+c- une vasoconstriction,<br>
+d- un ralentissement du rythme cardiaque.</p>
+<p class="para"><b>7- En cas d’une grossesse à risque, la détection d’une aberration chromosomique, nécessite :</b><br>
+a- l’analyse des protéines fœtales,<br>
+b- l’analyse de l’ADN fœtale,<br>
+c- l’établissement des caryotypes parentaux,<br>
+d- l’établissement du caryotype fœtal.</p>
+<p class="para"><b>8-L’étude de deux gènes (A, a) et (B, b) montre un pourcentage de recombinaison de 12%. Les résultats du test cross, réalisé entre un hybride et un double récessif, sont :</b><br>
+a- 25% [ab] 25% [AB] 25% [Ab] 25% [aB],<br>
+b- 50% [ab] 50% [AB],<br>
+c- 44% [ab] 44% [AB] 6% [aB] 6% [Ab],<br>
+d-38% [ab] 38% [AB] 12% [aB] 12% [Ab].</p>
+<p class="subhead t-navy"><b>II-QROC :</b> (4 points)</p>
+<p class="para">On se propose d’étudier quelques aspects de la transmission nerveuse. Un neurone «D» issu d’un récepteur connu fait la jonction avec un neurone «L» comme le montre le schéma du document 1.<br>
+On porte une stimulation efficace sur le neurone D et on enregistre la réponse sur trois oscilloscopes O1, O2, et O3.</p>
+<ul class="b">
+<li>Les électrodes réceptrices d’O1 et O2 sont distante de 5mm et électrode d’O1 est située au-dessous de la zone de stimulation.</li>
+<li>Les enregistrements obtenus figurent dans le document 2.</li>
+</ul>
+<!-- CROP: 4781 5 1 0.240 0.505 0.505 0.708 4781_p5_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4781/4781_p5_document1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<!-- CROP: 4781 5 1 0.505 0.420 0.900 0.725 4781_p5_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4781/4781_p5_document2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<ol class="qn">
+<li><b>A partir de la comparaison des enregistrements obtenus en O1 et O2 déduisez les propriétés des signaux électriques observes.</b></li>
+<li><b>En vous basant sur les données des documents 1 et 2 :</b><br>
+<b>a. calculez la vitesse de propagation du message nerveux au niveau de neurone D.</b><br>
+<b>b. vérifiez si le résultat de votre calcul est en accord avec la structure du neurone D comme le montre le document 1, justifiez votre réponse.</b><br>
+<b>c. déterminez le mode de propagation du message nerveux au niveau du neurone D.</b></li>
+<li><b>A partir de l’exploitation de l’enregistrement obtenu en O3 déduisez la nature du neurone L.</b></li>
+</ol>
+<!-- page 01 (part6) -->
+
+<div class="chtag"><span>Chapitre</span> Immunité</div>
+
+<!-- NOTE: highlighter, handwritten notes ("non injectés par le THC", "injectés par le THC") and pen marks on the printed page are not transcribed -->
+<p class="subhead t-red"><b><u>Deuxième partie</u> :</b> (12 points).</p>
+<p class="subhead t-navy"><b>I/ IMMUNITE:</b> (6 points).</p>
+<p class="para">Le cannabis (cannabis sativa) est une plante utilisée comme drogue dont la substance active est le tetrahydrocannabinol «THC».<br>
+Afin de déterminer l’effet de cette substance sur la réponse immunitaire, on propose les données suivantes :<br>
+<b><u>Donnée 1</u> :</b> Des souris de même lignée ont subis une implantation de cellules tumorales irradiées.<br>
+Quatre semaines après les souris sont reparties en deux lots :<br>
+Lot1 : Souris non injectées par le THC.<br>
+Lot 2 : Souris injectées par le THC.<br>
+Puis les deux lots de souris sont soumis à une implantation des cellules tumorales non irradiées en nombre de 3.10<sup>5</sup> cellules. On suit pour chaque lot la taille de la tumeur. Le document 3 présente les résultats obtenus.</p>
+<!-- CROP: 4781 6 1 0.100 0.250 0.885 0.415 4781_p6_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4781/4781_p6_document3.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<ol class="qn">
+<li><b>Analysez les résultats du document 3 afin de déterminer l’effet de THC.</b><!-- PROOFREAD: 4781 part6 p01 — the document number is overwritten by a handwritten "3" --></li>
+</ol>
+<p class="para"><b><u>Donnée 2</u> :</b> on suit pour chaque lot de souris l’évolution du nombre de lymphocyte T en fonction du nombre des cellules tumorales. Les résultats sont présentés par le document 4 ci-dessous :</p>
+<!-- CROP: 4781 6 1 0.215 0.488 0.805 0.652 4781_p6_document4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4781/4781_p6_document4.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<ol class="qn" start="2">
+<li><b>Comparez les résultats obtenus pour les deux lots de souris, que peut-on déduire.</b></li>
+</ol>
+<p class="para"><b><u>Donnée 3</u> :</b> les réactions immunitaires anti-tumorales font intervenir des molécules chimiques secrétées par des cellules immunitaires « interleukines».<br>
+La concentration de ces molécules a été mesurée au niveau de la tumeur et au niveau de la rate chez les deux lots de souris. Les résultats de ces mesures sont présentés dans le tableau du document 5.</p>
+<table>
+<tr><th rowspan="2"></th><th colspan="2">Concentration des interleukines</th></tr>
+<tr><th>Au niveau de la tumeur (pg/ml/500mg de tumeur)</th><th>Au niveau de la rate (pg/ml/10<sup>6</sup>mg de cellules)</th></tr>
+<tr><td>Souris du lot 1 (témoin)</td><td>190</td><td>37.3</td></tr>
+<tr><td>Souris du lot 2 injectées par le THC</td><td>73.2</td><td>21.1</td></tr>
+</table>
+<p class="para"><b>Document 5</b></p>
+<!-- page 01 (part7) -->
+<!-- NOTE: highlighter and handwritten annotations (genotypes, ticks, crossings on the pedigrees and on document 6b) are not transcribed -->
+<ol class="qn" start="3">
+<li><b>A partir de la comparaison de la concentration des interleukines chez les deux lots de souris et à partir de vos connaissances, expliquez l’action de THC sur la réponse immunitaire anti-tumorale ?</b></li>
+<li><b>A l’aide d’un schéma commenté, proposez un modèle explicatif de la réponse immunitaire anti-tumorale en précisant l’intervention des interleukines.</b></li>
+</ol>
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<p class="subhead t-navy"><b>II/ GENETIQUE HUMAINE:</b> (6 points).</p>
+<p class="para">On se propose d’étudier les modes de transmissions de trois maladies M1, M2 et M3 chez trois familles F1, F2 et F3.<br>
+Le document 6 représente d’une part les arbres généalogiques de ces trois familles F1, F2 et F3 (document 6a) et d’autre part résume les modes de transmissions de trois maladies M1, M2 et M3 (document 6b).</p>
+<!-- CROP: 4781 7 1 0.030 0.238 0.628 0.470 4781_p7_document6a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4781/4781_p7_document6a.png" alt=""></figure>
+<p class="para"><b>Document 6a</b></p>
+<table>
+<tr><th>Mode de transmission des maladies</th></tr>
+<tr><td><b>M1: Maladie contrôlée par un allèle récessif porté par le chromosome sexuel X</b></td></tr>
+<tr><td><b>M2: Maladie contrôlée par un allèle dominant porté par un autosome</b></td></tr>
+<tr><td><b>M3: Maladie contrôlée par un allèle porté par le chromosome sexuel Y</b></td></tr>
+</table>
+<p class="para"><b>Document 6b</b></p>
+<p class="para"><b>Document 6</b></p>
+<p class="para"><b>1- Faites correspondre la maladie présente dans chacune des familles F1, F2 et F3 à son mode de transmission M1, M2 ou M3. Justifiez votre réponse.</b></p>
+<p class="para">Le document 7 représente le résultat de l'analyse de l'ADN du gène responsable de la maladie de l'un de trois fœtus appartenant respectivement aux familles F1, F2 et F3.</p>
+<p class="para"><b>2- En vous basant sur les données des documents 6 et 7, déterminez :</b><br>
+a- le (ou les) fœtus auquel (aux quels) peut correspondre ce résultat.<br>
+b- l'état de santé et le sexe de ce fœtus.</p>
+<table>
+<tr><th colspan="2"></th><th>Fœtus</th></tr>
+<tr><td rowspan="2"><b>Allèles du gène contrôlant la maladie</b></td><td><b>A1</b></td><td>+</td></tr>
+<tr><td><b>A2</b></td><td>+</td></tr>
+</table>
+<p class="para"><b>Document 7</b></p>
+<p class="para">Le document 8 représente le caryotype du fœtus recherché.<br>
+<b>3- Exploitez les documents 6, 7 et 8 en vue d’identifier la famille à laquelle appartient ce fœtus.</b><br>
+<b>4- Précisez l’allèle responsable de la maladie, sachant que les génotypes <u>des deux sœurs de ce</u> fœtus présentent l’allèle <u>A1</u>.</b><br>
+<b>5- Écrivez les génotypes de membres de la famille de ce fœtus.</b></p>
+<!-- CROP: 4781 7 1 0.645 0.705 0.972 0.893 4781_p7_document8 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4781/4781_p7_document8.png" alt=""></figure>
+<p class="para"><b>Document 8</b></p>
+
+</section>
+
+</div>
+</body>
+</html>

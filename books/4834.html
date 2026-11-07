@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · correction-QCM-serie-4</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Correction">
+<meta data-pagefind-filter="resource[content]" content="Source non indiquée">
+<meta data-pagefind-meta="n[content]" content="4834">
+<meta data-pagefind-meta="title[content]" content="correction-QCM-serie-4">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · correction-QCM-serie-4" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>correction-QCM-serie-4</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Série</span><span class="tg">QCM</span><span class="tg">Révision</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/18zFHTnnnx4hWApNULETtU3quO422yU0h/view">↗ correction-QCM-serie-4.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/18zFHTnnnx4hWApNULETtU3quO422yU0h/view">Karim Fourati · Bac 2KF25 › SVT / Mme Roudayna (LPM8) / Série / Révision Finale</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<div class="exh"><span class="idx ex">Correction</span><h2>Série révision 2 : Neuro</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4834.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Série</span><span class="tg">QCM</span><span class="tg">Révision</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/18zFHTnnnx4hWApNULETtU3quO422yU0h/view">↗ correction-QCM-serie-4.pdf</a></div>
+<div class="exsub">Correction</div>
+<!-- NOTE: the answers of this correction are given by hand-drawn circles around the item letters; each circled letter is kept in <span class="t-blue"><b>…</b></span>. Other handwritten scribbles, the faint show-through of the reverse page and scanner marks are not transcribed -->
+<!-- page 01 -->
+<p class="subhead t-red"><b><u>Série révision 2 : Neuro</u></b></p>
+<div class="exsub">Exercice 1 :</div>
+<!-- PROOFREAD: 4834 part1 p01 — the question stems 1- to 9- are printed very faintly (washed out); best reading, cross-checked against the clean print of the same questions in item 4835 (série-révision neuro 4-GM) -->
+<p class="subhead t-navy">1- Au niveau de la membrane cellulaire, La pompe Na<sup>+</sup>/K<sup>+</sup> :</p>
+<p class="para"><span class="t-blue"><b>a)</b></span> <b>assure un transport actif des ions Na<sup>+</sup>et K<sup>+</sup></b><br>
+<b>b)</b> <b>assure un transport passif des ions Na<sup>+</sup>et K<sup>+</sup></b><br>
+<b>c)</b> <b>renforce le flux ionique passif des ions Na<sup>+</sup>et K<sup>+</sup></b><br>
+<span class="t-blue"><b>d)</b></span> <b>s’oppose au flux ionique passif des ions Na<sup>+</sup>et K<sup>+</sup></b></p>
+<p class="subhead t-navy">2- Le document ci-contre montre un schéma d’une synapse neuro-neuronique observée au microscope électronique.</p>
+<!-- CROP: 4834 1 1 0.733 0.115 0.978 0.210 4834_q2_synapse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q2_synapse.png" alt=""></figure>
+<p class="para"><b>a)</b> <b>L’élément A est pré synaptique</b><br>
+<span class="t-blue"><b>b)</b></span> <b>L’élément A est post synaptique</b><br>
+<span class="t-blue"><b>c)</b></span> <b>L’influx nerveux est transmis dans le sens 1</b><br>
+<b>d)</b> <b>L’influx nerveux est transmis dans le sens 2</b></p>
+<p class="subhead t-navy">3- Expérimentalement, la stimulation électrique efficace S appliquée sur une portion d’un axone selon le schéma suivant permet d’enregistrer :</p>
+<!-- CROP: 4834 1 1 0.738 0.226 0.978 0.302 4834_q3_r1_s_r2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q3_r1_s_r2.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>a)</b></span> <b>Un potentiel d’action en R<sub>1</sub> et en R<sub>2</sub></b><br>
+<b>b)</b> <b>Un potentiel de repos en R<sub>1</sub> et en R<sub>2</sub></b><br>
+<b>c)</b> <b>Un potentiel d’action en R<sub>1</sub> et un potentiel de repos en R<sub>2</sub></b><br>
+<b>d)</b> <b>Un potentiel d’action en R<sub>2</sub> et un potentiel de repos en R<sub>1</sub></b></p>
+<p class="subhead t-navy">4- Les flèches indiquées dans la figure ci -contre correspondent aux mouvements des ions Na<sup>+</sup> et K<sup>+</sup> à travers la membrane (M) de la fibre nerveuse, au cours de la phase d’hyperpolarisation d’un potentiel d’action.</p>
+<!-- CROP: 4834 1 1 0.755 0.330 0.978 0.402 4834_q4_flux -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q4_flux.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>a)</b></span> <b>Le flux ionique de K<sup>+</sup> est assuré par les CVD</b><br>
+<span class="t-blue"><b>b)</b></span> <b>Le flux ionique de K<sup>+</sup> est assuré par les canaux de fuite</b><br>
+<b>c)</b> <b>Le flux ionique de Na<sup>+</sup> est assuré par les CVD</b><br>
+<b>d)</b> <b>Le flux ionique de Na<sup>+</sup> est assuré par la pompe Na<sup>+</sup>/K<sup>+</sup></b></p>
+<p class="subhead t-navy">5- On excite efficacement une fibre nerveuse après avoir bloqué les CVD à Na<sup>+</sup>, on :</p>
+<p class="para"><span class="t-blue"><b>a)</b></span> <b>n’enregistre pas un PA ;</b><br>
+<b>b)</b> <b>enregistre un PA normal ;</b><br>
+<b>c)</b> <b>enregistre un PA avec une amplitude plus élevée ;</b><br>
+<b>d)</b> <b>enregistre un PA avec une amplitude plus faible.</b></p>
+<p class="subhead t-navy">6- Soit les montages expérimentaux suivants :</p>
+<!-- CROP: 4834 1 1 0.640 0.455 0.968 0.548 4834_q6_montages -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q6_montages.png" alt=""></figure>
+<p class="para"><b>a)</b> <b>Les enregistrements en O1 et O2 indiquent une valeur -70 mv.</b><br>
+<b>b)</b> <b>Les enregistrements en O2 et O3 indiquent la même valeur.</b><br>
+<b>c)</b> <b>Les enregistrements en O3 et O4 indiquent la même valeur.</b><br>
+<span class="t-blue"><b>d)</b></span> <b>Les enregistrements en O1 et O2 indiquent la même valeur.</b></p>
+<p class="subhead t-navy">7- Dans le document 1 ci-contre :</p>
+<p class="para"><b>a-</b> <b>La structure 2 est la racine ventrale de la moelle épinière</b><br>
+<b>b-</b> <b>La structure 6 est la racine postérieure de la moelle épinière</b><br>
+<b>c-</b> <b>La structure 5 est une fibre nerveuse</b><br>
+<span class="t-blue"><b>d-</b></span> <b>La structure 5 est un nerf</b></p>
+<!-- CROP: 4834 1 1 0.628 0.588 0.982 0.822 4834_document1_moelle_section -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_document1_moelle_section.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="subhead t-navy">8- Dans le document 1 ci-contre :</p>
+<p class="para"><b>a-</b> <b>La structure 4 est le bout central dégénéré suite la section</b><br>
+<span class="t-blue"><b>b-</b></span> <b>La structure 3 régénère à long terme après la section</b><br>
+<span class="t-blue"><b>c-</b></span> <b>La section entraine la perte de l’activité de l’effecteur</b><br>
+<b>d-</b> <b>La section n’entraine aucun effet sur la sensibilité de l’organe innervé.</b></p>
+<p class="subhead t-navy">9- L’organe illustré par la flèche 8 du document 1 :</p>
+<p class="para"><b>a-</b> <b>Fait partie de l’encéphale</b><br>
+<b>b-</b> <b>Est constitué d’une substance grise externe</b><br>
+<span class="t-blue"><b>c-</b></span> <b>Est logé dans le canal rachidien</b><br>
+<b>d-</b> <b>Reçoit le message nerveux provenant de l’effecteur.</b></p>
+<!-- PROOFREAD: 4834 part1 p01 — the stem of the next question (10) is washed out / covered by handwriting and is not legible; nothing typed for it -->
+<p class="para"><b>a-</b> <b>Se trouve à l’intérieur de chaque centre nerveux</b><br>
+<span class="t-blue"><b>b-</b></span> <b>Renferme des dendrites</b><br>
+<span class="t-blue"><b>c-</b></span> <b>Renferme des cellules gliales</b><br>
+<b>d-</b> <b>Renferme des fibres myélinisées.</b></p>
+<!-- page 02 -->
+<!-- PROOFREAD: 4834 part1 p02 — the question stems 11- to 14-, 16- to 19- are printed very faintly (washed out); best reading, cross-checked against the clean print of the same questions in item 4835 (série-révision neuro 4-GM) -->
+<p class="subhead t-navy">11- Le document 2montre deux types de cellules nerveuses :</p>
+<!-- CROP: 4834 1 2 0.678 0.043 0.918 0.188 4834_document2_neurones -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_document2_neurones.png" alt=""></figure>
+<p class="para"><b>document 2</b></p>
+<p class="para"><b>a-</b> <b>L’élément « a » est localisé dans la structure 7 du document 1</b><br>
+<span class="t-blue"><b>b-</b></span> <b>L’élément « b » est localisé dans la structure 1 du document 1</b><br>
+<b>c-</b> <b>L’élément « c « est localisé dans la structure 2 du document 1</b><br>
+<span class="t-blue"><b>d-</b></span> <b>L’élément « d » s’observe au niveau de l’effecteur.</b></p>
+<p class="subhead t-navy">12- Dans le document 2, les deux neurones I et II :</p>
+<p class="para"><b>a-</b> <b>conduisent un message nerveux afférent</b><br>
+<span class="t-blue"><b>b-</b></span> <b>sont excitables</b><br>
+<b>c-</b> <b>sont le siège de la conversion de l’énergie du stimulus en un message nerveux</b><br>
+<b>d-</b> <b>jouent un rôle de soutien et de défense.</b></p>
+<p class="subhead t-navy">13- Dans le document 3 ci-contre :</p>
+<!-- CROP: 4834 1 2 0.672 0.222 0.918 0.372 4834_document3_structures_a_b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_document3_structures_a_b.png" alt=""></figure>
+<p class="para"><b>document 3</b></p>
+<p class="para"><span class="t-blue"><b>a-</b></span> <b>La structure B peut être une dendrite</b><br>
+<span class="t-blue"><b>b-</b></span> <b>L’élément 4 prend naissance à partir de l’élément 2</b><br>
+<b>c-</b> <b>L’élément 1 est un axone localisé dans la substance blanche centrale</b><br>
+<b>d-</b> <b>L’élément 3 est un étranglement de l’axone.</b></p>
+<p class="subhead t-navy">14- Dans le document 3, les deux structures A et B :</p>
+<p class="para"><span class="t-blue"><b>a-</b></span> <b>Sont en continuité avec un corps cellulaire</b><br>
+<b>b-</b> <b>Sont des fibres nerveuses centrales</b><br>
+<b>c-</b> <b>Sont des fibres nerveuses myélinisé</b><br>
+<span class="t-blue"><b>d-</b></span> <b>Conduisent le message nerveux.</b></p>
+<p class="subhead t-navy">15- Dans le document 4 ci-contre :</p>
+<!-- CROP: 4834 1 2 0.640 0.383 0.980 0.492 4834_document4_synapses -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_document4_synapses.png" alt=""></figure>
+<p class="para"><b>document 4</b></p>
+<p class="para"><b>a-</b> <b>les structures 1, 2 et 3 sont des boutons synaptiques</b><br>
+<span class="t-blue"><b>b-</b></span> <b>les structures 1, 2 et 3 sont des synapses neuro-neuroniques</b><br>
+<b>c-</b> <b>la structure 1 est une synapse qu’on peut observer au niveau d’un nerf rachidien</b><br>
+<b>d-</b> <b>la structure 3 est une synapse axo-somatique</b></p>
+<p class="subhead t-navy">16- Le document 5 ci-contre illustre l’expérience de mérotomie chez l’amibe. Au cours de cette expérience :</p>
+<!-- CROP: 4834 1 2 0.668 0.532 0.890 0.612 4834_document5_merotomie -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_document5_merotomie.png" alt=""></figure>
+<p class="para"><b>document 5</b></p>
+<p class="para"><b>a-</b> <b>le fragment « a » dégénère.</b><br>
+<span class="t-blue"><b>b-</b></span> <b>le fragment « b » est anucléé</b><br>
+<b>c-</b> <b>le fragment « b » grâce à son cytoplasme régénère la partie manquante</b><br>
+<span class="t-blue"><b>d-</b></span> <b>le fragment « a » est nucléé</b></p>
+<p class="subhead t-navy">17- Les potentiels locaux :</p>
+<p class="para"><b>a-</b> <b>sont enregistrés lorsqu’on atteint le seuil de stimulation</b><br>
+<span class="t-blue"><b>b-</b></span> <b>sont codés en modulation d’amplitude</b><br>
+<b>c-</b> <b>sont propageables</b><br>
+<b>d-</b> <b>sont d’origine ionique</b></p>
+<!-- NOTE: a handwritten remark after 17 b- (best reading "(ou gradable)") is an annotation on the printed page, not transcribed -->
+<p class="subhead t-navy">18- Dans une cellule nerveuse au repos :</p>
+<p class="para"><span class="t-blue"><b>a-</b></span> <b>la membrane cellulaire présente un flux passif des ions Na+ et K+</b><br>
+<b>b-</b> <b>le flux passif des ions Na+ et K+ se fait à travers des canaux voltage dépendants</b><br>
+<b>c-</b> <b>la membrane sépare deux milieux isopotentiels</b><br>
+<b>d-</b> <b>les canaux de fuite fonctionnent contre le gradient de concentration des ions Na+ et K+ des milieux intracellulaire et extracellulaire.</b></p>
+<p class="subhead t-navy">19- L’ordre croissant des vitesses des messages nerveux dans les différentes fibres représentées ci-contre en coupes transversales est :</p>
+<!-- CROP: 4834 1 2 0.668 0.828 0.920 0.930 4834_q19_fibres -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q19_fibres.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>a-</b></span> <b>a- A-C-B-D-E ,</b><br>
+<b>b-</b> <b>b- A-C-D-B-E ,</b><br>
+<b>c-</b> <b>c- C-B-A-E-D ,</b><br>
+<b>d-</b> <b>d- E-D-B-C-A.</b><br>
+<b>e-</b></p>
+<!-- page 03 -->
+<!-- PROOFREAD: 4834 part1 p03 — the question stems 20- to 27- are printed very faintly (washed out); best reading, cross-checked against the clean print of the same questions in item 4835 (série-révision neuro 4-GM) -->
+<p class="subhead t-navy">20- En admettant que les électrodes réceptrices sont distantes 1.5cm dans ces conditions vitesse de propagation du message nerveux est de ;</p>
+<!-- CROP: 4834 1 3 0.675 0.030 0.928 0.152 4834_q20_enregistrement -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q20_enregistrement.png" alt=""></figure>
+<p class="para"><b>a-</b> <b>150 ms<sup>-1</sup>.</b><br>
+<span class="t-blue"><b>b-</b></span> <b>15 ms<sup>-1</sup>.</b><br>
+<b>c-</b> <b>1.5 ms<sup>-1</sup>.</b><br>
+<b>d-</b> <b>0.15 ms<sup>-1</sup>.</b></p>
+<p class="subhead t-navy">21- Le document ci-contre illustre les mouvements ioniques de Na+ et de K+ à travers trois structures A, B et C d’une portion de la membrane d’une fibre nerveuse ;</p>
+<!-- CROP: 4834 1 3 0.630 0.160 0.962 0.293 4834_q21_membrane -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q21_membrane.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>a-</b></span> <b>la structure B est une enzyme,</b><br>
+<b>b-</b> <b>la structure C est toujours fonctionnelle,</b><br>
+<b>c-</b> <b>cette membrane est en état de repolarisation,</b><br>
+<b>d-</b> <b>les structures A et B interviennent en cas d’activité et en cas de repos de la fibre nerveuse.</b></p>
+<p class="subhead t-navy">22- Le tableau suivant donne la différence de potentiel enregistrée au niveau de l’oscilloscope O lorsque des excitations isolées ou simultanées sont portées sur différentes terminaisons nerveuses du réseau neuronique représenté par le document ci-contre<br>La différence de potentiel enregistrée en O est de :</p>
+<!-- CROP: 4834 1 3 0.630 0.295 0.965 0.398 4834_q22_reseau_neuronique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q22_reseau_neuronique.png" alt=""></figure>
+<table>
+<tr><th>Stimulations portées en</th><th>Différence de potentiel enregistrée en O</th></tr>
+<tr><td>A et C</td><td>- 65 mV</td></tr>
+<tr><td>A</td><td>- 75 mV</td></tr>
+<tr><td>A, B et C</td><td>- 60 mV</td></tr>
+</table>
+<p class="para"><span class="t-blue"><b>a-</b></span> <b>-65 mV lorsque la terminaison B est stimulée isolément</b><br>
+<b>b-</b> <b>-55 mV lorsque la terminaison C est stimulée isolément</b><br>
+<span class="t-blue"><b>c-</b></span> <b>-70 mV lorsque A et B sont simultanément stimulées</b><br>
+<b>d-</b> <b>-75 mV lorsque B et C sont simultanément stimulées</b></p>
+<p class="subhead t-navy">23- La quantité du neurotransmetteur libéré au niveau d’une synapse dépend de :</p>
+<p class="para"><span class="t-blue"><b>a.</b></span> <b>l’intensité du stimulus ;</b><br>
+<b>b.</b> <b>la nature de la synapse, excitatrice ou inhibitrice ;</b><br>
+<span class="t-blue"><b>c.</b></span> <b>la fréquence du message nerveux pré synaptique ;</b><br>
+<b>d.</b> <b>de la densité (nombre/surface) des récepteurs du neurotransmetteur.</b></p>
+<p class="subhead t-navy">24- La conduction du message nerveux par les fibres contenues dans les racines et le nerf rachidien peut être représentée par l’un des schémas suivants :</p>
+<!-- CROP: 4834 1 3 0.172 0.550 0.842 0.637 4834_q24_schemas_a_d -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q24_schemas_a_d.png" alt=""></figure>
+<!-- NOTE: in 24 the letter b) inside the figure is circled by hand (the answer) -->
+<p class="subhead t-navy">25- Le document ci-contre montre la variation de la concentration extracellulaire en ions K+ au niveau de la fente synaptique après stimulation de l’élément présynaptique :</p>
+<!-- CROP: 4834 1 3 0.668 0.662 0.935 0.762 4834_q25_concentration_k -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q25_concentration_k.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>a-</b></span> <b>il s’agit d’une synapse inhibitrice.</b><br>
+<b>b-</b> <b>il s’agit d’une synapse excitatrice.</b><br>
+<span class="t-blue"><b>c-</b></span> <b>on enregistre un PPSI dans l’élément postsynaptique.</b><br>
+<b>d-</b> <b>on enregistre un PPSE dans l’élément postsynaptique.</b></p>
+<p class="subhead t-navy">26- On stimule efficacement l’axone du neurone A (document ci-contre). Au niveau des synapses, on enregistre un PPSE au niveau de B et un PPSI au niveau de D. Dans ce cas</p>
+<!-- CROP: 4834 1 3 0.668 0.792 0.932 0.940 4834_q26_neurones -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q26_neurones.png" alt=""></figure>
+<p class="para"><b>a-</b> <b>le tracé obtenu en B est un PPSE résultant d’une sommation spatiale</b><br>
+<b>b-</b> <b>l’augmentation de la fréquence de stimulation en A peut entraîner l’apparition d’un potentiel d’action en D</b><br>
+<span class="t-blue"><b>c-</b></span> <b>l’augmentation de la fréquence de stimulation en A peut entraîner l’apparition d’un potentiel d’action en B</b><br>
+<b>d-</b> <b>la synapse A-C est inhibitrice</b></p>
+<p class="subhead t-navy">27- Une cellule nerveuse donnée :</p>
+<p class="para"><b>a-</b> <b>synthétise différentes sortes de neurotransmetteurs.</b><br>
+<span class="t-blue"><b>b-</b></span> <b>synthétise un seul type de neurotransmetteur</b><br>
+<span class="t-blue"><b>c-</b></span> <b>peut présenter une diversité de récepteurs membranaires spécifiques à différents types de neurotransmetteurs.</b><br>
+<b>d-</b> <b>libère un neurotransmetteur par ses dendrites quand elle est stimulée.</b></p>
+<!-- page 04 -->
+<!-- PROOFREAD: 4834 part1 p04 — the question stems 28- to 37- are printed very faintly (washed out); best reading, cross-checked against the clean print of the same questions in item 4835 (série-révision neuro 4-GM) -->
+<p class="subhead t-navy">28- Si deux électrodes réceptrices sont distantes de 1,2 cm et les enregistrements des 2 PA sont décalés de 5ms, la vitesse de propagation est de :</p>
+<p class="para"><b>a-</b> <b>40m/s.</b> &nbsp; <span class="t-blue"><b>b-</b></span> <b>2,4m/s.</b> &nbsp; <b>c-</b> <b>12m/s.</b> &nbsp; <b>d-</b> <b>24m/s.</b></p>
+<p class="subhead t-navy">29- L’enregistrement ci-contre :</p>
+<!-- CROP: 4834 1 4 0.690 0.098 0.932 0.200 4834_q29_enregistrement -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q29_enregistrement.png" alt=""></figure>
+<p class="para"><b>a-</b> <b>est obtenu au niveau du cône axonique d’un neurone suite à une intégration postsynaptique.</b><br>
+<b>b-</b> <b>est une hyperpolarisation.</b><br>
+<b>c-</b> <b>est un potentiel d’action.</b><br>
+<span class="t-blue"><b>d-</b></span> <b>est le résultat d’une sommation temporelle des PPS dans l’élément postsynaptique</b></p>
+<p class="subhead t-navy">30- La stimulation du bout centrale d’une racine dorsale sectionnée entraine :</p>
+<p class="para"><span class="t-blue"><b>a-</b></span> <b>une sensation de douleur et une contraction du muscle innervé par ce nerf.</b><br>
+<b>b-</b> <b>la contraction du muscle innervé par ce nerf.</b><br>
+<b>c-</b> <b>une sensation de douleur.</b><br>
+<b>d-</b> <b>aucun effet.</b></p>
+<p class="subhead t-navy">31- Les canaux voltages-dépendants aux ions Na+ et K+ sont localisés au niveau :</p>
+<p class="para"><b>a-</b> <b>du corps cellulaire.</b><br>
+<span class="t-blue"><b>b-</b></span> <b>cône axonique.</b><br>
+<span class="t-blue"><b>c-</b></span> <b>du dendrite</b><br>
+<b>d-</b> <b>du site générateur.</b></p>
+<p class="subhead t-navy">32- La figure ci-contre correspond aux mouvements des ions Na+ et K+ à travers la membrane d’une fibre nerveuse au repos :</p>
+<p class="para"><b>a-</b> <b>le mouvement des ions Na<sup>+</sup> est un transport passif.</b><br>
+<span class="t-blue"><b>b-</b></span> <b>le mouvement des ions K<sup>+</sup> est un transport actif.</b><br>
+<b>c-</b> <b>le mouvement des ions K<sup>+</sup> se fait à travers des canaux de fuite.</b><br>
+<b>d-</b> <b>le mouvement des ions Na<sup>+</sup> se fait à travers des canaux de fuite.</b></p>
+<!-- CROP: 4834 1 4 0.122 0.493 0.468 0.580 4834_q32_mouvements_ions -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q32_mouvements_ions.png" alt=""></figure>
+<p class="subhead t-navy">33- D’après le document ci-contre on déduit que :</p>
+<p class="para"><b>a-</b> <b>la perméabilité de la membrane aux ions Na<sup>+</sup> augmente suite à l’ouverture des CCD à Na<sup>+</sup>.</b><br>
+<b>b-</b> <b>pendant la phase EF, la membrane est chargée positivement sur sa face interne.</b><br>
+<span class="t-blue"><b>c-</b></span> <b>pendant la phase BCD la négativité interne diminue.</b><br>
+<b>d-</b> <b>la perméabilité de la membrane aux ions K+ augmente pendant la phase de dépolarisation.</b></p>
+<!-- CROP: 4834 1 4 0.562 0.468 0.925 0.580 4834_q33_pa_permeabilites -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q33_pa_permeabilites.png" alt=""></figure>
+<p class="subhead t-navy">34- Un récepteur sensoriel :</p>
+<p class="para"><span class="t-blue"><b>a-</b></span> <b>assure la transduction d’un stimulus spécifique en message nerveux.</b><br>
+<b>b-</b> <b>est une terminaison axonique d’un neurone sensitif.</b><br>
+<b>c-</b> <b>renferme des boutons synaptiques.</b><br>
+<span class="t-blue"><b>d-</b></span> <b>assure le codage du message nerveux en modulation de fréquence.</b></p>
+<!-- NOTE: handwritten remarks after 31 c- and 34 a- (best reading "(le rôle)") are annotations on the printed page, not transcribed -->
+<p class="subhead t-navy">35- La transmission synaptique :</p>
+<p class="para"><b>a-</b> <b>se fait dans un sens ou l’autre suivant l’origine du message nerveux.</b><br>
+<span class="t-blue"><b>b-</b></span> <b>est une transmission de nature chimique.</b><br>
+<b>c-</b> <b>implique toujours le passage d’un PA.</b><br>
+<span class="t-blue"><b>d-</b></span> <b>est à l’origine d’un phénomène électrique post synaptique.</b></p>
+<p class="subhead t-navy">36- Dans les conditions expérimentales, la propagation des messages nerveux le long de la fibre suivante est :</p>
+<!-- CROP: 4834 1 4 0.650 0.732 0.980 0.826 4834_q36_dispositif -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4834/4834_q36_dispositif.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>a-</b></span> <b>saltatoire</b><br>
+<b>b-</b> <b>continue</b><br>
+<b>c-</b> <b>unidirectionnelle</b><br>
+<span class="t-blue"><b>d-</b></span> <b>bidirectionnelle</b></p>
+<p class="subhead t-navy">37- Le temps de parcours d’un message nerveux ayant une vitesse de 80m/s le long d’un circuit neuronique de 40 cm comportant 4 synapses, est égal à :</p>
+<p class="para"><b>a-</b> <b>4ms</b><br>
+<b>b-</b> <b>5ms</b><br>
+<b>c-</b> <b>6ms</b><br>
+<span class="t-blue"><b>d-</b></span> <b>7ms</b></p>
+
+</section>
+
+</div>
+</body>
+</html>

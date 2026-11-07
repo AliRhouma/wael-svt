@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · corrigé_PROTOTYPE 2 (2ièmè SERIE DE REVISION)</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Correction">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4857">
+<meta data-pagefind-meta="title[content]" content="corrigé_PROTOTYPE 2 (2ièmè SERIE DE REVISION)">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · corrigé_PROTOTYPE 2 (2ièmè SERIE DE REVISION)" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>corrigé_PROTOTYPE 2 (2ièmè SERIE DE REVISION)</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy</span> <span class="tg">Série</span><span class="tg">Révision</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1cU2uLW9WUEilevmVQvO0JvCxzbf5qQ8c/view">↗ corrigé_PROTOTYPE 2 (2ièmè SERIE DE REVISION).pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/1cU2uLW9WUEilevmVQvO0JvCxzbf5qQ8c/view">Anas Saïd · IDEAL BAC MATH(Anas Saïd) › SVT / SVT Taki / Neuro TAKI</a></li><li><a href="https://drive.google.com/file/d/19QKYg_-sBfXXzKGYEIlTKqLTYgsuXtXS/view">Anas Saïd · IDEAL BAC MATH(Anas Saïd) › SVT / SVT Taki / reproduction TAKI</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: Taki Academy -->
+<div class="exh"><span class="idx">Correction</span><h2>Correction 2<sup>ième</sup> Série de révision :</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4857.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy</span> <span class="tg">Série</span><span class="tg">Révision</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1cU2uLW9WUEilevmVQvO0JvCxzbf5qQ8c/view">↗ corrigé_PROTOTYPE 2 (2ièmè SERIE DE REVISION).pdf</a></div>
+<div class="exsub">Correction</div>
+<!-- page 01 -->
+<!-- NOTE: printed page header "SVT", page numbers and logo not repeated; the correction is handwritten on printed ruled pages; a pink box drawn around "Fig a" left out -->
+<p class="para">Classe : <u>4<sup>ème</sup> Mathématiques.</u> <span class="t-gold"><u>(Gr : Excellent 1)</u></span></p>
+<p class="para"><span class="t-gold">17-05-2024</span></p>
+<p class="subhead t-red"><span class="t-gold"><u>Correction 2<sup>ième</sup> Série de révision :</u></span></p>
+<p class="para"><span class="t-gold">Prototype 2</span></p>
+<div class="exsub">Exercice 2 · 15 min · 04 pts</div>
+<p class="para"><span class="t-green">1:</span> legende.<br>
+1 : Noyau de la Cellule de schwann.<br>
+2 : guaine de myéline.<br>
+3 : Cellule gliale.<br>
+4 : Axone.<br>
+5 : noeud (= étranglement) de Ranvier<br>
+6 : gaine myéline.</p>
+<!-- PROOFREAD: 4857 part1 p01 — "guaine de myéline" / "gaine myéline" handwritten, best reading -->
+<p class="para"><span class="t-green">2:</span></p>
+<p class="para">Fig a : = fibre nerveuse périphérique : localisée dans un nerf.</p>
+<p class="para">• Justification : la présence de la Cellule de schwann. Caractéristique du système nerveux périphérique.</p>
+<!-- page 02 -->
+<p class="para">Fig B : substance grise de la moelle épinière.<br>
+. Justification : il s'agit de corps cellulaires multipolaires := (motoneurone α) (étoilés)</p>
+<p class="para">Fig c : substance blanche :<br>
+Justification : c'est une fibre nerveuse Centrale entourée d'une gaine de myéline, avec l'absence de la gaine de schwann.</p>
+<p class="para"><span class="t-green">3:</span></p>
+<p class="para">L'expérience de Waller.</p>
+<p class="para">→ La section d'un nerf rachidien d'un animal entraîne la dégénérescence des fibres dans le bout périphérique du nerf : l'axone et la gaine de myéline se fragmentent, se décomposent puis disparaissent. La gaine de Schwann, pourvue de noyau, reste intacte. Le bout central reste intact. Après un certain temps le bout central régénère le bout périphérique : l'axone s'allonge et s'enfile dans la gaine de Schwann qui reconstitue la gaine de myéline.<br>
+Cette expérience montre que les axones des fibres des nerfs constituent le prolongement cytoplasmique des corps cellulaire contenant des noyaux situés du côté de la moelle épinière et plus précisément dans la corne antérieure (substance grise) contenant les corps cellulaires et la substance blanche formé de fibre nerveuse centrale et les nerfs formés des fibres nerveuses périphériques.</p>
+<p class="para">➔ L'ensemble constituent l'unité de structure du tissu nerveux : le neurone</p>
+<!-- page 03 -->
+<!-- ROTATE: 4857 part1 p03 180 -->
+
+
+<div class="exsub">Exercice 3 · 20 min · 05 pts</div>
+<p class="para"><span class="t-green">1:</span></p>
+<p class="para">Fibre A : Fibre nerveuse périphérique amyélinisée vue l'absence de gaine de myéline.</p>
+<p class="para">Fibre B : Fibre nerveuse périphérique myélinisée vue la présence d'une gaine de myéline et d'une gaine de schwann.</p>
+<p class="para"><span class="t-green">2:</span></p>
+<table>
+<tr><th>Analyse</th><th>Déduction :</th></tr>
+<tr><td>- Pour la stimulation de I<sub>1</sub> à I<sub>4</sub>, d'intensité croissante, les amplitudes du potentiel membranaire augment avec l'intensité de la stimulation de 0mV avec I<sub>1</sub> à 16 mV avec I<sub>4</sub>.</td><td>→ Ces légère dépolarisation Correspondent à des potentiels locaux d'amplitude inferieur au Seuil.<br>⇒ donc avec I<sub>2</sub> on enregistre un potentiel local.<br>. les potentiel locaux sont graduable en amplitude.</td></tr>
+</table>
+<!-- PROOFREAD: 4857 part1 p03 — "de 0mV avec I1 à 16 mV avec I4" and "avec I2" handwritten, best reading -->
+<!-- page 04 -->
+<!-- ROTATE: 4857 part1 p04 180 -->
+<table>
+<tr><td>Pour la stimulation de I<sub>5</sub> à I7, d'intensités croissantes on enregistre des depolarisation d'amplitude maximale est constante à 100 mV.</td><td>→ Ces dépolarisations de la membrane de la fibre nerveuse suite à la stimulation, d'amplitude Constante, Correspondent à des potentiels d'Action (PA), montrent que I<sub>6</sub> et I7 sont des stimulation efficaces d'intensité supraliminaire.<br>Malgré que l'intensité de I7 &gt; I<sub>6</sub> &gt; I<sub>5</sub>, l'amplitude du PA est constante ⇒ le PA obeit à la loi de tout ou rein. (Non graduable)</td></tr>
+</table>
+<p class="para">a : les intensités supraliminaires = I<sub>6</sub> et I<sub>7</sub> (I<sub>5</sub>)<br>
+b : avec I<sub>2</sub> : donne un Potentiel local (PL)<br>
+avec I<sub>6</sub> : on obtient un Potentiel d'action (PA)</p>
+<!-- PROOFREAD: 4857 part1 p04 — "obeit", "rein" handwritten, best reading -->
+<!-- page 05 -->
+<!-- ROTATE: 4857 part1 p05 180 -->
+<p class="para">c :</p>
+<p class="para">. PL : est graduable en amplitude.<br>
+, ne nécessite pas un seuil pour apparaître.</p>
+<p class="para">. PA : obeit à loi de tout ou rein = non graduable = amplitude Constante q.q.soit l'intensité de la stimulation efficace.<br>
+• Exige un seuil pour appaître.</p>
+<!-- PROOFREAD: 4857 part1 p05 — "quelque soit" written as an abbreviation ("q.q.soi'"), best reading -->
+<p class="para"><span class="t-green">3.</span> Vitesse :<br>
+V = ΔD / Δt m s<sup>-1</sup></p>
+<table>
+<tr><td>V<sub>x</sub> :<br>ΔD = 2 cm<br>= 2 10<sup>-2</sup> m.<br>Δt :<br>temps de latence (L<sub>1</sub>)<br>1 ms.<br>L<sub>2</sub> : 2 ms<br>⇒ Δt = 2 - 1<br>= 1ms.<br>⇒ V<sub>x</sub> = 2 10<sup>-2</sup> / 10<sup>-3</sup> = 20 ms<sup>-1</sup></td><td><span class="t-green">V<sub>y</sub> : ΔD = 2 10<sup>-2</sup><br>Δt :<br>L<sub>1</sub> = 4 ms / L<sub>2</sub> : 8 ms. | Δt = 4 ms<br>Δt = 4 10<sup>-3</sup> s.<br>V<sub>y</sub> = 2 10<sup>-2</sup> / 4 10<sup>-3</sup><br>= 5 ms<sup>-1</sup></span></td></tr>
+</table>
+<!-- page 06 -->
+<!-- ROTATE: 4857 part1 p06 180 -->
+<p class="para"><span class="t-green">b :</span> la vitesse de propagation du message nerveux est plus importante au niveau des fibres myélinisées (Conduction saltatoire) qu'au niveau de la fibres amyélinisées.<br>
+puisque V<sub>x</sub> &gt; V<sub>y</sub> donc la fibre x correspond à la fibre myélinisée B et y Correspond à la fibre A.</p>
+<p class="para"><span class="t-green">c :</span></p>
+<p class="para">Au niveau d'un fibre myélinisée, les CVD sont localisés au niveau des noeuds de Ranvier, donc la propagation du message nerveux (PA) ce fait d'une façon saltatoire, c'est à dire d'un noeud polarisé vers le noeud voisin encore au repos. Cette Conduction discontinue est rapide, par rapport à la Conduction de proche en proche caractéristique d'une fibre amyélinisée ou les CVD sont répartis le long de la fibre.</p>
+<!-- PROOFREAD: 4857 part1 p06 — "myélinisée B" (written "myélinée-B"?), "CVD" handwritten, best reading -->
+<!-- page 07 -->
+<!-- ROTATE: 4857 part1 p07 180 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">Exercice 4 · 25 min · 05 pts</div>
+<p class="para">Exploition :<br>
+Pour la femme A :</p>
+<p class="para">. Pour h<sub>1</sub> : c'est une homme sexuelle, qui présente un taux varible avec une secretion cyclique :<br>
+. Cette hormone est secrétée tout long du cycle, avec 2 pics caractéristiques :<br>
+1<sup>er</sup> pic de 240 pg ml<sup>-1</sup> le jour 12 du cycle.<br>
+et 2<sup>è</sup> pic de 150 pg ml<sup>-1</sup> le jour 21 du cycle.<br>
+⇒ Cette hormone Correspond à l'oestradiol :</p>
+<p class="para">Pour l'hormone H<sub>2</sub> : c'est une hormone sexuelle avec un taux variable et une secrétion cyclique.<br>
+. Pour chaque cycle, cette hormone est obtenue pendant la 1<sup>ère</sup> moitie du cycle, elle est secrété a partir du jour 14 ; son profil de secrétion montre un seul pic caractéristique de 8 ng le jour 21 (date du 2<sup>è</sup> pic d'oestradiol).<br>
+⇒ h<sub>2</sub> = progestérone.</p>
+<!-- PROOFREAD: 4857 part1 p07 — units "pg ml-1" / "8 ng", "obtenue pendant la 1ère moitie" handwritten, best reading -->
+<!-- page 08 -->
+<p class="para"><span class="t-green">b.</span></p>
+<p class="para">. Chez la femme B et C, les taux des hormones ovariennes est presque nuls tout le long de la période du dosage. (56 j).<br>
+→ les ovaires de ces deux femmes ne fonctionnent pas normalement.<br>
+. Alors que le profil de secrétion des ces hormones chez la femme A est normal.</p>
+<p class="para"><span class="t-green">c.</span></p>
+<p class="para">Le dysfonctionnement des ovaires des femmes B et C. peut être expliquer par :<br>
+• Un problème fonctionnel au niveau de l'axe H - H. (absence de gonadostimulines)<br>
+. Un problème fonctionnel au niveau des ovaires.<br>
+. • femmes ménopausées.</p>
+<!-- PROOFREAD: 4857 part1 p08 — "femmes ménopausées" handwritten, best reading -->
+<p class="para"><span class="t-green">2:</span></p>
+<!-- page 09 -->
+<!-- ROTATE: 4857 part1 p09 180 -->
+<table>
+<tr><th>Analyse</th><th>Déduction.</th></tr>
+<tr><td>Le dosage de LH chez les 3 femme A, B, et C réalisé sur une période de 56 j montre que :<br>. Chez la femme A, le taux de LH est variable avec une secrétion cyclique.<br>Pour un cycle le taux de LH est faible, presque Constant à 3 ng/ml le long de cycle, à l'exception d'un pic caractéristique qui dépasse 20 ng/ml le jour 13.</td><td>→ la femme A a activité ovarienne normale montre une activité normal de l'Hypophyse.<br>⇒ c'est la situation témoin.</td></tr>
+<tr><td>Pour la femme B : le taux de LH est élevé et presque Constant à 18 ng/ml le long de la période de dosage.</td><td>→ Ce taux élevé met en évidence l'absence du RC(-).<br>cette Hyperactivité de l'Hypophyse peut</td></tr>
+</table>
+<!-- PROOFREAD: 4857 part1 p09 — "3 ng/ml", "20 ng/ml", "18 ng/ml" handwritten, best reading -->
+<!-- page 10 -->
+<!-- ROTATE: 4857 part1 p10 180 -->
+<table>
+<tr><td></td><td>expliqué par : soit la ménopause, soit l'absence des ovaires soit des ovaires non fonctionnelles.</td></tr>
+<tr><td>. Pour la femme C : le taux de LH est faible et Constant à 2 ng/ml. tout le long de la période du dosage.</td><td>→ ces résultats montre un activité presque nulle de l'Hypophyse de cette femme.</td></tr>
+</table>
+<p class="para">a : L'Hypophyse contrôle l'activité des ovaires. donc chez la ♀ A, qui présente une activité normal de l'Hypophyse justifie l'activité cyclique et normale des ovaires.</p>
+<p class="para">b : femme B avec un taux élevé de LH : peut être ménopausée ou ovariectomisée.<br>
+c. femme C présente un taux ~ nul de LH montre un dysfonctionnement au niveau de l'axe H H.</p>
+<!-- PROOFREAD: 4857 part1 p10 — "un taux ~ nul" (symbol before "nul" unclear), "2 ng/ml" handwritten, best reading -->
+<!-- page 11 -->
+<!-- ROTATE: 4857 part1 p11 180 -->
+<p class="para">c :</p>
+<p class="para">. Chez la femme B, le taux élevé de LH s'explique par l'absence de RC(-) exercé par les hormones ovariennes sur l'axe H-H puisque les taux de l'oestrogènes et de la progestérone chez cette ♀ est presque nul.</p>
+<p class="para">. Chez la femme C : l'absence de LH, explique le dysfonctionnement de ces ovaires qui restent au repos, d'ou l'absence d'oestrogènes et de progestérone.</p>
+
+</section>
+
+</div>
+</body>
+</html>

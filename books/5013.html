@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Principale — svt</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Sujet">
+<meta data-pagefind-filter="resource[content]" content="ExaBac">
+<meta data-pagefind-meta="n[content]" content="5013">
+<meta data-pagefind-meta="title[content]" content="Principale — svt">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="chapter[content]" content="Génétique humaine">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Principale — svt" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Principale — svt</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">ExaBac</span> <span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1irx5l6Dxhpz6AwAWTa2GSOIZnjW_KfcS/view">↗ svt.pdf</a> <a href="https://drive.google.com/file/d/1UeUyJx5dhKVEVmGY2-9fJjXIVGWNZPQb/view">↗ svt_c.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (4)</b><ul><li><a href="https://drive.google.com/file/d/1irx5l6Dxhpz6AwAWTa2GSOIZnjW_KfcS/view">Mohamed aziz saideni lycee Farhat Hached bizertebac 2026 · BAC MATH 2026 MOHAMED AZIZ SAIDENI › TOUT 2026 / Pour réviser les langues_ travaillez ces sujets corrigés / 2012 / Principale</a></li><li><a href="https://drive.google.com/file/d/1zKnH67TMvSq-dSkX0ARjDBAG66ctAYkJ/view">Maram Belgacem · Bac math 2025 ( what you really need) › examenbac / svt</a></li><li><a href="https://drive.google.com/file/d/1UeUyJx5dhKVEVmGY2-9fJjXIVGWNZPQb/view">Mohamed aziz saideni lycee Farhat Hached bizertebac 2026 · BAC MATH 2026 MOHAMED AZIZ SAIDENI › TOUT 2026 / Pour réviser les langues_ travaillez ces sujets corrigés / 2012 / Principale</a></li><li><a href="https://drive.google.com/file/d/1a2XYGwFapx0JcWbBtjE5N2M9YFeLdS8M/view">Maram Belgacem · Bac math 2025 ( what you really need) › examenbac / svt</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: ExaBac -->
+<div class="exh"><span class="idx ex">Sujet</span><h2>EXAMEN DU BACCALAUREAT SESSION DE JUIN 2012</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/5013.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">ExaBac</span> <span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1irx5l6Dxhpz6AwAWTa2GSOIZnjW_KfcS/view">↗ svt.pdf</a> <a href="https://drive.google.com/file/d/1UeUyJx5dhKVEVmGY2-9fJjXIVGWNZPQb/view">↗ svt_c.pdf</a></div>
+<div class="exsub">svt</div>
+<!-- page 01 -->
+<table>
+<tr><td rowspan="2">REPUBLIQUE TUNISIENNE<br>◆◆◆<br>MINISTERE DE L'EDUCATION</td><td colspan="3"><b>EXAMEN DU BACCALAUREAT<br>SESSION DE JUIN 2012</b></td></tr>
+<tr><td><b>Epreuve : Sciences de la vie et de la terre</b></td><td><b>Durée : 1H30</b></td><td><b>coefficient : 1</b></td></tr>
+<tr><td colspan="3"><b>SECTION : Mathématiques</b></td><td><b>SESSION PRINCIPALE</b></td></tr>
+</table>
+<p class="para">Le sujet comporte 4 pages numérotées de 1/4 à 4/4</p>
+<p class="subhead t-red"><b><u>Première partie</u> (10 points)</b></p>
+<div class="exsub">A- QCM (5points)</div>
+<p class="consigne">Pour chacun des items suivants (de 1 à 5), il peut y avoir une (ou deux) réponse(s) correcte(s). Reportez, sur votre copie, le numéro de chaque item et indiquez dans chaque cas la (ou les deux) lettre(s) correspondant à la (ou aux deux) réponse(s) correcte(s).</p>
+<p class="consigne"><b>N.B : toute réponse fausse annule la note attribuée à l'item.</b></p>
+<p class="para"><b>1- Le document ci-contre représente une observation microscopique de la glaire cervicale ; cette glaire est :</b><br>
+<b>a-</b> observée au moment de l'ovulation.<br>
+<b>b-</b> favorable à la rencontre des gamètes.<br>
+<b>c-</b> observée pendant la phase menstruelle.<br>
+<b>d-</b> imperméable à la pénétration des spermatozoïdes.</p>
+<!-- CROP: 5013 1 1 0.6 0.39 0.8 0.485 5013_qcm1_glaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5013/5013_qcm1_glaire.png" alt=""></figure>
+<p class="para"><b>2- Après ovariectomie bilatérale effectuée chez une Guenon pubère, on note :</b><br>
+<b>a-</b> l'arrêt de l'activité cyclique de l'utérus.<br>
+<b>b-</b> la diminution du taux sanguin de LH.<br>
+<b>c-</b> la chute du taux sanguin des œstrogènes.<br>
+<b>d-</b> le maintien des caractères sexuels secondaires.</p>
+<p class="para"><b>3- Parmi les hormones assurant l'apparition et le maintien des caractères sexuels, on peut citer :</b><br>
+<b>a-</b> l'inhibine.<br>
+<b>b-</b> la testostérone.<br>
+<b>c-</b> les œstrogènes.<br>
+<b>d-</b> la progestérone.</p>
+<p class="para"><b>4- La sommation temporelle des potentiels postsynaptiques peut être obtenue suite à :</b><br>
+<b>a-</b> des excitations simultanées de plusieurs éléments présynaptiques.<br>
+<b>b-</b> des injections très rapprochées d'acétylcholine dans la fente synaptique.<br>
+<b>c-</b> l'activation simultanée de synapses excitatrices et des synapses inhibitrices.<br>
+<b>d-</b> des excitations efficaces et très rapprochées d'un seul élément présynaptique.</p>
+<p class="para"><b>5- L'analyse de l'ADN chez un garçon atteint d'une anomalie héréditaire révèle la présence de l'allèle normal et de l'allèle muté ; cette anomalie peut être :</b><br>
+<b>a-</b> liée à X.<br>
+<b>b-</b> liée à Y.<br>
+<b>c-</b> récessive.<br>
+<b>d-</b> autosomique.</p>
+<!-- page 02 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">B- Reproduction (5 points)</div>
+<p class="para">Le document 1 représente deux coupes réalisées au niveau de l'utérus à deux moments différents du cycle sexuel chez la femme.</p>
+<!-- CROP: 5013 1 2 0.29 0.148 0.755 0.37 5013_doc1_coupes_uterus -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5013/5013_doc1_coupes_uterus.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para">1- Complétez la légende de ce document en reportant les numéros correspondant sur votre copie.</p>
+<p class="para">2- Faites correspondre chacune de ces deux coupes (a) et (b) à l'une des phases du cycle utérin.</p>
+<p class="para">3- Décrivez les transformations subies par la muqueuse utérine au cours du cycle sexuel.</p>
+<p class="para">4- Indiquez les hormones ovariennes contrôlant ces transformations.</p>
+<p class="subhead t-red"><b><u>Deuxième partie</u> (10 points)</b></p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">A- Neurophysiologie (6 points)</div>
+<p class="para">On se propose d'étudier les phénomènes électriques enregistrés au niveau d'un neurone postsynaptique P, connecté à quatre neurones présynaptiques N<sub>1</sub>, N<sub>2</sub>, N<sub>3</sub> et N<sub>4</sub>, (document 2).</p>
+<!-- CROP: 5013 1 2 0.18 0.618 0.875 0.885 5013_doc2_dispositif -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5013/5013_doc2_dispositif.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<!-- page 03 -->
+<p class="para">On réalise deux séries d'expériences en utilisant le montage du document 2.</p>
+<p class="para"><b>Première série d'expériences:</b></p>
+<table>
+<tr><th rowspan="2">Résultats<br>Expériences</th><th colspan="5">ddp en mv enregistrée au niveau de</th></tr>
+<tr><th>O<sub>1</sub></th><th>O<sub>2</sub></th><th>O<sub>3</sub></th><th>O<sub>4</sub></th><th>O<sub>5</sub></th></tr>
+<tr><td><b>Expérience 1 :</b> Une excitation efficace appliquée en <b>E<sub>1</sub></b></td><td>- 58</td><td></td><td></td><td></td><td>- 62</td></tr>
+<tr><td><b>Expérience 2 :</b> Une excitation efficace appliquée en <b>E<sub>2</sub></b></td><td></td><td>- 52</td><td></td><td></td><td>- 55</td></tr>
+<tr><td><b>Expérience 3 :</b> Une excitation efficace appliquée en <b>E<sub>3</sub></b></td><td></td><td></td><td>- 78</td><td></td><td>- 72</td></tr>
+<tr><td><b>Expérience 4 :</b> Une excitation efficace appliquée en <b>E<sub>4</sub></b></td><td></td><td></td><td></td><td>- 60</td><td>- 64</td></tr>
+</table>
+<p class="para">1- Identifiez les potentiels postsynaptiques obtenus en O<sub>1</sub>, O<sub>2,</sub> O<sub>3</sub> et O<sub>4</sub> et indiquez leurs amplitudes.</p>
+<p class="para">2- Déduisez la nature des synapses (N<sub>1</sub>-P), (N<sub>2</sub>-P), (N<sub>3</sub>-P) et (N<sub>4</sub>-P).</p>
+<p class="para"><b>Deuxième série d'expériences:</b></p>
+<table>
+<tr><th>Expériences</th><th>Nombre des excitations portées sur les neurones présynaptiques</th></tr>
+<tr><td><b>Expérience 5</b></td><td>Deux excitations efficaces rapprochées en E<sub>1</sub>.</td></tr>
+<tr><td><b>Expérience 6</b></td><td>Deux excitations efficaces simultanées en E<sub>1</sub> et E<sub>2</sub>.</td></tr>
+<tr><td><b>Expérience 7</b></td><td>Trois excitations efficaces simultanées en E<sub>1</sub>, E<sub>3</sub> et E<sub>4.</sub></td></tr>
+<tr><td><b>Expérience 8</b></td><td>Deux excitations efficaces rapprochées en E<sub>3</sub>.</td></tr>
+</table>
+<p class="para">3- Indiquez la nature du potentiel obtenu en O<sub>5</sub> pour chacune des expériences 5, 6, 7 et 8. Justifiez votre réponse.</p>
+<p class="para">4- Précisez le nombre minimal d'excitations rapprochées qu'on doit appliquer en E<sub>4</sub> pour obtenir un potentiel d'action en O<sub>5</sub>.</p>
+<p class="para">5- Exploitez les réponses aux questions 3 et 4 afin de déduire la propriété du neurone P.</p>
+<!-- page 04 -->
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<div class="exsub">B- Génétique (4 points)</div>
+<p class="para">On se propose de déterminer le mode de transmission d'une anomalie héréditaire. Le document 3 représente le résultat de l'électrophorèse de l'ADN du gène responsable de cette anomalie, réalisée chez quatre membres d'une famille F<sub>1</sub>.</p>
+<!-- CROP: 5013 1 4 0.07 0.172 0.925 0.305 5013_doc3_electrophorese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5013/5013_doc3_electrophorese.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para">1- Exploitez les données de ce document pour discuter chacune des hypothèses suivantes :<br>
+<b>H<sub>1</sub> :</b> L'allèle de l'anomalie est récessif et autosomal.<br>
+<b>H<sub>2</sub> :</b> L'allèle de l'anomalie est dominant et autosomal.<br>
+<b>H<sub>3</sub> :</b> L'allèle de l'anomalie est récessif et lié à X.<br>
+<b>H<sub>4</sub> :</b> L'allèle de l'anomalie est dominant et lié à X.</p>
+<p class="para">2- Le document 4 représente l'arbre généalogique d'une famille F<sub>2</sub> affectée par la même anomalie.</p>
+<!-- CROP: 5013 1 4 0.08 0.48 0.9 0.63 5013_doc4_arbre -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5013/5013_doc4_arbre.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para">A partir de l'analyse de ce document, précisez laquelle des hypothèses précédemment retenues, est alors confirmée.</p>
+<p class="para">3- Ecrivez les génotypes des individus de la famille F<sub>1</sub>.</p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">svt_c</div>
+<!-- page 01 -->
+<p class="subhead t-red"><b>Section mathématiques</b></p>
+<p class="para">Ce document est conçu pour aider les élèves des classes terminales section Mathématiques à préparer l'épreuve de SVT.<br>
+Vous y trouverez un ensemble d'exercices corrigés et commentés. Ces exercices puisés des sujets de baccalauréat vous permettront de :</p>
+<ul class="dash">
+<li>Vous familiariser avec l'épreuve.</li>
+<li>Préciser vos connaissances</li>
+<li>Améliorer vos performances en SVT</li>
+</ul>
+<p class="para">Pour tirer profit de ce document, il est conseillé de répondre aux questions avant de consulter le corrigé. La comparaison de votre travail avec ce qui est proposé, vous permettra de vous rendre compte d'éventuelles lacunes et/ou insuffisances et d'y remédier.</p>
+<p class="subhead t-navy"><b>Session principale</b></p>
+<p class="subhead t-red"><b><u>Première partie</u> (10 points)</b></p>
+<div class="exsub">A- <b>QCM</b> (5 points)</div>
+<p class="para"><b><u>Commentaire :</u></b><br>
+<b>Le QCM ou questionnaire à choix multiples comporte des items portant sur une grande partie du programme de SVT. La tâche du candidat consiste à relever sur sa copie les réponses correctes. Evitez de :</b></p>
+<ul class="dash">
+<li><b>Relever une réponse pour laquelle vous avez un doute car toute réponse fausse annule la note attribuée à l'item.</b></li>
+<li><b>Recopier les questions et les propositions.</b></li>
+</ul>
+<table>
+<tr><td>Item</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><td>Réponse(s) correcte(s)</td><td>a, b</td><td>a, c</td><td>b, c</td><td>b, d</td><td>d</td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">B- <b>Reproduction :</b> (5 points)</div>
+<p class="para"><b>1-</b></p>
+<ol class="qn">
+<li>glande en tube droit</li>
+<li>capillaires sanguins</li>
+<li>endomètre</li>
+<li>glandes en tubes sinueux (dentelle utérine).</li>
+</ol>
+<p class="para"><b>2-</b></p>
+<ul class="dash">
+<li>coupe (a) : phase postmenstruelle</li>
+<li>coupe (b) : phase prémenstruelle.</li>
+</ul>
+<p class="para"><b>3-</b></p>
+<p class="para"><b><u>Commentaire</u> : il s'agit de restituer les connaissances relatives aux transformations de la muqueuse utérine lors du cycle utérin.</b></p>
+<table>
+<tr><th>Menstruation</th><th>Phase postmenstruelle</th><th>Phase prémenstruelle</th></tr>
+<tr><td>fragmentation de la partie supérieure de la muqueuse entrainant des saignements (4 à 5 j)</td><td><ul class="dash"><li>épaississement de l'endomètre</li><li>prolifération des capillaires sanguins</li><li>développement des glandes en tubes</li></ul></td><td><ul class="dash"><li>épaississement accru de l'endomètre</li><li>formation de la dentelle utérine par multiplication et ramification des glandes en tubes</li><li>spiralisation des artérioles</li></ul></td></tr>
+</table>
+<p class="para"><b>4</b>- Les hormones ovariennes contrôlant ces transformations sont les œstrogènes et la progestérone</p>
+<!-- page 02 -->
+<p class="subhead t-red"><b><u>Deuxième partie</u> (10 points)</b></p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">A- <b>Neurophysiologie</b> (6 points)</div>
+<p class="para"><b><u>Commentaire</u> :</b><br>
+<b>Il est recommandé d'observer le dispositif expérimental du document2 et de tenir compte des ddp enregistrées respectivement au niveau des oscilloscopes O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub>, O<sub>4</sub></b> et <b>O<sub>5</sub> pour pouvoir identifier les différents PPS et leurs amplitudes.</b></p>
+<p class="para"><b>1-</b></p>
+<table>
+<tr><td>Oscilloscope</td><td>O<sub>1</sub></td><td>O<sub>2</sub></td><td>O<sub>3</sub></td><td>O<sub>4</sub></td></tr>
+<tr><td>Identification</td><td>PPSE</td><td>PPSE</td><td>PPSI</td><td>PPSE</td></tr>
+<tr><td>Amplitude</td><td>12 mv</td><td>18 mv</td><td>8 mv</td><td>10 mv</td></tr>
+</table>
+<p class="para"><b>2-</b></p>
+<table>
+<tr><td>Synapse</td><td>N<sub>1</sub>-P</td><td>N<sub>2</sub>-P</td><td>N<sub>3</sub>-P</td><td>N<sub>4</sub>-P</td></tr>
+<tr><td>Nature</td><td>Synapse excitatrice</td><td>Synapse excitatrice</td><td>Synapse inhibitrice</td><td>Synapse excitatrice</td></tr>
+</table>
+<p class="para"><b>3-</b><br>
+<b><u>Commentaire</u> :</b><br>
+<b>La justification de la nature du potentiel obtenu au niveau deO<sub>5</sub> (cône axonique) doit comporter le type de sommation et l'amplitude du potentiel global.</b></p>
+<table>
+<tr><th>Expérience</th><th>Nature du potentiel obtenu en O<sub>5</sub></th><th>Justification</th></tr>
+<tr><td>5</td><td><b>PPSE</b></td><td>Etant donné qu'une excitation isolée portée en E<sub>1</sub> engendre au niveau du cône axonique (O<sub>5</sub>) un PPSE d'amplitude 8 mv (expérience 1), les deux excitations successives rapprochées engendrent donc un <b>PPSE global d'amplitude 16 mv</b> résultant d'une <b>sommation temporelle</b> de deux PPSE successifs ( 8+ 8 mv )</td></tr>
+<tr><td>6</td><td><b>PA</b></td><td><b>Le PPSE global</b> déclenché au niveau du cône axonique est <b>d'amplitude égale à 23 mv</b> ; il résulte d'une <b>sommation spatiale</b> d'un PPSE d'amplitude 8 mv (identique à celui de l'expérience 1) et d'un PPSE d'amplitude 15 mv (identique à celui de l'expérience 2).<br>
+Ce PPSE global dépasse le seuil d'où le PA obtenu en O<sub>5</sub></td></tr>
+<tr><td>7</td><td><b>PPSE</b></td><td>- l'excitation isolée en E<sub>1</sub> rapproche de 8 mv (expérience 1)<br>
+- l'excitation isolée en E<sub>3</sub> éloigne de 2 mv (expérience 3)<br>
+- l'excitation isolée en E<sub>4</sub> rapproche de 6 mv (expérience 4)<br>
+Les excitations simultanées en E<sub>1</sub>, E<sub>3</sub> et E<sub>4</sub> engendrent un <b>PPSE global d'amplitude 12 mv</b> résultant d'une <b>sommation spatiale des deux PPSE</b> ( 8+ 6 ) mv et du PPSI ( 2mv )<br>
+C'est-à-dire (12 = 8 + 6 – 2) mv</td></tr>
+<tr><td>8</td><td><b>PPSI</b></td><td>- l'excitation isolée en E<sub>3</sub> éloigne de 2 mv (expérience 3)<br>
+Les deux excitations successives portées en E<sub>3</sub> engendrent un <b>PPSI global d'amplitude 4 mv</b> résultant d'une <b>sommation temporelle</b> des deux PPSI ( 2 + 2 ) mv</td></tr>
+</table>
+<!-- page 03 -->
+<p class="para"><b>4-</b><br>
+Une excitation isolée portée en E<sub>4</sub> est à l'origine d'un PPSE d'amplitude 6 mv en O<sub>5</sub> (cône axonique)<br>
+Pour obtenir un PA à ce niveau, il faut un PPSE global d'amplitude ≥ 20 mv; il faut donc porter au minimum 4 excitations rapprochées en E<sub>4</sub> (4 x 6mv = 24 mv).</p>
+<p class="para"><b>5-</b><br>
+Le neurone P est capable d'intégrer toutes les informations nerveuses qui lui parviennent; c'est un neurone intégrateur.</p>
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<div class="exsub">B- <b>Génétique</b> (4 points)</div>
+<p class="para"><b><u>Commentaire :</u></b><br>
+<b>Le candidat est appelé à exploiter le document 3 uniquement pour discuter toutes les hypothèses proposées.</b><br>
+<b>Le document 4 sera utilisé dans la deuxième question.</b></p>
+<p class="para"><b>1-</b></p>
+<p class="para"><b>H<sub>1</sub></b> : l'allèle muté est récessif et autosomal<br>
+Le document 3 montre que chez le père et chez le fils, le nombre total des allèles est égal à 1; par ailleurs, l'allèle muté A<sub>1</sub> existant chez le père atteint doit exister chez tous ses enfants ; ce qui n'est pas le cas pour son fils. Donc le gène en question ne peut pas être récessif autosomal, <b>Cette hypothèse est à rejeter.</b></p>
+<p class="para"><b>H<sub>2</sub></b> : l'allèle muté est dominant et autosomal<br>
+Le document 3 montre que chez le père et chez le fils le nombre total des allèles est égal à 1; par ailleurs, l'allèle muté A<sub>1</sub> existant chez le père atteint doit exister chez tous ses enfants ; ce qui n'est pas le cas pour son fils.<br>
+donc le gène en question ne peut pas être dominant autosomal, ⇒ <b>cette hypothèse est à rejeter.</b></p>
+<p class="para"><b>H<sub>3</sub></b> : l'allèle muté est récessif et porté par X<br>
+Le père est atteint, il possède un seul allèle (l'allèle A<sub>1</sub>); donc l'allèle A<sub>1</sub> est l'allèle muté et l'allèle A<sub>2</sub> est l'allèle normal.<br>
+La fille possédant les deux allèles A<sub>1</sub> et A<sub>2</sub>, elle hérite l'allèle A<sub>1</sub> de son père et l'allèle A<sub>2</sub> de sa mère.<br>
+Le fils possédant uniquement l'allèle A<sub>2</sub> qu'il a hérité de sa mère<br>
+⇒ <b>Cette hypothèse est valable</b>.</p>
+<p class="para"><b>H<sub>4</sub></b> : l'allèle muté est dominant et porté par X<br>
+La fille possédant les deux allèles A<sub>1</sub> et A<sub>2</sub> hérite l'allèle A<sub>1</sub> (muté et dominant) de son père et l'allèle A<sub>2</sub> (normal et récessif) de sa mère.<br>
+Le fils possédant uniquement l'allèle A<sub>2</sub> (normal et récessif) qu'il a hérité de sa mère<br>
+⇒ <b>Cette hypothèse est valable</b>.</p>
+<p class="para"><b>2-</b><br>
+Le sujet 4 (document 4) est atteint, il descend de parents (1et 2) phénotypiquement sains, ce qui justifie que l'allèle muté est récessif.<br>
+⇒ <b>l'hypothèse H<sub>4</sub> est à rejeter</b>.<br>
+⇒ <b>l'hypothèse H<sub>3</sub> est alors confirmée.</b></p>
+<p class="para"><b>3-</b></p>
+<table>
+<tr><td>individus</td><td>père</td><td>mère</td><td>fille</td><td>fils</td></tr>
+<tr><td>génotypes</td><td>XA<sub>1</sub>Y</td><td>XA<sub>1</sub>XA<sub>2</sub></td><td>XA<sub>1</sub>XA<sub>2</sub></td><td>XA<sub>2</sub>Y</td></tr>
+</table>
+
+</section>
+
+</div>
+</body>
+</html>

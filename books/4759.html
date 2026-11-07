@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Série 8&#x27; Neuro 25 BAC SC-</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Lycée Pilote de Médenine">
+<meta data-pagefind-meta="n[content]" content="4759">
+<meta data-pagefind-meta="title[content]" content="Série 8&#x27; Neuro 25 BAC SC-">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Série 8&#x27; Neuro 25 BAC SC-" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Série 8&#x27; Neuro 25 BAC SC-</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Lycée Pilote Médenine 2024/25 · Professeur : Ezzeddini Med · EZZEDDINI</span> <span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/15KKC63XN41rRqbKbWUUacx70p0QH4MTO/view">↗ Série 8&#x27; Neuro 25 BAC SC-.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/15KKC63XN41rRqbKbWUUacx70p0QH4MTO/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / Drive élite / Science élites / NR</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: Lycée Pilote Médenine 2024/25 · Professeur : Ezzeddini Med · EZZEDDINI -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série 8' New</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4759.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Lycée Pilote Médenine 2024/25 · Professeur : Ezzeddini Med · EZZEDDINI</span> <span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/15KKC63XN41rRqbKbWUUacx70p0QH4MTO/view">↗ Série 8&#x27; Neuro 25 BAC SC-.pdf</a></div>
+<!-- page 01 -->
+<p class="subhead t-navy">Thème: Neurophysiologie<br>4ème Sc.Exp.</p>
+<div class="exsub">1<sup>er</sup> sujet de révision</div>
+<p class="para">On cherche à étudier quelques aspects du fonctionnement des synapses neuroneuroniques. Pour cela, on réalise deux séries d'expériences en utilisant le dispositif expérimental du document 2.</p>
+<!-- CROP: 4759 1 1 0.115 0.219 0.871 0.348 4759_p01_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p01_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="para"><b>Première série d'expériences :</b><br>
+On applique des stimulations efficaces au niveau des terminaisons axoniques T<sub>1</sub>, T<sub>2</sub> et T<sub>3</sub> et on enregistre les différences de potentiels au niveau des oscilloscopes O<sub>1</sub> et O<sub>2</sub>.<br>
+Les expériences réalisées et les enregistrements obtenus sont résumés dans le document 3.</p>
+<table>
+<tr><th>Expériences</th><th>Enregistrement au niveau de O<sub>1</sub></th><th>Enregistrement au niveau de O<sub>2</sub></th></tr>
+<tr><td>1- On applique une stimulation au niveau de T<sub>1</sub></td><td><!-- CROP: 4759 1 1 0.470 0.442 0.637 0.486 4759_p01_doc3_o1_exp1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p01_doc3_o1_exp1.png" alt=""></figure></td><td></td></tr>
+<tr><td>2- On applique deux stimulations simultanées au niveau de T<sub>1</sub> et T<sub>2</sub></td><td></td><td><!-- CROP: 4759 1 1 0.678 0.482 0.857 0.524 4759_p01_doc3_o2_exp2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p01_doc3_o2_exp2.png" alt=""></figure></td></tr>
+<tr><td>3- On applique trois stimulations simultanées au niveau de T<sub>1</sub>, T<sub>2</sub> et T<sub>3</sub></td><td></td><td><!-- CROP: 4759 1 1 0.678 0.522 0.857 0.563 4759_p01_doc3_o2_exp3 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p01_doc3_o2_exp3.png" alt=""></figure></td></tr>
+</table>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne"><b>1)</b> Exploitez les données des documents 2 et 3 en vue de :<br>
+<b>a-</b> prévoir, en justifiant votre réponse, les enregistrements attendus :<br>
+-en O<sub>2</sub> à la suite de l'application d'une stimulation au niveau de T<sub>1</sub> de l'expérience 1.<br>
+-en O<sub>1</sub> à la suite de l'application de deux stimulations simultanées au niveau de T<sub>1</sub> et T<sub>2</sub> de l'expérience 2.<br>
+-en O<sub>1</sub> à la suite de l'application de trois stimulations simultanées au niveau de T<sub>1</sub>, T<sub>2</sub> et T<sub>3</sub> de l'expérience 3.<br>
+<b>b-</b> déduire la nature de chacune des synapses S<sub>1</sub>, S<sub>2</sub>, S<sub>3</sub> et S<sub>4</sub>.</p>
+<p class="consigne"><b>2) Deuxième série d'expériences :</b><br>
+<b>Expérience 4 :</b> On injecte, à l'aide d'une micropipette, une substance X dans la fente synaptique de S<sub>4</sub>. On enregistre un potentiel de repos au niveau de O<sub>2</sub>.<br>
+<b>Expérience 5</b> : On injecte, à l'aide d'une micropipette, la substance X au niveau de la fente synaptique S<sub>4</sub>, puis on stimule simultanément T<sub>1</sub> et T<sub>2</sub>. On enregistre un potentiel de repos au niveau de O<sub>2</sub>.<br>
+<b>a-</b> Exploitez les informations fournies par les expériences 4 et 5 en vue de proposer trois hypothèses expliquant le mode d'action de la substance X.<br>
+<b>Expérience 6</b> : On injecte la substance X rendue radioactive dans la fente synaptique de S<sub>4</sub>. On constate la présence de la radioactivité au niveau de la membrane postsynaptique de S<sub>4</sub>.<br>
+<b>b-</b> Exploitez le résultat de l'expérience 6 en vue de préciser l'hypothèse à retenir parmi celles proposées précédemment.</p>
+<p class="consigne"><b>3)</b> Représentez, à l'aide d'un schéma fonctionnel, le mécanisme de fonctionnement de la synapse S<sub>4</sub>.</p>
+<!-- page 02 -->
+<div class="exsub">2<sup>ième</sup> sujet de révision</div>
+<p class="para">On se propose d'étudier certains aspects du mécanisme du réflexe myotatique à partir des résultats des expériences réalisées grâce au dispositif expérimental illustré par le document 2.</p>
+<!-- CROP: 4759 1 2 0.080 0.127 0.873 0.333 4759_p02_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p02_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="para"><b>Expérience 1:</b><br>
+On soumet le muscle extenseur à un étirement efficace. Les enregistrements obtenus au niveau des oscilloscopes <b>O</b>, <b>O<sub>1</sub></b> et <b>O<sub>2</sub></b> sont présentés dans le document 3.</p>
+<!-- CROP: 4759 1 2 0.068 0.392 0.867 0.515 4759_p02_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p02_doc3.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne"><b>1)</b> Exploitez les résultats de l'expérience 1 et utilisez vos connaissances en vue :<br>
+- de déduire la nature de chacune des synapses (N-N<sub>1</sub>), (N-I), et (I-N<sub>2</sub>).<br>
+- d'expliquer l'obtention de l'enregistrement au niveau de l'oscilloscope <b>O</b>.<br>
+- de dégager le rôle du fuseau neuromusculaire.</p>
+<p class="para"><b>Expérience 2 :</b><br>
+On injecte, deux doses D<sub>1</sub> et D<sub>2</sub> (D<sub>2</sub>&gt;D<sub>1</sub>), d'un neurotransmetteur Nt<sub>1</sub> dans la fente synaptiques F<sub>1</sub> et d'un neurotransmetteur Nt<sub>2</sub> dans la fente synaptiques F<sub>2</sub>. Ensuite, on enregistre les phénomènes électriques au niveau des oscilloscopes <b>O<sub>1</sub></b> et <b>O<sub>2</sub></b>.<br>
+Les enregistrements obtenus sont présentés dans le document 4.</p>
+<!-- CROP: 4759 1 2 0.071 0.714 0.896 0.864 4759_p02_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p02_doc4.png" alt=""></figure>
+<p class="subhead"><b>Document 4</b></p>
+<p class="consigne"><b>2)</b> Comparez les résultats obtenus en vue de dégager :<br>
+<b>a-</b> la nature de chacun des neurotransmetteurs Nt<sub>1</sub> et Nt<sub>2</sub>.<br>
+<b>b-</b> la relation entre la dose du neurotransmetteur injectée et l'amplitude de la réponse obtenue.</p>
+<!-- page 03 -->
+<p class="para"><b>Expériences 3 et 4</b><br>
+On injecte dans la fente synaptique F<sub>1</sub>, à des doses suffisantes, deux substances chimiques radioactives A et B suivie ou non d'une stimulation efficace St. On suit la localisation de la radioactivité et on enregistre les phénomènes électriques au niveau de l'oscilloscope <b>O<sub>1</sub></b>.<br>
+Les conditions expérimentales et les résultats obtenus sont regroupés dans le document 5.</p>
+<table>
+<tr><th colspan="2">Expériences</th><th>Localisation de la radioactivité</th><th>Enregistrements obtenus au niveau de l'oscilloscope O<sub>1</sub></th></tr>
+<tr><td><b>3</b></td><td>Injection de la substance A radioactive dans F<sub>1</sub></td><td>Membrane postsynaptique</td><td>Potentiel d'action</td></tr>
+<tr><td><b>4</b></td><td>Injection de la substance B radioactive dans F<sub>1</sub> suivie de la stimulation St.</td><td>Membrane postsynaptique</td><td>Potentiel de repos</td></tr>
+</table>
+<p class="subhead"><b>Document 5</b></p>
+<p class="consigne"><b>3)</b> À partir de l'exploitation des résultats des expériences 3 et 4 et des informations fournies par l'expérience 2, expliquez le mode d'action de chacune des substances A et B.</p>
+<p class="para"><b>Expériences 5</b><br>
+On injecte de la choline radioactive dans la fente synaptique F<sub>3</sub>. La radioactivité est retrouvée au niveau des vésicules synaptiques de N<sub>1</sub>.<br>
+Après étirement efficace du muscle extenseur, on détecte la radioactivité au niveau de F<sub>3</sub> ; puis au niveau de la membrane postsynaptique et enfin dans la terminaison axonique de N<sub>1</sub>.</p>
+<p class="consigne"><b>4)</b> Expliquez les résultats de l'expérience 5.</p>
+<p class="consigne"><b>5)</b> À partir des informations tirées précédemment, et en faisant appel à vos connaissances, expliquez comment le fonctionnement des deux types de synapses : neuroneuronique et neuromusculaire aboutit à la contraction du muscle extenseur et au relâchement simultané du muscle fléchisseur à la suite de l'étirement efficace du muscle extenseur.</p>
+<div class="exsub">Sujet de révision 3 (bac sport principal 2024)</div>
+<p class="para">On se propose d'étudier certains aspects de la propagation et de la transmission du message nerveux. Pour cela, on réalise les expériences suivantes en utilisant le dispositif expérimental représenté par le document 2.</p>
+<!-- CROP: 4759 1 3 0.088 0.571 0.886 0.799 4759_p03_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p03_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="para"><b>Expérience 1</b><br>
+On porte sur le neurone N<sub>1</sub> une seule stimulation efficace en St, on obtient en O<sub>4</sub> le tracé représenté par le document 3.</p>
+<!-- CROP: 4759 1 3 0.560 0.805 0.960 0.937 4759_p03_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p03_doc3.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<!-- page 04 -->
+<p class="consigne"><b>1)</b> À partir de l'exploitation du document 3 et en faisant appel à vos connaissances :<br>
+<b>a-</b> Représentez, en justifiant votre réponse, les enregistrements obtenus au niveau de chacun des oscilloscopes O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub> et O<sub>5.</sub><br>
+<b>b-</b> Déduisez la nature des synapses S<sub>1</sub> et S<sub>2.</sub></p>
+<p class="para"><b>Expérience 2</b><br>
+On réalise des injections de deux neurotransmetteurs T<sub>1</sub> et T<sub>2</sub> dans chacune des fentes des synapses S<sub>1</sub> et S<sub>2,</sub> puis on mesure la variation de la différence de potentiel (ddp) au niveau des oscilloscopes O<sub>2</sub> et O<sub>4</sub>. Les conditions expérimentales et les ddp mesurées sont représentés par le document 4.</p>
+<table>
+<tr><td></td><th colspan="4">Conditions expérimentales</th></tr>
+<tr><td></td><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+<tr><th>Substances injectées</th><td>T<sub>1</sub> dans la fente de S<sub>1</sub></td><td>T<sub>2</sub> dans la fente de S<sub>1</sub></td><td>T<sub>1</sub> dans la fente de S<sub>2</sub></td><td>T<sub>2</sub> dans la fente de S<sub>2</sub></td></tr>
+<tr><th rowspan="2">ddp mesurées</th><td colspan="2">O<sub>2</sub></td><td colspan="2">O<sub>4</sub></td></tr>
+<tr><td>-58 mV</td><td>-70 mV</td><td>-70 mV</td><td>-78 mV</td></tr>
+</table>
+<p class="subhead"><b>Document 4</b></p>
+<p class="consigne"><b>2)</b> À partir de l'exploitation des résultats du document 4 et en faisant appel à vos connaissances, dégagez :<br>
+<b>a-</b> l'effet des deux neurotransmetteurs T<sub>1</sub> et T<sub>2</sub> en donnant un exemple pour chaque neurotransmetteur.<br>
+<b>b-</b> une propriété des neurotransmetteurs.</p>
+<p class="para"><b>Expérience 3</b><br>
+On injecte une substance (X) à des doses croissantes dans la fente de la synapse S<sub>1</sub>. Après chaque injection, on applique en St une stimulation efficace et on détermine le taux du neurotransmetteur libre dans la fente de S<sub>1</sub>. Les résultats obtenus sont représentés par le document 5.</p>
+<!-- CROP: 4759 1 4 0.213 0.461 0.875 0.654 4759_p04_doc5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p04_doc5.png" alt=""></figure>
+<p class="subhead"><b>Document 5</b></p>
+<p class="consigne"><b>3)</b> Analysez les résultats fournis par le document 5 en vue de proposer deux hypothèses quant au mode d'action de la substance (X).</p>
+<p class="para"><b>Expérience 4</b><br>
+On observe au microscope électronique la synapse S<sub>1</sub> dans trois conditions expérimentales différentes. Les conditions expérimentales ainsi que les différents états physiologiques de cette synapse sont représentés par le document 6.</p>
+<table>
+<tr><th>Pas de stimulation du neurone N<sub>1</sub></th><th>Stimulation efficace du neurone N<sub>1</sub></th><th>Injection de 300 ngml<sup>-1</sup> de la substance(X) dans la fente de S<sub>1</sub> puis stimulation efficace du neurone N<sub>1</sub></th></tr>
+<tr><td><!-- CROP: 4759 1 4 0.120 0.802 0.302 0.878 4759_p04_doc6_a --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p04_doc6_a.png" alt=""></figure></td><td><!-- CROP: 4759 1 4 0.328 0.802 0.521 0.878 4759_p04_doc6_b --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p04_doc6_b.png" alt=""></figure></td><td><!-- CROP: 4759 1 4 0.566 0.802 0.747 0.878 4759_p04_doc6_c --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p04_doc6_c.png" alt=""></figure></td></tr>
+</table>
+<p class="subhead"><b>Document 6</b></p>
+<p class="consigne"><b>4)</b> Comparez les données du document 6 en vue de retenir l'une des deux hypothèses émises précédemment quant au mode d'action de la substance (X).</p>
+<!-- page 05 -->
+<div class="exsub"><u>EXERCICE 1 : Bac sport princ 2012</u></div>
+<p class="para">On se propose de déterminer le rôle attribué à un neurone postsynaptique M dans la transmission du message nerveux. Pour se faire, un dispositif expérimental représenté dans le document 1 a été utilisé.</p>
+<p class="subhead"><b><u>Document 1</u></b></p>
+<!-- CROP: 4759 1 5 0.218 0.120 0.893 0.282 4759_p05_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p05_doc1.png" alt=""></figure>
+<p class="para">On porte des stimulations de même intensité I<sub>1</sub> et I<sub>2</sub> respectivement sur les terminaisons nerveuses A et B (voir document 1). Les enregistrements obtenus au niveau des oscilloscopes O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub> et O<sub>4</sub> sont résumés dans le document 2.</p>
+<p class="subhead"><b><u>Document 2</u></b></p>
+<!-- CROP: 4759 1 5 0.246 0.326 0.940 0.608 4759_p05_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p05_doc2.png" alt=""></figure>
+<p class="consigne"><b>1.</b> Dites si les stimulations I<sub>1</sub> et I<sub>2</sub> sont efficaces ou non.<br>
+<b>2.</b> Identifiez, en justifiant votre réponse, les tracés a et b obtenus au niveau de l'oscilloscope O<sub>3</sub>.<br>
+<b>3.</b> Déduisez la nature des synapses A-M et B-M.<br>
+<b>4.</b> Expliquez pourquoi on a enregistré un potentiel de repos au niveau de l'oscilloscope O<sub>4</sub> quelque soit la stimulation (I<sub>1</sub>ou I<sub>2</sub>) portée sur la terminaison nerveuse A ou B.<br>
+<b>5.</b> En utilisant le même dispositif expérimental représenté par le document 1:<br>
+<b>a.</b> Proposez une première expérience permettant d'obtenir un potentiel d'action au niveau de l'oscilloscope O<sub>4</sub> en appliquant un nombre minimal de stimulations efficaces sur l'une des deux terminaisons nerveuses A ou B. justifiez votre choix.<br>
+<b>b.</b> Proposez une deuxième expérience permettant d'obtenir le même résultat en activant les deux terminaisons nerveuses A et B par un nombre minimal de stimulations efficaces. Justifiez votre choix.<br>
+<b>c.</b> Schématisez, dans chaque proposition, les enregistrements attendus au niveau des oscilloscopes O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub> et O<sub>4</sub>.<br>
+<b>6.</b> En exploitant les résultats des expériences précédentes et en faisant appel à vos connaissances, expliquez le rôle attribué au neurone postsynaptique M dans la transmission du message nerveux.</p>
+<!-- page 06 -->
+<div class="exsub"><u>EXERCICE 2 :BAC SC P 17 (partiellement)</u></div>
+<p class="para">On se propose d'étudier les aspects de la naissance et de la transmission du message nerveux. Pour cela, on utilise le circuit nerveux intervenant dans le reflexe myotatique représenté dans le document 2.</p>
+<!-- CROP: 4759 1 6 0.074 0.154 0.803 0.380 4759_p06_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p06_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="para">Pour comprendre le fonctionnement du circuit nerveux impliqué dans le réflexe myotatique, on réalise les deux expériences suivantes :<br>
+<b>Expérience 1 :</b><br>
+On exerce sur le fuseau neuromusculaire des étirements d'intensités croissantes E<sub>1</sub>, E<sub>2</sub>, E<sub>3</sub> et E<sub>4</sub>. Puis, on détermine :<br>
+. l'amplitude des potentiels de récepteur au niveau de l'oscilloscope O<sub>1</sub> et l'amplitude des potentiels d'action au niveau de l'oscilloscope O<sub>2</sub>.<br>
+. la fréquence des potentiels d'action au niveau de l'oscilloscope O<sub>2</sub>.</p>
+<p class="para">Les résultats obtenus sont présentés par les tracés a, b et c du document 3.</p>
+<!-- CROP: 4759 1 6 0.123 0.537 0.936 0.669 4759_p06_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p06_doc3.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne">1) Analysez les tracés a, b et c du document 3 en vue de dégager :<br>
+a- une propriété du potentiel de récepteur.<br>
+b- une propriété du potentiel d'action.<br>
+c- une propriété du message nerveux.<br>
+d- le rôle du fuseau neuromusculaire.</p>
+<!-- page 07 -->
+<p class="para"><b>Expérience 2 :</b><br>
+On mesure la concentration en ions Na<sup>+</sup> et K<sup>+</sup> dans les corps cellulaires des motoneurones α1 et α2, avant et après injection de deux neurotransmetteurs X ou Y dans chacune des fentes synaptiques F1 et F2.</p>
+<p class="para">Le document 4 résume les résultats obtenus.</p>
+<table>
+<tr><td rowspan="2"></td><th rowspan="2">dans les corps cellulaires de α1 et α2 avant injection de X ou de Y</th><th colspan="2">dans le corps cellulaire de α1 après injection dans F1 de :</th><th colspan="2">dans le corps cellulaire de α2 après injection dans F2 de :</th></tr>
+<tr><th>X</th><th>Y</th><th>X</th><th>Y</th></tr>
+<tr><th>Concentration en ions Na<sup>+</sup>(UI)</th><td>15</td><td>30</td><td>15</td><td>15</td><td>15</td></tr>
+<tr><th>Concentration en ions K<sup>+</sup>(UI)</th><td>150</td><td>150</td><td>150</td><td>150</td><td>110</td></tr>
+</table>
+<p class="subhead"><b>Document 4</b></p>
+<p class="consigne">2) A partir de l'analyse des résultats de l'expérience 2 et en faisant appel à vos connaissances :<br>
+a- expliquez le mécanisme à l'origine de la modification de la concentration en ions Na<sup>+</sup> ou K<sup>+</sup> dans les corps cellulaires de α1 et α2, après l'injection du neurotransmetteur X ou du neurotransmetteur Y.<br>
+b- dégagez la conséquence de cette modification sur le potentiel de la membrane postsynaptique de chacun des corps cellulaires de α1 et α2.<br>
+c- précisez la nature de chacune des synapses S1 et S2.</p>
+<p class="consigne">3) Intégrez les informations tirées précédemment et vos connaissances en vue d'expliquer la coordination de l'activité des muscles extenseur et fléchisseur, suite à l'étirement du fuseau neuromusculaire du muscle extenseur d'intensité E3.</p>
+<div class="exsub"><u>EXERCICE 3 Bac sport contr. 2012</u></div>
+<p class="para">On se propose d'établir le circuit nerveux reliant un motoneurone M de la moelle épinière à l'un des deux muscles antagonistes de la cuisse : le quadriceps et le semi-tendineux. Le dispositif expérimental représenté par le document 1 montre l'emplacement des deux muscles. Des électrodes stimulatrices a et b sont placées au niveau des fibres afférentes provenant des fuseaux neuromusculaires des deux muscles. Une électrode réceptrice, reliée à un oscilloscope, est placée au niveau du cône axonique du motoneurone M de la corne antérieure de la moelle épinière.</p>
+<p class="subhead">Document 1</p>
+<!-- CROP: 4759 1 7 0.187 0.546 0.963 0.685 4759_p07_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p07_doc1.png" alt=""></figure>
+<p class="para">On stimule séparément en a puis en b. les enregistrements obtenus au niveau de l'oscilloscope relié au cône axonique du motoneurone M sont représentés dans le document 2.</p>
+<p class="subhead">Document 2</p>
+<!-- CROP: 4759 1 7 0.238 0.707 0.935 0.906 4759_p07_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p07_doc2.png" alt=""></figure>
+<p class="consigne">1. Identifiez, en justifiant votre réponse, les deux tracés obtenus.</p>
+<!-- page 08 -->
+<p class="consigne">2. Précisez, en justifiant votre réponse, lequel des deux muscles est relié au motoneurone M.<br>
+3. Expliquez la différence du temps de latence entre les deux tracés.<br>
+4. Représentez, par un schéma, les circuits nerveux reliant les fibres afférentes au motoneurone M.<br>
+5. Expliquez comment se fait la coordination des deux muscles antagonistes suite à l'étirement du muscle semi-tendineux.</p>
+<div class="exsub"><u>EXERCICE 4 : bac math. Pr.2012</u></div>
+<p class="para">On se propose d'étudier les phénomènes électriques enregistrés au niveau d'un neurone postsynaptique P, connecté à quatre neurones présynaptiques N<sub>1</sub>, N<sub>2</sub>, N<sub>3</sub> et N<sub>4</sub> (document 1)</p>
+<!-- CROP: 4759 1 8 0.544 0.163 0.966 0.324 4759_p08_ex4_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p08_ex4_doc1.png" alt=""></figure>
+<p class="para">On réalise deux séries d'expériences en utilisant le montage du document 1</p>
+<ul class="b"><li><b><u>Première série d'expériences :</u></b></li></ul>
+<table>
+<tr><th rowspan="2">Expériences \ Résultats</th><th colspan="5">ddp en mv enregistrée au niveau de</th></tr>
+<tr><th>O<sub>1</sub></th><th>O<sub>2</sub></th><th>O<sub>3</sub></th><th>O<sub>4</sub></th><th>O<sub>5</sub></th></tr>
+<tr><td><b>Expérience 1 :</b> Une excitation efficace appliquée en <b>E<sub>1</sub></b></td><td>- 58</td><td></td><td></td><td></td><td>- 62</td></tr>
+<tr><td><b>Expérience 2 :</b> Une excitation efficace appliquée en <b>E<sub>2</sub></b></td><td></td><td>- 52</td><td></td><td></td><td>- 55</td></tr>
+<tr><td><b>Expérience 3 :</b> Une excitation efficace appliquée en <b>E<sub>3</sub></b></td><td></td><td></td><td>- 78</td><td></td><td>- 72</td></tr>
+<tr><td><b>Expérience 4 :</b> Une excitation efficace appliquée en <b>E<sub>4</sub></b></td><td></td><td></td><td></td><td>- 60</td><td>- 64</td></tr>
+</table>
+<p class="consigne">1. Identifiez les potentiels postsynaptiques en O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub> et O<sub>4</sub> et indiquez leurs amplitudes.<br>
+2. Déduisez la nature des synapses N<sub>1</sub>-P, N<sub>2</sub>-P, N<sub>3</sub>-P et N<sub>4</sub>-P.</p>
+<ul class="b"><li><b><u>Deuxième série d'expériences :</u></b></li></ul>
+<table>
+<tr><th>Expériences</th><th>Nombre des excitations portées sur les neurones présynaptiques</th></tr>
+<tr><td><b>Expérience 5</b></td><td>Deux excitations efficaces rapprochées en E<sub>1.</sub></td></tr>
+<tr><td><b>Expérience 6</b></td><td>Deux excitations efficaces simultanées en E<sub>1</sub> et E<sub>2</sub>.</td></tr>
+<tr><td><b>Expérience 7</b></td><td>Trois excitations efficaces simultanées en E<sub>1</sub>, E<sub>3</sub> et E<sub>4.</sub></td></tr>
+<tr><td><b>Expérience 8</b></td><td>Deux excitations efficaces rapprochées en E<sub>3</sub>.</td></tr>
+</table>
+<p class="consigne">3. Indiquez la nature du potentiel obtenu en O<sub>5</sub> pour chacune des expériences 5, 6, 7 et 8. Justifiez votre réponse.<br>
+4. Précisez le nombre minimal d'excitations rapprochées qu'on doit appliquer en E<sub>4</sub> pour obtenir un potentiel d'action en O<sub>5</sub>.<br>
+5. Exploitez les réponses aux questions 3 et 4 afin de déduire la propriété du neurone P.</p>
+<div class="exsub"><u>EXERCICE 5 : bac sc. P. 2012</u></div>
+<p class="para">On se propose d'étudier les mécanismes de la naissance et de la transmission du message nerveux. Pour cela on utilise le dispositif expérimental représenté par le document 1.</p>
+<!-- CROP: 4759 1 8 0.488 0.458 0.979 0.599 4759_p08_ex5_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p08_ex5_doc1.png" alt=""></figure>
+<p class="para">On réalise des expériences de stimulations sur les fibres nerveuses des neurones A, B et C du document 1 puis on enregistre leurs réponses à l'aide des oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>. Les expériences réalisées et les enregistrements obtenus sont représentés dans le tableau du document 2.</p>
+<!-- CROP: 4759 1 8 0.398 0.595 0.975 0.958 4759_p08_ex5_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p08_ex5_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="consigne"><b>1.</b> A partir des informations de l'expérience 1 et du tracé A<sub>1</sub>, dégagez une propriété de la fibre nerveuse.<br>
+<b>2.</b> Analysez les résultats des expériences 1 et 2 en vue de déduire :<br>
+a. une deuxième propriété de la fibre nerveuse.<br>
+b. la nature de la synapse S<sub>1</sub>.<br>
+<b>3.</b> Analysez les tracés C<sub>1</sub>, C<sub>2</sub> et C<sub>3</sub> en vue de déduire la nature de la synapse S<sub>2</sub>.<br>
+<b>4.</b> Expliquez l'obtention du tracé D<sub>2</sub> en vue de :<br>
+- déduire la fonction du neurone C.<br>
+- la nature de la synapse S<sub>3</sub>.</p>
+<!-- page 09 -->
+<p class="consigne"><b>5.</b> A partir de vos connaissances et des informations tirées des expériences précédentes, expliquez l'obtention du tracé D<sub>3</sub>.</p>
+<div class="exsub"><u>EXERCICE 6 : Bac math contr. 2012</u></div>
+<p class="para">On se propose d'étudier le fonctionnement du circuit nerveux du réflexe de flexion du pied chez la grenouille ; le document 1 représente le montage expérimental utilisé.</p>
+<p class="subhead"><b>Document 1</b></p>
+<!-- CROP: 4759 1 9 0.400 0.100 0.968 0.294 4759_p09_ex6_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p09_ex6_doc1.png" alt=""></figure>
+<p class="para">On applique en S plusieurs stimulations très rapprochées ; les oscilloscopes O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub>, O<sub>4</sub> et O<sub>5</sub> permettent de détecter les phénomènes électriques déclenchés ; le document 2 montre les tracés obtenus.</p>
+<!-- CROP: 4759 1 9 0.279 0.293 0.968 0.385 4759_p09_ex6_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p09_ex6_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="consigne">1. Faites correspondre chacun des tracés a, b, c, d et e aux oscilloscopes O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub>, O<sub>4</sub> et O<sub>5</sub>. Justifiez votre réponse.<br>
+2. En exploitant les données précédentes (document 1 &amp; 2), expliquez la coordination de l'activité des deux muscles antagonistes M<sub>1</sub> et M<sub>2</sub> lors de ce réflexe de flexion.</p>
+<div class="exsub"><u>EXERCICE 7: Bac sc 09 cont</u></div>
+<p class="para">On cherche à préciser le circuit nerveux qui intervient dans le réflexe myotatique. On propose le dispositif expérimental, représenté par le document 1, avec lequel on réalise une série d'expériences.</p>
+<!-- CROP: 4759 1 9 0.333 0.446 0.947 0.621 4759_p09_ex7_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p09_ex7_doc1.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<p class="para"><b><u>Expérience 1:</u></b><br>
+Grâce à une microélectrode R<sub>0</sub> reliée à un oscilloscope O<sub>0</sub>, on enregistre l'activité électrique de la fibre F issue du fuseau neuromusculaire localisé dans le muscle M<sub>1</sub>, en fonction de l'intensité de l'étirement de ce même muscle M<sub>1</sub>. Les enregistrements obtenus sont représentés par le document 2.</p>
+<!-- CROP: 4759 1 9 0.267 0.677 0.927 0.751 4759_p09_ex7_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p09_ex7_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="consigne"><b>1.</b> Faites une analyse comparative des enregistrements 1, 2 et 3 en vue de déduire:<br>
+- les propriétés fondamentales du message nerveux.<br>
+- le rôle physiologique du fuseau neuromusculaire.</p>
+<!-- page 10 -->
+<p class="para"><b><u>Expérience 2:</u></b><br>
+On porte une stimulation électrique efficace, sur la fibre F, au point S (voir document 1) et on enregistre la différence de potentiel (ddp) grâce à deux microélectrodes réceptrices R<sub>1</sub> et R<sub>2</sub> placées respectivement au niveau des cônes axoniques des motoneurones N<sub>1</sub> et N<sub>2</sub> et reliées aux oscilloscopes O<sub>1</sub> et O<sub>2</sub> (voir document 1).<br>
+On mesure également les temps de latence séparant le moment de la stimulation et l'apparition de la réponse en R<sub>1</sub> et en R<sub>2</sub>. Les enregistrements obtenus sont représentés par le document 3.</p>
+<!-- CROP: 4759 1 10 0.289 0.081 0.978 0.236 4759_p10_ex7_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p10_ex7_doc3.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne"><b>2.</b> a. Identifiez les phénomènes électriques enregistrés en R<sub>1</sub> et en R<sub>2</sub> en justifiant votre réponse.<br>
+b. Déduisez la nature des synapses mises en jeu au niveau des motoneurones N<sub>1</sub> et N<sub>2</sub>.<br>
+c. Sachant que le délai synaptique est de 0.5milliseconde, que déduisez- vous de la comparaison des temps de latence L<sub>1</sub> et L<sub>2</sub>?</p>
+<p class="consigne">3. A partir des informations dégagées précédemment, représentez sur le document 4 (à remettre avec la copie) :<br>
+a. les structures histologiques manquantes dans le circuit nerveux du réflexe myotatique.<br>
+b. l'activité nerveuse qu'on peut enregistrer par les électrodes réceptrices R<sub>0</sub>, R<sub>1</sub>, R<sub>2,</sub> R<sub>3</sub> et R<sub>4</sub> suite à un fort étirement du muscle M<sub>1</sub>, dans chacun des oscilloscopes O<sub>0</sub>, O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub> et O<sub>4</sub>.</p>
+<div class="exsub"><u>EXERCICE 8</u></div>
+<p class="para">On s'intéresse aux mécanismes qui assurent la transmission du message nerveux entre les neurones. Le document ci- contre montre le montage expérimental sur lequel on réalise plusieurs expériences.</p>
+<!-- CROP: 4759 1 10 0.535 0.420 0.933 0.633 4759_p10_ex8_fig -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p10_ex8_fig.png" alt=""></figure>
+<p class="subhead t-navy"><b><u>I. 1<sup>ère</sup> série d'expériences:</u></b></p>
+<p class="para">On stimule en S<sub>1</sub> puis en S<sub>2</sub>, on obtient les résultats résumés dans le tableau suivant:</p>
+<table>
+<tr><th></th><th>Ddp enregistré en O<sub>1</sub></th><th>Ddp enregistré en O<sub>2</sub></th></tr>
+<tr><td>Stimulation en S<sub>1</sub></td><td>-80 mv</td><td>-70mv</td></tr>
+<tr><td>Stimulation en S<sub>2</sub></td><td>-60 mv</td><td>-70mv</td></tr>
+</table>
+<p class="consigne"><b>1.</b> Les stimulations en S<sub>1</sub> et en S<sub>2</sub> sont elles efficaces? Justifiez.<br>
+<b>2.</b> Analysez ces résultats. Que peut-on déduire.<br>
+<b>3.</b> Expliquez les phénomènes électriques post synaptiques obtenus.</p>
+<p class="subhead t-navy"><b><u>II. 2<sup>ème</sup> série d'expériences:</u></b></p>
+<p class="para">A l'aide de micropipettes, on dépose des fortes doses de substances variées au niveau des fentes F<sub>1</sub> et F<sub>2</sub>. On enregistre la réponse obtenue en O<sub>1</sub>, puis immédiatement on pratique des stimulations efficaces en S<sub>1</sub> et en S<sub>2</sub> et on enregistre la nouvelle réponse. Les réponses obtenues sont comparables à celles obtenues dans la 1<sup>ère</sup> série d'expériences. Les résultats sont récapitulés dans le tableau suivant: (oui: S'il y a réponse; non: s'il n'y a pas réponse).</p>
+<table>
+<tr><th rowspan="2">Substance déposée</th><th colspan="2">Avant stimulation</th><th colspan="2">Après stimulation</th></tr>
+<tr><th>Fente synaptique</th><th>Réponse en O<sub>1</sub></th><th>Stimulation</th><th>Réponse en O<sub>1</sub></th></tr>
+<tr><td rowspan="2">A</td><td>F<sub>1</sub></td><td>Non</td><td>S<sub>1</sub></td><td>Oui</td></tr>
+<tr><td>F<sub>2</sub></td><td>Non</td><td>S<sub>2</sub></td><td>Non</td></tr>
+<tr><td rowspan="2">B</td><td>F<sub>1</sub></td><td>Non</td><td>S<sub>1</sub></td><td>Non</td></tr>
+<tr><td>F<sub>2</sub></td><td>Non</td><td>S<sub>2</sub></td><td>Oui</td></tr>
+</table>
+<p class="consigne"><b>1.</b> Quelles conclusions pouvez-vous dégager à partir de l'exploitation des résultats avant et après stimulations.<br>
+<b>2.</b> Formulez trois hypothèses concernant l'action des substances A et B.<br>
+<b>3.</b> Comment peut-on vérifier expérimentalement ces hypothèses ?</p>
+<!-- page 11 -->
+<p class="subhead t-navy"><b><u>III. 3<sup>ème</sup> série d'expériences</u></b></p>
+<p class="para">On porte des stimulations simultanées ou successives en S<sub>1</sub> et en S<sub>2</sub>. Le protocole expérimental ainsi que les résultats sont présentés dans le tableau suivant:</p>
+<!-- CROP: 4759 1 11 0.264 0.060 0.983 0.275 4759_p11_ex8_serie3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p11_ex8_serie3.png" alt=""></figure>
+<p class="consigne">Exploitez ces tracés et dégagez pour chaque expérience le rôle du neurone M.</p>
+<div class="exsub"><u>EXERCICE 9</u></div>
+<p class="para">A fin de comprendre certains aspects de la communication nerveuse, on a réalisé plusieurs expériences grâce au montage expérimental représenté sur le document 1 suivant:</p>
+<!-- CROP: 4759 1 11 0.188 0.319 0.889 0.496 4759_p11_ex9_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p11_ex9_doc1.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<p class="consigne"><b>1-</b> On porte sur chacun des boutons synaptiques B<sub>1</sub> et B<sub>2</sub> une stimulation efficace isolée. Les enregistrements obtenus en R<sub>1</sub> sont indiqués dans le tableau suivant:</p>
+<table>
+<tr><th>Boutons synaptiques stimulés</th><th>Enregistrements en R<sub>1</sub></th></tr>
+<tr><td>B<sub>1</sub></td><td><!-- CROP: 4759 1 11 0.689 0.543 0.957 0.617 4759_p11_ex9_b1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p11_ex9_b1.png" alt=""></figure></td></tr>
+<tr><td>B<sub>2</sub></td><td><!-- CROP: 4759 1 11 0.689 0.625 0.957 0.698 4759_p11_ex9_b2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p11_ex9_b2.png" alt=""></figure></td></tr>
+</table>
+<p class="consigne">Analysez les enregistrements obtenus en R<sub>1</sub> afin de déduire la nature des synapses S<sub>1</sub> et S<sub>2</sub>.</p>
+<p class="consigne">2- Les états structuraux de la synapse S<sub>3</sub> avant et après une stimulation efficace du bouton synaptique B<sub>3</sub> sont indiqués sur le document 2 suivant:</p>
+<table>
+<tr><th>Etat structural de la synapse S<sub>3</sub> avant une stimulation efficace du bouton synaptique B<sub>3</sub></th><th>Etat structural de la synapse S<sub>3</sub> après une stimulation efficace du bouton synaptique B<sub>3</sub></th></tr>
+<tr><td><!-- CROP: 4759 1 11 0.392 0.755 0.647 0.835 4759_p11_ex9_doc2_avant --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p11_ex9_doc2_avant.png" alt=""></figure></td><td><!-- CROP: 4759 1 11 0.651 0.755 0.936 0.835 4759_p11_ex9_doc2_apres --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p11_ex9_doc2_apres.png" alt=""></figure></td></tr>
+</table>
+<p class="subhead"><b>Document 2</b></p>
+<p class="consigne">Faites une analyse comparative de ces résultats en vue de dégager le mode de transmission du message nerveux au niveau de la synapse S<sub>3</sub>.</p>
+<p class="consigne">3- On porte deux stimulations efficaces très rapprochées sur le bouton synaptique B<sub>1</sub>. Les enregistrements obtenus en R<sub>1</sub>, R<sub>2</sub> et R<sub>3</sub> sont indiqués dans le tableau suivant:</p>
+<!-- page 12 -->
+<table>
+<tr><th>Enregistrement en R<sub>1</sub></th><th>Enregistrement en R<sub>2</sub></th><th>Enregistrement en R<sub>3</sub></th><th>Enregistrement en R<sub>2</sub> suite à une micro-injection d'un liquide non conducteur (huile) au niveau d'un nœud de Ranvier de l'axone du neurone N<sub>1</sub></th></tr>
+<tr><td><!-- CROP: 4759 1 12 0.032 0.116 0.256 0.219 4759_p12_ex9_r1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p12_ex9_r1.png" alt=""></figure></td><td><!-- CROP: 4759 1 12 0.257 0.116 0.483 0.219 4759_p12_ex9_r2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p12_ex9_r2.png" alt=""></figure></td><td><!-- CROP: 4759 1 12 0.484 0.116 0.674 0.219 4759_p12_ex9_r3 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p12_ex9_r3.png" alt=""></figure></td><td><!-- CROP: 4759 1 12 0.675 0.116 0.969 0.219 4759_p12_ex9_r2_huile --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p12_ex9_r2_huile.png" alt=""></figure></td></tr>
+</table>
+<p class="consigne"><b>a-</b> Expliquez les enregistrements obtenus en R<sub>1</sub>et R<sub>3</sub>.<br>
+<b>b-</b> Précisez en justifiant votre réponse le type de neurone N<sub>1</sub> (excitateur ou inhibiteur)<br>
+<b>c-</b> Comparez les enregistrements obtenus en R<sub>1</sub>et R<sub>2</sub>, et déduisez une propriété du message nerveux.<br>
+<b>d-</b> Que peut-on déduire de l'analyse des enregistrements obtenus en R<sub>2</sub> avant et après la micro-injection d'un liquide non conducteur (huile) au niveau d'un nœud de Ranvier de l'axone du neurone N<sub>1</sub>?<br>
+<b>e-</b> La naissance des enregistrements obtenus en R<sub>1</sub>et R<sub>3,</sub> met en jeu deux types des canaux ioniques membranaires. Nommez ces canaux ioniques et les comparez.</p>
+<div class="exsub"><u>EXERCICE 10 : Bac SCcont 2019</u></div>
+<p class="para">On se propose d'étudier le mécanisme de la naissance du potentiel d'action. Pour cela, on réalise une étude expérimentale en utilisant le dispositif présenté par le document 5 et deux toxines ayant deux modes d'action différents.</p>
+<!-- CROP: 4759 1 12 0.526 0.351 0.957 0.430 4759_p12_ex10_doc5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p12_ex10_doc5.png" alt=""></figure>
+<p class="subhead"><b>Document 5</b></p>
+<p class="para"><b>Expérience 1 :</b><br>
+On enregistre, au niveau de l'oscilloscope O l'activité électrique de la fibre nerveuse et on suit la variation des concentrations des ions Na<sup>+</sup> et K<sup>+</sup> dans cette fibre (axone), avant et après l'application d'une stimulation efficace S.<br>
+Le document 6 présente les résultats obtenus.</p>
+<!-- CROP: 4759 1 12 0.520 0.451 0.961 0.856 4759_p12_ex10_doc6 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p12_ex10_doc6.png" alt=""></figure>
+<p class="subhead"><b>Document 6</b></p>
+<p class="consigne"><b>1) a-</b> Analysez l'enregistrement obtenu en O en vue d'identifier les phases A, B, C et D.<br>
+<b>b-</b> Etablissez la relation entre les différentes phases de l'activité électrique de la fibre nerveuse et la variation de de la concentration intracellulaire des ions Na<sup>+</sup> et K<sup>+</sup>.</p>
+<!-- page 13 -->
+<p class="para"><b>Expérience 2</b><br>
+On suit les flux des ions Na<sup>+</sup> et K<sup>+</sup> à travers la membrane de la fibre nerveuse (axone) suite à la stimulation S et dans deux conditions expérimentales différentes.<br>
+Les conditions expérimentales et les résultats sont présentés par le document 7.</p>
+<table>
+<tr><th>Conditions</th><th>Résultats</th></tr>
+<tr><td>Addition de la tétrodotoxine (TTX) dans le liquide physiologique.</td><td>- Absence de flux entrant des ions Na<sup>+</sup><br>- Absence de flux sortant des ions K<sup>+</sup></td></tr>
+<tr><td>Injection dans l'axone de la toxine tétraéthylammonium (TEA).</td><td>- Présence de flux entrant des ions Na<sup>+</sup><br>- Absence de flux sortant des ions K<sup>+</sup></td></tr>
+</table>
+<p class="subhead"><b>Document 7</b></p>
+<p class="consigne"><b>2)</b> A partir de l'exploitation des résultats de l'expérience 2 et en faisant appel à vos connaissances, dégagez le mode d'action de chaque toxine.</p>
+<p class="consigne"><b>3)</b> A partir des informations tirées précédemment et en faisant appel à vos connaissances, expliquez, le mécanisme ionique à l'origine des phases B et C du potentiel d'action.</p>
+<div class="exsub"><u>EXERCICE 11 : Bac cont sc. 2010</u></div>
+<p class="para">Afin d'étudier les propriétés du tissu nerveux dans l'intégration et la transmission du message nerveux, on réalise une série d'expériences à l'aide du dispositif représenté par le document 1</p>
+<!-- CROP: 4759 1 13 0.529 0.261 0.953 0.483 4759_p13_ex11_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p13_ex11_doc1.png" alt=""></figure>
+<p class="para">Le tableau du document 2 représente une première série d'expériences réalisées sur les neurones A et B et les enregistrements obtenus au niveau des oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>.</p>
+<p class="subhead"><b>Document 2</b></p>
+<!-- CROP: 4759 1 13 0.178 0.483 0.959 0.832 4759_p13_ex11_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p13_ex11_doc2.png" alt=""></figure>
+<p class="consigne"><b>1.</b> Analysez les enregistrements obtenus dans chacune des expériences 1, 2 et 3 afin :<br>
+- de déduire la nature de chacune des synapses SA et SB.<br>
+- de dégager les propriétés des potentiels enregistrés au niveau des oscilloscopes O<sub>2</sub> et O<sub>3</sub> (au niveau du neurone M).<br>
+- d'expliquer les propriétés intégratrices du neurone M.</p>
+<p class="para">Afin de montrer le mécanisme de la transmission synaptique au niveau des synapses S<sub>A</sub> et S<sub>B</sub>. On a réalisé une deuxième série d'expériences. Le document 3 résume les conditions expérimentales et les résultats obtenus.</p>
+<!-- page 14 -->
+<p class="subhead"><b>Document 3</b></p>
+<table>
+<tr><th>Expériences</th><th>Expérience1 :</th><th>Expérience 2 :</th><th>Expérience 3 :</th><th>Expérience 4 :</th></tr>
+<tr><th>Substance injectée</th><td>Acétylcholine en S<sub>A</sub></td><td>Acétylcholine en S<sub>B</sub></td><td>GABA en S<sub>A</sub></td><td>GABA en S<sub>B</sub></td></tr>
+<tr><th>Résultats :<br>mesure de la variation de la concentration des ions Na<sup>+</sup>, K<sup>+</sup> et Cl<sup>-</sup> dans le corps cellulaire du neurone M</th><td>augmentation de la concentration des ions Na<sup>+</sup></td><td>pas de variation de la concentration des ions Na<sup>+</sup>, K<sup>+</sup> et Cl<sup>-</sup></td><td>pas de variation de la concentration des ions Na<sup>+</sup>, K<sup>+</sup> et Cl<sup>-</sup></td><td>diminution de la concentration des ions K<sup>+</sup> et augmentation de la concentration des ions Cl<sup>-</sup></td></tr>
+</table>
+<p class="consigne"><b>2.</b> Exploitez les informations du document 3 et vos connaissances pour :<br>
+- Expliquer les résultats obtenus dans chacune des quatre expériences du document 3.<br>
+- Représenter les enregistrements qu'on peut obtenir au niveau des oscilloscopes O<sub>A</sub> et O<sub>B</sub> dans chacune des quatre expériences.</p>
+<div class="exsub"><u>EXERCICE 12:Bac sprt prin 16</u></div>
+<p class="para">On se propose de déterminer les circuits nerveux impliqués dans le mécanisme de l'innervation réciproque de deux muscles antagonistes assurant la coordination de leur fonctionnement. Pour cela, on a réalisé deux expériences en utilisant le dispositif expérimental représenté dans le document 2.</p>
+<!-- CROP: 4759 1 14 0.382 0.208 0.972 0.407 4759_p14_ex12_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p14_ex12_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="para"><b><u>1. Expérience 1 :</u></b><br>
+On étire le muscle M1 et on enregistre les réponses au niveau des oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>4</sub>.<br>
+Les résultats obtenus sont représentés dans le document 3.</p>
+<!-- CROP: 4759 1 14 0.070 0.439 0.810 0.573 4759_p14_ex12_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p14_ex12_doc3.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne">Exploitez les enregistrements du document 3 et vos connaissances en vue de :<br>
+a. déduire le rôle du fuseau neuromusculaire.<br>
+b. dégager la conséquence de l'étirement de M<sub>1</sub> sur l'activité de chacun des muscles M<sub>1</sub> et M<sub>2</sub>.</p>
+<p class="para"><b><u>2. Expérience 2 :</u></b><br>
+On porte, des stimulations St efficaces et rapprochées au niveau de la fibre sensitive Ia2 issue du fuseau neuromusculaire du muscle M2 et on enregistre au niveau des oscilloscopes O2 et O3. On mesure également les temps de latence séparant le moment de l'application des stimulations et l'apparition des réponses en O2 et en O3.<br>
+Les résultats obtenus sont représentés dans le document</p>
+<!-- CROP: 4759 1 14 0.313 0.724 0.974 0.879 4759_p14_ex12_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p14_ex12_doc4.png" alt=""></figure>
+<p class="subhead"><b>Document 4</b></p>
+<p class="consigne">A partir de l'analyse des enregistrements du document 4 et en faisant appel à vos connaissances :<br>
+a. précisez la nature des synapses mises en jeu au niveau des motoneurones α1 et α2.<br>
+b. expliquez la différence des temps de latence mesurée, sachant que le délai synaptique est de 0.5ms.<br>
+c. représentez l'enregistrement qu'on peut obtenir au niveau des oscilloscopes O<sub>4</sub> et O<sub>5</sub>.</p>
+<!-- page 15 -->
+<p class="consigne">d. déduisez la conséquence des stimulations St sur l'activité de chacun des muscles M<sub>1</sub> et M<sub>2</sub>.<br>
+3. reproduisez, sur votre copie, les circuits nerveux du document 2 que vous complèterez par ce qui convient à partir des informations tirées des expériences 1 et 2 et de vos connaissances.</p>
+<div class="exsub"><u>EXERCICE 13 : bac sprt con 17</u></div>
+<p class="para">On se propose d'étudier certains aspects du fonctionnement des synapses. Pour cela, on réalise quatre expériences en utilisant le dispositif expérimental représenté dans le document 2.</p>
+<!-- CROP: 4759 1 15 0.211 0.162 0.905 0.325 4759_p15_ex13_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p15_ex13_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="para">On stimule, de manière efficace, séparément et simultanément les terminaisons axoniques A et B et la collatérale de C. Les réponses obtenues sont enregistrées au niveau des oscilloscopes O<sub>1</sub> et O<sub>2</sub> et sont présentées par le document 3.</p>
+<!-- CROP: 4759 1 15 0.213 0.416 0.905 0.697 4759_p15_ex13_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p15_ex13_doc3.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne"><b>1)</b> Exploitez les données du document 3 en vue :<br>
+a-d'identifier les tracés 1 et 2.<br>
+b-d'expliquer l'obtention du tracé 1.<br>
+c-de préciser la nature des synapses A-C et B-C.</p>
+<p class="consigne"><b>2)</b> Représentez, en justifiant votre réponse, les tracés attendus au niveau de O<sub>1</sub> :<br>
+a- suite à la stimulation efficace de la collatérale C.<br>
+b- suite à la stimulation efficace et simultanée en A, en B et au niveau de la collatérale de C.</p>
+<p class="consigne"><b>3)</b> Déduisez la nature de la synapse C-collatérale de C.</p>
+<p class="consigne"><b>4)</b> Expliquez les différences de réponses enregistrées au niveau de l'oscilloscope O<sub>2</sub> dans les deux expériences 3 et 4.</p>
+<p class="consigne"><b>5)</b> A partir des informations dégagées précédemment et en faisant appel à vos connaissances, expliquez le rôle du neurone C.</p>
+<!-- page 16 -->
+<div class="exsub"><u>EXERCICE 14: bac Math. Con. 13</u></div>
+<p class="para">On se propose d'étudier certains phénomènes électriques au niveau d'une chaine neuronique. Le document 1 ci- dessous montre une chaine de trois neurones N<sub>1</sub>, N<sub>2</sub> et N<sub>3</sub>:</p>
+<!-- CROP: 4759 1 16 0.467 0.044 0.954 0.176 4759_p16_ex14_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p16_ex14_doc1.png" alt=""></figure>
+<p class="para">En utilisant le dispositif expérimental du document 1 ci-dessus, on réalise les deux expériences suivantes:</p>
+<p class="para"><span class="t-red">Expérience 1</span><br>
+On port en St1 une stimulation efficace ; les réponses obtenues en O<sub>3</sub> et O<sub>5</sub> sont représentées sur le document 2.</p>
+<!-- CROP: 4759 1 16 0.463 0.175 0.974 0.317 4759_p16_ex14_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p16_ex14_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="consigne">1. En exploitant les données des deux documents 1 et 2 :<br>
+a. schématisez les tracés enregistrés en O<sub>1</sub>, en O<sub>2</sub> et en O<sub>4</sub>.<br>
+b. expliquez l'obtention des tracés enregistrés en O<sub>3</sub> et en O<sub>5</sub> (document 2).<br>
+c. déduisez la nature de chacun des deux neurones N<sub>1</sub> et N<sub>2</sub>.</p>
+<p class="para"><span class="t-red"><u>Expérience 2:</u></span><br>
+On applique une stimulation isolée en st<sub>2</sub> ; on obtient en O<sub>2</sub> et en O<sub>3</sub> les tracés indiqués sur le document 3.</p>
+<!-- CROP: 4759 1 16 0.454 0.337 0.977 0.479 4759_p16_ex14_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p16_ex14_doc3.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne">2. En tenant compte de ces tracés, indiquez la nature de la réponse que l'on peut obtenir en O3 si on porte en st2 trois stimulations rapprochées et de même intensité que celle appliquée dans l'expérience 2 ; justifiez votre réponse.<br>
+3. A partir des expériences 1 et 2, expliquez alors le rôle du neurone N<sub>2</sub> dans la transmission du message nerveux.</p>
+<div class="exsub"><u>EXERCICE 15 : BAC SC PRIN 14</u></div>
+<p class="para">Dans le but d'étudier quelques aspects du réflexe myotatique, on utilise le dispositif expérimental du document 7 pour réaliser les deux expériences 1 et 2.</p>
+<!-- CROP: 4759 1 16 0.372 0.514 0.974 0.677 4759_p16_ex15_doc7 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p16_ex15_doc7.png" alt=""></figure>
+<p class="subhead"><b>Document 7</b></p>
+<p class="para"><span class="t-red"><b><u>Expérience 1:</u></b></span> on exerce sur le fuseau neuromusculaire des étirements d'intensités croissantes E1, E2 et E3 puis on enregistre l'activité électrique au niveau de O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>.<br>
+Les enregistrements obtenus sont représentés par le document 8.</p>
+<!-- CROP: 4759 1 16 0.310 0.710 0.963 0.910 4759_p16_ex15_doc8 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p16_ex15_doc8.png" alt=""></figure>
+<p class="subhead"><b>Document 8</b></p>
+<p class="consigne">1. Exploitez les résultats du document 8 afin de dégager :<br>
+- Deux propriétés du potentiel de récepteur, deux propriétés du potentiel d'action et une propriété du message nerveux.<br>
+- Le rôle du fuseau neuromusculaire.</p>
+<p class="para"><span class="t-red"><b><u>Expérience 2:</u></b></span></p>
+<!-- page 17 -->
+<p class="para">On applique sur le fuseau neuromusculaire un étirement d'intensité E<sub>3</sub>. On obtient sur les oscilloscopes O<sub>4</sub> et O<sub>5</sub> les enregistrements représentés par le document 9.</p>
+<!-- CROP: 4759 1 17 0.578 0.097 0.937 0.206 4759_p17_ex15_doc9 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p17_ex15_doc9.png" alt=""></figure>
+<p class="subhead"><b>Document 9</b></p>
+<p class="consigne">2. a. analysez le tracé a afin de déduire la nature de la synapse S<sub>1</sub>.<br>
+b. expliquez l'obtention du tracé b.<br>
+c. dégagez la nature des synapses S<sub>2</sub> et S<sub>3</sub>.<br>
+3. a. représentez l'enregistrement obtenu sur chacun des oscilloscopes O<sub>6</sub> et O<sub>7</sub> suite à l'étirement du fuseau neuromusculaire d'intensité E3.<br>
+b. précisez l'effet de l'étirement d'intensité E3 sur l'activité de chacun des muscles extenseur et fléchisseur.</p>
+<div class="exsub">EXERCICE 16 : bac sprt prn14</div>
+<p class="para">On se propose d'étudier certains aspects du fonctionnement du neurone. Pour ce faire, on a réalisé deux séries d'expériences en utilisant le montage expérimental représenté dans le document 2.</p>
+<!-- CROP: 4759 1 17 0.295 0.231 0.963 0.354 4759_p17_ex16_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p17_ex16_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="subhead t-navy"><span class="t-red"><u>Première série d'expériences :</u></span></p>
+<ul class="b">
+<li><span class="t-red"><u>Expérience 1:</u></span> une excitation efficace E<sub>1</sub> est portée au niveau de la terminaison axonique T<sub>1</sub>. Le tracé 1 du tableau 1 représente l'enregistrement obtenu au niveau de l'oscilloscope O<sub>2</sub>.</li>
+<li><span class="t-red"><u>Expérience 2:</u></span> deux excitations efficaces et simultanées E<sub>1</sub> et E<sub>2</sub> sont portées respectivement au niveau des terminaisons axoniques T<sub>1</sub> et T<sub>2</sub>. Le tracé 2 du tableau 1 représente l'enregistrement obtenu au niveau de l'oscilloscope O<sub>2</sub>.</li>
+</ul>
+<!-- CROP: 4759 1 17 0.361 0.458 0.954 0.608 4759_p17_ex16_tab1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p17_ex16_tab1.png" alt=""></figure>
+<p class="subhead"><b>Tableau 1</b></p>
+<p class="consigne">1. Analysez les tracés 1 et 2 du tableau 1 en vue de déduire la nature des synapses T<sub>1</sub>-N<sub>2</sub> et T<sub>2</sub>-N<sub>2</sub>.</p>
+<p class="subhead t-navy"><span class="t-red"><u>Deuxième série d'expériences :</u></span></p>
+<ul class="b">
+<li><span class="t-red"><u>Expérience 3 :</u></span> une excitation efficace E<sub>3</sub> est portée au niveau de la terminaison axonique T<sub>3</sub>. Le tracé 3 du tableau 2 représente l'enregistrement obtenu au niveau de l'oscilloscope O<sub>1</sub>.</li>
+<li><span class="t-red"><u>Expérience 4 :</u></span> deux excitation efficaces et simultanées E<sub>3</sub> et E<sub>4</sub> sont portées respectivement au niveau des terminaisons axoniques T<sub>3</sub> et T<sub>4</sub>. Le tracé 4 du tableau 2 représente l'enregistrement obtenu au niveau de l'oscilloscope O<sub>2</sub>.</li>
+</ul>
+<!-- CROP: 4759 1 17 0.379 0.631 0.958 0.765 4759_p17_ex16_tab2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p17_ex16_tab2.png" alt=""></figure>
+<p class="subhead"><b>Tableau 2</b></p>
+<p class="consigne">2. Analysez les tracés 3 et 4 du tableau 2 afin d'identifier la nature des synapses T<sub>3</sub>-N<sub>1</sub>, T<sub>4</sub>-N<sub>1</sub> et N<sub>1</sub>-N<sub>2</sub> mises en jeu par cette deuxième série d'expériences.<br>
+3. Représentez le tracé qu'on pourrait enregistrer au niveau de l'oscilloscope O<sub>2</sub> lorsqu'on porte des stimulations efficaces et simultanées sur les terminaisons axoniques T<sub>1</sub>, T<sub>2</sub>, T<sub>3</sub> et T<sub>4</sub>. Justifiez votre réponse.<br>
+4. Expliquez, à partir des informations précédentes et de vos connaissances, les principaux évènements qui se produisent entre les deux électrodes R<sub>1</sub> et R<sub>2</sub>, à la suite des excitations efficaces et simultanées des terminaisons axoniques T<sub>3</sub> et T<sub>4</sub>.</p>
+<!-- page 18 -->
+<div class="exsub">EXERCICE 17 : BAC MATH. 24</div>
+<p class="para">Le document 1a montre deux coupes longitudinales de deux fibres nerveuses F et F' de même diamètre.<br>
+Le document 1b présente les enregistrements obtenus suite à une série de stimulations successives S<sub>1</sub>, S<sub>2</sub>, S<sub>3</sub> et S<sub>4</sub> de même intensité de la fibre F.</p>
+<!-- CROP: 4759 1 18 0.096 0.143 0.395 0.321 4759_p18_ex17_doc1a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p18_ex17_doc1a.png" alt=""></figure>
+<p class="subhead"><b>Document 1a</b></p>
+<!-- CROP: 4759 1 18 0.413 0.143 0.827 0.321 4759_p18_ex17_doc1b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p18_ex17_doc1b.png" alt=""></figure>
+<p class="subhead"><b>Document 1b</b></p>
+<p class="consigne"><b>1-</b> Légendez le document 1a en reportant sur votre copie les numéros des flèches de 1 à 4.<br>
+<b>2-</b> Indiquez la localisation de chaque fibre au niveau du tissu nerveux.<br>
+<b>3-</b> Précisez d'après le document 1b :<br>
+a- la (ou les) stimulation(s) à laquelle (ou auxquelles) la fibre F a réagi.<br>
+b- pourquoi la fibre F n'a pas réagi à toutes les stimulations.<br>
+<b>4-</b> Recopiez et complétez le tableau ci-dessous.</p>
+<table>
+<tr><th colspan="2">Fibres<br>Conduction du message nerveux</th><th>F</th><th>F'</th></tr>
+<tr><th colspan="2">Deux points communs</th><td colspan="2"></td></tr>
+<tr><th rowspan="2">Différences</th><th>Vitesse de conduction</th><td></td><td></td></tr>
+<tr><th>Mode de conduction</th><td></td><td></td></tr>
+</table>
+<div class="exsub">EXERCICE 18 (bac sc prin 15)</div>
+<p class="para">On se propose d'étudier le mécanisme de la transmission du message nerveux à travers les synapses. Pour cela on réalise deux expériences en utilisant le dispositif expérimental représenté dans le document 2.</p>
+<!-- CROP: 4759 1 18 0.179 0.671 0.774 0.834 4759_p18_ex18_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p18_ex18_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="para"><b>Expérience 1 :</b><br>
+On porte une stimulation efficace St<sub>1</sub> au niveau de l'axone du neurone N<sub>1</sub>. Le tracé du document 3 représente l'enregistrement obtenu au niveau de l'oscilloscope O.</p>
+<!-- page 19 -->
+<!-- CROP: 4759 1 19 0.342 0.066 0.552 0.172 4759_p19_ex18_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p19_ex18_doc3.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="para"><b>Expérience 2 :</b><br>
+On porte, simultanément, une stimulation efficace St<sub>1</sub> au niveau de la terminaison axonique du neurone N<sub>1</sub> et deux stimulations efficaces, successives et très rapprochées St<sub>2</sub> au niveau de la terminaison axonique du neurone N<sub>2</sub>. Il en résulte une contraction du muscle M.</p>
+<p class="consigne"><b>1)</b> Exploitez les résultats des expériences 1 et 2 en vue de :<br>
+<b>a-</b> préciser la nature des synapses N<sub>1</sub>-N<sub>3</sub>, et N<sub>2</sub>-N<sub>4</sub>.<br>
+<b>b-</b> dégager deux propriétés du message nerveux.</p>
+<p class="consigne"><b>2)</b> En tenant compte des informations dégagées précédemment et de vos connaissances, expliquez la fonction assurée par le neurone N<sub>4</sub>.</p>
+<div class="exsub">EXERCICE 19 : bac MP15</div>
+<p class="para">On se propose d'étudier le mode de fonctionnement des synapses. Pour cela, on réalise deux expériences selon le dispositif expérimental représenté dans le document 2.</p>
+<!-- CROP: 4759 1 19 0.096 0.378 0.897 0.537 4759_p19_ex19_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p19_ex19_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="para"><b>Expérience 1 :</b> On porte deux stimulations d'intensités croissantes I<sub>1</sub> et I<sub>2</sub> en E et on enregistre, parallèlement, les différences de potentiels au niveau des oscilloscopes O<sub>1</sub>, O<sub>2,</sub> O<sub>3</sub> et O<sub>4</sub>. Les résultats sont représentés dans le tableau suivant :</p>
+<table>
+<tr><td colspan="2" rowspan="2"></td><th colspan="4">ddp (en mV) enregistrée au niveau de :</th></tr>
+<tr><th>O<sub>1</sub></th><th>O<sub>2</sub></th><th>O<sub>3</sub></th><th>O<sub>4</sub></th></tr>
+<tr><th rowspan="2">Intensité du stimulus</th><th>I<sub>1</sub></th><td>- 60</td><td>-70</td><td>-70</td><td>-70</td></tr>
+<tr><th>I<sub>2</sub> &gt; I<sub>1</sub></th><td>+30</td><td>-58</td><td>+30</td><td>+30</td></tr>
+</table>
+<p class="consigne"><b>1)</b> Exploitez les données fournies dans le tableau en vue :<br>
+<b>a-</b> d'identifier la nature des potentiels obtenus en O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub> et O<sub>4</sub>, suite aux stimulations d'intensités I<sub>1</sub> et I<sub>2</sub>.<br>
+<b>b-</b> d'expliquer la différence de réponses enregistrées en O<sub>2</sub> et en O<sub>3</sub> suite à la stimulation I<sub>2</sub>.<br>
+<b>c-</b> de déduire la nature de la synapse N<sub>1</sub>- N<sub>3</sub>.</p>
+<p class="para"><b>Expérience 2</b> : On porte en E deux stimulations très rapprochées d'intensité I<sub>2</sub>. Le document 3 représente l'enregistrement obtenu en O<sub>3</sub>.</p>
+<!-- CROP: 4759 1 19 0.684 0.787 0.934 0.880 4759_p19_ex19_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p19_ex19_doc3.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne"><b>2)</b> Exploitez les résultats des expériences 1 et 2 en vue :<br>
+<b>a-</b> d'expliquer l'enregistrement obtenu en O<sub>3</sub> (document 3).<br>
+<b>b-</b> de déduire la nature de la synapse N<sub>2</sub>-N<sub>3</sub>.</p>
+<!-- page 20 -->
+<div class="exsub">EXERCICE 20: bac sprt P18</div>
+<p class="para">On se propose d'étudier le mécanisme de naissance et de transmission du message nerveux dans un circuit impliqué dans l'établissement du réflexe myotatique. Pour ce faire, on réalise trois expériences selon le dispositif expérimental représenté dans le document 1.</p>
+<!-- CROP: 4759 1 20 0.072 0.151 0.800 0.344 4759_p20_ex20_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p20_ex20_doc1.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<p class="consigne"><b>1) Expérience 1</b> : On soumet le fuseau neuromusculaire à un étirement E<sub>1</sub> d'intensité efficace i<sub>1</sub> en reliant le muscle à une masse de 3g. Les enregistrements de l'activité électrique au niveau des oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub> sont présentés par le document 2.</p>
+<!-- CROP: 4759 1 20 0.090 0.421 0.826 0.578 4759_p20_ex20_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p20_ex20_doc2.png" alt=""></figure>
+<p class="subhead"><b>Document 2</b></p>
+<p class="consigne"><b>a-</b> Identifiez les tracés a, b et c du document 2.<br>
+<b>b-</b> Faites correspondre chacun des tracés a, b et c aux oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>.<br>
+<b>c-</b> Expliquez le phénomène à l'origine du tracé b.</p>
+<p class="consigne"><b>2) Expérience 2 :</b> On soumet le fuseau neuromusculaire (FNM) à un étirement E<sub>2</sub> d'intensité i<sub>2</sub> supérieure à i<sub>1</sub>, en reliant le muscle à une masse de 4g. L'enregistrement obtenu au niveau de l'oscilloscope O<sub>3</sub> est représenté dans le document 3.</p>
+<table>
+<tr><th>Expérience</th><th>Enregistrement en O<sub>3</sub></th></tr>
+<tr><td><b>Etirement E<sub>2</sub> d'intensité i<sub>2</sub> &gt; i<sub>1</sub> du FNM</b></td><td><!-- CROP: 4759 1 20 0.493 0.698 0.719 0.819 4759_p20_ex20_doc3 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p20_ex20_doc3.png" alt=""></figure></td></tr>
+</table>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne">Exploitez les données des expériences 1 et 2 et utilisez vos connaissances en vue :<br>
+<b>a-</b> d'expliquer le fonctionnement du neurone N<sub>2</sub> suite à l'étirement E<sub>2</sub>.<br>
+<b>b-</b> de déduire la nature de la synapse N<sub>1</sub>-N<sub>2</sub>.</p>
+
+
+<!-- page 21 -->
+<p class="para"><b>3) Expérience 3 :</b> On enregistre au niveau de l'oscilloscope O<sub>4</sub> l'activité électrique de la fibre musculaire extrafusale de (M) dans deux situations expérimentales et on note dans chaque situation, l'état de cette fibre musculaire. Les résultats obtenus sont présentés par le document 4.</p>
+<table>
+<tr><th></th><th colspan="2">Situations expérimentales</th></tr>
+<tr><th></th><th>Etirement E<sub>2</sub> d'intensité i<sub>2</sub> du FNM</th><th>Etirement E<sub>2</sub> du FNM et stimulation efficace de N<sub>3</sub>, simultanément</th></tr>
+<tr><td><b>Enregistrement en O<sub>4</sub></b></td><td><!-- CROP: 4759 1 21 0.222 0.158 0.494 0.287 4759_p21_doc4a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p21_doc4a.png" alt=""></figure></td><td><!-- CROP: 4759 1 21 0.494 0.158 0.818 0.287 4759_p21_doc4b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p21_doc4b.png" alt=""></figure></td></tr>
+<tr><td><b>Etat de la fibre</b></td><td>Fibre extrafusale de (M) contractée</td><td>Fibre extrafusale de (M) relâchée</td></tr>
+</table>
+<p class="para"><b>Document 4</b></p>
+<p class="consigne">Exploitez les informations fournies par les expériences 2 et 3 et faites appel à vos connaissances en vue :</p>
+<p class="para"><b>a-</b> d'expliquer le fonctionnement du neurone N<sub>2</sub>.<br>
+<b>b-</b> de déduire la nature de la synapse N<sub>2</sub>-N<sub>3</sub>.</p>
+<p class="para"><b>4)</b> Proposez une explication logique du fonctionnement du neurone N<sub>3</sub> impliqué dans l'établissement du réflexe myotatique.</p>
+<div class="exsub"><u>EXERCICE 21 : BAC sport P20</u></div>
+<p class="para">On se propose d'expliquer le rôle du neurone M impliqué dans un circuit neuronique impliquant trois neurones A, B et C. Pour cela, on réalise trois expériences selon le dispositif expérimental représenté dans le document 2.</p>
+<!-- CROP: 4759 1 21 0.086 0.494 0.906 0.66 4759_p21_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p21_doc2.png" alt=""></figure>
+<p class="para"><b>S<sub>A</sub>, S<sub>B</sub> et S<sub>C</sub> :</b> stimulations appliquées au niveau des neurones A, B et C &nbsp;&nbsp; <b>O</b> : oscilloscope cathodique</p>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>1) <u>Expérience 1</u> :</b> On enregistre, dans deux situations différentes, les différences de potentiel (ddp) au niveau de l'oscilloscope cathodique O.</p>
+<ul class="dash">
+<li><b>Situation 1 :</b> Stimulation S<sub>A</sub> appliquée au niveau du neurone A.</li>
+<li><b>Situation 2 :</b> Stimulations simultanées S<sub>A</sub> et S<sub>B</sub> appliquées au niveau des neurones A et B.</li>
+</ul>
+<p class="para">Les expériences et les résultats correspondants sont regroupés dans le document 3.</p>
+<table>
+<tr><th></th><th></th><th>ddp enregistrée au niveau de l'oscilloscope cathodique O</th></tr>
+<tr><td><b>Situation 1</b></td><td>Stimulation S<sub>A</sub> appliquée au niveau du neurone A</td><td>- 60 mV</td></tr>
+<tr><td><b>Situation 2</b></td><td>Stimulations simultanées S<sub>A</sub> et S<sub>B</sub> appliquées au niveau des neurones A et B</td><td>- 65 mV</td></tr>
+</table>
+<p class="para"><b>Document 3</b></p>
+<p class="consigne">Exploitez les résultats du document 3 en vue de :</p>
+<p class="para"><b>a-</b> préciser si les stimulations portées sur les neurones A et B sont efficaces.<br>
+<b>b-</b> déduire la nature des synapses A-M et B-M.<br>
+<b>c-</b> représenter le tracé attendu si on portait une stimulation isolée et efficace au niveau du neurone B.</p>
+<!-- page 22 -->
+<p class="para"><b>2) <u>Expérience 2</u> :</b> On injecte au niveau des terminaisons axoniques des neurones A, B et C, des neurotransmetteurs marqués avec des isotopes radioactifs : l'acétylcholine* et le GABA* (acide gamma amino-butyrique). Puis, on porte des stimulations isolées S<sub>A</sub>, S<sub>B</sub> et S<sub>C</sub> et on suit par autoradiographie ces neurotransmetteurs lors de l'activité des synapses A-M, B-M et C-M. Le document 4 représente les résultats obtenus.</p>
+<table>
+<tr><th></th><th></th><th>Synapse A-M</th><th>Synapse B-M</th><th>Synapse C-M</th></tr>
+<tr><td rowspan="2"><b>Radioactivité suite à l'injection de :</b></td><td><b>Acétylcholine*</b></td><td>+</td><td>-</td><td>+</td></tr>
+<tr><td><b>GABA*</b></td><td>-</td><td>+</td><td>-</td></tr>
+<tr><td colspan="5">* : Radioactivité &nbsp;&nbsp; + : Présence de radioactivité &nbsp;&nbsp; - : Absence de radioactivité</td></tr>
+</table>
+<p class="para"><b>Document 4</b></p>
+<p class="consigne">Exploitez les données des documents 3 et 4 en vue de :</p>
+<ul class="dash">
+<li>préciser la nature des neurones A, B et C.</li>
+<li>déduire la nature de la synapse C-M.</li>
+</ul>
+<p class="para"><b>3) <u>Expériences 3</u> :</b> On applique simultanément trois stimulations S<sub>A</sub>, S<sub>B</sub> et S<sub>C</sub> au niveau des neurones A, B et C. Le document 5 représente l'enregistrement obtenu.</p>
+<!-- CROP: 4759 1 22 0.238 0.322 0.665 0.41 4759_p22_doc5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p22_doc5.png" alt=""></figure>
+<p class="para"><b>Document 5</b></p>
+<p class="consigne">Exploitez les informations fournies par les documents 2, 3, 4 et 5 en vue d'expliquer l'enregistrement de l'expérience 3.</p>
+<p class="para"><b>4)</b> Précisez, en justifiant votre réponse, le nombre minimal de stimulations appliquées au niveau des neurones A, B et C pour enregistrer deux potentiels d'action successifs au niveau de l'oscilloscope cathodique O.</p>
+<p class="para"><b>5)</b> A partir des informations dégagées précédemment, expliquez le rôle du neurone M impliqué dans le circuit neuronique représenté dans le document 2.</p>
+<div class="exsub"><b>EXERCICE 22 BACMC19</b></div>
+<p class="para">On cherche à comprendre le mécanisme de la coordination du mouvement lors du réflexe de retrait de la main suite au toucher d'un objet brûlant. Pour cela on réalise deux expériences grâce au dispositif expérimental représenté par le document 3.</p>
+<!-- CROP: 4759 1 22 0.11 0.622 0.812 0.838 4759_p22_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p22_doc3.png" alt=""></figure>
+<p class="para"><b>S : électrodes stimulatrices</b> &nbsp;|&nbsp; <b>m α<sub>1</sub> et m α<sub>2</sub> : motoneurones alpha</b> &nbsp;|&nbsp; <b>O<sub>1</sub> → O<sub>5</sub> : oscilloscopes</b></p>
+<p class="para"><b>Document 3</b></p>
+<p class="para"><b>Expérience 1</b>:<br>
+On porte sur la racine dorsale trois stimulations électriques efficaces successives et rapprochées. Les enregistrements obtenus au niveau des oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub> sont représentés par le document 4.</p>
+<!-- page 23 -->
+<!-- CROP: 4759 1 23 0.12 0.034 0.813 0.139 4759_p23_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p23_doc4.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para"><b>1)</b> Nommez les enregistrements obtenus au niveau des oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>.</p>
+<p class="para"><b>2)</b> Identifiez les des phénomènes bioélectriques parcourant les axones des interneurones I<sub>1</sub> et I<sub>4</sub>.</p>
+<p class="para"><b>3)</b> Précisez l'origine de la différence constatée entre les enregistrements obtenus en O<sub>2</sub> et O<sub>3</sub>.</p>
+<p class="para"><b>Expérience 2:</b><br>
+On porte sur la racine dorsale sept stimulations successives et rapprochées et on enregistre les phénomènes électriques à l'aide des oscilloscopes O<sub>1</sub>, O<sub>2</sub>, O<sub>3</sub>, O<sub>4</sub> et O<sub>5</sub>.</p>
+<p class="para"><b>4)</b> Copiez le tableau suivant sur votre copie et complétez-le.</p>
+<table>
+<tr><th>Oscilloscopes</th><th>Noms des phénomènes électriques enregistrés</th><th>Justification</th></tr>
+<tr><td>O<sub>1</sub></td><td></td><td></td></tr>
+<tr><td>O<sub>2</sub></td><td></td><td></td></tr>
+<tr><td>O<sub>3</sub></td><td></td><td></td></tr>
+<tr><td>O<sub>4</sub></td><td></td><td></td></tr>
+<tr><td>O<sub>5</sub></td><td></td><td></td></tr>
+</table>
+<p class="para"><b>5)</b> En utilisant les informations précédentes et vos connaissances, expliquez la coordination de l'activité des muscles M<sub>1</sub> et M<sub>2</sub> lors du réflexe de retrait de la main.</p>
+<!-- NOTE: the following framed document is printed sideways on the page (its title "Document 4 (à remettre avec la copie)" is inside the frame); it is cropped whole -->
+<!-- CROP: 4759 1 23 0.143 0.397 0.797 0.929 4759_p23_doc4_copie -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p23_doc4_copie.png" alt=""></figure>
+<!-- page 24 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+
+<div class="exsub"><b><u>EXERCICE 23</u></b></div>
+<p class="para">Pour préciser le mécanisme de régulation de la spermatogenèse, on a réalisé les expériences suivantes :<br>
+<u>Expérience 1 :</u><br>
+On enregistre l'activité électrique du neurone hypothalamique sécréteur de GnRh (N) et on suit la variation de la concentration de GnRh et d'une hormone H<sub>1</sub> sécrétée par les cellules X.</p>
+<p class="para">Le document 3a montre les connections nerveuses du neurone hypothalamique N.</p>
+<p class="para">Le document 3b traduit les résultats obtenus.</p>
+<!-- CROP: 4759 1 24 0.672 0.105 0.956 0.406 4759_p24_doc3b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p24_doc3b.png" alt=""></figure>
+<!-- CROP: 4759 1 24 0.083 0.23 0.678 0.416 4759_p24_doc3a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p24_doc3a.png" alt=""></figure>
+<p class="para">1) Analysez les résultats obtenus en vue de préciser :</p>
+<p class="para">a- La relation entre l'activité électrique du neurone N et la sécrétion de l'hormone H1.</p>
+<p class="para">b- Le mode de sécrétion de GnRh et de H1.</p>
+<p class="para">2) <u>Expérience 2</u> : des cellules prélevées des gonades mâles sont cultivées en présence de l'hormone H<sub>1</sub> sécrétée par les cellules X, ou en présence d'une hormone H<sub>2</sub> sécrétée par les cellules Y.</p>
+<table>
+<tr><th></th><th></th><th colspan="2">Résultats en présence de l'hormone :</th></tr>
+<tr><th></th><th></th><th>H<sub>1</sub> sécrétée par les cellules X</th><th>H<sub>2</sub> sécrétée par les cellules Y</th></tr>
+<tr><td rowspan="3"><b>Cellules cultivées</b></td><td>Cellules de Sertoli</td><td>Cellules de Sertoli inactives</td><td>Développement des cellules de Sertoli et sécrétion d'inhibine</td></tr>
+<tr><td>Cellules de Leydig</td><td>Développement des cellules de Leydig et sécrétion de testostérone</td><td>Cellules de Leydig inactives</td></tr>
+<tr><td>Cellules germinales</td><td>Cellules germinales inactives</td><td>Cellules germinales actives et en évolution</td></tr>
+</table>
+<p class="para">Le tableau suivant présente les cultures et les résultats obtenus.<br>
+Exploitez les résultats de l'expérience 2 en vue de préciser le nom des deux hormones H<sub>1</sub> et H<sub>2</sub>.</p>
+<p class="para">3) <u>Expérience 3</u> : on applique des stimulations efficaces et très rapprochées sur les neurones présynaptiques N1 et N2 et on enregistre l'activité électrique du neurone hypothalamique N, puis on détermine le taux plasmatique de GnRH. Le</p>
+<table>
+<tr><th></th><th>Activité électrique du neurone N (PA/S)</th><th>Taux de GnRH (pg.mL<sup>-1</sup>)</th></tr>
+<tr><td>Etat normal</td><td>50</td><td>4</td></tr>
+<tr><td>Suite à des stimulations efficaces et très rapprochées de N<sub>1</sub></td><td>85</td><td>6</td></tr>
+<tr><td>Suite à des stimulations efficaces et très rapprochées de N<sub>2</sub></td><td>20</td><td>2</td></tr>
+</table>
+<p class="para">tableau suivant présente les résultats obtenus</p>
+<p class="para">Exploitez les résultats de l'expérience 3 en vue de préciser la nature des synapses N<sub>1</sub>-N et N<sub>2</sub>-N.</p>
+<p class="para">4) A partir des résultats des expériences 1, 2 et 3 et en faisant appel à vos connaissances, représentez à l'aide d'un schéma commenté, les interactions entre les cellules impliquées dans la régulation de la spermatogenèse.</p>
+<!-- page 25 -->
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub"><b>EXERCICE 24bac SC cntr 21</b></div>
+<p class="para">Pour comprendre les caractéristiques de la transmission neuroneuronique, on réalise des séries d'expériences sur des structures nerveuses isolées et placées dans un liquide physiologique contenant des ions calcium comme le présente le document 5.</p>
+<!-- CROP: 4759 1 25 0.139 0.137 0.822 0.335 4759_p25_doc5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p25_doc5.png" alt=""></figure>
+<p class="para"><b>Document 5</b></p>
+<p class="subhead t-navy">❖ <b>Première série d'expériences</b></p>
+<p class="para">Le document 6 présente des expériences réalisées sur les neurones N<sub>1</sub> et N<sub>2</sub> ainsi que les enregistrements obtenus au niveau des oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>.</p>
+<!-- CROP: 4759 1 25 0.127 0.395 0.831 0.597 4759_p25_doc6 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p25_doc6.png" alt=""></figure>
+<p class="para"><b>Document 6</b></p>
+<p class="para"><b>1)</b> À partir de l'analyse du document 6 et en faisant appel à vos connaissances :<br>
+<b>a-</b> déduisez la nature des synapses N<sub>1</sub>-M et N<sub>2</sub>-M,<br>
+<b>b-</b> dégagez une propriété commune des potentiels enregistrés,<br>
+<b>c-</b> déterminez, en justifiant votre réponse, le nombre minimal de stimulations efficaces mobilisant les deux synapses N<sub>1</sub>-M et N<sub>2</sub>-M pour obtenir un potentiel d'action au niveau de l'oscilloscope O<sub>3</sub>.</p>
+<p class="para"><b>2)</b> À partir des informations précédentes, expliquez le rôle du neurone M.</p>
+<p class="subhead t-navy">❖ <b>Deuxième série d'expériences</b></p>
+<p class="para">Trois neurotoxines T1, T2 et T3 sont utilisées pour étudier le mécanisme du fonctionnement de la synapse N<sub>2</sub>-M. Pour cela on remplace le liquide physiologique du document 5 par un liquide physiologique contenant des ions calcium radioactifs puis on porte la stimulation St<sub>2</sub> dans trois conditions expérimentales différentes. Ensuite,</p>
+<ul class="dash">
+<li>on enregistre les phénomènes électriques au niveau des oscilloscopes O et O<sub>2</sub>,</li>
+<li>on cherche la radioactivité dans l'élément présynaptique,</li>
+<li>on dose le GABA dans la fente synaptique N<sub>2</sub>-M.</li>
+</ul>
+<p class="para">Les expériences et les résultats obtenus sont présentés par le document 7.</p>
+<!-- page 26 -->
+<!-- CROP: 4759 1 26 0.126 0.045 0.912 0.472 4759_p26_doc7 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p26_doc7.png" alt=""></figure>
+<p class="para"><b>Document 7</b></p>
+<p class="para"><b>3)</b> À partir de l'exploitation du document 7 et en faisant appel à vos connaissances :<br>
+<b>a-</b> expliquez les résultats obtenus et dégagez l'effet de chacune des neurotoxines T1, T2 et T3.<br>
+<b>b-</b> expliquez le mécanisme du fonctionnement de la synapse N<sub>2</sub>-M.</p>
+<!-- page 27 -->
+<div class="data">
+<p class="subhead t-red">Lycée Pilote Médenine &nbsp;|&nbsp; Thème: Neurophysiologie 4ème SC. Exp.</p>
+<p class="subhead t-red">Professeur : Ezzeddini Med &nbsp;|&nbsp; Correction de la série 8' (2025)</p>
+</div>
+<p class="subhead t-navy"><span class="t-gold"><u>1<sup>er</sup> sujet de révision</u></span></p>
+<p class="para"><b>1) a-</b></p>
+<table>
+<tr><th>Exploitations</th><th>Enregistrement attendu au niveau de l'oscilloscope</th></tr>
+<tr><td>Expérience 1 : à la suite de la stimulation appliquée au niveau de T1, on a enregistré un PPSE d'amplitude 10 mV au niveau du cône axonique de N1, (en O1)</td><td>O<sub>2</sub> : PR<br>Justification :<br>le PPSE obtenu en O2 est inférieur au seuil donc, il est non propageable. Donc ne déclanchant pas la naissance d'un PA . Donc pas d'activation de la synapse S4</td></tr>
+<tr><td>Expérience 2 : à la suite des stimulations simultanées appliquées au niveau de T1 et de T2 on a enregistré un PPSI d'amplitude 8mV au niveau du cône axonique de N2 (O2)</td><td>O<sub>1 :</sub> PA<br>Justification :<br>Il y a eu naissance et propagation d'un PA au niveau de N1 qui résulte d'un PPS global par sommation spatiale de deux PPSE qui atteint le seuil de PA (-50 mV)</td></tr>
+<tr><td>Expériences 1, 2 et 3 : à la suite de l'application de trois stimulations simultanées au niveau de T1, T2 et T3 on enregistre en O2 un PR.</td><td>O<sub>1 :</sub> PPS (PPSE inférieur au seuil ou PPSI ou PR)<br>Justification : au niveau de N1 il y a eu un PPS global inférieur au seuil suite à la sommation spatiale de trois PPS dont deux PPSE obtenus à la suite de la stimulation de T1 et T2 et un PPSI suite à la stimulation de T3</td></tr>
+</table>
+<p class="para"><b>b-</b> S1 et S2 : synapses excitatrices<br>
+S3 et S4 <b>:</b> synapses inhibitrices</p>
+<p class="para"><b>2) a-</b> Suite à l'injection de la substance X dans la fente de S4, on a enregistré un PR en O2 → La substance X injectée dans la fente de S4 rend la stimulation simultanée de T1 et T2 inefficace → La substance X a boqué la transmission synaptique</p>
+<p class="para">· <b>Hypothèse 1</b> : la substance X empêche l'exocytose du neurotransmetteur en bloquant l'ouverture des CVD à Ca2+</p>
+<p class="para">· <b>Hypothèse 2</b> : la substance X dégrade le neurotransmetteur libéré dans la fente synaptique</p>
+<p class="para">· <b>Hypothèse 3 :</b> la substance X occupe les récepteurs spécifiques du neurotransmetteur au niveau de la membrane postsynaptique de N2.</p>
+<p class="para"><b>NB : accepter toute autre hypothèse logique.</b></p>
+<p class="para"><b>b-</b> D'après l'expérience 6 : puisque la radioactivité s'est retrouvée au niveau de la membrane postsynaptique de S4, donc, la substance X occupe les récepteurs spécifiques du neurotransmetteur et bloque son action (analogue structural du neurotransmetteur) : hypothèse 3</p>
+<p class="para"><b>3)</b> Schéma fonctionnel d'une synapse inhibitrice :</p>
+<!-- page 28 -->
+<!-- NOTE: a large handwritten scribble/signature drawn over the printed text of this page is left out -->
+<p class="subhead t-navy"><span class="t-gold"><b><u>2<sup>ième</sup> sujet</u></b></span></p>
+<p class="para"><b>1) Exploitation des enregistrements :</b><br>
+L'étirement efficace du muscle extenseur permet d'enregistrer deux PA au niveau de l'oscilloscope O, un PA au niveau de l'oscilloscope O<sub>1</sub> et un PPSI au niveau de l'oscilloscope O<sub>2</sub>.</p>
+<ul class="dash">
+<li><b>Déduction :</b> N-I et N-N<sub>1</sub> : synapses excitatrices ; I-N<sub>2</sub> : synapse inhibitrice</li>
+<li><b>Explication :</b> L'étirement efficace a engendré un potentiel de récepteur qui dépasse le seuil et qui est à l'origine de deux PA au niveau du site générateur. Les deux PA se propagent ensuite au deuxième nœud de Ranvier.</li>
+<li><b>Rôle du FNM :</b> Transduction sensorielle : conversion de l'énergie mécanique en énergie électrique.</li>
+</ul>
+<p class="para"><b>2) Comparaison :</b></p>
+<ul class="dash">
+<li>L'injection de la dose D<sub>1</sub> de Nt<sub>1</sub> en F<sub>1</sub> engendre un PPSE, alors que la dose D<sub>2</sub> (plus importante), engendre un PPSE qui atteint le seuil et déclenche un PA.</li>
+<li>L'injection de la dose D1 de Nt<sub>2</sub> en F<sub>2</sub> engendre un PPSI de faible amplitude, alors que la dose D<sub>2</sub> (plus importante) est à l'origine d'un PPSI d'amplitude plus importante.</li>
+</ul>
+<p class="para"><b>a-</b> Nt<sub>1</sub> : neurotransmetteur excitateur / Nt<sub>2</sub> : neurotransmetteur inhibiteur.<br>
+<b>b-</b> Plus la dose du neurotransmetteur injectée dans la fente synaptique est élevée plus la réponse enregistrée obtenue est ample.</p>
+<p class="para"><b>3)</b></p>
+<p class="para">- <b>Exploitation :</b><br>
+* Les deux substances A et B sont repérées au niveau de la membrane postsynaptique.<br>
+* L'injection dans la fente F<sub>1</sub> de la substance A engendre un PA au niveau du cône axonique de N<sub>1</sub> alors que celle de B, suivie de la stimulation St, annule l'effet de cette stimulation.</p>
+<p class="para">- Mode d'action :<br>
+* La substance A se fixe sur les récepteurs de la membrane post synaptique spécifique à Nt<sub>1</sub> entraînant l'ouverture des canaux Na<sup>+</sup> chimiodépendants et l'entrée massive de des ions Na<sup>+</sup> dans l'élément postsynaptique ; d'où ; la dépolarisation de la membrane postsynaptique.<br>
+* La substance B occupe les récepteurs de la membrane post synaptique spécifique à Nt<sub>1</sub> empêchant ainsi son action.</p>
+<p class="para"><b>4)</b></p>
+<p class="para">- La présence de la radioactivité dans les vésicules de N<sub>1</sub> montre que la choline radioactive injectée dans F<sub>3</sub> est recapturée par la terminaison axonique de N<sub>1</sub> et elle est ensuite utilisée pour la synthèse de l'acétylcholine radioactive ; celle-ci est stockée dans les vésicules synaptiques.<br>
+- Après l'étirement efficace du muscle extenseur, la détection de la radioactivité en F<sub>3</sub> puis au niveau de la membrane postsynaptique et dans la terminaison axonique de N<sub>1</sub> montre que l'acétylcholine est libérée par exocytose dans F<sub>3</sub> ; elle se fixe ensuite sur les récepteurs de la membrane postsynaptique. Enfin, l'acétylcholine est hydrolysée dans la fente F<sub>3</sub> et resynthétisée dans la terminaison présynaptique à partir de la choline radioactive recapturée.</p>
+<p class="para"><b>5)</b> L'étirement efficace du FNM engendre :</p>
+<ul class="b">
+<li>l'arrivée du message nerveux dans l'élément présynaptique, ce qui entraîne sa dépolarisation et l'ouverture des CVD à Ca<sup>2+</sup></li>
+<li>l'entrée de Ca<sup>2+</sup> déclenche l'exocytose du neurotransmetteur.</li>
+<li>la fixation du neurotransmetteur sur les récepteurs spécifiques ; ce qui engendre au niveau de la synapse:
+<ul class="dash">
+<li>➢ N-N<sub>1</sub> : l'ouverture des CCD à Na<sup>+</sup> → l'entrée massive d'ions Na<sup>+</sup> dans I → légère dépolarisation (PPSE)<br>
+La sommation de PPSE successifs → l'activation de N<sub>1</sub> innervant les fibres musculaires du muscle extenseur</li>
+<li>➢ N1-fibre musculaire : l'acétylcholine se fixe sur des récepteurs spécifiques → l'ouverture des CCD à Na<sup>+</sup> → l'entrée massive des ions Na<sup>+</sup> → la dépolarisation du sarcolemme → la contraction du muscle extenseur.</li>
+<li>➢ I-N<sub>2</sub> : l'ouverture des CCD à Cl<sup>-</sup> et/ou K<sup>+</sup> → l'entrée d'ions à Cl<sup>-</sup> et/ou la sortie d'ions K<sup>+</sup> → hyperpolarisation (PPSI) → l'inhibition de N<sub>2</sub> d'où le relâchement du muscle antagoniste.</li>
+</ul></li>
+</ul>
+<!-- page 29 -->
+<p class="subhead t-navy"><span class="t-gold"><u>3<sup>ième</sup> sujet de révision</u></span></p>
+<p class="para"><b>1) a-</b></p>
+<ul class="dash">
+<li>Une seule stimulation en St portée sur le neurone <b>N<sub>1</sub></b> donne en O<sub>4</sub> une légère hyperpolarisation, il s'agit d'un PPSI. Donc il y a eu activation des deux synapses S<sub>1</sub> et S<sub>2</sub> d'où la stimulation est efficace et on enregistre en <b>O<sub>1</sub></b> un potentiel d'action.</li>
+<li>L'activation de la synapse S<sub>2</sub> montre l'arrivée d'un PA d'où on enregistre en <b>O<sub>3</sub></b> un PA qui résulte d'une sommation spatiale de trois PPSE suite à l'activation de trois synapses (<b>N<sub>1</sub>-N<sub>2</sub></b>), donc, on enregistre en <b>O<sub>2</sub></b> un PPSE.</li>
+<li>Le PPSI est non propageable d'où on enregistre en <b>O<sub>5</sub></b> un potentiel de repos (PR).</li>
+</ul>
+<!-- CROP: 4759 1 29 0.143 0.253 0.837 0.352 4759_p29_graphs -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p29_graphs.png" alt=""></figure>
+<p class="para"><b>b)</b> S<sub>1</sub> : est une synapse excitatrice. &nbsp;&nbsp;&nbsp; S<sub>2</sub> : est une synapse inhibitrice</p>
+<p class="para"><b>2)</b> a-</p>
+<table>
+<tr><th>Exploitation</th><th>Identification</th></tr>
+<tr><td>L'injection de T<sub>1</sub> au niveau de la fente synaptique de S<sub>1</sub> donne un PPSE d'amplitude 12 mV.</td><td>T<sub>1</sub> est un neurotransmetteur <b>excitateur</b>. Exemple l'<b>acétylcholine</b>.</td></tr>
+<tr><td>L'injection de T<sub>2</sub> au niveau de la fente synaptique de S<sub>2</sub> donne un PPSI d'amplitude 8 mV.</td><td>T<sub>2</sub> est un neurotransmetteur <b>inhibiteur</b>. Exemple le <b>GABA</b>.</td></tr>
+</table>
+<p class="para">b- <b>Exploitation :</b><br>
+T<sub>1</sub> active la synapse S<sub>1</sub> et n'a pas d'effet sur la synapse S<sub>2</sub> alors que T<sub>2</sub> active la synapse S<sub>2</sub> et n'a pas d'effet sur la synapse S<sub>1</sub>.<br>
+<b>Propriété :</b> le neurotransmetteur est <b>spécifique</b></p>
+<p class="para"><b>3) Analyse</b> :<br>
+<!-- PROOFREAD: 4759 part1 p29 — "dans la" / "fente" cut at the right edge of the scan -->
+Suite à l'injection de doses croissantes de la substance (X) de 5 ng.ml<sup>-1</sup> à 25 ng.ml<sup>-1</sup> dans la fente de S<sub>1</sub> suivie d'une stimulation de N<sub>1</sub>, le taux du neurotransmetteur libre dans la fente diminue progressivement de 9% jusqu'à s'annuler.</p>
+<ul class="dash">
+<li><b>Hypothèse1</b> : la substance (X) empêche l'exocytose des vésicules synaptiques.</li>
+<li><b>Hypothèse 2</b> : la substance (X) hydrolyse le neurotransmetteur libéré dans la fente.</li>
+</ul>
+<p class="para"><b>4)</b></p>
+<table>
+<tr><th>Comparaison</th><th>Mode d'action de la substance (X)</th></tr>
+<tr><td>La stimulation efficace de N<sub>1</sub> entraine l'exocytose du neurotransmetteur alors que l'exocytose ne se produit pas en absence de stimulation ou suite à la stimulation efficace de N1, précédée par l'injection de la substance (X) dans la fente de S<sub>1</sub>.</td><td>Hypothèse1 est vérifiée :<br>La substance (X) empêche l'exocytose des vésicules synaptiques.</td></tr>
+</table>
+<!-- page 30 -->
+<div class="exsub"><u>EXERCICE 1 : BAC SPRT PRIN 12</u></div>
+<p class="para"><b>1-</b> I<sub>1</sub> et I<sub>2</sub>, stimulations efficaces car il y a enregistrements de potentiels post synaptiques.<br>
+<b>2-</b> Identification des tracés<br>
+• Le tracé a est une légère dépolarisation d'amplitude 10 mv qui rapproche le neurone postsynaptique de la valeur seuil (-50mv) : c'est un PPSE<br>
+• L'enregistrement b est une hyperpolarisation d'amplitude 8 mv faisant éloigner le neurone postsynaptique de la valeur seuil : c'est un PPSI<br>
+<b>3-</b> Nature des synapses :<br>
+▪ La synapse A-M: synapse excitatrice.<br>
+▪ La synapse B-M: synapse inhibitrice.<br>
+<b>4-</b> Quelque soit la stimulation efficace I<sub>1</sub> ou I<sub>2</sub> portée sur la terminaison nerveuse A ou B, on enregistre au niveau du cône axonique (O<sub>3</sub>) un PPS qui n'arrive pas à O<sub>4</sub>.<br>
+<b>5-</b><br>
+<b>a-</b> *une seule stimulation I<sub>1</sub> =&gt; PPSE d'amplitude 10 mv, incapable d'engendrer un PA au niveau du cône axonique. D'où l'absence de PA au niveau de O<sub>4</sub>.<br>
+* deux stimulations I<sub>1</sub> efficaces, successives et rapprochées au niveau de A par sommation temporelle =&gt; Le PPSE global d'amplitude 20 mv atteint le seuil et déclenche la naissance d'un PA au niveau du cône axonique du neurone M. Ce PA se propage jusqu' à O<sub>4</sub>.<br>
+b- On stimule simultanément les neurones A et B de la manière suivante :<br>
+- 3 stimulations efficaces et rapprochées de A<br>
+- une seule stimulation efficace de B<br>
+Résultat : le PPS global serait d'amplitude +30 - 8 = 22 mv =&gt; dépolarisation obtenue par sommation spatio-temporelle de deux PPSE et d'un PPSI permettant l'atteinte de la valeur seuil -70+22 = -48 mV =&gt; naissance d'un PA au niveau de O<sub>3</sub> qui se propage jusqu'à O<sub>4</sub>.<br>
+c- Enregistrements :</p>
+<!-- CROP: 4759 1 30 0.056 0.432 0.893 0.726 4759_p30_enregistrements -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p30_enregistrements.png" alt=""></figure>
+<p class="para"><b>6-</b> Le neurone postsynaptique M a la capacité d'intégrer les informations qui lui parviennent des neurones présynaptiques par sommation temporelle et spatiale des PPS. Si la somme algébrique des PPS obtenue atteint le seuil au niveau du cône axonique, il y a naissance et propagation d'un message nerveux. Dans le cas contraire, aucun message ne prend naissance.</p>
+<!-- page 31 -->
+<div class="exsub"><span class="t-gold"><u>EXERCICE 2 : BAC SC PRIN 17</u></span></div>
+<p class="para">A/<br>
+<b>1)</b> Analyse :<br>
+<b>a-</b> Tracé a : l'amplitude du potentiel de récepteur augmente (de 10 à 47 mV) proportionnellement à l'intensité de l'étirement.<br>
+Propriété : le potentiel de récepteur est graduable.<br>
+<b>b-</b> Tracé b : l'amplitude du PA est constante égale à 100 mV à partir de l'étirement d'intensité E2.<br>
+Propriété : Le PA d'une fibre nerveuse obéit à la <b>loi du tout ou rien</b>.<br>
+<b>c-</b> Tracé c : la fréquence des PA est proportionnelle (de 2 à 12 PA) à l'intensité de l'étirement du FNM.<br>
+Propriété : le message nerveux est codé en modulation de fréquence de PA<br>
+<b>d-</b> Tout étirement est à l'origine d'un signal électrique.<br>
+Rôle du FNM : il convertit l'énergie du stimulus (étirement) en signal électrique (potentiel de récepteur) : c'est la <b>transduction sensorielle</b>.</p>
+<p class="para"><b>2)</b><br>
+<b>Analyse :</b><br>
+<b>En F1</b> :<br>
+- L'injection du neurotransmetteur X entraîne l'augmentation de la concentration intracellulaire en ions Na<sup>+</sup> (de 15 à 30 UI) mais elle est sans effet sur la concentration des ions K<sup>+</sup>.<br>
+- L'injection du neurotransmetteur Y est sans effet sur les concentrations intracellulaires des ions Na<sup>+</sup> et K<sup>+</sup><br>
+<b>En F2 :</b><br>
+- L'injection du neurotransmetteur X est sans effet sur les concentrations intracellulaires des ions Na<sup>+</sup> et K<sup>+</sup>.<br>
+- L'injection du neurotransmetteur Y entraîne la diminution de la concentration intracellulaire des ions K<sup>+</sup> (de 150 à 110 UI) mais elle est sans effet sur la concentration de Na<sup>+</sup>.</p>
+<p class="para"><b>a-</b> Le neurotransmetteur X se fixe sur des récepteurs spécifiques de la membrane de α1 provoquant l'ouverture des CCD aux ions Na<sup>+</sup> ; L'entrée de ces ions entraîne l'augmentation de leur concentration intracellulaire.<br>
+Le neurotransmetteur Y se fixe sur des récepteurs spécifiques de la membrane de α2 provoquant l'ouverture des CCD aux ions K<sup>+</sup> ; La sortie de ces ions entraîne la diminution de leur concentration intracellulaire.<br>
+<b>b-</b> Conséquences sur le potentiel de la membrane postsynaptique :<br>
+- En α1, l'entrée des ions Na<sup>+</sup> entraîne une <b>dépolarisation (PPSE).</b><br>
+- En α2, la sortie des ions K<sup>+</sup> entraîne une <b>hyperpolarisation (PPSI).</b><br>
+<b>c-</b> S1 : <b>Synapse excitatrice.</b><br>
+S2 : <b>Synapse inhibitrice.</b></p>
+<p class="para"><b>3)</b> Le message nerveux sensitif provenant du FNM du muscle extenseur étiré a une double action :<br>
+- Il active directement α1 et provoque la contraction du muscle extenseur.<br>
+- Il inhibe α2 par l'intermédiaire d'un interneurone inhibiteur et entraîne le relâchement du muscle fléchisseur. C'est l'<b>innervation réciproque</b>.</p>
+<!-- page 32 -->
+<div class="exsub"><span class="t-gold"><u>EXERCICE 3 BAC SPRT CONT 12</u></span></div>
+<p class="para"><b>1.</b><br>
+- La stimulation en « a » donne une légère dépolarisation qui rapproche le potentiel du motoneurone M de la valeur seuil : c'est un PPSE<br>
+- La stimulation en « b » donne une hyperpolarisation qui éloigne le potentiel du motoneurone M du seuil : c'est un PPSI.<br>
+<b>2-</b> La stimulation de la fibre afférente reliée au semi-tendineux a donné naissance, au niveau du cône axonique du motoneurone M, à un PPSE, donc le motoneurone M est relié au semi-tendineux<br>
+<b>3-</b><br>
+- Après stimulation en a, le message nerveux afférent atteint le motoneurone M après un retard de 0.6 ms. Sachant que le délai synaptique est de 0.5 ms =&gt; ce message a donc franchi une seule synapse.<br>
+- Après stimulation en b, le message nerveux afférent atteint le motoneurone M après un retard de 1.2 ms &gt; (0.5ms x 2). =&gt; ce message a donc franchi au moins deux synapses</p>
+<p class="para">4-</p>
+<!-- CROP: 4759 1 32 0.115 0.273 0.778 0.428 4759_p32_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p32_schema.png" alt=""></figure>
+<p class="para">Schéma représentant les circuits nerveux reliant les fibres afférentes au motoneurone M</p>
+<p class="para"><b>5-</b> L'étirement du semi-tendineux est converti par le fuseau neuromusculaire de ce muscle en message nerveux sensitif. Ce message est conduit par la fibre nerveuse afférente Ia vers la moelle épinière où il active directement le motoneurone M. un message nerveux efférent est alors conduit par ce motoneurone vers le semi-tendineux et entraîne sa contraction. En même temps, par l'intermédiaire d'un interneurone inhibiteur, le motoneurone qui innerve? Les fibres musculaires du quadriceps est inhibé d'où le relâchement du quadriceps.</p>
+<div class="exsub"><span class="t-gold"><u>EXERCICE 4 : BAC MATH PRIN 12</u></span></div>
+<p class="para"><b>1 &amp; 2 &amp; 3</b></p>
+<table>
+<tr><th>Oscilloscope</th><th>O<sub>1</sub></th><th>O<sub>2</sub></th><th>O<sub>3</sub></th><th>O<sub>4</sub></th></tr>
+<tr><td>Identification du PPS</td><td><b>PPSE</b></td><td><b>PPSE</b></td><td><b>PPSI</b></td><td><b>PPSE</b></td></tr>
+<tr><td>Amplitude</td><td><b>12 mv</b></td><td><b>18 mv</b></td><td><b>8 mv</b></td><td><b>10 mv</b></td></tr>
+</table>
+<table>
+<tr><th>Synapse</th><th>N<sub>1</sub>-P</th><th>N<sub>2</sub>-P</th><th>N<sub>3</sub>-P</th><th>N<sub>4</sub>-P</th></tr>
+<tr><td>Nature</td><td><b>Synapse excitatrice</b></td><td><b>Synapse excitatrice</b></td><td><b>Synapse inhibitrice</b></td><td><b>Synapse excitatrice</b></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+<table>
+<tr><th>Exp<br>.</th><th>Nature du potentiel obtenu en O<sub>5</sub></th><th>Justification (exiger le type de sommation et l'amplitude du potentiel global)</th></tr>
+<tr><td>5</td><td>PPSE</td><td>Etant donné qu'une excitation isolée portée en E<sub>1</sub> engendre au niveau du cône axonique (O<sub>5</sub>) un PPSE d'amplitude 8 mv (expérience 1); les deux excitations successives rapprochées engendrent donc un PPSE global d'amplitude 16 mv résultant d'une sommation temporelle de deux PPSE successifs (8+ 8 mv )</td></tr>
+<tr><td>6</td><td>PA</td><td>Le PPSE global déclenché au niveau du cône axonique est d'amplitude égale à 23 mv ; il résulte d'une sommation spatiale d'un PPSE d'amplitude 8 mv (identique à celui de expérience 1) et d'un PPSE d'amplitude 15 mv (identique à celui de l'expérience 2). Ce PPSE global dépasse le seuil d'où le PA obtenu en O<sub>5</sub></td></tr>
+<tr><td>7</td><td>PPSE</td><td>- l'excitation isolée en E<sub>1</sub> rapproche de 8 mv (expérience 1)<br>- l'excitation isolée en E<sub>3</sub> éloigne de 2 mv (expérience 3)<br>- l'excitation isolée en E<sub>4</sub> rapproche de 6 mv (expérience 4)<br>Les excitations simultanées en E<sub>1</sub>, E<sub>3</sub> et E<sub>4</sub> engendrent un PPSE global d'amplitude 12 mv résultant d'une sommation spatiale des deux PPSE (8+ 6 ) mv et du PPSI ( 2mv ),c'est-à-dire (12 = 8 + 6 – 2) mv</td></tr>
+<tr><td>8</td><td>PPSI</td><td>- l'excitation isolée en E<sub>3</sub> éloigne de 2 mv (expérience 3)<br>Les deux excitations successives portées en E<sub>3</sub> engendrent un PPSI global d'amplitude 4 mv résultant d'une sommation temporelle des deux PPSI (2+2)mv</td></tr>
+</table>
+<!-- page 33 -->
+<p class="para">4. Une excitation isolée portée en E<sub>4</sub> est à l'origine d'un PPSE d'amplitude 6 mv en O<sub>5</sub> (cône axonique)<br>
+Pour obtenir un PA à ce niveau, il faut un PPSE global d'amplitude ≥ 20 mv; pour cela il faut porter au minimum 4 excitations rapprochées en E<sub>4</sub> (4 x 6mv = 24 mv).</p>
+<p class="para">5- Le neurone P est capable d'intégrer toutes les informations nerveuses qui lui parviennent; c'est un neurone intégrateur.</p>
+<div class="exsub"><span class="t-gold"><b><u>EXERCICE 5 : BAC SC P 12</u></b></span></div>
+<p class="para">1°/<br>
+<b>La stimulation du neurone A entraîne une dépolarisation de 15 mv.</b><br>
+<b>Propriété <u>: La fibre nerveuse est excitable (répond à une stimulation).</u></b><br>
+2°/<br>
+<b><u>Analyse :</u></b><br>
+Exp.1 : La stimulation d'intensité I<sub>1</sub> portée sur le neurone A permet l'enregistrement :</p>
+<ul class="b">
+<li>d'une dépolarisation n'atteignant pas le seuil de -50 mv en O<sub>1</sub>.</li>
+<li>d'un PR en O<sub>2</sub> et un PR en O<sub>3</sub>.</li>
+</ul>
+<p class="para">Exp.2 : La stimulation d'intensité I<sub>2</sub> &gt; I<sub>1</sub> portée en A permet d'enregistrer :</p>
+<ul class="b">
+<li>une dépolarisation en O<sub>1</sub> qui atteint le seuil de -50 mv et déclenche un PA.</li>
+<li>une dépolarisation postsynaptique en O<sub>2</sub> (un PPSE).</li>
+<li>un PR en O<sub>3</sub>.</li>
+</ul>
+<p class="para"><b><u>Déductions :</u></b><br>
+a. Propriété de la fibre nerveuse : Elle a un seuil de potentiel nécessaire pour le déclenchement de PA.<br>
+b. La synapse S<sub>1</sub> est excitatrice puisqu'on enregistré un PPSE en O<sub>2</sub>.<br>
+3°/ <u>Analyse des résultats de l'expérience 3 :</u><br>
+▪ Les 2 stimulations d'intensité I<sub>2</sub> très rapprochées en A, sont à l'origine de 2 PA enregistrés en O<sub>1</sub><br>
+▪ En O<sub>2</sub>, on enregistre un PPSE global qui atteint le seuil et qui résulte de la sommation temporelle des 2 PPSE successifs ; ce PPSE est à l'origine du PA.<br>
+▪ Le tracé C<sub>3</sub> obtenu en O<sub>3</sub> représente un PPSE d'amplitude environ 13 mv.<br>
+<u>Déduction : La synapse S<sub>2</sub> est excitatrice</u>.<br>
+4°/ Explication des résultats de l'expérience 4 :<br>
+Le tracé D<sub>2</sub> enregistré en O<sub>2</sub> suite à 2 stimulations simultanées de A et B d'intensité I<sub>2</sub> est un PPSE global d'amplitude 5 mv; cette diminution d'amplitude s'explique par la sommation spatiale d'un PPSE et d'un PPSI.<br>
+<u>Déductions :</u></p>
+<ul class="dash">
+<li>➢ Le neurone C est un neurone intégrateur.</li>
+</ul>
+<p class="para"><b>5°/ Dans les conditions expérimentales (expérience 4), le message nerveux se propage dans les deux sens d'où l'obtention du tracé D<sub>3</sub></b></p>
+<div class="exsub"><u>EXERCICE 6 : BAC M CON 12</u></div>
+<p class="para"><b>1-</b></p>
+<table>
+<tr><th>Oscilloscope.</th><th>tracé obtenu</th><th>Justification</th></tr>
+<tr><td><b>O<sub>1</sub></b></td><td><b>d</b></td><td>Plusieurs excitations efficaces rapprochées en S déclenchent un train de PA propageables qui seraient enregistrés en O<sub>1</sub></td></tr>
+<tr><td><b>O<sub>2</sub></b></td><td><b>b</b></td><td>Les PA atteignant l'interneurone inhibiteur I<sub>2</sub> sont à l'origine de PPSI successifs qui s'additionnent et engendrent au niveau du cône axonique du motoneurone du muscle extenseur (M<sub>2</sub>) un PPSI global qui éloigne le potentiel membranaire du seuil</td></tr>
+<tr><td><b>O<sub>3</sub></b></td><td><b>e</b></td><td>Les PA atteignant l'interneurone excitateur I<sub>1</sub> sont à l'origine de PPSE successifs qui s'additionnent et engendrent au niveau du cône axonique du motoneurone du muscle fléchisseur (M<sub>1</sub>) un PPSE global qui atteint le seuil suivi d'un PA</td></tr>
+<tr><td><b>O<sub>4</sub></b></td><td><b>c</b></td><td>Le PA prenant naissance au niveau du cône axonique du motoneurone innervant le muscle M<sub>1</sub> se propage; il est alors enregistré au niveau de l'axone moteur</td></tr>
+<tr><td><b>O<sub>5</sub></b></td><td><b>a</b></td><td>Le PPSI global déclenché au niveau du cône axonique du motoneurone innervant le muscle M<sub>2</sub> ne déclenche pas un PA d'où le PR enregistré au niveau de l'axone moteur</td></tr>
+</table>
+<p class="para"><b>2-</b></p>
+<p class="para"><b><span class="t-blue">Le message nerveux sensitif (déclenché en S) a une double action:<br>
+<u>- il active</u> le motoneurone du muscle fléchisseur M<sub>1</sub> (tracé c) par l'intermédiaire de l'interneurone excitateur I<sub>1</sub> et entraîne alors sa contraction<br>
+<u>- il inhibe</u> le motoneurone du muscle M<sub>2</sub> (tracé a) par l'intermédiaire de l'interneurone inhibiteur I<sub>2</sub> (tracé b) et entraîne alors le relâchement de ce muscle.</span></b></p>
+<!-- page 34 -->
+<p class="para"><b><span class="t-blue">La contraction du muscle fléchisseur M1est accompagnée du relâchement du muscle antagoniste (le muscle extenseur M<sub>2</sub>); cette coordination de l'activité de ces deux muscles antagonistes s'explique par l'innervation réciproque.</span></b></p>
+<div class="exsub"><span class="t-gold"><u>EXERCICE 7 ; bac sc cont 2009</u></span></div>
+<p class="para"><b>1.</b></p>
+<table>
+<tr><th>Enregistrement 1</th><th>Enregistrement 2</th><th>Enregistrement 3</th></tr>
+<tr><td>Pas de message nerveux (pas de PA)</td><td>message nerveux avec des PA de même amplitude et de fréquence faible</td><td>message nerveux avec des PA de même amplitude et de fréquence plus élevée que celle de l'enregistrement 2</td></tr>
+</table>
+<p class="para"><b>Déductions:</b><br>
+<b>Propriétés fondamentales du message nerveux:</b><br>
+<b>▪ loi du tout ou rien</b><br>
+<b>▪ codage du message nerveux en modulation de fréquence</b></p>
+<p class="para">- <b>Rôle du fuseau neuromusculaire (FNM):</b><br>
+<b>▪ le FNM convertit l'énergie du stimulus mécanique en message nerveux (énergie électrique) : (ou il réalise la transduction sensorielle)</b></p>
+<p class="para"><b>2-</b></p>
+<p class="para"><b>a)</b></p>
+<ul class="b">
+<li>Enregistrement en R<sub>1</sub>: PPSE → dépolarisation d'amplitude 10 mv</li>
+<li>Enregistrement en R<sub>2</sub>: PPSI → hyperpolarisation d'amplitude 5 mv</li>
+</ul>
+<p class="para"><b>b)</b></p>
+<ul class="b">
+<li>au niveau de N<sub>1</sub>: synapse excitatrice</li>
+<li>au niveau de N<sub>2</sub>: synapse inhibitrice</li>
+</ul>
+<p class="para"><b>c)</b> L<sub>1</sub> = 0,8 ms (= 0,3 +0,5 ms) → un seul délai synaptique<br>
+L<sub>2</sub> = 1,3 ms (= 0,3 + 2 x 0,5 ms) →deux délais synaptiques<br>
+<u>Déductions:</u></p>
+<ul class="b">
+<li>entre S et N<sub>1</sub>, il y a une seule synapse</li>
+<li>entre S et N<sub>2</sub>, il y a deux synapses</li>
+</ul>
+<div class="exsub"><span class="t-gold"><b>EXERCICE 9</b></span></div>
+<p class="para">1.</p>
+<table>
+<tr><th>Conditions expérimentales</th><th>Analyse</th><th>Déduction</th></tr>
+<tr><td>Stimulation du bouton B<sub>1</sub></td><td>Enregistrement d'un PPSE qui atteint -60 mv</td><td>La synapse S<sub>1</sub> est excitatrice</td></tr>
+<tr><td>Stimulation du bouton B<sub>2</sub></td><td>Enregistrement d'un PPSI qui atteint -78 mv</td><td>La synapse S<sub>2</sub> est inhibitrice</td></tr>
+</table>
+<p class="para">2- (analyse : 0,25 x 4 + déduction : 0,2 5)</p>
+<table>
+<tr><th colspan="2">Etats structuraux de la synapse</th><th>Avant la stimulation de B<sub>3</sub></th><th>Après la stimulation de B<sub>3</sub></th></tr>
+<tr><td rowspan="2"><b>Analyse comparative</b></td><td><b>Nombre des vésicules dans le bouton synaptique</b></td><td><b>bouton synaptique riche en vésicules synaptiques</b></td><td><b>bouton synaptique pauvre en vésicules synaptiques</b></td></tr>
+<tr><td><b>Etat des vésicules dans le bouton synaptique</b></td><td><b>Toutes vésicules synaptiques sont fermées</b></td><td><b>Certaines vésicules synaptiques sont en exocytose</b></td></tr>
+<tr><td><b>Déduction</b></td><td colspan="3"><b>l'existence des vésicules synaptiques <u>en exocytose</u> suite à l'arrivée d'un potentiel d'action présynaptique prouve qu'il y a libération d'une substance chimique (neurotransmetteur) dans la fente synaptique, qui assure la transmission du message nerveux</b></td></tr>
+</table>
+<p class="para">3-<br>
+a- (0,75point + 0,75 point)</p>
+<table>
+<tr><th>Explication de l'enregistrement obtenu en R<sub>1</sub></th><th>Explication de l'enregistrement obtenu en R<sub>3</sub></th></tr>
+<tr><td>Le PPSR a une amplitude égale à la somme de deux PPSE successifs provenant de la même synapse excitatrice S<sub>1</sub> (10 mv +10 mv) donc c'est PPSE qui atteint le seuil (-50 mv) et engendre un potentiel d'action postsynaptique <b>: il s'agit d'une sommation temporelle</b></td><td>Le PPSR a une amplitude égale à la somme algébrique de trois PPSE unitaires provenant de trois synapses excitatrices issues d'un même neurone présynaptique N<sub>1</sub> donc c'est PPSE qui atteint le seuil (-50 mv) et engendre un potentiel d'action postsynaptique <b>: il s'agit d'une sommation spatiale</b></td></tr>
+</table>
+<p class="para">b- (0,25 x 2)</p>
+<table>
+<tr><th>Identification du type du neurone N<sub>1</sub></th><th>Justification</th></tr>
+<tr><td>Le neurone N<sub>1</sub> est excitateur</td><td>Le PPSR enregistré au niveau du cône axonique du neurone N<sub>2</sub> suite à l'activation du neurone N<sub>1</sub> est un PPSE</td></tr>
+</table>
+<!-- page 35 -->
+<p class="para">c-(0,25 x 3)</p>
+<table>
+<tr><th>Comparaison des enregistrements obtenus en R<sub>1</sub> et R<sub>2</sub></th><th>Déduction</th></tr>
+<tr><td>- l'enregistrement obtenu en R<sub>1</sub> (cône axonique de N<sub>1</sub>) est un potentiel d'action d'amplitude 100 mv<br>- l'enregistrement obtenu en R<sub>2</sub> (axone de N<sub>1</sub>) est un potentiel d'action d'amplitude 100 mv</td><td>Le message nerveux (PA) se propage le long du neurone en gardant la même amplitude.</td></tr>
+</table>
+<p class="para">d-(0,25 x 3)</p>
+<table>
+<tr><th>Analyse</th><th>Déduction</th></tr>
+<tr><td>- avant la micro -injection d'un liquide non conducteur au niveau d'un nœud de Ranvier de l'axone du neurone N<sub>1</sub> on enregistre au niveau de R<sub>2</sub> un potentiel d'action<br>- après la micro -injection d'un liquide non conducteur au niveau d'un nœud de Ranvier de l'axone du neurone N<sub>1</sub> on enregistre au niveau de R<sub>2</sub> un potentiel de repos (absence d'un PA)</td><td>Le message nerveux (PA) se propage le long d'une <b>fibre myélinisée</b> (axone de N<sub>1</sub>) en sautant d'un nœud de Ranvier au nœud voisin : c'est <b>propagation saltatoire</b></td></tr>
+</table>
+<p class="para"><b>e- (1,25 point)</b></p>
+<table>
+<tr><th>Canaux ioniques</th><th>CVD</th><th>CCD</th></tr>
+<tr><td>Nature chimique</td><td colspan="2">Protéine</td></tr>
+<tr><td>Localisation</td><td><ul class="b"><li>cône axonique</li><li>nœuds de Ranvier</li><li>boutons synaptiques</li></ul></td><td>Membrane postsynaptique</td></tr>
+<tr><td>condition de fonctionnement (ouverture)</td><td>Variation du potentiel de membrane :<ul class="b"><li>CVD Na+: -50mv</li><li>CVD K+: +30mv</li><li>CVD Ca<sup>2+</sup> : arrivée d'un PA</li></ul></td><td>Fixation d'un neurotransmetteur sur les récepteurs spécifiques</td></tr>
+<tr><td>Rôle physiologique</td><td>* Naissance et propagation du message nerveux.<br>* Entrée des ions Ca<sup>2</sup>+</td><td>Transmission synaptique du message nerveux</td></tr>
+</table>
+<div class="exsub"><span class="t-gold"><b><u>Exercice 10 Bac SC cont 2019</u></b></span></div>
+<p class="para"><b>1)</b><br>
+<b>a-</b><br>
+<u>▪ Avant la stimulation</u><br>
+Phase A : la d.d.p membranaire -70 mV c'est le potentiel de repos.<br>
+<u>▪ A la suite de la stimulation :</u><br>
+Phase B : la d.d.p passe de -70 à +30 mV : c'est la phase de dépolarisation<br>
+Phase C : la d.d.p passe de +30 à -70 mV : C'est la phase de repolarisation<br>
+Phase D : la d.d.p continue à diminuer : C'est la phase d'hyperpolarisation<br>
+<b>b-</b><br>
+• Au cours de la phase A, la concentration intracellulaire des ions Na<sub>+</sub> est faible et stable, et la concentration intracellulaire des ions K<sub>+</sub> est élevée et stable.<br>
+• Au cours de la phase B, la concentration intracellulaire des ions Na<sub>+</sub> augmente et celle des ions K<sub>+</sub> reste élevée et stable.<br>
+• Au cours de la phase C, la concentration intracellulaire des ions Na<sub>+</sub> diminue et celle des ions K<sub>+</sub> diminue aussi.<br>
+• Au cours de la phase D, la concentration intracellulaire des ions Na<sub>+</sub> revient à son état initial et se stabilise, celle des ions K<sub>+</sub> augmente pour revenir à son état initial.</p>
+<p class="para"><b>2)</b><br>
+• L'addition de TTX provoque l'arrêt du flux entrant des ions Na<sub>+</sub> et du flux sortant des ions K<sub>+</sub> donc la TTX bloque les canaux voltage dépendants aux ions Na<sub>+</sub><br>
+• L'injection de TEA n'a aucun effet sur le flux entrant des ions Na<sub>+</sub> et provoque l'arrêt du flux sortant des ions K<sub>+</sub> donc la TEA bloque les canaux voltage dépendants aux ions K<sub>+</sub>.</p>
+<p class="para"><b>3)</b><br>
+- Le mécanisme ionique à l'origine de la phase de dépolarisation (phase B) : suite à la stimulation S, le potentiel de la membrane atteint le seuil de -50 mV ce qui déclenche l'ouverture des canaux voltage dépendants aux ions Na<sub>+</sub> d'où l'entrée de ces ions à l'intérieur de l'axone ce qui provoque la dépolarisation jusqu'à +30 mV.</p>
+<p class="para">- Le mécanisme ionique à l'origine de la phase de repolarisation (phase C) : à +30 mV les canaux voltage dépendants aux ions Na<sub>+</sub> se ferment et les canaux voltage dépendants aux ions K<sub>+</sub> s'ouvrent ce qui provoque la sortie de ces ions d'où le retour de la ddp au PR.</p>
+<!-- page 36 -->
+<div class="exsub"><span class="t-gold"><u>EXERCICE 11 non corrigé</u></span></div>
+<div class="exsub"><span class="t-gold"><b><u>EXERCICE 12</u></b></span></div>
+<p class="para">1) A la suite de l'étirement du muscle on enregistre au niveau de :</p>
+<p class="para">- O<sub>1</sub> un train de trois potentiels d'action,</p>
+<p class="para">- O<sub>2</sub> un PPSE global qui dépasse le seuil</p>
+<p class="para">- O<sub>4</sub> un potentiel de repos.</p>
+<p class="para">a- Le FNM convertit l'énergie mécanique de l'étirement en signaux électriques : <b><u>c'est la transduction sensorielle.</u></b></p>
+<p class="para">b- Le PPSE né au niveau du corps cellulaire de motoneurone α1 donne naissance à des PA qui se sont transmis au muscle M<sub>1</sub> entrainant sa contraction. Le muscle M<sub>2</sub> est au repos.</p>
+<p class="para">2) Suite aux stimulations efficaces et rapprochées au niveau de la fibre sensitive Ia2, on enregistre en O<sub>2</sub> un PPSI après un temps de latence L1 de <b>1,2 ms</b> et en O<sub>3</sub> un PPSE après un temps de latence de <b>0,7ms</b>.</p>
+<p class="para">a- la synapse mise en jeu au niveau du motoneurones α1 est inhibitrice. La synapse mise en jeu au niveau du motoneurones α2 est excitatrice.</p>
+<p class="para">b- L1 = 1,2 ms (0,2 + 2x0,5) 2 délais synaptiques d'où entre le neurone sensitif de M<sub>2</sub> et le neurone moteur α1 de M<sub>1</sub> il existe deux synapses L2 = 0,7 ms (0,2 + 0,5) : un seul délai synaptique. D'où entre le neurone sensitif de M<sub>2</sub> et le neurone moteur α2 de M<sub>2</sub> il existe une seule synapse</p>
+<p class="para"><b>c-</b></p>
+<!-- CROP: 4759 1 36 0.06 0.437 0.643 0.585 4759_p36_c -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p36_c.png" alt=""></figure>
+<p class="para"><b>d-</b> M<sub>1</sub> se relâche ; M<sub>2</sub> se contracte</p>
+<p class="para">3.</p>
+<!-- CROP: 4759 1 36 0.102 0.612 0.764 0.84 4759_p36_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p36_schema.png" alt=""></figure>
+<!-- page 37 -->
+<div class="exsub"><span class="t-gold"><b><u>Exercice 13 série 8'</u></b></span></div>
+<p class="para">1) a- <b><span class="t-red">Exploitation</span></b> : Suite à la stimulation simultanée des deux terminaisons axoniques A et B, on obtient au niveau de O<sub>1</sub> une dépolarisation d'amplitude 100mV.<br>
+Le tracé 1 est donc <b>un PA</b>.<br>
+<b><span class="t-red">Exploitation</span></b> : Suite à l'application de deux stimulations simultanées de la terminaison axonique de B et de la collatérale de C, on obtient une dépolarisation d'amplitude 5mV inférieur au seuil (20 mV).<br>
+Le tracé 2 est donc un <b>PPSE</b>.<br>
+b- <b><span class="t-red">Exploitation</span></b> : Le tracé 1 est obtenu suite à la <b>sommation spatiale de deux PPSE</b> d'amplitudes respectives 10 mV et 15 mV dont la résultante atteignant le seuil, <b>déclenche un PA.</b><br>
+c-Exploitation : Les stimulations en A et en B donnent chacune au niveau de O<sub>1</sub> une dépolarisation.<br>
+<b>Les synapses A-C et B-C sont donc excitatrices.</b><br>
+2/</p>
+<table>
+<tr><th>Exp</th><th>enregist</th><th>Explication</th></tr>
+<tr><td rowspan="2">a-Stimulation efficace de la collatérale C</td><td>Un PPSI</td><td>-Stimulation en B engendre un PPSE d'amplitude 15mV -Stimulation simultanée en B et au niveau de la collatérale de C engendre un PPSE d'amplitude 5mV, Donc, la stimulation au niveau de la collatérale de C engendre un PPSI d'amplitude : 10 mV = 5-15 mV.</td></tr>
+<tr><td>Un PA</td><td>- La stimulation de la collatérale C, engendre un PA qui peut se propager en retour vers le cône axonique (propagation bidirectionnelle dans le cas expérimental).</td></tr>
+<tr><td rowspan="2">b-Stimulation efficace et simultanée en A, en B et au niveau de la collatérale de C</td><td>Un PPSE</td><td>-Stimulation en A : PPSE d'amplitude 10 mV -Stimulation en B : PPSE d'amplitude 15 mV -Stimulation au niveau de la collatérale de C : PPSI d'amplitude 10 mV La résultante de ces stimulations est un PPSE d'amplitude : 15mV = 10+15-10</td></tr>
+<tr><td>Un PA</td><td>- La stimulation de la collatérale C, engendre un PA qui peut se propager en retour vers le cône axonique (propagation bidirectionnelle dans le cas expérimental).</td></tr>
+</table>
+<p class="para"><span class="t-red"><u>3) Déduction:</u></span> La synapse collatérale de C-C est inhibitrice.<br>
+4) - Si le PPS global au niveau du cône axonique atteint le seuil, il déclenche un PA propageable le long du neurone postsynaptique C enregistré au niveau de O<sub>2</sub> : Expérience 3.<br>
+- Si le PPS global n'atteint pas le seuil, il s'annule dans l'axone, ce qui explique l'obtention d'un PR au niveau de O<sub>2</sub> : Expérience 4.<br>
+5) <span class="t-red">Rôle du neurone C</span> : Le neurone C est capable d'intégrer à tout instant des informations qui lui parviennent des neurones présynaptiques par sommation spatiale, il a donc un rôle intégrateur.</p>
+<div class="exsub"><span class="t-gold"><b><u>EXERCICE 14 bac math cont 13</u></b></span></div>
+<p class="para"><b>1- a)</b></p>
+<ul class="b">
+<li>Tracé obtenu en O1 : <b>un PA</b></li>
+<li>Tracé obtenu en O2 : <b>Un PPSE</b></li>
+<li>Tracé obtenu en O4 : <b>Un PPSI</b></li>
+</ul>
+<p class="para">b) <b>Tracé obtenu en O3 : ♣</b><br>
+Stimulation efficace St1 → PA propageable →naissance de 3 PPSE au niveau de N2 →sommation spatiale des 3 PPSE au niveau du cône axonique de N2 →PPSE globale ≥ seuil →naissance d'un PA en O<b>3</b><br>
+<b>Tracé obtenu en O5 :</b> Le PA enregistré en O3 se propage le long du neurone N2 → naissance de 3 PPSI au niveau du neurone N3 →sommation spatiale des 3 PPSI →PPSI globale d'amplitude 7mv en O5.<br>
+<b>c)</b></p>
+<ul class="b">
+<li>Neurone N1 : <b>neurone excitateur</b></li>
+<li>Neurone N2 : <b>neurone inhibiteur</b></li>
+</ul>
+<p class="para"><b>2-</b> Nature de la réponse : <b>un PA</b> &nbsp;&nbsp;&nbsp; <b>Justification :</b><br>
+- Une stimulation isolée portée en St2 engendre en O2 un PPSE d'amplitude 10 mv ; celui-ci se propage et diminue d'amplitude ; d'où l'enregistrement d'un PPSE d'amplitude 7 mv enregistré en O3 (au niveau du cône de N2)<br>
+3 stimulations rapprochées en St2 seront à l'origine de 3 PPSE successifs d'amplitude 7 mv chacun ; la sommation temporelle de ces 3 PPSE engendre au niveau du cône de N2 un PPSE global d'amplitude 21 mv et déclenche la naissance d'un PA.</p>
+<!-- page 38 -->
+<p class="para"><b>3-</b> Le neurone N2 a un rôle intégrateur, il est capable d'intégrer les informations qui lui parviennent du neurone présynaptique N1 par sommation spatiale et temporelle. Si la somme obtenue est égale ou supérieure au seuil, il y a naissance d'un PA propageable, sinon, N2 reste au repos</p>
+<div class="exsub"><span class="t-gold"><b>EXERCICE 15 : bac sc prin 14</b></span></div>
+<p class="para"><b>1.</b> Exploitation :</p>
+<ul class="dash">
+<li>E1 a engendré en O1 un potentiel de récepteur inférieur au seuil qui diminue d'amplitude pour donner un potentiel local en O2 et un PR en O3.</li>
+<li>E2 a engendré en O1 un potentiel de récepteur supérieur au seuil (-50 mv) ; il a donné un PA en O2 puis un PA en O3 qui sont de même amplitude.</li>
+<li>E3 a engendré en O1 un potentiel de récepteur plus ample que le précédent provoquant en O2 et O3 un train de PA (3 PA) de même amplitude.</li>
+</ul>
+<table>
+<tr><th>Propriétés du potentiel du récepteur</th><th>Propriété du PA</th><th>Propriétés du message nerveux</th></tr>
+<tr><td><ul class="dash"><li>Graduable (son amplitude varie en fonction de l'intensité de la stimulation)</li><li>A décrément spatial (son amplitude diminue en s'éloignant du point de sa naissance).</li></ul></td><td><ul class="dash"><li>Obéit à la loi de tout ou rien.</li><li>Propageable avec amplitude constante.</li></ul></td><td>Le message nerveux est codé en modulation de fréquences de potentiel d'action.</td></tr>
+</table>
+<ul class="dash">
+<li>Le fuseau neuromusculaire convertit l'énergie de l'étirement en signaux électriques (transduction sensorielle).</li>
+</ul>
+<p class="para"><b>2.</b></p>
+<p class="para"><b>a.</b> Suite à l'étirement E3, on obtient en O4 un PPSE global obtenu par la sommation de 3 PPSE individuels ; ce PPSE global permet d'atteindre le seuil de déclenchement de PA (-50 mv).<br>
+<u>Déduction :</u> S1 est une synapse excitatrice.<br>
+<b>b.</b> Explication : suite à l'étirement E3, le train de PA est transmis à travers la synapse S2 d'où la naissance au niveau du corps cellulaire de l'interneurone d'un PPSE global par sommation temporelle de 3 PPSE ; ce PPSE global dépasse le seuil et donne au niveau du cône axonique deux PA qui se propagent et se transmettent à travers la synapse S3 et provoquent la naissance d'un PPSI global par sommation de deux PPSI (tracé b).<br>
+<b>c.</b> S2 : synapse excitatrice.<br>
+S3 : synapse inhibitrice.</p>
+<p class="para"><b>3.</b></p>
+<p class="para"><b>a.</b> Enregistrements obtenus à la suite d'un étirement du fuseau neuromusculaire d'intensité E3.</p>
+<!-- CROP: 4759 1 38 0.23 0.695 0.867 0.877 4759_p38_O6_O7 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p38_O6_O7.png" alt=""></figure>
+<p class="para"><b>b.</b> L'étirement E3 provoque la contraction du muscle extenseur et le relâchement du muscle fléchisseur.</p>
+<!-- page 39 -->
+<div class="exsub"><span class="t-gold"><b>EXERCICE 16 : bac sprt prin14 non corrigé</b></span></div>
+<div class="exsub"><span class="t-gold"><b>EXERCICE 17 : bac MC.</b></span> <b><span class="t-blue">24</span></b></div>
+<p class="para"><b>1)</b> ① : Gaine de myéline &nbsp;&nbsp; ②: Gaine de Schwann &nbsp;&nbsp; ③ : Nœud ou étranglement de Ranvier &nbsp;&nbsp; ④ Noyau de la cellule de Schwann</p>
+<p class="para"><b>2)</b> Les deux fibres sont localisées dans le système nerveux périphérique (nerf rachidien).</p>
+<p class="para"><b>3)</b> a- F a réagi aux stimulations S<sub>1</sub> et S<sub>4</sub>.<br>
+b- F n'a pas réagi aux stimulations S<sub>2</sub> et S<sub>3</sub>, car aux moments de ces stimulations, la fibre F est en période réfractaire.</p>
+<p class="para"><b>4)</b></p>
+<table>
+<tr><th colspan="2">Fibres<br>Conduction du message nerveux</th><th>F</th><th>F'</th></tr>
+<tr><td colspan="2">Deux points communs</td><td colspan="2">- unidirectionnelle<br>- assurée par des courants locaux</td></tr>
+<tr><td rowspan="2">Différences</td><td>Vitesse de conduction</td><td>élevée</td><td>faible</td></tr>
+<tr><td>Mode de conduction</td><td>saltatoire</td><td>de proche en proche</td></tr>
+</table>
+<div class="exsub"><span class="t-gold"><b><u>EXERCICE 18 : bac sc. Pri 15</u></b></span></div>
+<!-- PROOFREAD: 4759 part1 p39 — a line at the top of the pasted Exercice 18 correction is cut off by the scan edge (only the bottoms of the letters show, "… (5 points)"?); not typed -->
+<p class="para"><b>1)</b><br>
+<b>a-</b></p>
+<ul class="b">
+<li><b>Le document 3 montre un PPSI d'amplitude 5 mV obtenu suite à la stimulation St<sub>1</sub> portée sur N<sub>1</sub> ; cette réponse peut être obtenue suite à l'arrivée d'un PA au niveau de la terminaison nerveuse de N<sub>3</sub> faisant synapse avec N<sub>4</sub>.</b><br>
+<b>Donc la synapse N<sub>1</sub>-N<sub>3</sub> est une synapse excitatrice.</b></li>
+<li>La stimulation efficace St<sub>1</sub>, portée au niveau de N<sub>1</sub> + les deux St<sub>2</sub> successives et rapprochées, portées au niveau de N<sub>2</sub>, assurent la contraction du muscle ; il y a eu naissance d'un PA au niveau du cône axonique de N<sub>4</sub> ; ce PA se propage le long de l'axone de N<sub>4</sub> ; il atteint le muscle M d'où sa contraction.</li>
+</ul>
+<p class="para">Etant donnée que la synapse N<sub>3</sub>-N<sub>4</sub> est inhibitrice (document 3), on peut déduire que la <b>synapse N<sub>2</sub>-N<sub>4</sub> est une synapse excitatrice.</b></p>
+<p class="para">b- Propriétés du message nerveux :<br>
+<b>▪ Propageable</b><br>
+<b>▪ Transmissible.</b></p>
+<p class="para"><b>2) Le neurone N<sub>4</sub> joue un rôle intégrateur par sommation spatio-temporelle de deux PPSE provenant de l'afférence synaptique N<sub>2</sub> (sommation temporelle) et d'un PPSI provenant de l'afférence synaptique N<sub>3</sub>, la résultante est un PPS global qui atteint le seuil de dépolarisation de la membrane de N<sub>4</sub> conduisant à la naissance d'un PA propageable le long de l'axone de N<sub>4</sub>, atteignant le muscle et assurant sa contraction.</b></p>
+<div class="exsub"><span class="t-gold"><b><u>EXERCICE 19 : bac MP15</u></b></span></div>
+<p class="para">1) a-</p>
+<ul class="dash">
+<li>Suite à la stimulation I<sub>1</sub> :</li>
+</ul>
+<table>
+<tr><th></th><th></th><th>Identification</th><th>Justification</th></tr>
+<tr><td rowspan="2">Enregistrement en :</td><td>O<sub>1</sub></td><td>Potentiel local</td><td>Le potentiel membranaire passe de – 70 mV (état de repos) à – 60 mV : c'est une dépolarisation locale.</td></tr>
+<tr><td>O<sub>2</sub><br>O<sub>3</sub><br>O<sub>4</sub></td><td>PR</td><td>– 70 mV est la valeur du potentiel membranaire de la fibre au repos.</td></tr>
+</table>
+<ul class="dash">
+<li>Suite à la stimulation I<sub>2</sub> :</li>
+</ul>
+<table>
+<tr><th></th><th></th><th>Identification</th><th>Justification</th></tr>
+<tr><td rowspan="2">Enregistrement en :</td><td>O<sub>1</sub><br>O<sub>3</sub><br>O<sub>4</sub></td><td>PA</td><td>Le potentiel membranaire passe de – 70 mV (état de repos) à +30 mV</td></tr>
+<tr><td>O<sub>2</sub></td><td>PPSE</td><td>Le potentiel membranaire passe de – 70 mV (état de repos) à – 58 mV</td></tr>
+</table>
+<!-- page 40 -->
+<p class="para"><b>b-</b> Entre N<sub>1</sub> et N<sub>2</sub> se trouve <b>un seul bouton synaptique</b>. La stimulation efficace en E active le seul bouton synaptique qui se trouve entre N<sub>1</sub> et N<sub>2</sub> ce qui donne naissance au niveau du cône axonique de N<sub>2</sub> à un PPSE d'amplitude 12 mV (inférieur au seuil).<br>
+La stimulation efficace en E active les <b>deux boutons synaptiques</b> entre N<sub>1</sub> et N<sub>3</sub> et donne naissance par <b>sommation spatiale</b> à un PPSE global atteignant le seuil et déclenchant un PA au niveau du cône axonique du neurone N<sub>3</sub>.</p>
+<p class="para"><b>2)</b><br>
+<b>a-</b><br>
+Au niveau du cône axonique de N<sub>3,</sub> une seule stimulation d'intensité I<sub>2</sub> en E donne naissance à un PA (expérience 1) alors que deux stimulations très rapprochées d'intensité I<sub>2</sub> engendrent un PPSE inférieur au seuil et d'amplitude 18 mV (expérience 2).</p>
+<p class="para">Explication :<br>
+•Les deux stimulations rapprochées en E activent la synapse excitatrice N<sub>1</sub>-N<sub>2</sub> et donnent 2 PPSE qui par sommation temporelle au niveau du cône axonique de N<sub>2</sub> engendre un PPS global atteignant le seuil et donnant naissance à un PA propageable le long de N<sub>2</sub> ; ce PA active la synapse N<sub>2</sub>-N<sub>3</sub> et entraine la naissance d'un PPSI en N<sub>3</sub>.<br>
+<!-- PROOFREAD: 4759 part1 p40 — "donne un" : the last letter is cut by the edge of the pasted scan (looks like "ur") -->
+•Au niveau du N<sub>3</sub>, la somme algébrique des PPSE, dus à l'activation des synapses N<sub>1</sub>-N<sub>3</sub>, et du PPSI, dû à l'activation de la synapse N<sub>2</sub>-N<sub>3</sub> ; donne un PPSE global de 18 mV (document 3) qui reste inférieur au seuil et incapable d'engendrer la naissance d'un PA en N<sub>3</sub>.</p>
+<p class="para"><b>b-</b> La synapse N<sub>2</sub>-N<sub>3</sub> est une synapse inhibitrice.</p>
+<div class="exsub"><span class="t-gold"><u>EXERCICE 20 : bac sport P18</u></span></div>
+<p class="para">1) a- identification</p>
+<table>
+<tr><th></th><th>reconnaissance</th><th>Justification</th></tr>
+<tr><td>Tracé a</td><td>PA</td><td>Dépolarisation d'amplitude 100 mV</td></tr>
+<tr><td>Tracé b</td><td>Potentiel de récepteur (ou local)</td><td>Dépolarisation dépassant -50 mV</td></tr>
+<tr><td>Tracé c</td><td>PPSE</td><td>Dépolarisation de la membrane postsynaptique n'atteignant pas -50 mV</td></tr>
+</table>
+<p class="para">b.</p>
+<table>
+<tr><td>Tracé a</td><td>O<sub>2</sub> (premier nœud de Ranvier)</td></tr>
+<tr><td>Tracé b</td><td>O<sub>1</sub> (site transducteur)</td></tr>
+<tr><td>Tracé c</td><td>O<sub>3</sub> (cône axonique)</td></tr>
+</table>
+<!-- PROOFREAD: 4759 part1 p40 — a line of text partly hidden under the bottom edge of the pasted table b. (only letter tops visible, "… FNM …"); not typed -->
+<p class="para">c- <b><span class="t-blue">Au niveau de O<sub>1</sub>, le FNM convertit l'étirement : St mécanique en un signal électrique sous la forme d'un potentiel de récepteur : <u>c'est la transduction</u>. <u>Malgré l'atteinte du seuil de dépolarisation, on n'obtient pas de PA vue l'absence de CVD à ce niveau.</u></span></b></p>
+<p class="para">2) Exploitation + explication :<br>
+a-<br>
+- Document 2 : un étirement E<sub>1</sub> d'intensité i<sub>1</sub> (3g) permet d'enregistrer en O<sub>2</sub> (premier nœud de Ranvier) un seul PA qui franchit la synapse N1-N2, donnant naissance à un PPSE, au niveau de O<sub>3</sub> (cône axonique).<br>
+- Document 3 : un étirement E2 d'intensité i2 (4g) permet d'enregistrer en O3 un PA résultant de la sommation temporelle de deux PPSE qui sont issus de l'arrivée de deux PA provenant de N1.</p>
+<p class="para"><b>b-</b> N1-N2 est une synapse excitatrice.</p>
+<p class="para">3) Exploitation des résultats des expériences 2 et 3 (document 3 et 4) :</p>
+<p class="para">a- L'étirement E<sub>2</sub> permet d'enregistrer au niveau de la fibre musculaire (au niveau d'O<sub>4</sub>) un PA musculaire. En effet d'après l'expérience 2 (document 3), l'étirement E2 a donné un PA nerveux (suite à une sommation</p>
+
+
+<!-- page 41 -->
+<p class="para">temporelle de deux PPSE) au niveau du cône axonique du neurone N2. Au niveau de la plaque motrice, le PA nerveux a déclenché un PA musculaire qui est à l'origine de la contraction de cette fibre (document 4).</p>
+<p class="para">- Une stimulation efficace du neurone N3, simultanément à l'étirement E2, permet d'enregistrer au niveau de la fibre musculaire, une légère dépolarisation (document 4). D'où l'absence de contraction de cette fibre. Ceci montre qu'au niveau de N2 la sommation spatio-temporelle des deux PPSE qui résultent de l'étirement du FNM avec E2 et du PPS qui résulte de la stimulation efficace de N3, donne un PPS global qui n'atteint pas le seuil pour déclencher un PA nerveux. Donc la stimulation de N3 donne un PPSI au niveau du neurone N2.</p>
+<p class="para">b- <b>Déduction</b> : La synapse N2-N3 est une synapse inhibitrice.</p>
+<p class="para">4) Le neurone N3 amorti par son rôle inhibiteur, le message nerveux parcourant le circuit nerveux monosynaptique intervenant dans le réflexe myotatique.</p>
+<div class="exsub"><span class="t-gold"><b>EXERCICE 21 BAC MP18</b></span></div>
+<p class="para"><b>1) a-</b> La stimulation portée sur A seulement ou sur A et B simultanément engendrent au niveau du neurone M des variations différentes de la ddp, montrant l'existence de PA présynaptiques en A et en B. on déduit alors que les stimulations effectuées sont efficaces.</p>
+<p class="para"><b>b-</b> Suite à la stimulation isolée portée sur A (situation 1) on enregistre une ddp de - 60 mv traduisant une dépolarisation d'amplitude 10 mv : c'est un PPSE.<br>
+⇨ La synapse A-M est excitatrice.<br>
+- Suite aux stimulations simultanées portées sur A et B (situation 2), on enregistre une ddp de – 65 mv traduisant une dépolarisation d'amplitude 5 mv : c'est un PPSE global moins ample que celui de la situation 1.<br>
+⇨ L'activation de la synapse B-M a diminué l'effet excitateur de la synapse A-M ; B-M est une synapse inhibitrice.</p>
+<p class="para"><b>c-</b> La stimulation portée sur A est un PPSE d'amplitude 10 mv.<br>
+La stimulation portée sur A et B est un PPSE global de 5 mv.<br>
+La différence d'amplitude est 10 – 5 = 5 mv représente l'amplitude du PPSI fourni par la synapse B-M, d'où le tracé suivant.</p>
+<!-- CROP: 4759 1 41 0.31 0.497 0.657 0.619 4759_p41_trace -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4759/4759_p41_trace.png" alt=""></figure>
+<p class="para"><b>2)</b><br>
+<b>-</b> Après injection d'acétylcholine marqué, et suite aux stimulations S<sub>A</sub>, S<sub>B</sub> et S<sub>C</sub>, la radioactivité est détectée seulement au niveau des synapses A-M et C-M<br>
+⇨ Les neurones A et C sont des neurones excitateurs.<br>
+- Après injection de GABA radioactif, et suite aux stimulations S<sub>A</sub>, S<sub>B</sub> et S<sub>C</sub>, la radioactivité est détectée seulement au niveau de la synapse B-M<br>
+⇨ B est un neurone inhibiteur.<br>
+⇨La synapse C-M est une synapse excitatrice.</p>
+<p class="para"><b>3)</b> Suite à la stimulation simultanée des neurones A, B et C, on enregistre au niveau de l'oscilloscope :</p>
+<ul class="dash">
+<li>En un 1<sup>er</sup> temps, un PPSE d'amplitude 10 mv résultant de la transmission synaptique de la synapse C-M. Le neurone C étant myélinisé, la vitesse de propagation est supérieure à celle des neurones A et B amyélinisés (Document1).</li>
+<li>En un 2<sup>éme</sup> temps un PPSE global de 5 mv résultant de la sommation algébrique spatiale d'un PPSE de 10mv de la synapse A-M et d'un PPSI de 5 mv de la synapse B-M, survenu avec un décalage horaire vu que la vitesse de propagation du message nerveux est moins rapide que dans une fibre myélinisée.</li>
+</ul>
+<!-- page 42 -->
+<p class="para"><b>4)</b> On stimule simultanément :</p>
+<ul class="dash">
+<li>2 fois le neurone C : sommation temporelle de 2 PPSE de 10 mv chacun (document 4), atteint le seuil (10 +10 = 20 mv) et déclenche un 1<sup>er</sup> PA.</li>
+<li>3 fois le neurone A et 1 fois le Neurone B : Sommation spatiotemporelle de 3 PPSE de 10 mv et un PPSI de 5 mv, atteint le seuil ((3 x 10) - 5 = 25 mv) et déclenche le 2<sup>ème</sup> PA.</li>
+</ul>
+<p class="para"><b>5)</b> A tout instant, le neurone M est soumis à l'influence de deux synapses excitatrices A-M et C-M et d'une synapse inhibitrice B-M. Le corps cellulaire de ce neurone M intègre ces informations sous forme de deux PPSE et d'un PPSI et en fait la somme algébrique : c'est le rôle intégrateur du neurone M.</p>
+<div class="exsub"><b>Exercice 22 BAC MC19</b></div>
+<p class="para"><b>1-</b></p>
+<table>
+<tr><th></th><th>Tracé en O1</th><th>Tracé en O2</th><th>Tracé en O3</th></tr>
+<tr><td>Nom</td><td>Train de 3 potentiels d'action (3PA)</td><td>PPSE</td><td>PPSI</td></tr>
+</table>
+<p class="para"><b>2-</b><br>
+- L'axone de I<sub>1</sub> est parcouru par des PA.<br>
+- L'axone de I<sub>4</sub> est parcouru par un ou des PA.<br>
+<b>3-</b> La différence constatée entre le PPSE enregistré en O<sub>2</sub> et le PPSI enregistré en O<sub>3</sub> est expliquée par la nature de chacun des interneurones I<sub>2</sub> et I<sub>4</sub> ; en effet :<br>
+- I2 étant excitateur engendre un PPSE en O2.<br>
+- I<sub>4</sub> étant inhibiteur engendre un PPSI en O<sub>3</sub>.</p>
+<p class="para"><b>4- Tableau à remplir :</b></p>
+<table>
+<tr><th></th><th>Noms</th><th>Justification</th></tr>
+<tr><td>O<sub>1</sub></td><td>Train de 7 PA successifs</td><td>Chaque stimulation donne un PA</td></tr>
+<tr><td>O<sub>2</sub></td><td>1 ou plusieurs PA (Avec pré-potentiel)</td><td>3 PA ⇨ PPSE global d'amplitude = 10 mV<br>Donc 7 PA ⇨ PPSE global d'amplitude &gt; 20 mV</td></tr>
+<tr><td>O<sub>3</sub></td><td>PPSI</td><td>3 PA ⇨ PPSI global d'amplitude = 10 mV<br>Donc 7 PA ⇨ PPSI global d'amplitude &gt; 20 mV</td></tr>
+<tr><td>O<sub>4</sub></td><td>1 ou plusieurs PA (Forme propagée)</td><td>Le (ou les) PA enregistrés en O<sub>2</sub> se propagent vers O<sub>4</sub>, le pré potentiel à décrément spatial n'arrive pas en O<sub>4</sub></td></tr>
+<tr><td>O<sub>5</sub></td><td>PR</td><td>Le PPSI à décrément spatial n'arrive pas en O<sub>5</sub></td></tr>
+</table>
+<p class="para">5- La coordination s'explique par l'innervation réciproque : en effet, le message nerveux sensitif provenant des thermorécepteurs cutanés arrivant au niveau de la moelle épinière est transmis successivement à des interneurones dont un parmi eux est inhibiteur :<br>
+- Un circuit ne contenant que des interneurones excitateurs transmet le message au motoneurone α1 qui ramène le message nerveux moteur vers le muscle M1 qui se contracte.<br>
+- Le 2ème circuit contenant un interneurone inhibiteur s'oppose à la naissance et donc à la propagation du message nerveux moteur au niveau du 2ème motoneurone α1 permettant au muscle M2 de se relâcher.</p>
+<!-- page 43 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+
+<div class="exsub"><span class="t-gold"><u>Exercice 23</u></span></div>
+<p class="para"><b>1)</b></p>
+<table>
+<tr><th>Analyse</th><th>Déductions</th></tr>
+<tr><td>• La fréquence de potentiels d'action au niveau du neurone hypothalamique N et les concentrations de GnRH et de H<sub>1</sub> sont variables au cours du temps.<br>• Toute augmentation brusque de la fréquence des PA au niveau du neurone hypothalamique N : &gt; à 4000 PA/min, est suivie d'une augmentation brusque et rapide de la concentration de GnRH (pulse) de ≈ 6 pg/mL suivie à son tour d'une augmentation brusque et rapide de la concentration de l'hormone H<sub>1</sub> (pulse) de ≈ 15 ng/mL</td><td><b>a-</b> L'augmentation de l'activité électrique du neurone N déclenche la sécrétion de GnRH qui active la sécrétion de l'hormone H<sub>1</sub><br><b>b-</b> La sécrétion de GnRH et de l'hormone H<sub>1</sub> est pulsatile.</td></tr>
+</table>
+<p class="para"><b>2)</b> L'hormone H<sub>1</sub> agit uniquement sur les cellules de Leydig (n'a aucun effet sur les cellules de Sertoli et les cellules germinales). Elle assure le <b>développement des cellules de Leydig et active la sécrétion de la testostérone : H<sub>1</sub> correspond à la LH.</b></p>
+<p class="para">L'hormone H<sub>2</sub> agit sur les cellules de Sertoli et sur les cellules germinales et elle n'a aucun effet sur les cellules de Leydig. Elle assure le <b>développement des cellules de Sertoli, déclenche l'évolution des cellules germinales et active la sécrétion de l'inhibine : H<sub>2</sub> correspond à la FSH.</b></p>
+<p class="para"><b>3)</b><br>
+L'application de stimulations efficaces et très rapprochées sur le neurone présynaptique N<sub>1</sub> entraîne une augmentation de l'activité électrique du neurone hypothalamique M qui passe de 50 à 85 PA/S et une augmentation du taux de GnRH qui passe de 4 à 6 pg.mL<sup>-1</sup> : Le neurone N<sub>1</sub> active le neurone hypothalamique M : <b>La synapse N<sub>1</sub>- N est excitatrice.</b></p>
+<p class="para">L'application de stimulations efficaces et très rapprochées sur le neurone présynaptique N<sub>1</sub> entraîne une diminution de l'activité électrique du neurone hypothalamique M qui passe de 50 à 20 PA/S et une diminution du taux de GnRH qui passe de 4 à 2 pg.mL<sup>-1</sup>. Le neurone N<sub>1</sub> inhibe le neurone hypothalamique M : <b>La synapse N<sub>2</sub>- N est inhibitrice.</b></p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub"><span class="t-blue"><u>EXERCICE 24</u></span></div>
+<p class="para"><b>1)</b> La stimulation St<sub>1</sub> au niveau de N<sub>1</sub> engendre en O<sub>1</sub> et O<sub>3</sub> des dépolarisations: il s'agit de PPSE d'amplitude 9 mV en 0<sub>1</sub> et 6mV en O<sub>3</sub> alors qu'elle n'a pas d'effet en O<sub>2</sub> (PR).<br>
+<!-- PROOFREAD: 4759 part1 p43 — "en 0₁", "en 0₂" printed with a zero-like O; "en O₃" (4mV) blurred, looks like "Ͻ₃" -->
+La stimulation St<sub>2</sub> au niveau de N<sub>2</sub> engendre en O<sub>2</sub> et O<sub>3</sub> des hyperpolarisations: il s'agit de PPSI d'amplitude 8 mV en 0<sub>2</sub> et 4mV en O<sub>3</sub> alors qu'elle n'a pas d'effet en O<sub>1</sub> (PR).<br>
+<b>a-</b> la synapse N<sub>1</sub>-M est excitatrice ; la synapse N<sub>2</sub>-M est inhibitrice.<br>
+<b>b-</b> le PPSE et le PPSI se propagent en diminuant d'amplitude (potentiel à décrément spatial).<br>
+<b>c-</b> St<sub>1</sub> donne au niveau de l'oscilloscope O<sub>3</sub> un PPSE d'amplitude 6 mV : [-64 –(-70)]</p>
+<p class="para">St<sub>2</sub> donne au niveau de l'oscilloscope O<sub>3</sub> un PPSI d'amplitude 4mV : [-74 – (-70)]<br>
+On porte 4 stimulations rapprochées St<sub>1</sub>, simultanément avec une stimulation St<sub>2</sub>, on enregistre, par sommation spatio-temporelle, au niveau de l'oscilloscope O<sub>3</sub>, un PPS global d'amplitude 20 mV [(6x4) – 4] et par suite un PA.<br>
+<b>2)</b> Le neurone postsynaptique M a la capacité d'intégrer les informations qui lui parviennent des neurones présynaptiques par sommation temporelle et spatiale des PPS.</p>
+<!-- page 44 -->
+<p class="para"><b>3) a-</b><br>
+<b>Expérience 1 :</b> Suite à la stimulation St<sub>2</sub> :</p>
+<ul class="dash">
+<li>on enregistre au niveau de l'oscilloscope O un PA et au niveau de l'oscilloscope O<sub>2</sub> un PPSI</li>
+<li>la présence de radioactivité indique l'entrée des ions Ca<sup>2+</sup> dans l'élément présynaptique,</li>
+<li>un taux de GABA de 1,5 mmole/L indique son exocytose dans la fente synaptique,</li>
+</ul>
+<p class="para"><b>Expérience 2 :</b> Suite à l'addition de T1 suivie de la stimulation St<sub>2,</sub></p>
+<ul class="dash">
+<li>on enregistre au niveau de l'oscilloscope O un PA et au niveau de l'oscilloscope O<sub>2</sub> un PR</li>
+<li>l'absence de radioactivité au niveau de l'élément présynaptique explique l'absence de l'entrée de Ca<sup>2+</sup>,</li>
+<li>un taux de GABA nul dans la fente indique l'absence d'exocytose du neurotransmetteur GABA</li>
+</ul>
+<p class="para"><b>Expérience 3 :</b> Suite à l'injection de T2 suivie de la stimulation St<sub>2,</sub></p>
+<ul class="dash">
+<li>on enregistre au niveau de l'oscilloscope O un PA et au niveau de l'oscilloscope O<sub>2</sub> un PR</li>
+<li>la présence de radioactivité indique l'entrée des ions Ca<sup>2+</sup> dans l'élément présynaptique,</li>
+<li>un taux de GABA nul dans la fente indique l'absence d'exocytose du neurotransmetteur GABA.</li>
+</ul>
+<p class="para"><b>Expérience 4 :</b> L'injection de T3 suivie de la stimulation St<sub>2</sub> :</p>
+<ul class="dash">
+<li>on enregistre au niveau de l'oscilloscope O un PA et au niveau de l'oscilloscope O<sub>2</sub> un PR.</li>
+<li>la présence de radioactivité indique l'entrée des ions Ca<sup>2+</sup> dans l'élément présynaptique,</li>
+<li>un taux de GABA de 1,5 mmole/L indique son exocytose dans la fente synaptique.</li>
+<li>une ddp de -70 mV au niveau de l'oscilloscope O<sub>2</sub> : PR.</li>
+</ul>
+<p class="para"><b>Effet de chacune des neurotoxines :</b></p>
+<ul class="dash">
+<li>T1 bloque l'ouverture des CVD aux ions Ca<sup>2+</sup>.</li>
+<li>T2 bloque l'exocytose du GABA.</li>
+<li>T3 occupe les récepteurs du GABA au niveau de la membrane postsynaptique.</li>
+</ul>
+<p class="para"><b>b- Le mécanisme du fonctionnement de la synapse N<sub>2</sub>-M</b></p>
+<ul class="dash">
+<li>Arrivée du message nerveux dans l'élément présynaptique de N2, ce qui entraîne l'ouverture des canaux calciques voltage-dépendants et l'entrée des ions Ca<sup>2+</sup> qui active la libération du GABA par exocytose.</li>
+<li>Fixation du GABA sur les récepteurs spécifiques de la membrane postsynaptique.</li>
+<li>Ouverture de canaux ioniques chimiodépendants et entrée des ions Cl<sup>-</sup> dans le neurone postsynaptique M.</li>
+</ul>
+
+</section>
+
+</div>
+</body>
+</html>

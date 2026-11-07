@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · cours</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="Source non indiquée">
+<meta data-pagefind-meta="n[content]" content="4982">
+<meta data-pagefind-meta="title[content]" content="cours">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · cours" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>cours</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Cours</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1jYaYWYsPyLRAVpmEcQ58uyhN-IImm6rl/view">↗ cours.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1jYaYWYsPyLRAVpmEcQ58uyhN-IImm6rl/view">Eya Masmoudi · Bac math 2026 › Svt / Mme chaouch / Neuro</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<div class="exh"><span class="idx">Cours</span><h2>cours</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4982.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Cours</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1jYaYWYsPyLRAVpmEcQ58uyhN-IImm6rl/view">↗ cours.pdf</a></div>
+<!-- page 01 -->
+<div class="data">
+<ul class="b">
+<li><b>Des transports passifs des ions Na<sup>+</sup> et K<sup>+</sup> suivant leurs gradients de concentration c.-à-d. du milieu hypertonique vers le milieu hypotonique, ces transports s'effectuent à travers des protéines canaux dits canaux de fuite, toujours ouverts, les uns spécifiques pour Na<sup>+</sup> et les autres pour K<sup>+</sup>. Ces transports passifs tendent à annuler le potentiel de repos par l'égalisation des concentrations de part et d'autre de la membrane.</b></li>
+<li><b>Des transports actifs des ions Na<sup>+</sup> et K<sup>+</sup> contre leurs gradients de concentration, grâce à d'autres protéines membranaires : ce sont des enzymes-pompes dites pompes Na<sup>+</sup>/K<sup>+</sup> capables d'hydrolyser l'ATP en ADP et P, l'énergie libérée assure le fonctionnement de la pompe afin de corriger les perturbations ioniques créées par la diffusion, en refoulant à chaque cycle, 3 ions Na<sup>+</sup> vers le MEC et en réintégrant 2 K<sup>+</sup> dans le MIC.</b></li>
+</ul>
+</div>
+<!-- CROP: 4982 1 1 0.03 0.244 0.95 0.406 4982_canaux_fuite -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_canaux_fuite.png" alt=""></figure>
+<p class="para"><b>Les canaux de fuite</b></p>
+<!-- CROP: 4982 1 1 0.03 0.425 0.945 0.558 4982_pompe_na_k -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_pompe_na_k.png" alt=""></figure>
+<p class="para"><b>Fonctionnement de la pompe Na<sup>+</sup> / K<sup>+</sup></b></p>
+<p class="subhead t-red">2) <u>Le potentiel d'action</u></p>
+<p class="subhead t-navy">a. <u>Mise en évidence.</u></p>
+<p class="para"><b>Montage expérimental</b></p>
+<!-- CROP: 4982 1 1 0.04 0.685 0.456 0.858 4982_montage_pa -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_montage_pa.png" alt=""></figure>
+<p class="para"><b><span class="t-blue">Enregistrement obtenu</span></b></p>
+<!-- CROP: 4982 1 1 0.46 0.655 0.934 0.93 4982_enregistrement_pa -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_enregistrement_pa.png" alt=""></figure>
+<!-- page 02 -->
+<table>
+<tr><th colspan="4">Étude globale de la courbe obtenue</th></tr>
+<tr><td>Nom : potentiel d'action</td><td>Nombre de phases : 3</td><td>Amplitude = 100 mV ;<br>De – 70 mV à + 30 mV</td><td>Durée : 1 ms</td></tr>
+<tr><th colspan="4">Analyse détaillée</th></tr>
+<tr><td>O</td><td colspan="3">Artéfact de stimulation : instant exact de la stimulation</td></tr>
+<tr><td>OA</td><td colspan="3">Temps de latence : c'est le temps mis par le PA pour parcourir la distance entre les électrodes stimulatrices et l'électrode réceptrice.</td></tr>
+<tr><td>ABC</td><td colspan="3">C'est la phase de dépolarisation : la ddp passe brusquement de -70 à +30 mV durant 0,5 ms, au cours de laquelle la négativité interne diminue de A à B, s'annule en B puis s'inverse en positivité de B à C.<br>Le MIC devient chargé (+) alors que le MEC devient chargé (-)</td></tr>
+<tr><td>CD</td><td colspan="3">C'est la phase de repolarisation : la ddp passe de +30 à -70 mV durant 0,5 ms, au cours de laquelle la positivité interne diminue et disparait et la négativité interne réapparait.</td></tr>
+<tr><td>DE</td><td colspan="3">C'est la phase d'hyperpolarisation au cours de laquelle la négativité interne continue à augmenter et dépasse l'état de repos puis revient à sa valeur initiale.</td></tr>
+</table>
+<div class="data">
+<p class="para"><b>Définition :</b></p>
+<p class="para"><b><span class="t-red">Le potentiel d'action est une variation brève et passagère du PR durant environ 1 ms au cours de laquelle la ddp passe brusquement de -70 à +30 mV et revient à sa valeur initiale.</span></b></p>
+</div>
+<p class="subhead t-navy">b. <u>Condition de naissance d'un PA.</u></p>
+<p class="para">On porte sur une fibre nerveuse des stimulations d'intensités croissantes et simultanément, on enregistre les phénomènes électriques par une électrode réceptrice <b>placée près des électrodes stimulatrices</b>, on obtient les enregistrements obtenus par l'oscilloscope O<sub>1</sub>, et par une autre électrode réceptrice <b>placée loin des électrodes stimulatrices</b>, on obtient les enregistrements obtenus par l'oscilloscope O<sub>2</sub>.</p>
+<!-- CROP: 4982 1 2 0.055 0.494 0.97 0.83 4982_seuil_traces -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_seuil_traces.png" alt=""></figure>
+<ul class="b">
+<li>L'intensité minimale de la stimulation qui déclenche un PA est celle de S<sub>4</sub> : c'est <span class="t-red">l'intensité seuil</span>. Le PA, enregistré, est précédé d'un potentiel local (ou prépotentiel) qui atteint une ddp seuil = (-50 mV) dite <span class="t-red">seuil du potentiel</span>.</li>
+<li><b>Les stimulations S<sub>1</sub>, S<sub>2</sub> et S<sub>3</sub> ont déclenché seulement une légère dépolarisation locale dite potentiel local d'amplitude inférieure au seuil du potentiel, S<sub>1</sub>, S<sub>2</sub> et S<sub>3</sub> sont dites infraliminaires.</li>
+</ul>
+<!-- page 03 -->
+<p class="subhead"><span class="t-red"><b>Conclusion :</b></span></p>
+<div class="conclusion"><p><b>La naissance d'un PA au niveau d'une fibre nerveuse nécessite une intensité seuil pour laquelle le potentiel local, atteint le seuil du potentiel égal à (– 50 mV).</b></p></div>
+<ul class="b">
+<li>Les tracés 1, 2 et 3 sont des potentiels locaux.</li>
+</ul>
+<div class="data">
+<p class="para"><b>Définition :</b></p>
+<p class="para"><b>Le potentiel local (PL) est une légère et provisoire dépolarisation locale, enregistrée près des électrodes stimulatrices et traduisant une diminution de la négativité interne.</b></p>
+<p class="para"><b>Le PL ne peut déclencher un PA que si son amplitude atteint le seuil du potentiel (- 50 mV).</b></p>
+</div>
+<ul class="b">
+<li>Les PL obtenus avec les stimulations S<sub>1</sub>, S<sub>2</sub> et S<sub>3</sub>, sont de plus en plus amples : on dit les PL sont graduables.</li>
+<li>Les tracés 1, 2 et 3 sont des PL alors que les tracés 7, 8 et 9 sont des PR. On déduit que les PL sont non propageables, ils ne peuvent être enregistrés que près des électrodes stimulatrices.</li>
+<li>Les stimulations S<sub>5</sub> et S<sub>6</sub> engendrent des PA de mêmes amplitudes que celui obtenu avec S<sub>4</sub> (100 mV), donc l'amplitude du PA est indépendante de l'intensité de la stimulation on dit que le PA obéit <b>à la loi de tout ou rien.</b> Les stimulations S<sub>5</sub> et S<sub>6</sub> sont dites supraliminaires.</li>
+</ul>
+<p class="subhead"><span class="t-red"><b><u>Remarques :</u></b></span></p>
+<ul class="dash">
+<li><span class="t-red">Une stimulation efficace est toute stimulation capable de déclencher un PA, elle peut être liminaire ou supraliminaire. Pour toute stimulation efficace, le PL atteint le seuil du potentiel.</span></li>
+<li><span class="t-red">Le PA est propageable le long de la fibre sans décrément spatial : sans amortissement.</span></li>
+</ul>
+<p class="subhead t-navy">c. <u>Origine ionique du PA.</u></p>
+<p class="para">Le document suivant représente les mouvements ioniques du Na<sup>+</sup> et du K<sup>+</sup> à travers la membrane plasmique d'un neurone durant un potentiel d'action.</p>
+<p class="consigne"><i>Établissez la relation entre les phases du PA et les modifications de la perméabilité de la membrane aux ions Na<sup>+</sup> et K<sup>+</sup>.</i></p>
+<!-- CROP: 4982 1 3 0.355 0.426 0.915 0.664 4982_permeabilite_pa -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_permeabilite_pa.png" alt=""></figure>
+<!-- CROP: 4982 1 3 0.155 0.664 0.915 0.786 4982_canaux_voltage_dependants -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_canaux_voltage_dependants.png" alt=""></figure>
+<!-- PROOFREAD: 4982 part1 p03 — "alyse :" heading cut by the left page edge -->
+<p class="subhead"><b>alyse :</b></p>
+<ul class="b">
+<li>La phase de dépolarisation est caractérisée par l'augmentation de la perméabilité membranaire aux ions Na<sup>+</sup> par augmentation du nombre de canaux ouverts de Na<sup>+</sup>.</li>
+<li>La phase de repolarisation est caractérisée par :
+<ul class="b">
+<li>L'augmentation de la perméabilité membranaire aux ions K<sup>+</sup> suite à l'augmentation de l'ouverture de canaux spécifiques de K<sup>+</sup>.</li>
+<li>La diminution de la perméabilité membranaire aux ions Na<sup>+</sup> par fermeture des canaux spécifiques à Na<sup>+</sup>.</li>
+</ul></li>
+<li>La phase d'hyperpolarisation se caractérise par une perméabilité prolongée aux ions K<sup>+</sup>.</li>
+</ul>
+<!-- page 04 -->
+<p class="subhead"><span class="t-green"><b>Explication :</b></span></p>
+<ul class="b">
+<li>Lorsque la ddp atteint le seuil du potentiel (- 50 mV), des canaux spécifiques à Na+ s'ouvrent, ce qui entraîne une entrée massive et passive de Na+ à l'intérieur de la fibre suivant le gradient de concentration, la ddp passe de -50 à +30 mV : c'est la phase de dépolarisation.</li>
+<li>Lorsque la ddp atteint +30 mV, les canaux Na+ se ferment et les canaux spécifiques de K+ s'ouvrent, ceci entraîne la sortie passive des ions K+ suivant le gradient de concentration, la ddp chute de +30 à -70 mV : c'est la phase de repolarisation.</li>
+<li>La phase d'hyperpolarisation est expliquée par l'ouverture prolongée des canaux à K+, la ddp atteint -80 mV.</li>
+<li>Le retour de la ddp à -70 mV s'explique par l'intervention des pompes Na<sup>+</sup>/K<sup>+</sup>.</li>
+</ul>
+<p class="subhead t-red"><b>Bilan :</b></p>
+<div class="data">
+<ul class="b">
+<li><b>De point de vue ionique, le PA est expliqué par des transferts ioniques passifs et rapides des ions Na+ et K+ à travers la membrane grâce à des protéines canaux dont l'ouverture et la fermeture dépendent de la ddp : ce sont des canaux voltage-dépendants (CVD), les uns spécifiques à Na+, les autres pour K+.</b></li>
+<li><b>La phase de dépolarisation est expliquée par une entrée passive et massive des ions Na+ à travers des CVD à Na+ qui s'ouvrent lorsque la ddp atteint (-50 mV) et se ferment à +30 mV.</b></li>
+<li><b>La phase de repolarisation et expliquée par la sortie passive des ions K+ à travers des CVD à K+, ces derniers s'ouvrent lorsque la ddp devient positive (+ 30 mV). Cette ouverture est prolongée dans le temps jusqu'à une ddp (- 80 mV) ce qui explique la phase d'hyperpolarisation.</b></li>
+<li><b>Le retour de la ddp à -70 mV fait intervenir les pompes Na+/K+ assurant un transport actif des ions contre leurs gradients de concentration.</b></li>
+</ul>
+</div>
+<!-- CROP: 4982 1 4 0.018 0.473 0.957 0.758 4982_cvd_cycle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_cvd_cycle.png" alt=""></figure>
+<p class="para"><b>Ouverture et fermeture des canaux voltage dépendants lors d'un potentiel d'action</b></p>
+<p class="subhead t-navy">d. <u>La période réfractaire.</u></p>
+<div class="data">
+<p class="para"><b>La membrane de la fibre nerveuse est inexcitable au moment et juste après un PA : c'est la période réfractaire. Elle est due à la fermeture momentanée des canaux voltage-dépendants à Na+ après la repolarisation.<br>
+Le retour à la polarisation normale est assuré par les pompes Na<sup>+</sup>/K<sup>+</sup>.<br>
+Grâce à cette période réfractaire, les PA ne sont pas sommables.</b></p>
+</div>
+<!-- page 05 -->
+<p class="subhead t-red">C) Propagation du message nerveux</p>
+<p class="subhead t-navy">1) <u>Détermination de la vitesse de propagation du PA.</u></p>
+<!-- CROP: 4982 1 5 0.106 0.053 0.875 0.28 4982_vitesse_montage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_vitesse_montage.png" alt=""></figure>
+<div class="data">
+<p class="para">V = Δ d / Δ t &nbsp;&nbsp; exprimé en m/ s = 7,5 x 10 <sup>-2</sup> / 1,5 x 10<sup>-3</sup> = 50 ms<sup>-1</sup></p>
+</div>
+<p class="subhead t-navy">2) <u>Facteurs de variation de la vitesse du PA.</u></p>
+<table>
+<tr><th>Espèces</th><th>Nature des fibres</th><th>Diamètre des fibres</th><th>Température en °C</th><th>Vitesse en m/s</th></tr>
+<tr><td rowspan="2"><b>Mammifères</b></td><td><span class="t-blue">Avec myéline</span></td><td>20 µm<br>10 µm<br>5 à 2 µm</td><td>37<br>37<br>37</td><td>120<br>60<br>30 à 12</td></tr>
+<tr><td><span class="t-blue">Sans myéline</span></td><td>2 à 0,1 µm</td><td>37</td><td>2 à 1</td></tr>
+<tr><td><b>Grenouille</b></td><td><span class="t-blue">Avec myéline</span></td><td>20 µm<br>20 µm<br>10 µm</td><td>30<br>20<br>20</td><td>80 à 60<br>30<br>17</td></tr>
+<tr><td><b>Calmar</b></td><td><span class="t-blue">Sans myéline</span></td><td>1000 µm</td><td>23</td><td>33</td></tr>
+</table>
+<p class="para">La vitesse varie selon l'espèce, et pour chaque espèce :</p>
+<ul class="b">
+<li>La vitesse augmente avec le diamètre.</li>
+<li>La vitesse augmente avec la température.</li>
+<li>La vitesse dépend de la nature des fibres, elle est élevée pour les fibres myélinisées que pour les fibres amyélinisées à même diamètre.</li>
+</ul>
+<p class="subhead t-navy">3) <u>Mécanisme de propagation du PA.</u></p>
+<!-- CROP: 4982 1 5 0.1 0.725 0.85 0.952 4982_mecanisme_propagation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_mecanisme_propagation.png" alt=""></figure>
+<!-- page 06 -->
+<!-- NOTE: the figure at the top of page 06 is the same propagation figure as at the bottom of page 05 (overlapping photos); it is cropped again here because page 05 cuts its bottom edge -->
+<!-- CROP: 4982 1 6 0.115 0.0 0.882 0.233 4982_mecanisme_propagation_2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_mecanisme_propagation_2.png" alt=""></figure>
+<ul class="b">
+<li>La propagation du PA au niveau d'une fibre nerveuse se fait par l'établissement des courants électriques locaux entre la zone dépolarisée caractérisée par un PA et la zone voisine polarisée caractérisée par un potentiel de repos.</li>
+<li>Ces courants électriques consistent en l'attraction des charges positives par les charges négatives dans le MIC et dans le MEC.</li>
+<li>Ces courants locaux ont pour effet de dépolariser la zone voisine jusqu'au seuil (-50 mv) et de déclencher l'ouverture des CVD à Na+ ; on dit que la présence d'un PA dans une zone crée un PA identique dans la zone voisine par un processus régénératif.</li>
+<li>Le sens de propagation du PA est imposé par la période réfractaire, qui affecte tout point de la fibre qui était le siège d'un PA. La période réfractaire empêche le PA de rebrousser chemin car les courants locaux qui s'établissent avec cette zone réfractaire sont inefficaces.</li>
+</ul>
+<p class="subhead t-navy">4) <u>Modes de propagation du PA.</u></p>
+<!-- CROP: 4982 1 6 0.104 0.556 0.885 0.862 4982_modes_propagation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_modes_propagation.png" alt=""></figure>
+<ul class="b">
+<li>Dans le cas d'une fibre sans myéline, la conduction se fait point par point, elle est dite continue ou de proche en proche vu que les CVD sont répartis sur toute la fibre nerveuse.</li>
+<li>Dans le cas d'une fibre myélinisée, les CVD fonctionnels n'existent qu'au niveau des nœuds de Ranvier, la conduction se fait d'un nœud de Ranvier à un autre en sautant les segments myélinisés, la conduction est saltatoire ce qui permet une propagation plus rapide.</li>
+</ul>
+<!-- page 07 -->
+<p class="subhead t-red"><b>II) LE MESSAGE NERVEUX</b></p>
+<p class="subhead t-red"><b>A) NATURE DU MESSAGE NERVEUX</b></p>
+<p class="subhead t-navy"><span class="t-green">1) <u>Le potentiel de repos</u></span></p>
+<p class="subhead t-navy">a. <u>Mise en évidence du potentiel de repos :</u></p>
+<!-- CROP: 4982 1 7 0.053 0.156 0.943 0.472 4982_mise_evidence_pr -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_mise_evidence_pr.png" alt=""></figure>
+<!-- CROP: 4982 1 7 0.112 0.476 0.6 0.552 4982_fibre_polarisee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_fibre_polarisee.png" alt=""></figure>
+<p class="para"><b>La fibre nerveuse est polarisée : chargée positivement à l'extérieur et négativement à l'intérieur</b></p>
+<ul class="b">
+<li><b><u>Expérience 1</u></b> : lorsque les électrodes réceptrices sont à la surface de la fibre, on enregistre une ddp nulle, donc la surface de la fibre est un milieu isopotentiel.</li>
+<li><b><u>Expérience 2</u></b> : suite à l'introduction de l'électrode E<sub>1</sub> dans le milieu intracellulaire, la ddp chute et se stabilise à (-70 mV) : c'est le potentiel de repos.</li>
+</ul>
+<div class="data">
+<p class="para"><b>Définition :</b></p>
+<p class="para"><b>Le potentiel de repos est la ddp qui existe de part et d'autre de la membrane d'un neurone en repos. Cette ddp est toujours négative et constante de l'ordre de – 70 mV.</b></p>
+</div>
+<p class="subhead t-navy">b. <u>Origine ionique du PR :</u></p>
+<table>
+<tr><th></th><th>Concentration intracellulaire (mmol/l)</th><th>Concentration extracellulaire (mmol/l)</th></tr>
+<tr><td><b>[ Na<sup>+</sup> ]</b></td><td><b>50</b></td><td><b>460</b></td></tr>
+<tr><td><b>[ K<sup>+</sup> ]</b></td><td><b>400</b></td><td><b>20</b></td></tr>
+<tr><td><b>[ Cl<sup>−</sup> ]</b></td><td><b>52</b></td><td><b>560</b></td></tr>
+<tr><td><b>[ A<sup>−</sup> ] : Gros anions</b></td><td><b>400</b></td><td><b>0</b></td></tr>
+</table>
+<p class="subhead t-red"><b>Bilan :</b></p>
+<!-- page 08 -->
+<p class="para"><b>Schéma montrant les canaux et les mouvements ioniques à l'origine du PA</b></p>
+<!-- CROP: 4982 1 8 0.012 0.224 0.958 0.785 4982_canaux_mouvements_pa -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4982/4982_canaux_mouvements_pa.png" alt=""></figure>
+<!-- PROOFREAD: 4982 part1 p08 — last line cut in half by the bottom edge of the photo, only the top of the letters visible; best reading "Application 1(… 2015 S.C)" -->
+<p class="para"><span class="t-red">Application 1(… 2015 S.C)</span></p>
+
+</section>
+
+</div>
+</body>
+</html>

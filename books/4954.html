@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · 96.._Brouillon de la Série 29 génétique formelle +réflexe myotatique  (26-03-2020)</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4954">
+<meta data-pagefind-meta="title[content]" content="96.._Brouillon de la Série 29 génétique formelle +réflexe myotatique  (26-03-2020)">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Génétique des diploïdes (monohybridisme, dihybridisme)">
+<meta data-pagefind-filter="chapter[content]" content="Brassage génétique (méiose, fécondation)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · 96.._Brouillon de la Série 29 génétique formelle +réflexe myotatique  (26-03-2020)" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>96.._Brouillon de la Série 29 génétique formelle +réflexe myotatique  (26-03-2020)</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">TakiAcademy.com · 23390248 - 29862267 · SBK</span> <span class="tg">Série</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1tfX67evVe4kZuqEkBc4eRBF8ggcMods6/view">↗ 96.._Brouillon de la Série 29 génétique formelle +réflexe myotatique  (26-03-2020).pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/1tfX67evVe4kZuqEkBc4eRBF8ggcMods6/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/12SAvvYLqQyp43vqWFCFuxNjgQg0nvHxx/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / SVT TakiAcademy (+100 PDF)</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: TakiAcademy.com · 23390248 - 29862267 · SBK -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série 29 Génétique formelle + Réflexe myotatique</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4954.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">TakiAcademy.com · 23390248 - 29862267 · SBK</span> <span class="tg">Série</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1tfX67evVe4kZuqEkBc4eRBF8ggcMods6/view">↗ 96.._Brouillon de la Série 29 génétique formelle +réflexe myotatique  (26-03-2020).pdf</a></div>
+<!-- NOTE: running header (Série 29 · Génétique formelle + Réflexe myotatique · 26-03-2020 · Bac Sc Exp · Séance directe; from page 2: "Série 29 : Muscle squelettique + Réflexe myotatique (29/03/2020)") and page footer (phone · Tous droits réservés © TakiAcademy.com) not repeated in the body -->
+<!-- page 01 -->
+<p class="subhead t-navy"><span class="t-blue">BAC Sc Exp</span></p>
+<p class="subhead t-navy"><span class="t-blue">Gr 2: Standard + Daba Daba</span></p>
+<p class="subhead t-red"><b>Série 29 :</b></p>
+<p class="subhead t-red"><b>Génétique formelle</b></p>
+<p class="subhead t-red"><b>+ Réflexe myotatique</b></p>
+<p class="para"><span class="t-red"><b>Jeudi</b></span></p>
+<p class="para"><span class="t-red"><b>26/03/2020</b></span></p>
+<div dir="rtl" lang="ar">
+<p class="para"><b><span class="t-red">السلام</span> <span class="t-blue">عليكم</span> <span class="t-gold">ورحمة</span> <span class="t-green">الله</span> وبركاته</b></p>
+<p class="para"><b>مرحبا بالجميع بعض الدقائق ونبداو ان شاء الله</b></p>
+</div>
+<p class="para"><span class="t-red">09h00</span></p>
+<!-- page 02 -->
+<!-- NOTE: pages 2 onward are a handwritten correction (blue/red ink); yellow highlighter strokes and the small neuron clip-art in the margin are left out -->
+
+<div class="chtag"><span>Chapitre</span> Génétique des diploïdes (monohybridisme, dihybridisme)</div>
+
+<div class="exsub"><span class="t-red">Exercice 1</span></div>
+<p class="para"><span class="t-red">1°/</span></p>
+<p class="para">- Les 2 parents different par 2 Caractères</p>
+<p class="para">⇒ Il s'agit du cas <span class="t-red">du dihybridisme</span></p>
+<p class="para"><span class="t-red">-</span> les 2 parents purs et de phénotypes differents ⇒ 1<sup>ère</sup> loi de Mendel est verifiée</p>
+<!-- CROP: 4954 1 2 0.24 0.395 0.75 0.54 4954_p1_02_triangle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4954/4954_p1_02_triangle.png" alt=""></figure>
+<p class="para"><span class="t-red">⇒</span> F<sub>1</sub> : homogène = 100%</p>
+<p class="para">⇒ F<sub>1</sub> <u>double</u> hybride. = (hétérozygote)</p>
+<p class="para"><span class="t-red">ⓐ</span> - Si l'allèle incolore est dominant, on doit avoir une descendance 100% incolore (homogène) Ce qui n'est pas le cas ⇒ Donc <span class="t-red">l'allèle coloré domine l'incolore</span></p>
+<p class="para">si l'allèle ridé est dominant, la descendance doit être 100% ridés, ce qui n'est pas le cas ⇒ Donc <span class="t-red">l'allèle lisse domine le ridé</span></p>
+<!-- PROOFREAD: 4954 part1 p02 — handwritten; accents (different / differents / verifiée) as best read -->
+<!-- page 03 -->
+<!-- ROTATE: 4954 part1 p03 180 -->
+<!-- NOTE: page 3 read from a 180°-rotated copy; brain clip-art left out -->
+<p class="para">Soit : { A : allèle coloré / a : allèle incolore / &nbsp; A &gt; a</p>
+<p class="para">Soit { B : allèle lisse / b : allèle ridé / &nbsp; B &gt; b</p>
+<p class="para"><span class="t-red">ⓑ</span> <u>purs</u> P<sub>1</sub> [A b] × P<sub>2</sub> [a B]</p>
+<p class="para">↓</p>
+<p class="para">F<sub>1</sub> [A B] × pur [a b]</p>
+<p class="para"><span class="t-green">Test Cross</span> <span class="t-green">⇐</span> <span class="t-green">Double Dominant</span> &nbsp; <span class="t-green">Double récessif</span></p>
+<p class="para">Si les 2 gènes sont independants, <span class="t-red">un test cross</span>, doit verifier les proportions 1/4, 1/4, 1/4, 1/4 Ce qui n'est pas le cas donc les 2 gènes liés (linkage partiell)</p>
+<p class="para"><span class="t-red">2°/</span> <u>phé</u> = &nbsp; P<sub>1</sub> [A b] &nbsp; × &nbsp; P<sub>2</sub> [a B]</p>
+<p class="para">Génotypes &nbsp; A b / A b &nbsp;&nbsp; a B / a B</p>
+<p class="para">γ<sup>tes</sup> = &nbsp; 100% <u>A b</u> &nbsp;&nbsp; 100% <u>a B</u></p>
+<p class="para">F<sub>1</sub> , &nbsp; 100% &nbsp; A b / a B &nbsp; <span class="t-red">[A B]</span></p>
+<!-- PROOFREAD: 4954 part1 p03 — handwritten; label after "2°/" read as "phé =" (unclear); genotypes written as fractions (A b over a bar over A b), number of bars unclear; "linkage partiell" as written -->
+<!-- page 04 -->
+<p class="para"><span class="t-red">3°/</span></p>
+<!-- CROP: 4954 1 4 0.05 0.155 0.95 0.925 4954_p1_04_brassage_crossing_over -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4954/4954_p1_04_brassage_crossing_over.png" alt=""></figure>
+<!-- page 05 -->
+<p class="para"><span class="t-red">4°/</span> F<sub>2</sub> [ ? ] &nbsp; × &nbsp; F<sub>2</sub> [ ? ]</p>
+<p class="para">descendance hétérogène</p>
+<!-- CROP: 4954 1 5 0.15 0.215 0.70 0.465 4954_p1_05_genotypes_gametes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4954/4954_p1_05_genotypes_gametes.png" alt=""></figure>
+<p class="para">Echiquier : tableau de rencontre des γ<sup>tes</sup></p>
+<table>
+<tr><th>♀ \ ♂</th><th>1/2 &nbsp; <u>A b</u></th><th>1/2 &nbsp; <u>a b</u></th></tr>
+<tr><td>1/2 &nbsp; <u>a B</u></td><td>1/4 &nbsp; A b / a B<br><span class="t-red">[A B]</span></td><td>1/4 &nbsp; a b / a B<br><span class="t-red">[a B]</span></td></tr>
+<tr><td>1/2 &nbsp; <u>a b</u></td><td>1/4 &nbsp; A b / a b<br><span class="t-red">[A b]</span></td><td>1/4 &nbsp; a b / a b<br><span class="t-red">[a b]</span></td></tr>
+</table>
+<!-- PROOFREAD: 4954 part1 p05 — handwritten; genotypes in the table are written as fractions (upper chromosome over a bar over lower chromosome) -->
+<!-- page 06 -->
+
+<div class="chtag"><span>Chapitre</span> Brassage génétique (méiose, fécondation)</div>
+
+<!-- CROP: 4954 1 6 0.07 0.15 0.38 0.24 4954_p1_06_chromosomes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4954/4954_p1_06_chromosomes.png" alt=""></figure>
+<!-- NOTE: page 6 pastes a printed correction; handwritten "1°/", "2°/" written over the printed numbers and highlighter on it are left out -->
+<p class="para">1) La figure « b » est incorrecte car sur la même fibre on trouve deux chromatides de couleur différent c'est-à-dire d'origine différent donc ils n'appartiennent pas au même chromosome ce qui est impossible</p>
+<p class="para">La figure « d » est incorrecte car sur la même fibre, on trouve deux chromatides de forme différent c'est-à-dire d'origine différent donc ils n'appartiennent pas au même chromosome ce qui est impossible</p>
+<p class="para">La figure « e » est incorrecte car sur la même fibre, on trouve deux chromosomes de forme différent donc ils ne sont pas homologues ce qui est impossible</p>
+<p class="para">2) La figure « a » représente l'étape de l'anaphase II car à chaque pôle on trouve n chromosome simples</p>
+<p class="para">La figure « c » représente l'étape de l'anaphase I car à chaque pôle on trouve n chromosome dupliqués</p>
+<p class="para"><b>3)</b> Le phénomène génétique qui illustre la figure « c » est le brassage inter chromosomique « la migration d'une façon aléatoire de chacun des chromosomes homologue vers un pole de la cellule au cours de l'anaphase I » ce brassage assure une grande diversité des gamètes et par conséquence une grande diversité des descendants</p>
+<p class="para"><u>Rappel</u></p>
+<!-- CROP: 4954 1 6 0.09 0.655 0.92 0.925 4954_p1_06_rappel_brassage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4954/4954_p1_06_rappel_brassage.png" alt=""></figure>
+<!-- page 07 -->
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub"><span class="t-red">Exercice 4</span></div>
+<!-- CROP: 4954 1 7 0.145 0.258 0.81 0.556 4954_p1_07_corpuscule_pacini -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4954/4954_p1_07_corpuscule_pacini.png" alt=""></figure>
+<div class="data"><p class="para"><span class="t-gold">L</span>es corpuscules de Pacini sont des mécanorécepteurs tactiles situés sous l'épiderme.<br>Lorsque le corpuscule est soumis expérimentalement à une pression, sa membrane se dépolarise.<br>Il apparaît ainsi brièvement un potentiel dont l'amplitude est proportionnelle à la pression exercée.</p></div>
+<p class="para">Forme mécanique</p>
+<!-- NOTE: page 7 — the circle around "pression" and the arrow pointing to the handwritten "Forme mécanique" are left out; pterodactyl clip-art skipped -->
+<!-- page 08 -->
+<!-- ROTATE: 4954 part1 p08 180 -->
+<!-- NOTE: page 8 read from a 180°-rotated copy; brain clip-art left out -->
+<table>
+<tr><th><span class="t-red">Analyse</span></th><th><span class="t-red">Conclusion</span></th></tr>
+<tr><td><span class="t-red">1°/</span> ⊛ Pour une pression &lt; 1,04 on a absence de potentiel de récepteur (amplitude &lt; 2 mv) : Stimulation faible et inefficace<br>⊛ Pour une pression ≥ 1,04 on une ↗ de l'amplitude du potentiel de récepteur : 2mv pour une pression 1,04 et 16mv pour 1,4</td><td>Le potentiel de récepteur (PR) est Codé en modulation <span class="t-red">d'amplitude</span><br><span class="t-red">⇒ Graduable</span></td></tr>
+<tr><td><span class="t-red">2°/</span> • Pour une pression &lt; 1,1 on a absence de PA (stimulat inefficace)<br>• Pour des pression ≥ 1,1 on a ↗ de la frequence de PA (train de PA) : 2PA pour 1,1 et et 2( PA pour 1,4<br>• Le PA enregistré en O<sub>2</sub> et O<sub>3</sub></td><td>Le message nerveux (train de PA) est codé en modulation de frequence : <span class="t-red">Codage</span><br>PA est propageable</td></tr>
+</table>
+<!-- PROOFREAD: 4954 part1 p08 — handwritten; "(PR)" may read "(PL)"; "2( PA pour 1,4" — the character after 2 is unclear (maybe "21"); "stimulat", "train" cut/abbreviated at the cell edge; accents as best read -->
+<!-- page 09 -->
+<!-- ROTATE: 4954 part1 p09 180 -->
+<!-- NOTE: page 9 read from a 180°-rotated copy; it continues the Analyse / Conclusion table of page 8 -->
+<table>
+<tr><td><span class="t-red">3°/</span> Pour une pression de 1,1 l'amplitude du potentiel de récepteur = 3,5 mv</td><td>Cette amplitude de 3,5 mv permet d'atteindre le seuil (-50 mv) au niveau du 1<sup>er</sup> noeud de Ranvier (site generateur) ⇒ ouverture des CVD à Na<sup>+</sup> ⇒ naissance de PA</td></tr>
+</table>
+<!-- CROP: 4954 1 9 0.100 0.465 0.780 0.665 4954_p1_09_evolution -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4954/4954_p1_09_evolution.png" alt=""></figure>
+<!-- PROOFREAD: 4954 part1 p09 — handwritten; "generateur", "noeud" accents as best read; the figure image must be turned 180° after cropping (page stored upside down) -->
+<!-- page 10 -->
+<!-- CROP: 4954 1 10 0.045 0.162 0.895 0.584 4954_p1_10_pacini_frequence -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4954/4954_p1_10_pacini_frequence.png" alt=""></figure>
+<div class="data"><p class="para"><span class="t-gold">L</span>'intensité de la stimulation est traduite par des potentiels d'action d'autant plus rapprochés que l'excitation est plus grande.<br>La réponse de la fibre nerveuse est <b>modulée en fréquence.</b></p></div>
+<!-- CROP: 4954 1 10 0.46 0.725 0.86 0.83 4954_p1_10_codage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4954/4954_p1_10_codage.png" alt=""></figure>
+<p class="para">End</p>
+<p class="para">SBK</p>
+<!-- page 11 -->
+<div dir="rtl" lang="ar"><p class="para">شدّو ديارکم</p></div>
+<!-- NOTE: page 11 — smiley / hearts clip-art and decorative stroke skipped -->
+<!-- page 12 -->
+<!-- NOTE: page 12 is blank (header/footer only) -->
+<!-- page 13 -->
+<!-- NOTE: page 13 is blank (header/footer only) -->
+
+</section>
+
+</div>
+</body>
+</html>

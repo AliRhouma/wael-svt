@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · 1ere proposition</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="TUNISIA SAT">
+<meta data-pagefind-meta="n[content]" content="4929">
+<meta data-pagefind-meta="title[content]" content="1ere proposition">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · 1ere proposition" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>1ere proposition</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">TUNISIA SAT</span> <span class="tg">Cours</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1Xq9rkg1qOj3nlxKtr7FiXhq70ptM3qAk/view">↗ 705380_930143087077102_1459051068707144334_o.jpg</a> <a href="https://drive.google.com/file/d/1Xeshl450J0hLkGZCkMZy8h27Z-v-JE2G/view">↗ 920817_930143077077103_952356313341701431_o.jpg</a> <a href="https://drive.google.com/file/d/1ahG4-o2DLmmPlpxooJLWnD02dflbH8H5/view">↗ 980161_930143260410418_3236153718147476355_o.jpg</a> <a href="https://drive.google.com/file/d/1ZF110tzHQCeLhT8f-BVM8arCSzQvIHOe/view">↗ 1052534_930143030410441_6539534713934222871_o.jpg</a> <a href="https://drive.google.com/file/d/160eF4y_3ZrwMbsteE3iaH7n4PynYNS1w/view">↗ 1501569_930143170410427_2947231442876256978_o.jpg</a> <a href="https://drive.google.com/file/d/1uhsmeV48loq0ysVVOMic4mH0j9ZghT7n/view">↗ 10258213_930142807077130_7874885394910999103_n.jpg</a> <a href="https://drive.google.com/file/d/1-3lMhnuMcsXG4-mBr7b5or6h5jvzDfGD/view">↗ 10258941_930143113743766_1469910083934423873_o.jpg</a> <a href="https://drive.google.com/file/d/1e_wbOuNCCBDAKbxZ_J6d8Gg6qSd5AsRA/view">↗ 10259240_930142797077131_3919800683347196866_o.jpg</a> <a href="https://drive.google.com/file/d/1Pypui8X2gzsG_O_5eIwcRcgSSmIwitmn/view">↗ 10293673_930142930410451_6388211631229495308_o.jpg</a> <a href="https://drive.google.com/file/d/19X72l0OeRG8rKWBiN2tN22pqCxQvHExQ/view">↗ 10986678_930142803743797_8051269775624427756_o.jpg</a> <a href="https://drive.google.com/file/d/12yU_JuNKZ5Vnb62-Nzzb88tueF3CeuY8/view">↗ 11057939_930142947077116_256928635300792246_o.jpg</a> <a href="https://drive.google.com/file/d/1d6_j-LbwGR8iMSzMbS_QqxJe_6s3fz7S/view">↗ 11058046_930143193743758_453311907004502096_o.jpg</a> <a href="https://drive.google.com/file/d/1IyTjYA3VlKTSeKf0PBtV6HhDy7snCZTs/view">↗ 11059387_930142980410446_4231365427858299298_o.jpg</a> <a href="https://drive.google.com/file/d/14XzfEObpJf-HCjEXDfQTzCcnSVDAi_Pl/view">↗ 12370884_930143150410429_3848495304313364445_o.jpg</a> <a href="https://drive.google.com/file/d/190JhbivvJylYmMYrb3aKQUhZ1e4042Lc/view">↗ 12371069_930143267077084_6682011593276590174_o.jpg</a> <a href="https://drive.google.com/file/d/1TYV8kICoyHh-vBZ1knB9AoO5Ikk8Rey7/view">↗ 12374985_930142883743789_3363539438695528084_o.jpg</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (16)</b><ul><li><a href="https://drive.google.com/file/d/1Xq9rkg1qOj3nlxKtr7FiXhq70ptM3qAk/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/1Xeshl450J0hLkGZCkMZy8h27Z-v-JE2G/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/1ahG4-o2DLmmPlpxooJLWnD02dflbH8H5/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/1ZF110tzHQCeLhT8f-BVM8arCSzQvIHOe/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/160eF4y_3ZrwMbsteE3iaH7n4PynYNS1w/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/1uhsmeV48loq0ysVVOMic4mH0j9ZghT7n/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/1-3lMhnuMcsXG4-mBr7b5or6h5jvzDfGD/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/1e_wbOuNCCBDAKbxZ_J6d8Gg6qSd5AsRA/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/1Pypui8X2gzsG_O_5eIwcRcgSSmIwitmn/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/19X72l0OeRG8rKWBiN2tN22pqCxQvHExQ/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/12yU_JuNKZ5Vnb62-Nzzb88tueF3CeuY8/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/1d6_j-LbwGR8iMSzMbS_QqxJe_6s3fz7S/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/1IyTjYA3VlKTSeKf0PBtV6HhDy7snCZTs/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/14XzfEObpJf-HCjEXDfQTzCcnSVDAi_Pl/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/190JhbivvJylYmMYrb3aKQUhZ1e4042Lc/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li><li><a href="https://drive.google.com/file/d/1TYV8kICoyHh-vBZ1knB9AoO5Ikk8Rey7/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 3 - Neurophysiologie / Cours / 1ere proposition</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: TUNISIA SAT -->
+<div class="exh"><span class="idx">Cours</span><h2>1ere proposition</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4929.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">TUNISIA SAT</span> <span class="tg">Cours</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1Xq9rkg1qOj3nlxKtr7FiXhq70ptM3qAk/view">↗ 705380_930143087077102_1459051068707144334_o.jpg</a> <a href="https://drive.google.com/file/d/1Xeshl450J0hLkGZCkMZy8h27Z-v-JE2G/view">↗ 920817_930143077077103_952356313341701431_o.jpg</a> <a href="https://drive.google.com/file/d/1ahG4-o2DLmmPlpxooJLWnD02dflbH8H5/view">↗ 980161_930143260410418_3236153718147476355_o.jpg</a> <a href="https://drive.google.com/file/d/1ZF110tzHQCeLhT8f-BVM8arCSzQvIHOe/view">↗ 1052534_930143030410441_6539534713934222871_o.jpg</a> <a href="https://drive.google.com/file/d/160eF4y_3ZrwMbsteE3iaH7n4PynYNS1w/view">↗ 1501569_930143170410427_2947231442876256978_o.jpg</a> <a href="https://drive.google.com/file/d/1uhsmeV48loq0ysVVOMic4mH0j9ZghT7n/view">↗ 10258213_930142807077130_7874885394910999103_n.jpg</a> <a href="https://drive.google.com/file/d/1-3lMhnuMcsXG4-mBr7b5or6h5jvzDfGD/view">↗ 10258941_930143113743766_1469910083934423873_o.jpg</a> <a href="https://drive.google.com/file/d/1e_wbOuNCCBDAKbxZ_J6d8Gg6qSd5AsRA/view">↗ 10259240_930142797077131_3919800683347196866_o.jpg</a> <a href="https://drive.google.com/file/d/1Pypui8X2gzsG_O_5eIwcRcgSSmIwitmn/view">↗ 10293673_930142930410451_6388211631229495308_o.jpg</a> <a href="https://drive.google.com/file/d/19X72l0OeRG8rKWBiN2tN22pqCxQvHExQ/view">↗ 10986678_930142803743797_8051269775624427756_o.jpg</a> <a href="https://drive.google.com/file/d/12yU_JuNKZ5Vnb62-Nzzb88tueF3CeuY8/view">↗ 11057939_930142947077116_256928635300792246_o.jpg</a> <a href="https://drive.google.com/file/d/1d6_j-LbwGR8iMSzMbS_QqxJe_6s3fz7S/view">↗ 11058046_930143193743758_453311907004502096_o.jpg</a> <a href="https://drive.google.com/file/d/1IyTjYA3VlKTSeKf0PBtV6HhDy7snCZTs/view">↗ 11059387_930142980410446_4231365427858299298_o.jpg</a> <a href="https://drive.google.com/file/d/14XzfEObpJf-HCjEXDfQTzCcnSVDAi_Pl/view">↗ 12370884_930143150410429_3848495304313364445_o.jpg</a> <a href="https://drive.google.com/file/d/190JhbivvJylYmMYrb3aKQUhZ1e4042Lc/view">↗ 12371069_930143267077084_6682011593276590174_o.jpg</a> <a href="https://drive.google.com/file/d/1TYV8kICoyHh-vBZ1knB9AoO5Ikk8Rey7/view">↗ 12374985_930142883743789_3363539438695528084_o.jpg</a></div>
+<!-- page 01 (part1) -->
+<p class="subhead t-red"><b>IV Sommation spatiale et sommation temporelle :</b></p>
+<p class="subhead t-navy">1. <span class="t-red">Sommation spatiale :</span></p>
+<p class="para">Soit un neurone postsynaptique recevant des boutons synaptiques appartenant à une même population de neurones. L'application d'un stimulus d'intensité croissante à ce tronc nerveux va activer un nombre de plus en plus important de boutons. Il en résulte des PPSE globaux d'amplitude de plus en plus importante. On dit, alors, que l'amplitude augmente par sommation spatiale, puisque l'espace excité augmente avec le nombre de boutons activés.</p>
+<p class="para">Si l'amplitude atteint le seuil au niveau du cône axonique du neurone postsynaptique, il y aura naissance d'un potentiel d'action.</p>
+<p class="para">La sommation est, également, observée selon le même principe si les synapses sont inhibitrices et l'amplitude des PPSI globaux augmente jusqu'à une limite définit par la capacité physiologique de la fibre.</p>
+<p class="subhead t-navy">2. <span class="t-red">Sommation temporelle :</span></p>
+<p class="para">Une stimulation unique donne un PPSE. L'application d'une deuxième stimulation à un délai inférieur à la durée d'un PPSE se traduit par la sommation des deux PPSE tel que le PPSE globale obtenu est d'amplitude égale à la somme algébrique des deux PPSE. Si le nombre des stimulations successives appliquées dans les mêmes conditions est plus important, on obtient un PPSE globale d'amplitude qui peut atteindre le seuil au niveau du cône axonique du neurone postsynaptique et déclencher un potentiel d'action.</p>
+<p class="para">Le même raisonnement s'applique aux synapses inhibitrices.</p>
+<p class="subhead t-navy">3. <span class="t-red">Intégration synaptique :</span></p>
+<p class="para">Si un neurone est soumis en même temps à l'action de voies excitatrices et de voies inhibitrices la somme algébrique des PPSE et des PPSI sera :</p>
+<ul class="b">
+<li>Un PPSE d'amplitude égale ou supérieure au seuil et qui déclenche un potentiel d'action</li>
+<li>Un PPSE d'amplitude inférieure au seuil et qui ne sera pas propageable.</li>
+<li>Un potentiel de repos si la somme est nulle.</li>
+<li>Un PPSI.</li>
+</ul>
+<p class="subhead t-red"><b>LES DROGUES</b></p>
+<p class="subhead t-navy"><b>Action des drogues sur le cerveau :</b></p>
+<p class="para">Cocaïne, ecstasy, tabac, alcool, héroïne, médicaments psycho actifs... Tous les produits qui peuvent déclencher une dépendance chez l'homme ont en commun une propriété :</p>
+<p class="para">Ils augmentent la quantité de dopamine disponible dans une zone du cerveau, le circuit de récompense.</p>
+<p class="para">Une substance psycho active dont la structure moléculaire ressemble à celle d'une substance produite naturellement par l'organisme peut se fixer à la place de celle-ci sur les récepteurs spécifiques.</p>
+<p class="para">3 modes d'action sur le neuromédiateur selon les substances :</p>
+<!-- NOTE: printed page numbers at page bottoms not transcribed (page furniture); parts kept in Drive file order (printed page numbers out of order: part1 = p.10) -->
+<!-- page 01 (part2) -->
+<p class="subhead t-red"><b>II Activité synaptique:</b></p>
+<p class="para">sur le plan fonctionnel, l'arrivé d'un potentiel d'action au niveau d'une terminaison présynaptique déclenche l'ouverture de canaux voltage dépendants calcium qui pénètre à l'intérieur du bouton. cet ion stimule la perméabilité des vésicules synaptiques qui migrent pour s'accoler à la membrane présynaptique pour libérer par exocytose leur médiateur chimique dans la fente synaptique. ce médiateur se fixe sur les sites récepteurs de la membrane postsynaptique. l'association du médiateur à son site récepteur provoque une modification locale et temporelle de perméabilité de la membrane postsynaptique par ouverture de canaux chimio-dépendants</p>
+<p class="para">tous ces phénomènes nécessitent un temps appelé délai synaptique qui est d'à peu près 1 ms. toute l'activité synaptique s'arrête rapidement par inactivation du médiateur chimique qui sera hydrolysé au niveau de l'espace synaptique. Ainsi, la synapse sera disponible à fonctionner de nouveau si un deuxième potentiel d'action arrive au niveau de la terminaison présynaptique.</p>
+<p class="para">La spécialisation des structures élémentaires de la synapse (vésicules dans l'élément présynaptique et sites récepteurs sur l'élément postsynaptique) laisse que l'information nerveuse se déplace toujours dans un seul sens : dendrites - corps cellulaire - axone.</p>
+<p class="para">Il existe dans le système nerveux plusieurs dizaines de médiateurs chimiques différents et à chacun d'entre eux correspond un type de sites récepteurs spécifique. donc, si un neurone libère un seul type de médiateur et comme il peut recevoir plusieurs boutons provenant de plusieurs neurones différents, il doit, alors avoir plusieurs types de récepteurs.</p>
+<p class="para">En fin, on a constater que pour un même médiateur, il peut y avoir un ou plusieurs types de récepteurs postsynaptiques. Exemple : l'acétylcholine exerce un effet excitateur sur la cellule musculaire et un effet inhibiteur sur la cellule cardiaque.</p>
+<p class="para">De toutes ces observations, on comprend que la nature de l'effet observé dans un élément postsynaptique suite à l'activité d'une synapse ne dépend pas forcement du type de médiateur ou du type de récepteur mais de leur association.</p>
+<p class="subhead t-red"><b>III Synapse excitatrice et synapse inhibitrice :</b></p>
+<p class="subhead t-navy">1. <span class="t-red">Synapse excitatrice :</span></p>
+<p class="para">Dans ce cas, la combinaison du médiateur avec son site récepteur provoque l'ouverture de canaux chimio-dépendants sodium ce qui induit un flux ionique entrant de cet ion, d'où une légère diminution de la négativité interne du neurone postsynaptique. C'est une dépolarisation appelée potentiel postsynaptique excitateur noté PPSE.</p>
+<p class="para">Dans le cas de synapses neuro-neuroniques l'activation d'un seul bouton synaptique donne toujours un PPSE de faible amplitude incapable de dépolariser la cellule postsynaptique jusqu'au seuil. Alors que la synapse neuromusculaire fait exception.</p>
+<p class="subhead t-navy">2. <span class="t-red">Synapse inhibitrice :</span></p>
+<p class="para">La combinaison du médiateur chimique avec son site récepteur provoque l'ouverture de canaux chimio-dépendants soit potassium qui sort de l'élément postsynaptique soit chlore qui rentre dans l'élément postsynaptique et dans les deux cas, il y a une diminution de la négativité interne de l'élément postsynaptique pour créer une hypèr-polarisation transitoire appelée potentiel postsynaptique inhibiteur noté PPSI.</p>
+<!-- page 01 (part3) -->
+<!-- ROTATE: 4929 part3 p01 180 -->
+<!-- CROP: 4929 3 1 0.045 0.032 0.830 0.385 4929_systeme_recompense -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4929/4929_systeme_recompense.png" alt=""></figure>
+<p class="subhead t-red"><b>LE STRESS</b></p>
+<p class="subhead t-navy">1/ Définitions</p>
+<p class="para"><b>Stress = mot anglais signifiant « effort intense, tension »</b></p>
+<p class="para"><b>Le stress est en français, un terme général désignant</b></p>
+<ul class="b">
+<li>soit la réaction de l'organisme<br><b>« Réponse de l'organisme aux facteurs d'agression physiologiques et psychologiques ainsi qu'aux émotions</b></li>
+</ul>
+<p class="para"><b><i>( agréables ou désagréables) qui nécessitent une adaptation. »</i></b></p>
+<ul class="b">
+<li>soit l'agent ou les facteurs à l'origine de cette sollicitation.</li>
+</ul>
+<p class="para"><b>Les agents du stress peuvent être physiques (forte chaleur, froid intense, traumatisme , bruit, …),</b> infectieux ou psychiques (émotion violente)</p>
+<p class="subhead t-navy"><b>2/ La physiologie du stress: le « syndrome d'adaptation »<br>les 3 stades successifs :</b></p>
+<p class="para"><span class="t-red">1/ <b>la réaction d'alarme</b></span> : premières réactions de défense de l'organisme avec stimulation du système neuro-endocrine ( cortex, hypophyse, ACTH) et sécrétion accrue d'hormones corticosurénaliennes, adrénaline d'abord puis cortisol , de vasopressine, etc. Ces stimuli hormonaux suscitent  des réactions cardio-vasculaires, digestives et métaboliques :  augmentation de la fréquence cardiaque, de la fréquence respiratoire, bouffées de chaleur, spasmes abdominaux.</p>
+<p class="para"><b><span class="t-red">2/ le stade d'adaptation</span> ou de résistance :les mécanismes mis en jeu lors de la première phase se compensent ou même s'inversent. Equilibre entre les systèmes sympathique ( adrénaline) et para-sympathique ( acétylcholine- nerf vague).Elévation de la tension et de la température.</b></p>
+<!-- page 01 (part4) -->
+<p class="para">canaux voltage dépendant à ce niveau. On parle, alors, d'un potentiel local (potentiel de récepteur) dont l'amplitude diminue quand il s'éloigne de son lieu de naissance. Atteignant le site générateur à une amplitude égale ou supérieure au seuil, le potentiel local entraîne l'ouverture des canaux voltage dépendant pour induire un potentiel d'action propageable le long de la fibre.</p>
+<p class="para">Le corpuscule de Pacini a, donc, converti une stimulation mécanique en une énergie électrique (potentiel d'action) : c'est la transduction. Mais, le potentiel d'action est une norme constante ! donc, comment ce récepteur peut-il informer les centres supérieurs sur les intensités supraliminaires ?</p>
+<p class="para"><b><span class="t-red">Remarque</span>  <span class="t-blue">tous les récepteurs,  fonctionnent de la même façon : on peut être questionné sur le fuseau neuromusculaire à l'occasion de l'étude de réflexe  myotatique comme on peut avoir d'autres types de récepteur à l'occasion d'un exercice simple (voir série)</span></b></p>
+<p class="subhead t-navy">2. <span class="t-red">Codage de l'information au niveau du récepteur :</span></p>
+<div class="data">
+<p class="para">A une stimulation de 0,2g le tracé enregistré par l'électrode réceptrice traduit la valeur du potentiel de repos. 0,2g est, donc, une stimulation infraliminaire. A partir de 0,5g on obtient des potentiels d'action dont la fréquence est proportionnelle à l'intensité de la stimulation supraliminaire. Ainsi on comprend que, le corpuscule de Pacini traduit l'intensité de la stimulation supraliminaire en une fréquence proportionnelle de potentiels d'action:c'est le codage.</p>
+<!-- CROP: 4929 4 1 0.400 0.285 0.808 0.640 4929_pacini_codage -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4929/4929_pacini_codage.png" alt=""></figure>
+</div>
+<p class="subhead t-red"><b>LA TRANSMISSION SYNAPTIQUE:</b></p>
+<p class="subhead t-red"><b>I Anatomie fonctionnelle de la synapse:</b></p>
+<p class="para">Une synapse est formée d'un élément <span class="t-blue">présynaptique</span> et d'un élément <span class="t-blue">postsynaptique</span> séparés par un espace de l'ordre de 10 à 50 nm appelé espace synaptique ou <span class="t-blue">fente synaptique</span>. l'élément présynaptique est un élargissement de l'axone d'un neurone présynaptique appelé bouton terminal ou bouton synaptique. ce bouton contient un grand nombre de petites vésicules appelées vésicules synaptiques qui contiennent une substance chimique appelée médiateur chimique ou neurotransmetteur dessiné à être libéré dans l'espace synaptique pour agir sur la membrane postsynaptique, en effet, cette membrane porte des structures moléculaires appelées sites récepteurs tel que l'association entre le médiateur et son site récepteur induit l'ouverture sous stimulation chimique de canaux qui sont, alors, dits canaux chimio-dépendants qui sont localisés sur la membrane postsynaptique.</p>
+<!-- page 01 (part5) -->
+<!-- ROTATE: 4929 part5 p01 180 -->
+<p class="para">augmentations immédiates et importantes de sérotonine dans la synapse, mais aussi de dopamine, suivies d'un épuisement des stocks de ces neuromédiateurs.</p>
+<p class="para">Le cannabis entraîne une faible libération de dopamine selon un mécanisme encore étudié et discuté. Les récepteurs cannabinoïdes sont présents en forte densité dans le système limbique (dans le noyau accumbens, dans le cervelet, l'hippocampe et le cortex).</p>
+<p class="para"><span class="t-red">*<b>La cocaïne</b> agit en empêchant la recapture de la dopamine au niveau des synapses. Ce faisant, elle augmente la présence et donc l'effet de la dopamine dans les synapses au niveau du cerveau des émotions (système limbique).</span></p>
+<p class="para">*L'ecstasy augmente la présence de sérotonine dans les synapses en bloquant sa recapture. Dans une moindre mesure, elle augmente également celle de la dopamine.</p>
+<p class="subhead"><b><span class="t-gold">LES NEUROTRANSMETTEURS AFFECTÉS PAR LES DROGUES</span></b></p>
+<p class="para">Comment les drogues nous rendent-elles si euphoriques ? Et en même temps, comment de simples molécules peuvent-elles être à l'origine de comportements aussi aliénants que ceux qui accompagnent <u><span class="t-gold">la dépendance</span></u> ?</p>
+<p class="para">Nos comportements et nos émotions sont modulés par <u><span class="t-gold">des neurotransmetteurs qui agissent comme des clés entre les neurones</span></u>. La quantité de tel ou tel neurotransmetteur dans nos circuits cérébraux est réglé avec précision par de nombreux mécanismes de rétroaction, un peu comme un thermostat maintient la température d'une pièce autour d'une certaine valeur.</p>
+<p class="para">Les drogues sont des substances qui vont perturber cet équilibre délicat parce qu'elles ont des passe-partout qui leur permettent par exemple d'ouvrir certaines serrures situées entre vos neurones. Le cerveau va donc automatiquement s'adapter à cet apport extérieur en produisant moins de ses clés naturelles. Tout s'équilibre à nouveau jusqu'à ce que cette dose extérieure vienne à manquer. Du coup, la personne ressent un manque jusqu'à ce que ses neurones en vacance reprennent le boulot.</p>
+<p class="para">Parmi les circuits les plus affectés par les drogues figurent celui associé au plaisir. Or ce <u><span class="t-gold">circuit de la récompense sur-stimulé par les drogues</span></u> utilise un <u><span class="t-green">neurotransmetteur</span></u> particulier appelé <u><span class="t-gold">dopamine</span></u>. Les chercheurs n'ont donc pas été surpris de découvrir que pratiquement toutes les drogues qui créent une dépendance augmentent la quantité de dopamine de notre circuit de la récompense.</p>
+<p class="para">Pour cela, elles s'y prennent de différentes façons. Les drogues agissent <u><span class="t-green">soit en imitant, en stimulant ou en bloquant l'effet de certains</span></u></p>
+<!-- page 01 (part6) -->
+<div class="data"><p class="subhead"><b>FICHE REVISION : NEUROPHYSIOLOGIE-TUNISIA SAT</b></p></div>
+<p class="subhead t-red"><b>LE SYSTEM NERVEUX</b></p>
+<p class="subhead t-red"><b>I. LE COMPORTEMENT :</b></p>
+<ol class="qn">
+<li><span class="t-red">Définition :</span> Le comportement est toute activité observable d'un être vivant. Il peut se manifester sous forme d'attitude ou de mouvements plus ou moins complexes. L'éthologie est la science qui étudie les comportements. Les différents types de comportements :</li>
+</ol>
+<p class="para">a. <span class="t-red">les comportements innés :</span> il peut être d'origine réflexe comme la réaction à la chaleur ou à la lumière ou d'origine humorale comme la migration chez le criquet ou la parade nuptiale chez certains oiseaux<br>
+b. <span class="t-red">les comportements acquis :</span> c'est tout ce qui résulte d'un apprentissage (écriture, langage, ….)<br>
+c. <span class="t-red">comportement volontaire :</span> c'est tout ce qui naît à la suite d'une réflexion.</p>
+<p class="para">2. <span class="t-red">Conclusion :</span> Le comportement traduit une activité nerveuse en réponse à une stimulation d'origine interne ou externe. Cette activité met en évidence le travail d'un système : le système nerveux.</p>
+<p class="subhead t-red"><b>II. ORGANISATION GENERALE DU SYSTEME NERVEUX :</b></p>
+<p class="subhead t-navy">1. <span class="t-red">Le système nerveux cérébro-spinal = central :</span></p>
+<p class="para">Il est formé par l'encephale (cerveau, cervelet et bulbe rachidien) duquel se détachent 12 paires de nerfs craniens et de la moelle épinière de laquelle se détachent 31 paires de nerfs rachidiens.</p>
+<p class="subhead t-navy">2. <span class="t-red">Le système nerveux végétatif = périphérique = autonome:</span></p>
+<p class="para">Il innerve les siscères, les vaisseaux sanguins et les glandes et annexe le système nerveux central puisqu'il se détache du bulbe rachdien et de la moelle épinière. Il est formé du système sympathique ou orthosympathique qui se détache de la moelle dorsale et lombaire et du système parasympathique qui se détache de la moelle sacrée et du bulbe rachidien.</p>
+<!-- PROOFREAD: 4929 part6 p01 — low-resolution page: "siscères", "rachdien" read as printed but uncertain -->
+<p class="para">Les fibres de ce système éffectuent toujours un relais au niveau d'un ganglion avant d'atteindre leurs organes éffecteurs : les ganglions du système sympathique longent la colone vertébrale pour former une longue chaine appelée chaine étoilée (=tronc cérébral = chaine sympathique latéro-vertébrale) et les ganglions du système parasympathique se trouvent dans ou juste à coté de l'organe éffecteur.</p>
+<p class="para">Le système sympathique est inhibiteur sauf au niveau du coeur, alors que le systhème parasympathique est éxcitateur sauf au niveau du coeur. Plusieurs organes recoivent une double innervation sympathique et parasympathique.</p>
+<p class="subhead t-navy">3. <span class="t-red">Les synapses:</span></p>
+<p class="para">Les laisons entre les cellules nerveuses successives sont des liaisons de continuité où les jonctions sont appelées synapses.</p>
+<!-- page 01 (part7) -->
+<ul class="b">
+<li>certaines imitent les neuromédiateurs naturels et donc se substituent à eux dans les récepteurs : la morphine, par exemple, s'installe dans les récepteurs à endorphine, et la nicotine, dans les récepteurs à acétylcholine ;</li>
+<li>certaines augmentent la sécrétion d'un neuromédiateur naturel : la cocaïne, par exemple, augmente la présence de dopamine dans la synapse, et l'ecstasy, celle de la sérotonine et de la dopamine ;</li>
+<li>certaines bloquent un neuromédiateur naturel : par exemple, l'alcool bloque les récepteurs nommés NMDA.</li>
+</ul>
+<p class="para">Les substances psychoactives à risque de dépendance agissent sur un circuit du cerveau dont la fonction est de favoriser les fonctions vitales (système de récompense). Il est impliqué dans la récompense (plaisir cérébral) des comportements liés à la nutrition et à la reproduction de l'espèce. Il participe ainsi à la satisfaction de vivre. Les substances psychoactives sollicitent anormalement ce circuit naturel et engendrent à terme la possibilité de son déséquilibre permanent.</p>
+<p class="subhead t-navy"><b>Le circuit de récompense :</b></p>
+<!-- CROP: 4929 7 1 0.045 0.345 0.750 0.723 4929_circuit_recompense -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4929/4929_circuit_recompense.png" alt=""></figure>
+<p class="subhead t-navy"><b>Substance par substance, les effets sur le cerveau :</b></p>
+<p class="para">*<b>L'alcool</b> se lie à de nombreux récepteurs biologiques comme les récepteurs à glutamate, GABA, sérotonine, nicotine.<br>L'alcool est impliqué dans l'augmentation de la libération de dopamine dans le système mésocorticolimbique.</p>
+<p class="para">*<b>Les amphétamines</b> et leurs dérivés, comme l'ecstasy, provoquent des</p>
+<!-- page 01 (part8) -->
+<p class="subhead t-red"><b>LE TISSU NERVEUX</b></p>
+<p class="subhead t-red"><b>I. LES CONSTITUANTS DU TISSU NERVEUX :</b></p>
+<p class="subhead t-navy">1. <span class="t-red">Structure de la substance grise :</span></p>
+<p class="para">Observée dans différents endroits, la substance grise présente une structure élémentaire formée par :</p>
+<ul class="b">
+<li><span class="t-red">le corps cellulaire = péricaryon</span> qui, en plus du noyau et des organites cellulaires connus, montre des neurofibrilles et des corps de Nissl.</li>
+<li>les dendrites qui sont des prolongements fins et ramifiés.</li>
+<li>l'axone = cylindraxe qui est un prolongement lisse et régulier</li>
+</ul>
+<p class="para">Le péricaryon présente une forme étoilée (multipolaire) au niveau de moelle épinière, pyramidale au niveau du cortex cérébral, bipolaire au niveau du cortex cérébelleux et en T ou unipolaire au niveau du ganglion spinal</p>
+<!-- CROP: 4929 8 1 0.115 0.318 0.878 0.692 4929_coupe_moelle_epiniere -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4929/4929_coupe_moelle_epiniere.png" alt=""></figure>
+<p class="subhead t-navy">2. <span class="t-red">Structure de la substance blanche :</span></p>
+<p class="para">a. <span class="t-red">observation d'un nerf dilacéré :</span> dilacéré, le nerf apparaît formé de plusieurs filaments. Ce sont les fibres nerveuses. Chaque fibre montre un axone central entouré d'une gaine de myéline qui s'interrompe de place en place au niveau d'étranglements ou nœuds de Ranvier. En fin, à la périphérie on trouve une autre gaine : la gaine de Schwann qui se continue même au niveau des nœuds et qui présente plusieurs noyaux (à raison d'un noyau par segment entre deux nœuds). Ainsi, on parle également de cellule de Schwann.<br>
+b. <span class="t-red">Observation d'une coupe transversale d'un nerf :</span> cette coupe montre d'une part que les fibres nerveuses sont réunies en faisceaux limités par des gaines conjonctives séparés par un tissu conjonctif riche en capillaires sanguins et d'autre part que le diamètre des fibres nerveuses est variable.</p>
+<!-- page 01 (part9) -->
+<p class="subhead t-navy">3. <span class="t-red">Origine du potentiel de repos :</span></p>
+<table>
+<tr><th rowspan="2">Ions</th><th colspan="2">Concentration en millimoles / litre</th></tr>
+<tr><th>Liquide intracellulaire</th><th>liquide extracellulaire</th></tr>
+<tr><td>Na+</td><td>49</td><td>440</td></tr>
+<tr><td>K+</td><td>410</td><td>22</td></tr>
+<tr><td>Cl-</td><td>40</td><td>560</td></tr>
+<tr><td>Gros anions (R-)</td><td>400</td><td>0</td></tr>
+</table>
+<p class="para">Les résultats des dosages indiqués dans le tableau ci-dessus, montrent que le liquide extracellulaire est fortement concentré en sodium et le liquide intracellulaire est fortement concentré en potassium. Il a été également que la membrane de la fibre est presque imperméable ! cependant, elle se laisse traverser par quelques espèces ioniques à travers des protéines canaux (canaux de fuite) qui sont toujours ouvertes pour laisser passer ces ions selon leurs gradients de concentration. Mais que la perméabilité de la membrane au potassium est plus importante que celle au sodium. Ainsi, on est arrivé à dire que la membrane possède une perméabilité sélective.</p>
+<p class="para">Tenant compte de ces observations, on doit penser qu s'ils étaient seulement livrés à leurs propriétés physiques, et comme la membrane est perméable, les ions aboutiront, après un certain temps, à un équilibre de concentration. Ce qui n'est pas le cas physiologiquement. Donc, il y a certainement, un mécanisme d'entretien des gradients de concentration pour conserver le potentiel de repos.</p>
+<p class="subhead t-navy">3. <span class="t-red">Entretien du potentiel de repos :</span></p>
+<p class="para">Ce mécanisme doit faire déplacer le sodium de l'extérieur vers l'intérieur de la fibre et le potassium de l'intérieur vers l'extérieur de la fibre pour maintenir stables les concentrations physiologiques. C'est à dire déplacer ces ions contre leurs gradients de concentration, donc avec dépense énergétique. En effet, il s'agit d'un transport actif réalisé par une enzyme : L'ATPase Na+ - K+ dépendante qui hydrolyse l'ATP pour utiliser l'énergie libérée à transférer les ions sodium et potassium contre leurs gradients de concentration. On appelle ce mécanisme la pompe couplée Na+ - K+. Elle s'oppose à l'équilibre de concentration de part et d'autre de la membrane et maintien stable le potentiel de repos. Cette pompe nécessite beaucoup d'énergie. En effet, la cellule utilise 20% de toute son énergie métabolique pour faire fonctionner la pompe.</p>
+<p class="subhead t-red"><b>III. LE POTENTIEL D'ACTION :</b></p>
+<p class="subhead t-navy">1. <span class="t-red">Mise en évidence du potentiel d'action:</span></p>
+<p class="para">L'électrode active étant placée à l'intérieur de l'axone, on porte une stimulation efficace sur la fibre. Le tracé de l'oscilloscope montre une variation du potentiel de repos qui passe de – 70 mv à + 30 mv : C'est le potentiel d'action.</p>
+<p class="subhead t-navy">2. <span class="t-red">Description du potentiel d'action :</span></p>
+<p class="para">Sur le plan électrique, le potentiel d'action montre : <span class="t-blue">(le schéma est à faire)</span></p>
+<ul class="b">
+<li>Une phase ascendante = <span class="t-blue">phase de dépolarisation</span> : au cours de laquelle la négativité interne diminue jusqu'à s'inverser en positivité.</li>
+<li>Une phase descendante = <span class="t-blue">phase de repolarisation</span> : au cours de laquelle la négativité interne augmente de nouveau. Dépolarisation et repolarisation durent en moyenne 1 ms.</li>
+</ul>
+<!-- page 01 (part10) -->
+<!-- ROTATE: 4929 part10 p01 180 -->
+<!-- CROP: 4929 10 1 0.240 0.034 0.755 0.325 4929_fibre_myelinisee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4929/4929_fibre_myelinisee.png" alt=""></figure>
+<p class="subhead t-red"><b>III. NOTION DE NEURONE :</b></p>
+<p class="subhead t-navy">1. <span class="t-red">La dégénérescence Wallerienne :</span></p>
+<p class="para">a. <span class="t-red">observation :</span> le phénomène a été décrit par Waller en 1851 : la section d'une fibre entraîne la dégénérescence de l'axone et de la gaine de myéline dans la partie périphérique de toute la fibre tandis que persiste la gaine de Schwann. La partie centrale de la fibre reste intacte. (la dégénérescence d'un nerf consécutive à une lésion se produit, chez l'Homme, en 24 heures). Au bout d'un certain temps, la partie centrale de l'axone repousse et rehabite la gaine de Schwann puis apparaît la gaine de myéline. (cette repousse est lente , elle est de l'ordre de 1 à 2 mm/jour chez l'Homme)<br>
+b. <span class="t-red">Explication :</span> pour expliquer ces résultats, on a eu recours à plusieurs autres expériences et observations cliniques tel que l'expérience de mérotomie qui consiste à découper, sous le microscope, un organisme unicellulaire tel que seule une partie qui renferme le noyau et les autres parties renferment uniquement du cytoplasme. On constate que seule la partie qui renferme le noyau persiste et reconstitue la totalité de la cellule. Ceci a permis de dire que la fibre est une partie d'une cellule qui renferme un noyau capable de régénérer la partie perdue. Egalement, la poliomyélite, est une maladie virale qui entraîne la paralysie d'une région du tronc ou d'un membre. Le virus de la poliomyélite attaque le péricaryon de la corne antérieure de la moelle épinière et on a constaté que cette attaque est suivit de la dégénérescence des axones des fibres des nerfs rachidiens correspondants.<br>
+c. <span class="t-red">Conclusion :</span> à partir de ces observations, on peut comprendre que le péricaryon contenu dans la substance grise et les fibres nerveuses contenues dans la substance blanche et les nerfs appartiennent au même élément appelé cellule nerveuse ou neurone.</p>
+<p class="subhead t-navy">2. <span class="t-red">Structure du neurone :</span></p>
+<p class="para">Un neurone est une cellule spécialisée qui a perdue la capacité de se diviser, donc, la perte d'une cellule nerveuse est irréversible. La myélinisation des neurones ne s'achève qu'à l'age de trois ans. Les neurones s'enchaînent par des zones de contacte appelées synapses. Au tour des neurones on trouve les cellules gliales ou cellules de la névroglie qui sont des cellules de soutient qui assurent la nutrition, la protection et un isolement électrique.</p>
+<!-- page 01 (part11) -->
+<ul class="b">
+<li><span class="t-blue">Phase d'hyper polarisation</span> : elle correspond à une oscillation amortie au cours de laquelle la négativité interne continue à augmenter avant de revenir à la valeur du potentiel de repos.</li>
+</ul>
+<p class="subhead t-navy">3. <span class="t-red">Effet des stimulations d'intensités croissantes :</span></p>
+<p class="para">Des stimulations d'intensités croissantes sont portées sur la fibre à intervalles de temps réguliers montrent que toutes les stimulations provoquent une dépolarisation de la membrane. Cependant, les trois premières stimulations provoquent une dépolarisation d'amplitude de plus en plus importante mais qui n'atteint pas une valeur critique (-50 mv) appelée seuil de potentiel. Ces stimulations sont, alors, dites infraliminaires. On appelle seuil de stimulation la plus petite valeur de l'intensité capable d'engendrer un potentiel d'action. La 4ème stimulation donne une dépolarisation qui atteint le seuil et la réponse obtenue est un potentiel d'action. Cette stimulation est dite stimulation liminaire ou stimulation seuil. Les stimulations qui suivent sont d'intensité plus importantes mais, donnent toujours un potentiel d'action identique à celui engendré par la stimulation liminaire. Ceci revient à ce que la fibre obéit à la loi de tout ou rien.</p>
+<p class="subhead t-navy">4. <span class="t-red">Mécanisme de la naissance du potentiel d'action :</span></p>
+<p class="para">Partant du niveau du potentiel de repos, la membrane est dépolarisée jusqu'au niveau du seuil. Il se produit, alors, une ouverture brutale de canaux ioniques voltage dépendants : il s'agit d'abord de l'ouverture de canaux Na+ puis, quelques microsecondes plus tard, vont s'ouvrir les canaux K+. Ainsi, on a :</p>
+<ul class="b">
+<li>L'ouverture des canaux Na+ permet à cet ion de rentrer dans la fibre, elle est, alors, à l'origine de la phase de dépolarisation.</li>
+<li>L'ouverture des canaux K+ permet à cet ion de sortir, elle est, alors, à l'origine de la phase de repolarisation.</li>
+<li>L'ouverture prolongée des canaux K+ permet de rendre compte de la phase d'hyper polarisation consécutive.</li>
+</ul>
+<p class="subhead t-navy"><span class="t-red">Remarques :</span></p>
+<ul class="b">
+<li><span class="t-blue">Les échanges ioniques pendant un seul potentiel d'action sont infimes (quelques nanomoles) et comme les concentrations présentes sont relativement considérables, un neurone peut, donc, produire plusieurs centaines de potentiels d'action sans se fatiguer (c'est à dire sans que sa structure interne ne s'altère) ce qui donne à la pompe le temps suffisant pour corriger les modifications suite à un potentiel d'action. On dit, alors, que le neurone est infatigable. De même, qu'au moment ou la fibre est soumise à un potentiel d'action, elle ne répond à aucune autre stimulation. On dit, alors, qu'elle est en période réfractaire.</span></li>
+<li><span class="t-blue">Les réponses obtenues par des stimulations infraliminaires sont appelées réponses locales ou potentiel local. Ces réponses s'additionnent algébriquement et leur amplitude est fonction de l'intensité de la stimulation infraliminaire qui les provoque et de la distance qui sépare le lieu de leurs enregistrement par rapport à leurs lieu de naissance tel que cette amplitude diminue quand on s'éloigne du lieu de naissance de la dépolarisation. De toutes ces propriétés, on comprend que pour les réponses locales, la fibre réagit par ces propriétés physiques (résistance et capacité). Alors que, si le seuil est atteint, ce sont les propriétés physiologiques de la fibre qui sont mises en jeu (modification de la perméabilité par ouverture de canaux ioniques voltages dépendants)</span></li>
+</ul>
+<p class="subhead t-red"><b>IV. PROPAGATION DU MESSAGE NERVEUX :</b></p>
+<p class="subhead t-navy">1. <span class="t-red">La vitesse de propagation :</span></p>
+<p class="para">En utilisant deux électrodes réceptrices séparées d'une distance connue, placées sur une fibre qui reçoit une stimulation efficace, on peut déterminer l'intervalle de temps séparant les deux enregistrements et calculer, ainsi, la vitesse de propagation du message nerveux selon la formule :</p>
+<!-- page 01 (part12) -->
+<!-- NOTE: the spreadsheet screenshot (statement, table of values and graph) is one embedded image — cropped whole, not retyped -->
+<!-- CROP: 4929 12 1 0.045 0.035 0.745 0.352 4929_cocaine_dopamine_rats -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4929/4929_cocaine_dopamine_rats.png" alt=""></figure>
+<p class="para"><b>Cocaïne dopamine- effet de l'injection de cocaïne à des rats-</b></p>
+<p class="subhead t-navy"><b><i>Action héroïne</i></b></p>
+<!-- CROP: 4929 12 1 0.045 0.398 0.820 0.748 4929_action_heroine -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4929/4929_action_heroine.png" alt=""></figure>
+<!-- page 01 (part13) -->
+<p class="para"><b><span class="t-blue">V = m/s</span></b></p>
+<p class="para">La vitesse de propagation est proportionnelle à la température et au diamètre de la fibre. Egalement, les fibres myélinisées conduisent plus rapidement que les fibres amyélinisées.</p>
+<p class="subhead t-navy">2. <span class="t-red">Mécanisme de la conduction:</span></p>
+<p class="para">a. <span class="t-red">cas de fibre amyélinisée:</span> soit un axone parcouru par un potentiel d'action venant de gauche. Au temps "t", le potentiel d'action est au niveau "A". Au temps "t1" les charges positives intracellulaires de "A" seront attirées par les charges négatives de "B" et "C" et les charges négatives extracellulaires de "A" vont attirer les charges positives de "B" et de "C". D'où, une repolarisation de "A" et une dépolarisation de "B" et de "C". La dépolarisation de "C" est inefficace puisque cette zone est en période réfractaire, alors que la dépolarisation de "B" va faire progresse d'un pas le potentiel d'action toujours dans le même sens. Ainsi on comprend que suite à la présence de la zone réfractaire, le potentiel d'action se deplace sur l'axone toujours dans un seul sens.</p>
+<p class="para">b. <span class="t-red">Cas de fibres myélinisées:</span> c'est le même principe qui intervient mais d'un noeud de Ranvier au suivant puisque la gaine de myéline est un isolant électrique. On dit dans ce cas que la propagation est saltatoire.</p>
+<p class="subhead t-red"><b>TRANSMISSION ET CODAGE DE L'INTENSITE DU STIMULUS PAR LE RECEPTEUR SENSORIEL :</b></p>
+<p class="para">Le récepteur utilisé est le corpuscule de Pacini. C'est un récepteur cutané sensible aux variations de la pression mécanique (mécanorécepteur).</p>
+<p class="subhead t-navy">1. <span class="t-red">Naissance du message nerveux au niveau du récepteur : LA TRANSDUCTION :</span></p>
+<p class="para">Un corpuscule de Pacini isolé et placé dans un liquide physiologique, soumis à des pressions d'intensité croissantes et relié à trois électrodes réceptrices aux niveaux A, B et C tel que A se trouve à l'extrémité de la fibre (site transducteur), B au niveau du premier nœud de Ranvier (site générateur) et C au niveau d'un autre nœud de Ranvier.</p>
+<!-- CROP: 4929 13 1 0.165 0.585 0.830 0.890 4929_pacini_transduction -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4929/4929_pacini_transduction.png" alt=""></figure>
+<p class="para">Au niveau du point A, toute stimulation quelque soit son intensité donne une dépolarisation d'amplitude proportionnelle à l'intensité de la stimulation sans donner de potentiel d'action. Cela revient à l'absence de</p>
+<!-- page 01 (part14) -->
+<p class="para"><u><span class="t-green">neurotransmetteurs</span></u>.</p>
+<p class="subhead t-navy"><b>COCAINE</b></p>
+<p class="para">Les effets euphorisants de la cocaïne sont la conséquence de l'inhibition par la drogue des des mécanismes de récapture de la dopamine au niveau du système limbique («cerveau des émotions»). Donc, la présence et l'effet de la dopamine dans les synapses sont augmentés. Le mécanisme de rècapture, bloqué par la cocaïne, tente de faire face à la situation. Au moment de l'arrêt de la consommation de la cocaïne, le mécanisme de recapture de la dopamine, « surdéveloppé » entre temps, va abaisser les taux de dopamine en dessous du niveau physiologique. C'est pour cette raison que la personne commence à présenter des troubles psychiques (dépression, anxiété, anhédonie), ce qui la conduit à la rechute.</p>
+<!-- CROP: 4929 14 1 0.018 0.362 0.715 0.612 4929_synapse_dopamine -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4929/4929_synapse_dopamine.png" alt=""></figure>
+<!-- page 01 (part15) -->
+<p class="para"><span class="t-red">3/ <b>le stade d'épuisement</b></span> : les mécanismes d'adaptation physiques et psychiques sont débordés et cèdent. Peut conduire à la maladie ( ulcère) et la mort</p>
+<p class="subhead t-navy"><b>3/ Action du stress</b></p>
+<p class="para"><b>1/ sur les mécanismes de défense de l'organisme dont les défenses immunitaires, ce qui expliquerait les plus fréquentes infections</b></p>
+<p class="para"><b>(diminution des lymphocytes notamment)</b></p>
+<p class="para"><b>2/ les nombreuses maladies liées au stress : Eczéma Hypertension artérielle, Angine de poitrine, Ulcère gastrique, Insomnies, Anxiété<br>Migraines</b></p>
+<!-- page 01 (part16) -->
+<!-- CROP: 4929 16 1 0.100 0.035 0.892 0.452 4929_structure_neurone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4929/4929_structure_neurone.png" alt=""></figure>
+<p class="subhead t-red"><b>LE MESSAGE NERVEUX</b></p>
+<p class="subhead t-red"><b>I. PROPRIETES FONDAMENTALES DU TISSU NERVEUX :</b></p>
+<p class="para">Si à une grenouille décérébrée et démédulée, on dégage le muscle gastrocnemien et le nerf sciatique qui lui correspond, puis sur ce nerf, on porte une excitation efficace, on constate que le muscle se contracte. Cette expérience permet de mettre en évidence les deux propriétés fondamentales du tissu nerveux, à savoir <b>l'<span class="t-blue">excitabilité</span></b> (puisque le nerf a réagit à l'excitation) et la <b><span class="t-blue">conductibilité</span></b> (puisque le nerf a conduit l'excitation jusqu'au muscle qui s'est contracté)</p>
+<p class="subhead t-red"><b>II. LE POTENTIEL DE LA MEMBRANE AU REPOS : LE POTENTIEL DE REPOS :</b></p>
+<p class="subhead t-navy">1. <span class="t-red">mise en évidence du potentiel de repos :</span></p>
+<ul class="b">
+<li>Si les deux électrodes sont placées à <u>la surface de la fibre</u>, la <span class="t-blue">ddp</span> enregistrée est <span class="t-blue">nulle</span>. Donc, le liquide extracellulaire est <span class="t-blue">iso-potentiel.</span></li>
+<li>Si les deux électrodes sont placées à <u>l'intérieur de la fibre</u>, la <span class="t-blue">ddp</span> enregistrée est <span class="t-blue">nulle</span>. Donc, le liquide intracellulaire est <span class="t-blue">iso-potentiel</span>.</li>
+<li>Si on place l'électrode active à <u>l'intérieur d</u>e la fibre et l'électrode de référence <u>à l'extérieur</u>, on constate que le tracé de l'oscilloscope se déplace et se stabilise pour indiquer une <b><span class="t-blue">ddp = - 70mv</span></b>. Cette ddp se présente tel que l'intérieur de la fibre est chargé négativement par rapport à l'extérieur. Cette ddp représente le potentiel existant de part et d'autre de la membrane en dehors de toute excitation d'où, il est appelé <b><span class="t-blue">potentiel de membrane ou potentiel de repos et noté PR = - 70mv</span></b>. Cette valeur caractérise la cellule nerveuse et représente une moyenne retrouvée chez la plupart des cellules excitables. D'où, normalement, elle peut être plus élevée ou plus faible selon les cas des cellules et pour la même cellule selon son état physiologique.</li>
+</ul>
+
+</section>
+
+</div>
+</body>
+</html>

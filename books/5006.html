@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · numérisé_20260714-1641</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Mr Meher Chtioui">
+<meta data-pagefind-meta="n[content]" content="5006">
+<meta data-pagefind-meta="title[content]" content="numérisé_20260714-1641">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · numérisé_20260714-1641" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>numérisé_20260714-1641</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Chtioui Maher SVT · Mr. Meher Chtioui SVT</span> <span class="tg">Série</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1E3x5Pa0qPMAksUMfEIvXoKBFwART29FG/view">↗ numérisé_20260714-1641.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1E3x5Pa0qPMAksUMfEIvXoKBFwART29FG/view">BAC SCIENCE — Drive 1: Bac Science (Pilote Sousse docs) · Bac 2027 › Svt / Séries reo Mr chtioui / Neuro / 6</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: Chtioui Maher SVT · Mr. Meher Chtioui SVT -->
+<div class="exh"><span class="idx ex">Série</span><h2>numérisé_20260714-1641</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/5006.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Chtioui Maher SVT · Mr. Meher Chtioui SVT</span> <span class="tg">Série</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1E3x5Pa0qPMAksUMfEIvXoKBFwART29FG/view">↗ numérisé_20260714-1641.pdf</a></div>
+<!-- page 01 -->
+<!-- NOTE: p01 photo shows the edges of other sheets above and below the page (a few cut words, stamps) — not transcribed -->
+<!-- PROOFREAD: 5006 part1 p01 — heading cut/faded at the top: only the lower half of "EXERCICE N° 2 :" visible -->
+<div class="exsub">EXERCICE N° 2 :</div>
+<p class="subhead t-navy">A- Neurophysiologie</p>
+<p class="para">On se propose d'étudier les mécanismes de la naissance, de la transmission et de l'intégration du message nerveux<br>
+Pour cela on utilise le dispositif expérimental représenté par le document 1.</p>
+<!-- NOTE: handwritten underlines on p01 ("naissance", "transmission", "intégration") not transcribed -->
+<!-- CROP: 5006 1 1 0.15 0.195 0.845 0.60 5006_doc1_dispositif -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc1_dispositif.png" alt=""></figure>
+<p class="para">On réalise des expériences de stimulations efficaces sur les terminaisons prèsynaptiques T<sub>1</sub>, T<sub>2</sub> et T<sub>3</sub> du document 1 puis on enregistre leurs réponses à l'aide des oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>.</p>
+<p class="para">Les expériences réalisées et les enregistrements obtenus sont représentés dans le tableau du document 2.</p>
+<!-- page 02 -->
+<!-- PROOFREAD: 5006 part1 p02 — "Expériences" column very faded; subscripts of T (T2/T3) in the experiment descriptions are best readings -->
+<table>
+<tr><th>Expériences</th><th>Enregistrements en O<sub>1</sub></th><th>Enregistrements en O<sub>2</sub></th><th>Enregistrements en O<sub>3</sub></th></tr>
+<tr><td><b>Expérience 1 :</b><br>On porte une stimulation efficace isolée en T<sub>2</sub></td><td><!-- CROP: 5006 1 2 0.333 0.098 0.550 0.200 5006_doc2_exp1_O1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp1_O1.png" alt=""></figure></td><td><!-- CROP: 5006 1 2 0.540 0.098 0.780 0.200 5006_doc2_exp1_O2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp1_O2.png" alt=""></figure></td><td><!-- CROP: 5006 1 2 0.770 0.098 0.985 0.200 5006_doc2_exp1_O3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp1_O3.png" alt=""></figure></td></tr>
+<tr><td><b>Expérience 2 :</b><br>On porte deux stimulations efficaces simultanées en T<sub>2</sub> et T<sub>3</sub></td><td><!-- CROP: 5006 1 2 0.333 0.198 0.550 0.315 5006_doc2_exp2_O1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp2_O1.png" alt=""></figure></td><td><!-- CROP: 5006 1 2 0.540 0.198 0.780 0.315 5006_doc2_exp2_O2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp2_O2.png" alt=""></figure></td><td><!-- CROP: 5006 1 2 0.770 0.198 0.985 0.315 5006_doc2_exp2_O3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp2_O3.png" alt=""></figure></td></tr>
+<tr><td><b>Expérience 3 :</b><br>On porte deux stimulations efficaces très rapprochées en T<sub>1</sub> associées à une stimulation efficace isolée en T<sub>2</sub></td><td><!-- CROP: 5006 1 2 0.333 0.310 0.550 0.435 5006_doc2_exp3_O1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp3_O1.png" alt=""></figure></td><td><!-- CROP: 5006 1 2 0.540 0.310 0.780 0.435 5006_doc2_exp3_O2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp3_O2.png" alt=""></figure></td><td><!-- CROP: 5006 1 2 0.770 0.310 0.985 0.435 5006_doc2_exp3_O3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp3_O3.png" alt=""></figure></td></tr>
+<tr><td><b>Expérience 4 :</b><br>On injecte à l'aide d'une micropipette une substance chimique X dans la fente synaptique de la synapse T<sub>2</sub> - N<sub>2</sub> et on porte une stimulation efficace isolée en T<sub>2</sub></td><td><!-- CROP: 5006 1 2 0.333 0.430 0.550 0.572 5006_doc2_exp4_O1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp4_O1.png" alt=""></figure></td><td><!-- CROP: 5006 1 2 0.540 0.430 0.780 0.572 5006_doc2_exp4_O2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp4_O2.png" alt=""></figure></td><td><!-- CROP: 5006 1 2 0.770 0.430 0.985 0.572 5006_doc2_exp4_O3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc2_exp4_O3.png" alt=""></figure></td></tr>
+</table>
+<p class="subhead t-navy">Document 2</p>
+<!-- NOTE: small handwritten marks on the graphs of Document 2 (p02) — they stay in the crops; not transcribed -->
+<p class="consigne">1- Analysez les résultats des expériences 1 et 2 en vue de déduire :<br>
+-la nature des synapses T<sub>2</sub> - N<sub>2</sub> et T<sub>3</sub> - N<sub>2</sub>.<br>
+- trois propriétés du message nerveux<br>
+- la fonction du neurone N<sub>2</sub>.</p>
+<p class="consigne">2- Expliquez les tracés C<sub>1</sub> et C<sub>2</sub> en vue de déduire:<br>
+- la fonction du neurone N<sub>1</sub><br>
+- la nature des synapses T<sub>1</sub> - N<sub>1</sub> et N<sub>1</sub> - N<sub>2</sub>.</p>
+<p class="consigne">3- Analysez les résultats de l'expérience 4 en vue de proposer trois hypothèses concernant le mode d'action de la substance chimique X sur le fonctionnement de la synapse T<sub>2</sub> - N<sub>2</sub>.</p>
+<p class="consigne">4- Afin de tester la validité des hypothèses proposées, on réalise les expériences indiquées sur les documents suivants</p>
+<p class="para">-Document 3-a : On injecte à l'aide d'une micropipette la substance chimique X dans la fente synaptique de la synapse T<sub>2</sub> - et on note l'évolution de l'état structural de cette synapse suite à la stimulation efficace portée en T<sub>2</sub>.</p>
+<p class="para">-Document 3-b : on évalue la dose du neurotransmetteur présent dans la fente synaptique de la synapse T<sub>2</sub> - N<sub>2</sub> en absence et en présence de la substance chimique X suite à une stimulation efficace portée en T<sub>2</sub>.</p>
+<!-- PROOFREAD: 5006 part1 p02 — Document 3-a: "T2 -" at the line end, "N2" not visible (cut at the right edge); "en" at the end of Document 3-b line half cut -->
+<!-- page 03 -->
+<!-- NOTE: p03 photo shows the edge of another sheet at the top; handwritten "!!" in the left margin not transcribed -->
+<p class="para">-Document 3-c : Le neurotransmetteur de la synapse T<sub>2</sub> - N<sub>2</sub> est synthétisé dans le cytoplasme de la terminaison axonique (bouton synaptique T<sub>2</sub>) par les précurseurs et les enzymes. On injecte à l'aide d'une micropipette les précurseurs radioactifs dans le bouton synaptique T<sub>2</sub> et on note l'évolution de la radioactivité au niveau de la membrane postsynaptique du neurone N<sub>2</sub> en fonction de la dose de substance chimique X injectée dans la fente synaptique de la synapse T<sub>2</sub> - N<sub>2</sub> suite à la stimulation efficace portée en T<sub>2</sub>.</p>
+<table>
+<tr><th>Document 3-a</th><th colspan="2">Document 3-b</th><th>Document 3-c</th></tr>
+<tr><td rowspan="2"><!-- CROP: 5006 1 3 0.07 0.435 0.27 0.60 5006_doc3a_etat_structural -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc3a_etat_structural.png" alt=""></figure>
+Etat structural de la synapse T<sub>2</sub> - N<sub>2</sub> en présence de la substance chimique X dans la fente synaptique</td>
+<td>Dose du neurotransmetteur présent dans la fente synaptique de la synapse T<sub>2</sub> - N<sub>2</sub> en absence de la substance chimique X</td>
+<td>Dose du neurotransmetteur présent dans la fente synaptique de la synapse T<sub>2</sub> - N<sub>2</sub> en présence de la substance chimique X</td>
+<td rowspan="2"><!-- CROP: 5006 1 3 0.64 0.425 0.97 0.645 5006_doc3c_radioactivite -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/5006/5006_doc3c_radioactivite.png" alt=""></figure></td></tr>
+<tr><td>3 µmoles. l<sup>-1</sup></td><td>3 µmoles. l<sup>-1</sup></td></tr>
+</table>
+<p class="subhead t-navy">Document 3</p>
+<p class="consigne">Exploitez ces résultats afin de tester la validité des hypothèses proposées concernant le mode d'action de la substance chimique X sur le fonctionnement de la synapse T<sub>2</sub> - N<sub>2</sub>.</p>
+<!-- page 04 -->
+<div class="exsub"><b>II- Deuxième partie : 12 points</b></div>
+<p class="subhead t-navy">A- Neurophysiologie (7,5 points) :</p>
+<p class="para">1-</p>
+<table>
+<tr><th>Expériences</th><th>Analyse</th><th>Déduction</th></tr>
+<tr><td>1</td><td>La stimulation efficace porté en T<sub>2</sub> engendre au niveau de :<br>
+-O<sub>1</sub> : un potentiel de repos (tracé A<sub>1</sub>)<br>
+-O<sub>2</sub> : une légère dépolarisation postsynaptique qui atteint -60 mv = PPSE (tracé A<sub>2</sub>)<br>
+-O<sub>3</sub> : un potentiel de repos (tracé A<sub>3</sub>)</td>
+<td>- la synapse T<sub>2</sub>-N<sub>2</sub> est <u>excitatrice</u><br>
+- le message nerveux est <u>transmissible</u> du neurone présynaptique au neurone postsynaptique</td></tr>
+<tr><td>2</td><td>Les stimulations efficaces simultanées portées en T<sub>2</sub> et T<sub>3</sub> engendrent au niveau de :<br>
+-O<sub>1</sub> : un potentiel de repos (tracé B<sub>1</sub>)<br>
+-O<sub>2</sub> : un PPSE global qui atteint le seuil et qui résulte de la sommation spatiale (somme algébrique) des 2 PPSE unitaires (PPSE <sub>T2</sub> + PPSE <sub>T3</sub>); ce PPSE est à l'origine d'un PA post synaptique (tracé B<sub>2</sub>) d'amplitude 100 mv.<br>
+-O<sub>3</sub> : un PA d'amplitude 100 mv (tracé B<sub>3</sub>)</td>
+<td>- la synapse T<sub>3</sub>-N<sub>2</sub> est <u>excitatrice</u><br>
+- le message nerveux est <u>propageable</u> en gardant la même amplitude donc il <u>obéit à la de tout où rien.</u><br>
+- Le neurone N<sub>2</sub> est un neurone <u>intégrateur.</u></td></tr>
+</table>
+<p class="para">Analyse<br>0,25x3<br>Déducti<br>0,25x2<br>Analy<br>0,5 +<br>Dédu<br>0,25</p>
+<!-- PROOFREAD: 5006 part1 p04 — barème column cut by the right edge of the page (only the visible letters typed) -->
+<p class="para">2-</p>
+<table>
+<tr><th>Tracés</th><th>Explication</th><th>Déduction</th></tr>
+<tr><td>C<sub>1</sub></td><td>Les deux stimulations efficaces très rapprochées portées en T<sub>1</sub>, engendrent au niveau de O<sub>1</sub> (cône axonique du N<sub>1</sub>) un PPSE global qui atteint le seuil et qui résulte de la sommation temporelle des 2 PPSE successifs ; ce PPSE est à l'origine du PA postsynaptique propageable le long de N<sub>1</sub> donc arrive jusqu'au le bouton synaptique de N<sub>1</sub>.</td>
+<td>- la synapse T<sub>1</sub>-N<sub>1</sub> est <u>excitatrice</u><br>
+- Le neurone N<sub>1</sub> est un neurone <u>intégrateur</u>.</td></tr>
+<tr><td>C<sub>2</sub></td><td>Le PA postsynaptique propageable le long de N<sub>1</sub> donc qui arrive jusqu'au le bouton synaptique de N<sub>1</sub> associé au PA suite à la stimulation efficace portée en T<sub>2</sub> (bouton excitateur) engendrent au niveau de O<sub>2</sub> (cône axonique du N<sub>2</sub>) un PPSE global d'amplitude 5mv ; cette diminution d'amplitude s'explique par la sommation spatiale d'un PPSE et d'un PPSI.</td>
+<td>- la synapse N<sub>1</sub>-N<sub>2</sub> est <u>inhibitrice</u></td></tr>
+</table>
+<p class="para">E<br>D</p>
+<!-- page 05 -->
+<!-- PROOFREAD: 5006 part1 p05 — top lines skewed and faint; first word "La stimulation" partly hidden by a handwritten mark -->
+<p class="para">3-</p>
+<p class="para">➢ <b>Analyse :</b><br>
+La stimulation efficace isolée portée en T<sub>2</sub> suite à l'injection à l'aide d'une micropipette d'une substance chimique X dans la fente synaptique de la synapse T<sub>2</sub> - N<sub>2</sub>, engendre un potentiel de repos (tracé D<sub>2</sub>) au niveau du cône axonique du N<sub>2</sub> <b>0,25</b></p>
+<p class="para">➢ <b>Déduction :</b><br>
+- La substance chimique X entraine l'inhibition de la transmission synaptique du message nerveux au niveau de la synapse T<sub>2</sub> - N<sub>2</sub>. <b>0,25</b></p>
+<p class="para">- Les hypothèses concernant le mode d'action de la substance chimique X sur le fonctionnement de la synapse T<sub>2</sub> - N<sub>2</sub> : <b>0,25x</b></p>
+<ul class="b">
+<li>Hypothèse 1 : la substance chimique X empêche la libération du neurotransmetteur dans la fente.</li>
+<li>Hypothèse 2 : la substance chimique X assure la dégradation du neurotransmetteur dans la fente.</li>
+<li>Hypothèse 3 : la substance chimique X empêche la fixation du neurotransmetteur sur les sites récepteurs.</li>
+</ul>
+<p class="para">4-</p>
+<table>
+<tr><th>Documents</th><th>Exploitation</th><th>Validité des hypothèses</th></tr>
+<tr><td>3-a</td><td>Malgré la présence de la substance X dans la fente, l'état structural de la synapse T<sub>2</sub>-N<sub>2</sub> montre certaines vésicules synaptiques en exocytose indice de la libération du neurotransmetteur dans la fente.</td><td>Hypothèse 1 est non validée</td></tr>
+<tr><td>3-b</td><td>Malgré la présence de la substance X dans la fente, la dose du neurotransmetteur libérée dans la fente demeure constante de l'ordre de 3 µg.l<sup>-1</sup><br>Donc le neurotransmetteur n'est pas dégradé</td><td>Hypothèse 2 est non validée</td></tr>
+<tr><td>3-c</td><td>la radioactivité au niveau de la membrane postsynaptique du neurone N<sub>2</sub> diminue avec l'augmentation de la dose de la substance chimique X injectée dans la fente synaptique de la synapse T<sub>2</sub> - N<sub>2</sub> suite à la stimulation efficace portée en T<sub>2</sub> ce qui prouve que les récepteurs spécifiques du neurotransmetteur sont occupés par la substance X</td><td>Hypothèse 3 est validée</td></tr>
+</table>
+<p class="para">Explo<br>0,25 ›<br>Vali<br>des h<br>0,25</p>
+<!-- PROOFREAD: 5006 part1 p05 — barème column cut by the right edge (only visible letters typed) -->
+<!-- NOTE: handwritten marks (strike over a stamp, page numbers "4", "7") on p05 not transcribed -->
+
+</section>
+
+</div>
+</body>
+</html>

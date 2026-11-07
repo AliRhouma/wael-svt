@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · SERIE-A-NEURO-FINALE-2023 (3)</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Hend Ben Abbes">
+<meta data-pagefind-meta="n[content]" content="4904">
+<meta data-pagefind-meta="title[content]" content="SERIE-A-NEURO-FINALE-2023 (3)">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · SERIE-A-NEURO-FINALE-2023 (3)" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>SERIE-A-NEURO-FINALE-2023 (3)</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">HEND BEN ABBES</span> <span class="tg">Série</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1aXWIbAYYykapudd_7wKbOIs5ZLM58wzV/view">↗ SERIE-A-NEURO-FINALE-2023 (3).pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/1aXWIbAYYykapudd_7wKbOIs5ZLM58wzV/view">Anas Saïd · IDEAL BAC MATH(Anas Saïd) › SVT / science / Neuro</a></li><li><a href="https://drive.google.com/file/d/1OlsFYTdMGR820S18OiWG3B_yeL6bZav0/view">Karim Fourati · Bac 2KF25 › SVT / Mme Hend(LPM8) / Neuro</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: HEND BEN ABBES -->
+<div class="exh"><span class="idx ex">Série</span><h2>SERIE <span class="t-gold">A</span> NEURO (<span class="t-gold">COURS de 1 à 5</span>)</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4904.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">HEND BEN ABBES</span> <span class="tg">Série</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1aXWIbAYYykapudd_7wKbOIs5ZLM58wzV/view">↗ SERIE-A-NEURO-FINALE-2023 (3).pdf</a></div>
+<!-- page 01 -->
+<div class="exsub">BAC SC EXP 2019C</div>
+<p class="subhead t-navy"><b>II- Neurophysiologie (4 points)</b></p>
+<p class="para">On se propose d'étudier le mécanisme de la naissance du potentiel d'action. Pour cela, on réalise une étude expérimentale en utilisant le dispositif présenté par le document 5 et deux toxines ayant deux modes d'action différents.</p>
+<!-- CROP: 4904 1 1 0.535 0.095 0.930 0.148 4904_doc5_dispositif -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc5_dispositif.png" alt=""></figure>
+<p class="para"><b>Document 5</b></p>
+<p class="subhead t-navy"><b>Expérience 1 :</b></p>
+<p class="para">On enregistre, au niveau de l'oscilloscope O l'activité électrique de la fibre nerveuse et on suit la variation des concentrations des ions Na<sup>+</sup> et K<sup>+</sup> dans cette fibre (axone), avant et après l'application d'une stimulation efficace S.<br>Le document 6 présente les résultats obtenus.</p>
+<!-- CROP: 4904 1 1 0.540 0.153 0.932 0.410 4904_doc6_enregistrement_concentrations -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc6_enregistrement_concentrations.png" alt=""></figure>
+<p class="para"><b>Document 6</b></p>
+<p class="consigne"><b>1) a-</b> Analysez l'enregistrement obtenu en O en vue d'identifier les phases A, B, C et D.</p>
+<p class="consigne"><b>b-</b> Etablissez la relation entre les différentes phases de l'activité électrique de la fibre nerveuse et la variation de de la concentration intracellulaire des ions Na<sup>+</sup> et K<sup>+</sup>.</p>
+<p class="subhead t-navy"><b>Expérience 2</b></p>
+<p class="para">On suit les flux des ions Na<sup>+</sup> et K<sup>+</sup> à travers la membrane de la fibre nerveuse (axone) suite à la stimulation S et dans deux conditions expérimentales différentes.<br>Les conditions expérimentales et les résultats sont présentés par le document 7.</p>
+<table>
+<tr><th>Conditions</th><th>Résultats</th></tr>
+<tr><td>Addition de la tétrodotoxine (TTX) dans le liquide physiologique.</td><td>- Absence de flux entrant des ions Na<sup>+</sup><br>- Absence de flux sortant des ions K<sup>+</sup></td></tr>
+<tr><td>Injection dans l'axone de la toxine tétraéthylammonium (TEA).</td><td>- Présence de flux entrant des ions Na<sup>+</sup><br>- Absence de flux sortant des ions K<sup>+</sup></td></tr>
+</table>
+<p class="para"><b>Document 7</b></p>
+<p class="consigne"><b>2)</b> A partir de l'exploitation des résultats de l'expérience 2 et en faisant appel à vos connaissances, dégagez le mode d'action de chaque toxine.</p>
+<p class="consigne"><b>3)</b> A partir des informations tirées précédemment et en faisant appel à vos connaissances, expliquez, le mécanisme ionique à l'origine des phases B et C du potentiel d'action.</p>
+<p class="para"><b>1)</b><br><b>a-</b></p>
+<p class="para"><span class="t-red"><b>2 points<br>2(0,25 x 4)</b></span></p>
+<ul class="b">
+<li><i>Avant la stimulation</i></li>
+</ul>
+<p class="para">Phase A : la d.d.p membranaire -70 mV c'est le potentiel de repos.</p>
+<ul class="b">
+<li><i>A la suite de la stimulation</i> :</li>
+</ul>
+<p class="para">Phase B : la d.d.p passe de -70 à +30 mV : c'est la phase de dépolarisation<br>Phase C : la d.d.p passe de +30 à -70 mV : C'est la phase de repolarisation<br>Phase D : la d.d.p continue à diminuer : C'est la phase d'hyperpolarisation</p>
+<p class="para"><span class="t-gold"><b>Question 1) b- :</b></span> <span class="t-blue">On demande au candidat d'établir une corrélation entre les différentes phases du PA et la variation de de la concentration intracellulaire des ions Na<sup>+</sup> et K<sup>+</sup>.</span></p>
+<p class="para"><b>b-</b></p>
+<ul class="b">
+<li>Au cours de la phase A, la concentration intracellulaire des ions Na<sup>+</sup> est faible et stable, et la concentration intracellulaire des ions K<sup>+</sup> est élevée et stable.</li>
+<li>Au cours de la phase B, la concentration intracellulaire des ions Na<sup>+</sup> augmente et celle des ions K<sup>+</sup> reste élevée et stable.</li>
+<li>Au cours de la phase C, la concentration intracellulaire des ions Na<sup>+</sup> diminue et celle des ions K<sup>+</sup> diminue aussi.</li>
+<li>Au cours de la phase D, la concentration intracellulaire des ions Na<sup>+</sup> revient à son état initial et se stabilise, celle des ions K<sup>+</sup> augmente pour revenir à son état initial.</li>
+</ul>
+<p class="para"><span class="t-red"><b>1point<br>(0.5x2)</b></span></p>
+<p class="para"><b>2)</b></p>
+<ul class="b">
+<li>L'addition de TTX provoque l'arrêt du flux entrant des ions Na<sup>+</sup> et du flux sortant des ions K<sup>+</sup> donc la TTX bloque les canaux voltage dépendants aux ions Na<sup>+</sup></li>
+<!-- page 02 -->
+<li>L'injection de TEA n'a aucun effet sur le flux entrant des ions Na<sup>+</sup> et provoque l'arrêt du flux sortant des ions K<sup>+</sup> donc la TEA bloque les canaux voltage dépendants aux ions K<sup>+</sup>.</li>
+</ul>
+<p class="para"><span class="t-red"><b>1point<br>(0.5 x 2)</b></span></p>
+<p class="para"><b>3)</b></p>
+<ul class="dash">
+<li>Le mécanisme ionique à l'origine de la phase de dépolarisation (phase B) : à la suite de la stimulation S, le potentiel de la membrane atteint le seuil de -50 mV ce qui déclenche l'ouverture des canaux voltage dépendants aux ions Na<sup>+</sup> d'où l'entrée de ces ions à l'intérieur de l'axone ce qui provoque la dépolarisation jusqu'à +30 mV.</li>
+<li>Le mécanisme ionique à l'origine de la phase de repolarisation (phase C) : à +30 mV les canaux voltage dépendants aux ions Na<sup>+</sup> se ferment et les canaux voltage dépendants aux ions K<sup>+</sup> s'ouvrent ce qui provoque la sortie de ces ions d'où le retour de la ddp au PR.</li>
+</ul>
+<div class="exsub">BAC MATHS 2017P</div>
+<p class="para">Les toxines du venin de scorpion peuvent entraîner la mort chez certains mammifères en provoquant des perturbations du fonctionnement du système nerveux.</p>
+<p class="para">On cherche à comprendre l'effet de ces toxines sur certains aspects de l'activité électrique de la fibre nerveuse. Pour cela, on réalise des expériences sur des fibres nerveuses identiques F1 et F2 en utilisant le dispositif expérimental représenté par le document 3.</p>
+<!-- CROP: 4904 1 2 0.468 0.355 0.897 0.483 4904_doc3_dispositif -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc3_dispositif.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para"><b>Expérience 1 :</b> On porte une stimulation efficace sur la fibre nerveuse F1 et on effectue des enregistrements dans deux situations différentes :<br><u>Première situation</u> : dans des conditions physiologiques normales.<br><u>Deuxième situation</u> : en présence d'une toxine scorpionique ajoutée au liquide physiologique.<br>Le document 4 montre les enregistrements obtenus.</p>
+<!-- CROP: 4904 1 2 0.062 0.585 0.466 0.744 4904_doc4_trace_a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc4_trace_a.png" alt=""></figure>
+<p class="para"><b>Tracé a</b> : Enregistrement obtenu dans des conditions physiologiques normales</p>
+<!-- CROP: 4904 1 2 0.464 0.585 0.872 0.744 4904_doc4_trace_b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc4_trace_b.png" alt=""></figure>
+<p class="para"><b>Tracé b</b> : Enregistrement obtenu en présence de toxine scorpionique</p>
+<p class="para"><b>Document 4</b></p>
+<p class="consigne">1) A partir de l'analyse comparée des tracés a et b, proposez une hypothèse quant à l'action de la toxine scorpionique sur l'activité électrique de la fibre nerveuse.</p>
+<p class="para"><b>Expérience 2 :</b> On place la fibre nerveuse F2 dans le liquide physiologique qu'on stimule de manière efficace et on dénombre les canaux ioniques ouverts A et B par unité de surface de la membrane de la fibre nerveuse.</p>
+<p class="para">Les résultats obtenus sont consignés dans le document 5.</p>
+<!-- page 03 -->
+<!-- CROP: 4904 1 3 0.080 0.040 0.868 0.201 4904_doc5_canaux_ouverts -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc5_canaux_ouverts.png" alt=""></figure>
+<p class="para"><b>Document 5</b></p>
+<p class="consigne">2) A partir de l'analyse des données du document 5 et en vous reportant au tracé (a) du document 4,&nbsp; identifiez chacun des deux types de canaux A et B.</p>
+<p class="para"><b>Expérience 3 :</b> on ajoute de la toxine scorpionique radioactive au liquide physiologique contenant la fibre nerveuse F2,</p>
+<ul class="b">
+<li>on constate que la radioactivité est détectée uniquement au niveau des canaux de type A.</li>
+<li>on porte une stimulation efficace sur cette fibre nerveuse F2 et on dénombre les canaux ioniques de type A ouverts. Les résultats obtenus sont présentés par le document 6.</li>
+</ul>
+<table>
+<tr><td>Temps (ms)</td><td>t<sub>1</sub></td><td>t<sub>2</sub></td><td>t<sub>3</sub></td><td>t<sub>4</sub></td><td>t<sub>5</sub></td><td>t<sub>6</sub></td><td>t<sub>7</sub></td></tr>
+<tr><td>Nombre de canaux de type A ouverts par unité de surface</td><td>0</td><td>0</td><td>5</td><td>38</td><td>37</td><td>36</td><td>36</td></tr>
+</table>
+<p class="para"><b>Document 6</b></p>
+<p class="consigne">3) Exploitez les résultats de l'expérience 3 afin de :<br>a- dégager l'effet de la toxine scorpionique sur l'activité électrique de la fibre nerveuse.<br>b- conclure quant à la validité de l'hypothèse proposée précédemment.</p>
+<div class="exsub">CORRECTION</div>
+<p class="para"><b>1.</b></p>
+<table>
+<tr><th></th><th>Tracé a</th><th>Tracé b</th></tr>
+<tr><td>Points communs</td><td colspan="2">- <u>A t<sub>1</sub> et à t<sub>2</sub></u> : la d.d.p est constante = -70 mV (PR).<br>- <u>A t<sub>3</sub> et à t<sub>4</sub></u> : on remarque une dépolarisation locale qui ramène le potentiel membranaire de -70 à - 50 mV suivie d’une dépolarisation ramenant le potentiel membranaire de -50 à + 30 mV.</td></tr>
+<tr><td>Différences</td><td><u>De t<sub>4</sub> à t<sub>7</sub> :</u> la d.d.p du tracé (a) diminue de + 30 mV à – 70 mV (repolarisation) suivie d’une hyperpolarisation (-75 mV) puis un retour à -70 mV ou PR.</td><td><u>De t<sub>4</sub>à t<sub>7</sub> :</u> la d.d.p diminue légèrement et se stabilise aux environs de + 25 mV.</td></tr>
+</table>
+<p class="para"><b>On peut émettre <u>l’une</u> des hypothèses suivantes : (une seule hypothèse est demandée)</b></p>
+<ul class="dash">
+<li>La toxine scorpionique empêche la repolarisation de la membrane de la fibre nerveuse.</li>
+<li>La toxine scorpionique bloque l’ouverture des CVD K<sup>+</sup></li>
+<li>La toxine scorpionique bloque la fermeture des CVD Na<sup>+</sup></li>
+</ul>
+<p class="para">2) <b>Analyse :</b></p>
+<ul class="dash">
+<li>Aux temps t<sub>1</sub> (d.d.p= -70 mV) et t2 (d.d.p -60 mV) : les canaux A et B sont fermés.</li>
+<li>Au temps t<sub>3</sub> (d.d.p= - 50 mV) : le nombre de canaux actifs de type A augmente (5 canaux/unité de surface) par contre les canaux de type B sont encore fermés.</li>
+<li>Au temps t<sub>4</sub> (d.d.p= +30 mV) le nombre des canaux A ouverts est maximal (38 canaux/unité de surface), parallèlement 5 canaux de type B canaux/unité de surface s’ouvrent.</li>
+<li>Au temps t<sub>5</sub> (d.d.p= - 50 mV) le nombre des canaux A ouverts diminue (5 canaux/unité de surface), parallèlement le nombre de canaux actifs de type B est de 20 canaux/unité de surface.</li>
+<li>Au temps t<sub>6</sub> (d.d.p= - 80 mV) le nombre des canaux B ouverts diminue (13 canaux/unité de surface),</li>
+<li>Au temps t<sub>7</sub> (d.d.p= - 75 mV) le nombre des canaux B ouverts diminue (10 canaux/unité de surface),</li>
+</ul>
+<!-- page 04 -->
+<p class="para">Donc, L’ouverture et la fermeture des canaux de type A et B est dépendante de la d.d.p; ces sont alors des CVD.<br>Les canaux de type A sont des CVD à Na+ car leur ouverture coïncide avec la phase de dépolarisation et les canaux de type B sont des CVD à K+ car leur ouverture coïncide avec la phase de repolarisation.</p>
+<p class="para"><b>3) Exploitation :</b></p>
+<ul class="dash">
+<li>La détection de la radioactivité au niveau des canaux de type A, prouve que la toxine scorpionique agit sur les CVD à Na+.</li>
+<li>A t<sub>3</sub> à t<sub>4</sub> : le nombre de canaux CVD à Na+ ouverts par unité de surface est le même que celui du document 5.</li>
+<li>Au-delà de t<sub>4</sub>, le nombre de canaux CVD à Na+ ouverts par unité de surface demeure élevé.</li>
+</ul>
+<p class="para">a- La toxine de scorpion s’oppose à la fermeture des CVD à Na+ ce qui empêche la phase de repolarisation de la membrane de la fibre nerveuse.</p>
+<p class="para">b- L’hypothèse proposée :( La toxine scorpionique bloque la fermeture des CVD Na<sup>+</sup> ou la toxine scorpionique empêche la repolarisation de la membrane de la fibre nerveuse.) est valide.<br><b>Si vous avez proposé l’hypothèse : La toxine scorpionique bloque l’ouverture des CVD K<sup>+</sup>, elle est à rejeter.</b></p>
+<div class="exsub">BAC SC 2020 C</div>
+<p class="para"><b>Le document 1 représente, schématiquement, l'aspect de la membrane d'une fibre nerveuse dans deux états (a) et (b).</b></p>
+<!-- CROP: 4904 1 4 0.073 0.363 0.934 0.511 4904_doc1_membrane_etats -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc1_membrane_etats.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<ol class="qn">
+<li><b>Légendez le document 1 en reportant les numéros des flèches de 1 à 4 sur votre copie.</b></li>
+<li><b>Identifiez, en justifiant votre réponse, les deux états (a) et (b) de la fibre nerveuse.</b></li>
+<li><b>Nommez les états de la membrane de la fibre nerveuse qui succèdent l'état (b) du document 1.</b></li>
+<li><b>Expliquez le mécanisme ionique à l'origine de l'état a.</b></li>
+<li><b>Prévoyez l'effet d'un inhibiteur de l'hydrolyse de l'ATP sur la ddp de la membrane de la fibre à l'état (a). Justifier votre réponse.</b></li>
+</ol>
+<div class="exsub">CORRECTION</div>
+<p class="para"><b>ysiologie (4 points)</b></p>
+<!-- PROOFREAD: 4904 part1 p04 — line cut by the top edge of the pasted correction; only "…ysiologie (4 points)" partly visible -->
+<!-- NOTE: small faint red marks "(0,25)"-type written beside the correction lines not transcribed — mostly illegible annotations -->
+<p class="para"><b>1)</b> 1 : canaux de fuite ; 2 : pompe à Na<sup>+</sup>/K<sup>+</sup> ; 3 : CVD aux ions K<sup>+</sup> ; 4 : CVD aux ions Na<sup>+</sup></p>
+<p class="para"><b>1 point<br>(0,25 X 4)</b></p>
+<p class="para"><b>2)</b></p>
+<ul class="dash">
+<li><b>Etat a :</b> Les CVD aux ions Na<sup>+</sup> et K<sup>+</sup> sont fermés (l'intérieur de la fibre est chargé négativement, l'extérieur est chargé positivement) ⇒ La membrane est au repos (ou polarisée).</li>
+<li><b>Etat b :</b> Les CVD aux ions Na<sup>+</sup> sont ouverts, ceux aux ions K<sup>+</sup> sont fermés. (L'intérieur de la fibre devient partiellement positif, l'extérieur devient négatif) ⇒ La membrane est dépolarisée.</li>
+</ul>
+<p class="para"><b>1 point<br>(0,5 X 2)</b></p>
+<p class="para"><b>3)</b> Etat de repolarisation - Etat d'hyperpolarisation.</p>
+<p class="para"><b>0,5 point<br>(0.25 x 2)</b></p>
+<p class="para"><b>4)</b> Mécanisme ionique à l'origine de l'état (a)<br>- Le transport passif des ions Na<sup>+</sup> et K<sup>+</sup> à travers les canaux de fuite selon le gradient de concentration.<br>- Le transport actif de ces ions contre le gradient de concentration grâce à la pompe Na<sup>+</sup>/K<sup>+</sup></p>
+<p class="para"><b>1 point<br>(0.25+0.75)</b></p>
+<p class="para"><b>5)</b> L'inhibition de l'hydrolyse de l'ATP bloque le fonctionnement de la pompe à Na<sup>+</sup>/K<sup>+</sup>. Seuls les canaux de fuite restent fonctionnels d'où l'égalisation de la répartition des ions Na<sup>+</sup> et K<sup>+</sup> de part et d'autre de la membrane et l'annulation de la ddp membranaire</p>
+<p class="para"><b>0.5 point</b></p>
+<!-- page 05 -->
+<div class="exsub">QROC BAC SC EXP 2017C</div>
+<p class="para">A l'aide d'un oscilloscope <b>O</b>, on enregistre les phénomènes électriques d'une fibre nerveuse F avant et après avoir appliqué une stimulation <b>S</b> efficace.<br>Le document 1 représente le dispositif expérimental et l'enregistrement obtenu au niveau de <b>O</b>.</p>
+<!-- CROP: 4904 1 5 0.088 0.103 0.585 0.229 4904_doc1_dispositif_experimental -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc1_dispositif_experimental.png" alt=""></figure>
+<p class="para"><b>Dispositif expérimental</b></p>
+<!-- CROP: 4904 1 5 0.585 0.103 0.912 0.229 4904_doc1_enregistrement_O -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc1_enregistrement_O.png" alt=""></figure>
+<p class="para"><b>Enregistrement en O</b></p>
+<p class="para"><b>Document 1</b></p>
+<p class="consigne"><b>1) a-</b> Nommez le phénomène électrique enregistré au niveau de l'oscilloscope <b>O</b> suite à la stimulation <b>S</b>.<br><b>b-</b> Nommez les phases de l'enregistrement désignées par les lettres A, B, C et D.</p>
+<p class="consigne"><b>2)</b> Expliquez le mécanisme ionique&nbsp; à l'origine de chaque phase.</p>
+<p class="consigne"><b>3)</b> Expliquez, schéma à l'appui, le mécanisme de la propagation unidirectionnelle du potentiel d'action le long de la fibre nerveuse F.</p>
+<div class="exsub">CORRECTION</div>
+<p class="para"><b>1)</b><br><b>a-</b> Potentiel d'action<br><b>b-</b></p>
+<table>
+<tr><th>Phase A</th><th>Phase B</th><th>Phase C</th><th>Phase D</th></tr>
+<tr><td>PR ou potentiel de membrane</td><td>dépolarisation</td><td>repolarisation</td><td>hyperpolarisation</td></tr>
+</table>
+<p class="subhead t-navy"><b>2. mécanisme inoique :</b></p>
+<ul class="b">
+<li><b>Phase A : PR</b>
+<ul class="b">
+<li>Répartition inégale des ions Na<sup>+</sup> et K<sup>+</sup> de part et d'autre de la membrane</li>
+<li>Perméabilité passive de la membrane aux ions Na<sup>+</sup> et K<sup>+</sup> à travers les canaux de fuite.</li>
+<li>Déplacement des ions Na<sup>+</sup> et K<sup>+</sup> contre le gradient de concentration grâce à la pompe en consommant de l'ATP.</li>
+</ul></li>
+<li><b>Phase B de dépolarisation</b> : A -50 mV, ouverture des CVD aux ions Na<sup>+</sup> et entrée massive de ces ions.</li>
+<li><b>Phase C de repolarisation</b> : à +30 mV, fermeture progressive des CVD aux ions Na<sup>+</sup> et ouverture des CVD aux ions K<sup>+</sup>, sortie des ions K<sup>+</sup>.</li>
+<li><b>Phase D d'hyperpolarisation</b> : ouverture prolongée des CVD aux ions K<sup>+</sup>.</li>
+</ul>
+<p class="para">NB : Accepter la réponse sous forme d'un schéma commenté.</p>
+<p class="subhead t-navy"><b>3. Mécanisme de conduction (propagation) saltatoire :</b></p>
+<div class="data"><p class="para">&nbsp;</p><p class="para">&nbsp;</p><p class="para">&nbsp;</p></div>
+<p class="para">La présence&nbsp; d'un PA dans une zone de la fibre crée entre cette zone et la zone voisine des courants électriques locaux, ce qui entraine une dépolarisation de cette zone.<br>La zone qui a été le siège d'un PA reste inexcitable quelques ms : c'est la période réfractaire qui explique la propagation unidirectionnelle du PA.<br>La fibre F est myélinisée, la gaine de myéline est un isolant électrique, ce qui impose une propagation saltatoire du message nerveux d'un nœud de Ranvier au suivant.</p>
+<p class="subhead t-navy"><b>Schéma du mécanisme de conduction continue :</b></p>
+<div class="data"><p class="para">&nbsp;</p><p class="para">&nbsp;</p><p class="para">&nbsp;</p></div>
+<!-- page 06 -->
+<div class="exsub">QROC BAC MATHS 2015C</div>
+<p class="para">Le document 1 illustre les mouvements ioniques de Na<sup>+</sup> et de K<sup>+</sup> à travers trois structures A, B et C d'une portion de la membrane d'une fibre nerveuse.</p>
+<p class="consigne"><b>1)</b> Nommez les structures A, B et C du document 1.</p>
+<p class="consigne"><b>2)</b> Exploitez les informations dégagées du document 1 et vos connaissances en vue de :</p>
+<p class="consigne"><b>a-</b> préciser l'origine ionique du potentiel de repos.<br><b>b-</b> déterminer l'état de la fibre nerveuse.</p>
+<p class="consigne"><b>3)</b> Décrivez la variation de la perméabilité de la membrane de la fibre nerveuse lorsque son potentiel atteint +30 mV.</p>
+<!-- CROP: 4904 1 6 0.468 0.123 0.927 0.277 4904_doc1_structures_ABC -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc1_structures_ABC.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<div class="exsub">CORRECTION</div>
+<p class="para"><b>1)</b> Structure A : canaux de fuite<br>Structure B : pompe ionique Na+/K+ <b>(ATPase ou enzyme pompe)</b><br>Structure C : canaux voltage-dépendants</p>
+<p class="para"><b>0,75 pt</b></p>
+<p class="para"><b>2) a-</b> Le PR est dû à la répartition inégale des ions Na+ et K+ de part et d'autre de la membrane cytoplasmique.<br>Cette répartition inégale s'explique par :</p>
+<ul class="b">
+<li>La perméabilité sélective de la membrane aux ions Na+ et K+.</li>
+<li>La présence de la pompe Na+/K+ : une enzyme qui consomme de l'ATP et transporte les ions Na+ et K+ contre leur gradient de concentration.</li>
+</ul>
+<p class="para"><b>1,5 pt</b></p>
+<p class="para"><b>b-</b> Le document 1 représente <b>la phase de dépolarisation</b> de la membrane lors d'un potentiel d'action.<br><b>Justification</b> : entrée massive de Na+ due à l'ouverture des canaux voltage-dépendants à Na+ alors que les canaux voltage-dépendants à K+ sont fermés.</p>
+<p class="para"><b>1,5 pt</b><br>(0,75 x 2)</p>
+<p class="para"><b>3)</b> Lorsque le potentiel de la membrane atteint + 30 mV, la perméabilité aux ions K+ augmente par ouverture des canaux voltage-dépendants à K+ alors que les canaux voltage-dépendants à Na+ se ferment d'où la diminution de la perméabilité membranaire à ces ions.</p>
+<p class="para"><b>1,25 pt</b></p>
+<div class="exsub">BAC MATHS 2016 P</div>
+<p class="para">On se propose d’étudier certains aspects de la naissance et de la propagation du message nerveux.</p>
+<p class="consigne"><b>1)</b> Le document 1 représente schématiquement deux types de fibres nerveuses A et B.<br>Identifiez ces deux types de fibres.</p>
+<!-- CROP: 4904 1 6 0.703 0.640 0.893 0.731 4904_doc1_fibres_AB -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc1_fibres_AB.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="consigne"><b>2)</b> On porte sur l’une des deux fibres nerveuses A ou B des stimulations électriques d’intensités croissantes et on mesure l’amplitude du potentiel membranaire obtenu suite à chaque stimulation. Le document 2 suivant représente les résultats obtenus.</p>
+<!-- CROP: 4904 1 6 0.300 0.777 0.692 0.928 4904_doc2_amplitude_intensite -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc2_amplitude_intensite.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<!-- page 07 -->
+<p class="consigne">Analysez ces résultats en vue :<br><b>a-</b> de préciser les intensités infraliminaires et supraliminaires.<br><b>b-</b> d’identifier les potentiels enregistrés avec les intensités i<sub>3</sub> et i<sub>6</sub>.<br><b>c-</b> de dégager une propriété de chacun des deux potentiels identifiés en b.</p>
+<p class="consigne"><b>3)</b> On porte sur chacune des deux fibres A et B une stimulation électrique d’intensité i<sub>6</sub> et on enregistre le potentiel membranaire en utilisant deux électrodes réceptrices R<sub>1</sub> et R<sub>2</sub> séparées par une distance égale à 2 cm et reliées aux oscilloscopes O<sub>1</sub> et O<sub>2</sub>. Le dispositif expérimental utilisé figure sur le document 3.</p>
+<!-- CROP: 4904 1 7 0.205 0.203 0.452 0.291 4904_doc3_dispositif_R1_R2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc3_dispositif_R1_R2.png" alt=""></figure>
+<p class="para"><b>St : électrodes stimulatrices<br>R<sub>1</sub> et R<sub>2</sub> : électrodes réceptrices<br>O<sub>1</sub> et O<sub>2</sub> : oscilloscopes</b></p>
+<p class="para"><b>Document 3</b></p>
+<p class="para">Les enregistrements ainsi obtenus sont indiqués sur le document 4.</p>
+<!-- CROP: 4904 1 7 0.235 0.338 0.516 0.563 4904_doc4_fibre_A -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc4_fibre_A.png" alt=""></figure>
+<p class="para"><b>Potentiels membranaires enregistrés suite à la stimulation de la fibre A</b></p>
+<!-- CROP: 4904 1 7 0.514 0.338 0.794 0.563 4904_doc4_fibre_B -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_doc4_fibre_B.png" alt=""></figure>
+<p class="para"><b>Potentiels membranaires enregistrés suite à la stimulation de la fibre B</b></p>
+<p class="para"><b>Document 4</b></p>
+<p class="consigne"><b>a-</b> Calculez la vitesse V<sub>A</sub> du message nerveux se propageant au niveau de la fibre A et la vitesse V<sub>B</sub> du message se propageant au niveau de la fibre B.<br><b>b-</b> Expliquez&nbsp; la différence entre V<sub>A</sub>&nbsp; et V<sub>B</sub>.</p>
+<div class="exsub">CORRECTION</div>
+<p class="para"><b>1)</b> fibre A : fibre amyélinisée et fibre B : fibre myélinisée</p>
+<p class="para">0,5 x 2<br><b>= 1pt</b></p>
+<p class="para"><b>2)</b> Analyse :</p>
+<ul class="b">
+<li>Pour les stimulations d’intensité allant dei<sub>1</sub> à i<sub>4</sub>, l’amplitude du potentiel membranaire croit de 0 à 16 mV</li>
+<li>A partir de l’intensité de stimulation i<sub>5</sub>, l’amplitude du potentiel membranaire devient maximale et constante = 100 mV.</li>
+</ul>
+<p class="para">0,25 x 2<br><b>= 0,5 pt</b></p>
+<p class="para"><b>a-</b></p>
+<ul class="dash">
+<li>En utilisant des intensités allant de i<sub>1</sub> à i<sub>4</sub>, on obtient des potentiels d’amplitude &lt; au seuil&nbsp; ⇒ ces intensités sont infraliminaires</li>
+<li>A partir de l’intensité de stimulation i<sub>5</sub>, on obtient un potentiel d’action (d’amplitude 100 mV) ⇒ ces intensités sont supraliminaires.</li>
+</ul>
+<p class="para">0,25 x 2<br><b>= 0,5 pt</b></p>
+<!-- page 08 -->
+<p class="para"><b>b-</b></p>
+<ul class="dash">
+<li>Avec i<sub>3</sub>, on obtient un potentiel local</li>
+<li>Avec i<sub>6</sub>, on obtient un potentiel d’action.</li>
+</ul>
+<p class="para">0,25 x 2<br><b>= 0,5 pt</b></p>
+<p class="para"><b>c-</b></p>
+<ul class="dash">
+<li>Propriété du potentiel local : graduable</li>
+<li>Propriété du potentiel d’action : obéit à la « loi du tout ou rien ».</li>
+</ul>
+<p class="para">0,25 x 2<br><b>= 0,5 pt</b></p>
+<p class="para"><b>3) a-</b></p>
+<p class="para"><b>Pour la fibre A</b></p>
+<p class="para">Distance O<sub>1</sub>- O<sub>2</sub>= 2 cm</p>
+<p class="para">Différence entre les temps de latence : ΔT = 4 ms</p>
+<p class="para">V<sub>A</sub> = 2. 10<sup>-2</sup> / 4. 10<sup>-3</sup> = 5 ms<sup>-1</sup></p>
+<p class="para"><b>Pour la fibre B</b></p>
+<p class="para">Distance O<sub>1</sub>- O<sub>2</sub>= 2 cm</p>
+<p class="para">Différence entre les temps de latence : ΔT = 1 ms</p>
+<p class="para">V<sub>B</sub> = 2. 10<sup>-2</sup> / 1. 10<sup>-3</sup> = 20 ms<sup>-1</sup></p>
+<p class="para">0,5 x 2<br><b>= 1 pt</b></p>
+<p class="para"><b>b-</b> V<sub>B</sub>&gt;V<sub>A</sub><br>Cette différence de vitesse est expliquéepar :</p>
+<ul class="dash">
+<li>Le mode de propagation du message nerveux qui est saltatoire et rapide au niveau de la fibre myélinisée (fibre B) alorsqu’il est de proche en proche et moins rapide au niveau de la fibre amyélinisée (fibre A)</li>
+<li>Le diamètre de la fibre B qui est supérieur à celui de la fibre A.</li>
+</ul>
+<p class="para">0,5 x 2<br><b>= 1 pt</b></p>
+<div class="exsub">QCM</div>
+<p class="consigne"><b>7) La phase de répolarisation d’un potentiel d’action d’une fibre nerveuse est due à un flux :</b></p>
+<p class="para"><b>a-</b> sortant d’ions K<sup>+</sup> à travers les canaux de fuite.<br><b>b-</b> entrant d’ions Na<sup>+</sup> à travers les canaux de fuite.<br><b>c-</b> sortant d’ions K<sup>+</sup> à travers les canaux voltage-dépendants.<br><span class="t-red"><b>d-</b></span> entrant d’ions Na<sup>+</sup> à travers les canaux voltage-dépendants.</p>
+<p class="para">SC EXP 2014 C</p>
+<p class="consigne"><b>5) La zone de la racine dorsale située entre le ganglion spinal et la moelle épinière :</b></p>
+<p class="para"><span class="t-red"><b>a-</b></span> comporte des axones.<br><b>b-</b> comporte des dendrites.<br><b>c-</b> conduit un message nerveux afférent.<br><span class="t-red"><b>d-</b></span> conduit un message nerveux efférent.</p>
+<p class="para">SC EXP 2013 P</p>
+<p class="consigne"><b>5) Les canaux ioniques voltage-dépendants aux ions Na<sup>+</sup> situés au niveau de la membrane d’une fibre nerveuse s’ouvrent lorsque la valeur de la différence de potentiel (ddp) est de :</b></p>
+<p class="para"><b>a-</b> -70 mV.<br><span class="t-red"><b>b-</b></span> -50 mV.<br><b>c-</b> 0 mV.<br><b>d-</b> +30 mV.</p>
+<p class="para">SC EXP 2013 C£</p>
+<!-- PROOFREAD: 4904 part1 p08 — "SC EXP 2013 C£" printed with a "£"-like sign after C -->
+<p class="consigne"><b>6) La section de la racine antérieure du nerf rachidien impliqué dans le réflexe myotatique entraine la dégénérescence :</b></p>
+<p class="para"><b>a-</b> des fibres Ia.<br><b>b-</b> du nerf rachidien entier.<br><b>c-</b> des bouts centraux des motoneurones α.<br><span class="t-red"><b>d-</b></span> des bouts périphériques des motoneurones α.</p>
+<p class="para">SC EXP 2013 C</p>
+<p class="consigne"><b>7) Au niveau de la membrane d’une fibre nerveuse, les canaux ioniques voltage-dépendants à K<sup>+</sup> s’ouvrent lorsque le potentiel de la membrane atteint :</b></p>
+<p class="para"><b>a-</b> - 70 mv.<br><b>b-</b> - 50 mv.<br><span class="t-red"><b>c-</b></span> + 30 mv.<br><b>d-</b> 0 mv.</p>
+<p class="para">SC EXP 2010 P</p>
+<!-- page 09 -->
+<p class="consigne"><b>8) Lorsque le potentiel membranaire d’une fibre nerveuse atteint la valeur de + 30mV, il se produit :</b></p>
+<p class="para"><b>a-</b> une entrée massive d’ions Na<sup>+</sup>.<br><b>b-</b> la fermeture des canaux de fuite à K<sup>+</sup>.<br><span class="t-red"><b>c-</b></span> l’ouverture des canaux K<sup>+</sup> voltage-dépendants.<br><b>d-</b> une augmentation de la perméabilité de la membrane aux ions Na<sup>+</sup>.</p>
+<p class="para">MATHS 2016 P</p>
+<p class="consigne"><b>3- Le potentiel&nbsp; d’action d’une fibre nerveuse :</b></p>
+<p class="para"><span class="t-red"><b>a-</b></span> se traduit par une inversion du potentiel membranaire.<br><b>b-</b> a une amplitude constante égale à -70 mv.<br><b>c-</b> est proportionnel à l’intensité de la stimulation.<br><span class="t-red"><b>d-</b></span> obéit à la loi de&nbsp; tout ou rien.</p>
+<p class="consigne"><b>4- La pompe Na<sup>+</sup> / K<sup>+</sup> :</b></p>
+<p class="para"><span class="t-red"><b>a-</b></span> est un système enzymatique consommateur d’énergie.<br><b>b-</b> assure un transport passif des ions selon le gradient de concentration.<br><b>c-</b> permet la sortie des ions K<sup>+</sup> et l’entrée des ions Na<sup>+</sup>.<br><span class="t-red"><b>d-</b></span> permet la sortie des ions&nbsp; Na<sup>+</sup> et l’entrée des ions K<sup>+</sup>.</p>
+<p class="para">MATHS 2014 P</p>
+<p class="consigne"><b>4- Au cours d’un potentiel d’action, les canaux voltage-dépendants aux ions K<sup>+</sup> s’ouvrent lorsque le potentiel membranaire atteint :</b></p>
+<p class="para"><b>a)</b> - 70 mv.<br><b>b)</b> - 50 mv.<br><b>c)</b> 0 mv.<br><span class="t-red"><b>d)</b></span> +30 mv.</p>
+<p class="consigne"><b>5- Les fibres nerveuses de la racine antérieure d’un nerf rachidien sont :</b></p>
+<p class="para"><span class="t-red"><b>a)</b></span> des fibres efférentes.<br><b>b)</b> des fibres afférentes.<br><span class="t-red"><b>c)</b></span> des axones de neurones moteurs.<br><b>d)</b> des dendrites de neurones sensitifs.</p>
+<p class="para">MATHS 2013 P</p>
+<p class="consigne"><b>3) Un potentiel local est dit graduable car son amplitude :</b></p>
+<p class="para"><b>a-</b> est constante ;<br><b>b-</b> n’atteint jamais le seuil ;<br><span class="t-red"><b>c-</b></span> augmente avec l’intensité de la stimulation ;<br><b>d-</b> diminue en s’éloignant du point d’excitation.</p>
+<p class="para">MATHS 2022 P</p>
+<p class="consigne"><b>7) La phase d’hyperpolarisation d’un potentiel d’action est due :</b></p>
+<p class="para"><span class="t-red"><b>a-</b></span> à la sortie prolongée d’ions K<sup>+</sup>.<br><b>b-</b> aux mouvements ioniques contre le gradient de concentration.<br><b>c-</b> à l’entrée massive d’ions Na<sup>+</sup> à l’intérieur de la fibre nerveuse.<br><b>d-</b> à la fermeture progressive des canaux voltage-dépendants aux ions K<sup>+</sup>.</p>
+<p class="para">SP 2022 P</p>
+<p class="consigne"><b>3) Un potentiel local est dit graduable car son amplitude :</b></p>
+<p class="para"><b>a-</b> est constante ;<br><b>b-</b> n’atteint jamais le seuil ;<br><span class="t-red"><b>c-</b></span> augmente avec l’intensité de la stimulation ;<br><b>d-</b> diminue en s’éloignant du point d’excitation.</p>
+<p class="para">M 2022 P</p>
+<p class="consigne"><b>6) Dans les conditions physiologiques normales, la propagation unidirectionnelle du message nerveux est imposée par :</b></p>
+<p class="para"><b>a-</b> les courants locaux.<br><b>b-</b> la gaine de myéline.<br><span class="t-red"><b>c-</b></span> la période réfractaire.<br><b>d-</b> la gaine de Schwann.</p>
+<p class="para">SP 2021 P</p>
+<!-- page 10 -->
+<p class="consigne"><b>7) La vitesse de propagation du message nerveux dépend :</b></p>
+<p class="para"><span class="t-red"><b>a-</b></span> du diamètre de la fibre nerveuse.<br><b>b-</b> de la présence ou non de myéline.<br><b>c-</b> de l’intensité de stimulation de la fibre nerveuse.<br><b>d-</b> de la durée de la stimulation de la fibre nerveuse.</p>
+<p class="consigne"><b>2) Les neurones sensoriels impliqués dans le réflexe à point de départ cutané :</b></p>
+<p class="para"><span class="t-red"><b>a-</b></span> sont parcourus par un message nerveux afférent ;<br><b>b-</b> sont parcourus par un message nerveux efférent ;<br><span class="t-red"><b>c-</b></span> sont reliés aux récepteurs cutanés par leurs terminaisons dendritiques ;<br><b>d-</b> ont leurs corps cellulaires situés dans la substance grise de la moelle épinière.</p>
+<p class="para">M 2020 P</p>
+<p class="consigne"><b>3) La phase d’hyperpolarisation d’un potentiel d’action résulte :</b></p>
+<p class="para"><span class="t-red"><b>a-</b></span> d’une sortie prolongée d’ions K<sup>+</sup>.<br><b>b-</b> d’une entrée massive d’ions Na<sup>+</sup>.<br><b>c-</b> de l’ouverture de canaux voltage-dépendants aux ions Na<sup>+</sup>.<br><b>d-</b> d’un dysfonctionnement temporaire de la pompe à Na<sup>+</sup>/ K<sup>+</sup>.</p>
+<p class="consigne"><b>4) Une stimulation efficace St portée sur une fibre nerveuse isolée, comme le montre le document ci-contre, permet d'enregistrer :</b></p>
+<!-- CROP: 4904 1 10 0.658 0.432 0.926 0.542 4904_qcm4_dispositif_O1_O2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4904/4904_qcm4_dispositif_O1_O2.png" alt=""></figure>
+<p class="para"><b>O<sub>1</sub> et O<sub>2</sub> : oscilloscopes<br>R<sub>1</sub>et R<sub>2</sub>: électrodes réceptrices</b></p>
+<p class="para"><b>a-</b> un potentiel d'action en O<sub>1</sub> et un potentiel local en O<sub>2</sub>.<br><span class="t-red"><b>b-</b></span> un potentiel d'action en O<sub>1</sub> et un potentiel d'action en O<sub>2</sub>.<br><b>c-</b> un potentiel d'action en O<sub>1</sub> et un potentiel de repos en O<sub>2</sub>.<br><b>d-</b> un potentiel de repos en O<sub>1</sub> et un potentiel de repos en O<sub>2</sub>.</p>
+<p class="para">M 2020 C</p>
+<p class="consigne"><b>5) Suite à une stimulation liminaire d'une fibre nerveuse, il se produit :</b></p>
+<p class="para"><span class="t-red"><b>a-</b></span> un flux entrant de Na<sup>+</sup>, une accumulation de charges (-) à l'extérieur de la fibre, puis un flux sortant de k<sup>+</sup>.<br><b>b-</b> un flux sortant de Na<sup>+</sup>, une accumulation de charges (+) à l'intérieur de la fibre, puis un flux sortant de k<sup>+</sup>.<br><span class="t-red"><b>c-</b></span> un flux entrant de Na<sup>+</sup>, une accumulation de charges (+) à l'intérieur de la fibre, puis un flux sortant de K<sup>+</sup>.<br><b>d-</b> un flux entrant de K<sup>+</sup>, une accumulation de charges (+) à l'intérieur de la fibre, puis un flux sortant de Na<sup>+</sup>.</p>
+<p class="para">SP 2019 P</p>
+<p class="consigne"><b>6) Les corps cellulaires des fibres I<sub>a</sub> sont localisés au niveau :</b></p>
+<p class="para"><span class="t-red"><b>a-</b></span> du ganglion spinal.<br><b>b-</b> de la racine postérieure du nerf rachidien.<br><b>c-</b> de la corne ventrale de la moelle épinière.<br><b>d-</b> de la substance grise de la moelle épinière.</p>
+<p class="para">SP 2019 C</p>
+<p class="subhead"><span class="t-blue"><b>FIN SERIE A</b></span></p>
+
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Série 16 - Réflexe à point deépart cutané</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4993">
+<meta data-pagefind-meta="title[content]" content="Série 16 - Réflexe à point deépart cutané">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Série 16 - Réflexe à point deépart cutané" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Série 16 - Réflexe à point deépart cutané</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com · 73.832.000 · Nom du prof : Mer Skander</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1b4LjdBOZZx0ITn80Q_lj60e5KyFjCWaf/view">↗ Série 16 - Réflexe à point deépart cutané.pdf</a> <a href="https://drive.google.com/file/d/1Z-Pj7XpW7dd29SKOJu29AiWBAublRAcQ/view">↗ corrigé  Série 16 - Réflexe à point deépart cutané.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/1b4LjdBOZZx0ITn80Q_lj60e5KyFjCWaf/view">Mohamed Amine Hammami · Bac 2025 › Svt / Neuro / 16</a></li><li><a href="https://drive.google.com/file/d/1Z-Pj7XpW7dd29SKOJu29AiWBAublRAcQ/view">Mohamed Amine Hammami · Bac 2025 › Svt / Neuro / 16</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: Taki Academy · www.takiacademy.com · 73.832.000 · Nom du prof : Mer Skander -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série 32 : Réflexe à point de départ cutané (énoncé)</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4993.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com · 73.832.000 · Nom du prof : Mer Skander</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1b4LjdBOZZx0ITn80Q_lj60e5KyFjCWaf/view">↗ Série 16 - Réflexe à point deépart cutané.pdf</a> <a href="https://drive.google.com/file/d/1Z-Pj7XpW7dd29SKOJu29AiWBAublRAcQ/view">↗ corrigé  Série 16 - Réflexe à point deépart cutané.pdf</a></div>
+<!-- page 01 -->
+<p class="subhead t-red">RÉVISION</p>
+<p class="subhead t-navy">SVT</p>
+<p class="para">Classe : 4<sup>ème</sup> Math</p>
+<p class="para">Série 32 : Réflexe à point de départ cutané (énoncé)</p>
+<p class="para">Nom du prof : Mer Skander</p>
+<!-- page 02 -->
+<div class="exsub">Exercice 1 25 min 04 pts</div>
+<p class="consigne">. Pour chacun des items suivants, il y a une ou deux réponses exactes.<br>Reportez sur votre copie, le numéro de chaque item et indiquez-la (ou les) lettre(s) correspondante(s) à la réponse(s) exacte(s).</p>
+<p class="para"><b><span class="t-blue">1) Une section de la racine antérieure d'un nerf rachidien entraîne une dégénérescence :</span></b><br>
+a- du bout central de cette racine antérieure,<br>
+b- du bout périphérique de cette racine antérieure,<br>
+c- du bout central et du bout périphérique de cette racine antérieure,<br>
+d- des fibres sensitives du nerf rachidie.</p>
+<p class="para"><b><span class="t-blue">2)La figure ci-contre représente l'état de la membrane:</span></b><br>
+a- au repos,<br>
+b- pendant la repolarisation,<br>
+c- pendant l'hyperpolarisation,<br>
+<b>d-</b> pendant la dépolarisation.</p>
+<!-- CROP: 4993 1 2 0.58 0.325 0.948 0.476 4993_ex1_q2_membrane -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_ex1_q2_membrane.png" alt=""></figure>
+<p class="para"><b><span class="t-blue">3) La partie de la racine postérieure située entre le ganglion spinal et le nerf rachidien comporte :</span></b><br>
+a- des axons,<br>
+b- des dendrites,<br>
+c- des axones et des dendrites,<br>
+d- une ou plusieurs synapses.</p>
+<p class="para"><b><span class="t-blue">4) Dans un potentiel d'action, la repolarisation est le résultat :</span></b><br>
+a- d'une entrée de Na+ à l'intérieur de la fibre,<br>
+b- d'une sortie de K+ par les canaux voltage dépendants à K+,<br>
+c- d'un excès de K+ à l'extérieur de la membrane de la fibre,<br>
+d- d'une entrée de Cl- et d'une sortie de K+.</p>
+<p class="para"><b><span class="t-blue">5) dans une cellule nerveuse au repos :</span></b><br>
+a- les ions Na+ qui entrent et qui sortent ne sont pas à égalité.<br>
+b- la membrane plasmique présente à la fois un transport passif et un transport actif.<br>
+c- les canaux de fuite sont toujours fermés.<br>
+d- les canaux Na+et K+ voltage dépendants sont ouverts.</p>
+<p class="para"><b><span class="t-blue">6) la période réfractaire est :</span></b><br>
+a- une période d'inexcitabilité qui permet à la membrane de récupérer son PR.<br>
+b- une période pendant laquelle la membrane est dépolarisée.<br>
+c- une période pendant laquelle la membrane est hyper polarisée.<br>
+d- une période pendant laquelle les CVD Na+ sont ouverts.</p>
+<!-- page 03 -->
+<div class="exsub">Exercice 2 40 min 07 pts</div>
+<p class="para">On se propose d'étudier les mécanismes de la naissance et de la transmission du message nerveux. Le document 1 représente le dispositif expérimental utilisé.</p>
+<!-- CROP: 4993 1 3 0.14 0.255 0.665 0.41 4993_ex2_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_ex2_doc1.png" alt=""></figure>
+<p class="para">*R1, R2 et R3 : électrodes réceptrices<br>*N1 : neurone présynaptique<br>*N2 : neurone postsynaptique</p>
+<p class="para" style="text-align:center"><b>Document 1</b></p>
+<p class="para"><b>I]</b> On enregistre les phénomènes électriques au niveau de R1 et R2 à la suite de la stimulation du neurone N1 par des intensités croissantes I1, I2, I3 et I4. (I1 &lt; I2 &lt; I4).<br>Le document 2 ci-dessous représente les résultats obtenus</p>
+<table>
+<tr><td><b>Enregistrements obtenus en R1</b></td><td><!-- CROP: 4993 1 3 0.285 0.555 0.875 0.692 4993_ex2_doc2_R1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_ex2_doc2_R1.png" alt=""></figure></td></tr>
+<tr><td><b>Enregistrements obtenus en R2</b></td><td><!-- CROP: 4993 1 3 0.285 0.698 0.875 0.845 4993_ex2_doc2_R2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_ex2_doc2_R2.png" alt=""></figure></td></tr>
+</table>
+<p class="para" style="text-align:center"><b>Document 2</b></p>
+<!-- page 04 -->
+<p class="para"><span class="t-blue">1)</span> Nommez les phénomènes électriques représentés par les tracés obtenus en R1.<br>
+<span class="t-blue">2)</span> Exploitez les résultats obtenus afin de déduire :<br>
+<b>a.</b> Les conditions de naissance du phénomène électrique représenté par les tracés 3 et 4.<br>
+<b>b.</b> Les caractéristiques de ce phénomène électrique.<br>
+<span class="t-blue">3)</span> Représentez par deux schémas l'état des charges au niveau de la fibre N1 en R1 et en R2 à la suite d'une stimulation S3.<br>
+<span class="t-blue">4)</span> Le document 3 ci-dessous montre la relation existante entre le phénomène électrique représenté par le tracé 3 (ou 4) et les modifications de la perméabilité de la membrane nerveuse à la suite d'une stimulation électrique efficace.</p>
+<!-- CROP: 4993 1 4 0.24 0.278 0.765 0.44 4993_ex2_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_ex2_doc3.png" alt=""></figure>
+<p class="para" style="text-align:center"><b>Document 3</b></p>
+<p class="para"><b>a-</b> Reproduisez sur le document 3, le tracé 3 et indiquez ses différentes phases.<br>
+<b>b-</b> Analysez ces courbes en mettant en relation la variation de la perméabilité membranaire aux ions Na+ et K+ et les phases du tracé 3 tout en utilisant vos connaissances.</p>
+<p class="para"><span class="t-blue">5)</span> Calculez la vitesse de propagation du message nerveux au niveau de N1 sachant que la distance [R1R2]= 60mm</p>
+<p class="para"><b>II]</b> Les stimulations S3 et S4 provoquent au niveau de R3 une variation de potentiel appelée potentiel postsynaptique (PPS). Les expériences ci-après ont été réalisée afin d'expliquer quelques étapes de la transmission synaptique</p>
+<ul class="b"><li><b><span class="t-blue">Expérience 1</span></b> : On applique sur N1 des excitations efficaces et on mesure la concentration intracellulaire en calcium (Ca++). Le document 4 montre les résultats obtenus.</li></ul>
+<!-- CROP: 4993 1 4 0.19 0.715 0.77 0.882 4993_ex2_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_ex2_doc4.png" alt=""></figure>
+<p class="para" style="text-align:center"><b>Document 4</b></p>
+<!-- page 05 -->
+<ul class="b"><li><b><span class="t-blue">Expérience 2</span></b> : On injecte dans la fente synaptique de la synapse N1N2 de la toxine tétanique. La stimulation de N1 donne au niveau de R3 un potentiel de repos.</li></ul>
+<p class="para"><span class="t-blue">1)</span> Quelle information tirez-vous à partir de l'expérience 1 ?<br>
+<span class="t-blue">2)</span> Donnez trois hypothèses concernant l'effet de la toxine.<br>
+<span class="t-blue">3)</span> La figure du document 5, représente l'observation microscopique de la synapse N1-N2 au cours de l'expérience 2.</p>
+<!-- CROP: 4993 1 5 0.24 0.248 0.76 0.395 4993_ex2_doc5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_ex2_doc5.png" alt=""></figure>
+<p class="para" style="text-align:center"><b>Document 5</b></p>
+<p class="para"><b>a.</b> Complétez la légende de la figure.<br>
+<b>b.</b> Quelle hypothèse peut-on retenir ? Expliquez votre réponse.</p>
+<p class="para"><b>III]</b> En tenant compte de vos réponses précédentes ainsi que de vos connaissances donnez les différentes étapes de la transmission synaptique à l'origine du PPS observé en R3.</p>
+<div class="exsub">Exercice 3 30 min 06 pts</div>
+<p class="para">Dans le cas du reflexe à point de départ cutané où la peau est stimulé par un objet chaud ou par une piqure, le sujet retire involontairement sa main. Un tel mouvement est une flexion.<br>
+Il est inévitable, incontrôlable, donc involontaire : C'est un reflexe à point de départ cutané (peau).<br>
+Le schéma du document 1 nous permet de connaitre les éléments intervenant dans sa réalisation ainsi que leur fonctionnement.</p>
+<!-- page 06 -->
+<!-- CROP: 4993 1 6 0.08 0.088 0.88 0.355 4993_ex3_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_ex3_doc1.png" alt=""></figure>
+<p class="para" style="text-align:center"><b>Document 1</b></p>
+<p class="para"><b>1)</b> Identifiez <b>les cinq éléments principaux A, B, C, D et E</b> intervenant dans le réalisation du reflexe à point de départ cutané.<br>
+<b>2)</b> Légendez le schéma en remplaçant les chiffres 1, 2 … par ce qui convient.<br>
+<b>3) a- L'élément 3</b> est <b>une voie nerveuse sensitive</b>. Proposez une expérience qui prouve ce rôle.<br>
+<b>b- L'élément 3'</b> est <b>une voie nerveuse motrice</b>. Proposez une expérience qui prouve ce rôle.<br>
+<b>4)</b> Une fibre nerveuse fonctionnelle assure son rôle quand elle est en contact avec son corps cellulaire.<br>
+<b>La fibre nerveuse 12</b> est un prolongement du <b>corps cellulaire 10</b> qui se trouve dans <b>la zone 8.</b><br>
+<b>a-</b> Comment Magendie a-t-il prouvé cette constatation importante. Expliquez votre réponse.<br>
+<b>b-</b> Faite un schéma détaillé de la cellule nerveuse formée <b>par les éléments 10 et 12</b> jusqu'à son arrivée à <b>l'élément 14.</b></p>
+<div class="exsub">Correction</div>
+<!-- page 01 -->
+<p class="subhead t-red">RÉVISION</p>
+<p class="subhead t-navy">SVT</p>
+<p class="para">Classe : 4<sup>ème</sup> Math</p>
+<p class="para">Série 16 : Réflexe à point de départ cutané (énoncé)</p>
+<p class="para">Nom du prof : Mer Skander</p>
+<!-- page 02 -->
+<div class="exsub">Exercice 1 25 min 06 pts</div>
+<table>
+<tr><th><span class="t-red">1</span></th><th><span class="t-red">2</span></th><th><span class="t-red">3</span></th><th><span class="t-red">4</span></th><th><span class="t-red">5</span></th><th><span class="t-red">6</span></th></tr>
+<tr><td>b</td><td>d</td><td>b</td><td>b</td><td>a-b</td><td>a</td></tr>
+</table>
+<div class="exsub">Exercice 2 40 min 07 pts</div>
+<p class="para"><span class="t-blue">1)</span> -tracés 1 et 2 : potentiels locaux<br>
+-tracés 3 et 4 : potentiels d'action<br>
+<span class="t-blue">2)</span><br>
+<b>a-</b></p>
+<table>
+<tr><th>Exploitation</th><th>Déduction</th></tr>
+<tr><td>-Les stimulations S1 et S2 ont donné des potentiels locaux dont l'amplitude est inférieure à 20 mV,<br>- Les stimulations S3 et S4 ont donné des potentiels dont l'amplitude atteint 20 mV ce qui déclenché un PA,</td>
+<td>La naissance d'un PA nécessite une stimulation efficace d'intensité liminaire ou supraliminaire qui donne naissance à une dépolarisation qui atteint le potentiel seuil = -50mV à l'origine d'un PA.</td></tr>
+</table>
+<p class="para"><b>b-</b></p>
+<table>
+<tr><th>Exploitation</th><th>Déduction</th></tr>
+<tr><td>Les stimulations de N1 avec les intensités I3 puis I4, donne chacune un PA d'amplitude 100 mv.</td><td>le PA est non graduable il obéit à la loi de tout ou rien.</td></tr>
+<tr><td>Les 2 PA qui sont enregistrés au niveau de R1, apparaissent aussi en R2 avec les mêmes amplitudes (100mV)</td><td>le PA est donc propageable.</td></tr>
+</table>
+<p class="para"><span class="t-blue">3)</span></p>
+<!-- CROP: 4993 2 2 0.27 0.666 0.56 0.732 4993_corr_ex2_q3_schema1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_corr_ex2_q3_schema1.png" alt=""></figure>
+<!-- CROP: 4993 2 2 0.27 0.753 0.56 0.82 4993_corr_ex2_q3_schema2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_corr_ex2_q3_schema2.png" alt=""></figure>
+<p class="para"><span class="t-blue">4)</span><br>
+a- Les différentes phases du tracé :</p>
+<!-- page 03 -->
+<!-- CROP: 4993 2 3 0.195 0.085 0.685 0.255 4993_corr_ex2_q4a_phases -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_corr_ex2_q4a_phases.png" alt=""></figure>
+<p class="para">Rq : Le PA est constitué d'une phase de dépolarisation et une phase de repolarisation.</p>
+<p class="para">b- Au cours du potentiel d'action, l'entrée et la sortie des ions Na+ et K+ s'effectuent à travers des canaux dont l'ouverture dépend d'un niveau précis du potentiel de la membrane, ce sont des canaux ioniques voltage-dépendants (CVD); ces canaux sont fermés au repos.</p>
+<ul class="b">
+<li>À la dépolarisation : les canaux voltage-dépendants à Na+ s'ouvrent lorsque le potentiel de la membrane atteint une valeur seuil de -50 mV et il y a entrée massive et brusque de Na+</li>
+<li>À la repolarisation : les canaux voltage-dépendants à K+ s'ouvrent lorsque le potentiel de la membrane atteint une valeur seuil de +30 mV : il y a sortie de K+. les canaux Na+ se ferment</li>
+<li>À l'hyperpolarisation : les canaux voltage-dépendants à Na+ sont fermés, les canaux K+ sont ouverts. La sortie de K+ continue même après la repolarisation, d'où une légère hyperpolarisation puis fermeture des canaux K+.</li>
+</ul>
+<p class="para">La pompe Na+/K+ ramène la membrane au potentiel de repos.</p>
+<p class="para">c- La vitesse V Δd/Δt &nbsp;&nbsp; avec Δd = 60 mm = 60.10<sup>-3</sup> m<br>
+Δt = 1ms = 10<sup>-3</sup> s<br>
+V = 60 10<sup>-3</sup> /1 10<sup>-3</sup> =60 m/s</p>
+<p class="para"><span class="t-gold">I.</span></p>
+<p class="para"><span class="t-blue">1)</span> La perméabilité membranaire vis-à-vis aux ions Ca2+ dépend de la dépolarisation membranaire.<br>
+<span class="t-blue">2)</span> H1 : la toxine empêche l'exocytose<br>
+H2 : elle bloque les CVD à ca2+<br>
+H3 : elle empêche la fixation des neurotransmetteurs sur les récepteurs spécifiques du neurone post synaptique Remarque : on peut donner d'autres hypothèses logiques<br>
+<span class="t-blue">3)</span><br>
+<b>a.</b> 1/membrane pré synaptique 2/fente synaptique 3/membrane post synaptique 4/vésicule synaptique en exocytose 5/vésicules synaptique<br>
+<b>b.</b> Puisque la figure montre des vésicules synaptiques en exocytose donc on doit jeter les deux premières hypothèses et par la suite retenir la dernière</p>
+<p class="para"><span class="t-gold">II.</span></p>
+<ol class="qn">
+<li>Arrivée d'un message nerveux à la terminaison axonique du neurone N1</li>
+<li>Ouverture des canaux Ca<sup>++</sup> voltage-dépendants,</li>
+</ol>
+<!-- page 04 -->
+<ol class="qn" start="3">
+<li>Entrée des ions Ca<sup>++</sup></li>
+<li>Fusion des vésicules avec la membrane pré synaptique</li>
+<li>Exocytose du neurotransmetteur dans la fente synaptique</li>
+<li>Fixation du neurotransmetteur sur des récepteurs spécifiques de la membrane postsynaptique et ouverture des canaux chimio-dépendants</li>
+<li>mouvements ioniques à travers ces canaux ce qui entraîne une modification du potentiel de la membrane postsynaptique appelé PPS (potentiel post-synaptique)</li>
+<li>Naissance d'un PPS,</li>
+<li>Inactivation du neurotransmetteur,</li>
+<li>Recapture du neurotransmetteur.</li>
+</ol>
+<div class="exsub">Exercice 3 30 min 06 pts</div>
+<p class="para"><b>1) A :</b> Récepteur sensoriel = La peau<b>.</b></p>
+<p class="para"><b>B :</b> Conducteur sensitif = Fibre nerveuse sensitive, afférente ou centripète.</p>
+<p class="para"><b>C :</b> Centre nerveux reflexe = Moelle épinière.</p>
+<p class="para"><b>D :</b> conducteur moteur = Fibre nerveuse motrice, efférente ou centrifuge.</p>
+<p class="para"><b>E :</b> Effecteurs = muscle fléchisseur et muscle extenseur.</p>
+<p class="para"><b>2)</b> 1 : peau</p>
+<p class="para">2 : nerf rachidien</p>
+<p class="para">3 : racine postérieure / dorsale.</p>
+<p class="para">3' : racine antérieure / ventrale.</p>
+<p class="para">4 : ganglion spinal.</p>
+<p class="para">5 : corps cellulaire unipolaire ou en T.</p>
+<p class="para">6 : substance blanche.</p>
+<p class="para">7 : corne postérieure / dorsale.</p>
+<p class="para">8 : corne antérieure / ventrale.</p>
+<p class="para">9 : substance grise.</p>
+<p class="para">10 : corps cellulaire du neurone moteur du muscle fléchisseur (14).</p>
+<p class="para">12 : Fibre nerveuse motrice, efférente ou centrifuge innervant le muscle fléchisseur.</p>
+<p class="para">14 : Muscle fléchisseur contracté.</p>
+<p class="para">11 : corps cellulaire du neurone moteur du muscle extenseur (15).</p>
+<p class="para">13 : Fibre nerveuse motrice, efférente ou centrifuge innervant le muscle extenseur.</p>
+<!-- page 05 -->
+<p class="para">15 : Muscle extenseur relâché.</p>
+<p class="para">16 : neurone d'association (interneurone).</p>
+<p class="para">17 : interneurone excitateur.</p>
+<p class="para">18 : interneurone inhibiteur.</p>
+<p class="para"><b>3) -</b> Le schéma ci-dessous montre une portion de la moelle épinière en relation avec un nerf rachidien.</p>
+<p class="para"><b>- S1, S2 et S3</b> sont des plans de sections qui nous permettent de chercher les rôles des racines dorsales et ventrales des nerfs rachidiens.</p>
+<p class="para"><b>- BP =</b> Bout périphérique non relié avec le centre nerveux.</p>
+<p class="para"><b>BC =</b> Bout central relié avec le centre nerveux.</p>
+<p class="para"><b>-</b> Au niveau du BP ou du BC, on applique des excitations (ou stimulations).</p>
+<!-- CROP: 4993 2 5 0.245 0.375 0.67 0.55 4993_corr_ex3_q3_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_corr_ex3_q3_schema.png" alt=""></figure>
+<p class="para"><b>a- Rôle sensitif de la racine dorsale (élément 3) :</b></p>
+<table>
+<tr><th>Expérience</th><th>Résultat</th><th>Conclusion</th></tr>
+<tr><td><b><u>Expérience 1 :</u></b> Section de la racine dorsale <b>en S1 ou en S2 puis</b><br><br><b>a-</b> stimulation<br>du bout central :</td>
+<td><b>a-</b> Contraction du muscle.</td>
+<td>La contraction du muscle avec la stimulation du bout central et l'absence de cette contraction avec la stimulation du bout périphérique montrent que :<br>La racine dorsale est sensitive, elle transporte le <b>message nerveux sensitif (m n s), encore appelé centripète ou afférent</b> du récepteur sensoriel, « la peau »</td></tr>
+</table>
+<!-- page 06 -->
+<table>
+<tr><td><b>b-</b> stimulation<br>du bout périphérique :</td><td><b>b-</b> Sans effet ---&gt; Pas de contraction du muscle</td><td>vers le centre nerveux, « la moelle épinière ».</td></tr>
+</table>
+<p class="para"><b><span class="t-red">Autre réponse prouvant le rôle sensitif de la racine dorsale :</span></b></p>
+<table>
+<tr><th>Expérience</th><th>Résultat</th><th>Conclusion</th></tr>
+<tr><td><b><u>Expérience 1 :</u></b> Section de la racine dorsale <b>en S1 ou en S2.</b></td><td>Perte de la sensibilité mais maintien de la motricité.</td><td>La racine dorsale est sensitive.</td></tr>
+</table>
+<p class="para"><b>b- Rôle moteur de la racine ventrale (élément 3') :</b></p>
+<table>
+<tr><th>Expérience</th><th>Résultat</th><th>Conclusion</th></tr>
+<tr><td><b><u>Expérience 2 :</u></b> Section de la racine ventrale e<b>n S3 puis</b><br><b>a-</b> stimulation du bout central :<br><br><b>b-</b> stimulation du bout périphérique :</td>
+<td><b>a-</b> Pas de contraction du muscle.<br><br><b>b-</b> Contraction du muscle.</td>
+<td>La contraction du muscle avec la stimulation du bout périphérique et l'absence de cette contraction avec la stimulation du bout central montrent que :<br>La racine ventrale est motrice, elle transporte le <b>message nerveux moteur (m n m), encore appelé centrifuge ou efférent</b> du centre nerveux, la moelle épinière, vers l'effecteur ou muscle.</td></tr>
+</table>
+<p class="para"><b><span class="t-red">Autre réponse prouvant le rôle moteur de la racine ventrale :</span></b></p>
+<!-- page 07 -->
+<table>
+<tr><th>Expérience</th><th>Résultat</th><th>Conclusion</th></tr>
+<tr><td><u><b>Expérience</b> 2 <b>:</b></u> Section de la racine ventrale e<b>n S3.</b></td><td>Perte de la motricité mais maintien de la sensibilité.</td><td>La racine ventrale est motrice.</td></tr>
+</table>
+<p class="para"><b>4) La fibre nerveuse 12</b> est un prolongement du <b>corps cellulaire 10</b> se trouvant dans <b>la zone 8.</b></p>
+<p class="para"><b>a-</b> Pour prouver cette constatation, Magendie a réalisé l'expérience de section S3 et les résultats sont donnés dans le schéma suivant.</p>
+<table>
+<tr><th>Expérience</th><th>Résultat</th><th>Conclusion</th></tr>
+<tr><td><!-- CROP: 4993 2 7 0.09 0.403 0.335 0.578 4993_corr_ex3_q4a_magendie --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_corr_ex3_q4a_magendie.png" alt=""></figure></td>
+<td>Dégénérescence du bout périphérique de la racine antérieure ainsi que de la partie ventrale du nerf rachidien. Le bout central reste intact.</td>
+<td><b>Les corps cellulaires des fibres nerveuses motrices</b> se trouvent du côté central. Ils <b>se trouvent dans les cornes antérieures de la S G de la M E. Ce sont les corps cellulaires multipolaires étoilés.</b></td></tr>
+</table>
+<p class="para"><b>b-</b></p>
+<!-- page 08 -->
+<!-- CROP: 4993 2 8 0.1 0.092 0.82 0.322 4993_corr_ex3_q4b_neurone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4993/4993_corr_ex3_q4b_neurone.png" alt=""></figure>
+<p class="para"><b>Schéma d'une cellule nerveuse ou neurone et <span class="t-gold">localisation de ses différentes parties</span></b></p>
+
+</section>
+
+</div>
+</body>
+</html>

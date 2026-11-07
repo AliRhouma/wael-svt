@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Transmission synaptique </title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="Source non indiquée">
+<meta data-pagefind-meta="n[content]" content="4926">
+<meta data-pagefind-meta="title[content]" content="Transmission synaptique">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Transmission synaptique " data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Transmission synaptique </h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Cours</span><span class="tg">Résumé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1L9BNYrQk1YN2v6vjdPtUshe2YEwqncky/view">↗ Transmission synaptique .pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1L9BNYrQk1YN2v6vjdPtUshe2YEwqncky/view">Kenza Helali · KENZA HELALI| bacmaths2026 › Sciences / Résumes cours / Neurophysiologie</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<div class="exh"><span class="idx">Cours</span><h2>Transmission synaptique</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4926.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Cours</span><span class="tg">Résumé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1L9BNYrQk1YN2v6vjdPtUshe2YEwqncky/view">↗ Transmission synaptique .pdf</a></div>
+<!-- NOTE: handwritten course notebook; highlighter marks drawn over the handwriting are left out -->
+<!-- page 01 -->
+<p class="subhead t-red">Transmission synaptique</p>
+<p class="subhead t-red">I) structure de la synapse neuro-neuronique :</p>
+<p class="subhead">1) Synapse au repos :</p>
+<!-- CROP: 4926 1 1 0.0 0.105 0.49 0.355 4926_synapse_repos -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4926/4926_synapse_repos.png" alt=""></figure>
+<p class="subhead">2) Synapse en activité : (excitatrice)</p>
+<!-- CROP: 4926 1 1 0.53 0.10 1.0 0.36 4926_synapse_activite -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4926/4926_synapse_activite.png" alt=""></figure>
+<p class="subhead">3) Conclusion :</p>
+<p class="para">La synapse comprend :</p>
+<ul class="dash">
+<li>un élement présynaptique :<br>est formé d'une terminaison axonique d'un neurone présynaptique<br>qui contient des vésicules synaptiques renfermant un neurotransmetteur<br>spécifique de la synapse.</li>
+<li>un élement postsynaptique :<br>formé par la membrane épaisse d'un neurone postsynaptique qui contient<br>des récepteurs spécifiques au neurotransmetteur libéré lors de l'activation<br>de la synapse.</li>
+<li>une fente synaptique :<br>espace séparant la membrane présynaptique et la membrane post synaptique.</li>
+</ul>
+<p class="para">Exocytose :<br>une cellule libère des<br>substances vers l'extérieur</p>
+<p class="subhead t-red">II) Mécanisme de la transmission synaptique :</p>
+<p class="para">succession des événements suivants :</p>
+<p class="para">1) L'arrivée d'un PA jusqu'au bouton synaptique</p>
+<p class="para">2) L'ouverture des CVD à Ca<sup>2+</sup> ce qui permet l'entrée de Ca<sup>2+</sup> dans le Bouton<br>synaptique</p>
+<p class="para">3) Migration des vésicules synaptiques vers la membrane présynaptique et leur<br>exocytose pour libérer le neurotransmitteur.</p>
+<p class="para">* Dans le cas d'une synapse excitatrice :</p>
+<p class="para">4) Le neurotransmitteur excitateur (comme l'acétylcholine) se fixe sur les<br>récepteurs spécifiques de la membrane post-synaptique</p>
+<p class="para">5) ouverture des CCD à Na<sup>+</sup> permettant l'entrée de Na<sup>+</sup> dans l'élément<br>postsynaptique.</p>
+<p class="para">6) Il y a diminution de la négativité interne ; c'est une légère dépolarisation<br>appelé PPSE. (Post synaptique excitateur)</p>
+<!-- page 02 -->
+<p class="para">* Dans le cas d'une synapse inhibitrice :</p>
+<p class="para">4) Le neurotransmitteur inhibiteur (Comme le GABA) se fixe sur<br>récepteurs spécifiques de la membrane post synaptique</p>
+<!-- PROOFREAD: 4926 part1 p02 — "se fixe sur" : the end of the line is cut by the page edge -->
+<p class="para">5) ouverture des CCD à K<sup>+</sup> ou des CCD à Cl<sup>−</sup> permettant la sortie des K<sup>+</sup><br>vers la fente synaptique et/ou entrée des Cl<sup>−</sup> dans l'élement postsynaptique<br>ce qui augmente sa négativité.</p>
+<p class="para">6) on obtient une hyperpolarisation : PPSI (post synaptique inhibiteur).</p>
+<p class="subhead t-red">III) Les propriétés des PPSE et PPSI :</p>
+<ul class="dash">
+<li>Le PPSE se propage directement vers le cône axonique en diminuant d'ampli</li>
+<li>Si PPSE atteint le cône axonique avec un ddp ≥ − 50 mV (seuil) :<br>Il y a naissance d'un PA propageable.</li>
+<li>Le PPSI se propage vers le cône axonique en diminuant d'ampli<br>pour donner un PR ensuite.</li>
+</ul>
+<!-- PROOFREAD: 4926 part1 p02 — "en diminuant d'ampli" in the first dash line is written above the line with an insertion mark -->
+<p class="para">Conclusion : propagation du PPSE et PPSI <span class="t-red">⇒ Ils sont amorties : P. Locaux</span></p>
+<p class="para">membrane post synaptique ⟶ cône axonique du neurone postsynaptique<br>⇓<br>en ↘ d'ampli</p>
+<!-- PROOFREAD: 4926 part1 p02 — symbol under the arrow read as "⇓" (handwritten) -->
+<p class="subhead t-red">Remarques :</p>
+<ul class="dash">
+<li>Le cône axonique est un site générateur : premier point de l'axone<br>postsynaptique qui contient des CVD à Na<sup>+</sup> et à K<sup>+</sup>.</li>
+<li>Les PPS sont graduables en amplitude proportionnellement à la<br>quantité de neurotransmetteur libérée dans la fente synaptique<br>→ Cette quantité dépend de la fréquence des PA présynaptiques</li>
+<li>Le délai synaptique = le temps mis par le message nerveux pour<br>traverser une synapse ≃ 0,5 ms.</li>
+</ul>
+<p class="subhead t-red">IV) Intégration des PPS par le neurone postsynaptique :</p>
+<p class="para">c'est la capacité que possède le neurone postsynaptique d'additionner<br>les différents PPS qui lui parviennent des neurones présynaptique par<br>sommation temporelle et/ou spatiale au niveau de son cône axonique</p>
+<p class="subhead">1) Sommation spatiale</p>
+<ul class="dash">
+<li>Lorsque plusieurs neurones présynaptiques transmettent leur message simultanément<br>au meme neurone postsynaptique par des synapses excitatrices et inhibitrices ;<br>Le PPS résultant a une amplitude = la somme des PPS unitaires.<br>⇒ Il s'agit d'une sommation spatiale.</li>
+<li>Si cette somme atteint au niveau du cône axonique ou segment initial<br>le seuil ⇒ un PA est déclenché et se propage le long du neurone postsynaptique</li>
+</ul>
+<!-- page 03 -->
+<!-- PROOFREAD: 4926 part1 p03 — top-left corner of the page folded: first letters of the first lines are missing ("mmation temporelle", "orsqu'un", "un neurone") -->
+<p class="subhead">mmation temporelle :</p>
+<ul class="dash">
+<li>orsqu'un même neurone présynaptique transmet des PA très rapprochés<br>un neurone postsynaptique par une synapse excitatrice ou inhibitrice ;<br>le PPS résultant a une amplitude = la somme des PPS successifs provenant<br>de la même synapse<br>⇒ Il s'agit d'une sommation temporelle.</li>
+<li>Si le PPS résultant atteint au niveau du cône axonique ou segment<br>initial ≥ le seuil ; il déclenche un PA qui se propage le long du neurone<br>postsynaptique.</li>
+</ul>
+<!-- PROOFREAD: 4926 part1 p03 — "initial ≥ le seuil" (small handwritten sign before "le seuil"); a crossed-out word in the left margin is left out -->
+<p class="subhead">3) Condition de naissance d'un PA postsynaptique efférent :</p>
+<ul class="dash">
+<li>Quand le PPS global résultant d'une sommation = un PPSE qui atteint<br>le seuil de − 50 mV (au niveau du cône axonique où les CVD à Na<sup>+</sup> et à K<sup>+</sup>) :<br>⇒ un PA postsynaptique prend naissance à ce niveau et se propage le long<br>de l'axone</li>
+</ul>
+<p class="subhead t-red">V) Mécanisme de la coordination de l'activité des muscles antagonistes au cours<br>du reflexe de retrait de la main :</p>
+<p class="para">Lors du reflexe du retrait de la main ; le muscle fléchisseur se contracte alors<br>que le muscle extenseur se relâche : c'est la coordination de l'activité<br>des muscles antagoniste.</p>
+<p class="para">* Cette coordination explique par l'innervation réciproque :<br>Le message nerveux sensitif provenant des récepteurs cutanés stimulés<br>a une double action :</p>
+<ul class="dash">
+<li>L'activation du motoneurone du muscle fléchisseur par l'intermédiaire<br>d'interneurones médullaires excitateurs entrainant la contraction du muscle<br>fléchisseur : ⇒ Il s'agit d'un circuit nerveux excitateur polysynaptique.</li>
+<li>L'inhibition du motoneurone du muscle extenseur par l'intermédiaire<br>d'interneurones médullaires dont le dernier est inhibiteur ce qui entraine<br>le relâchement du muscle extenseur : ⇒ Il s'agit d'un circuit nerveux<br>inhibiteur polysynaptique.</li>
+</ul>
+<!-- page 04 -->
+<!-- ROTATE: 4926 part1 p04 270 -->
+<!-- CROP: 4926 1 4 0.000 0.070 1.000 0.650 4926_innervation_reciproque -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4926/4926_innervation_reciproque.png" alt=""></figure>
+<p class="subhead t-red">" Coordination des 2 muscles antagoniste<br>pour une innervation réciproque "</p>
+<p class="para"><span class="t-blue">⇒ circuit polysynaptique avec 4 interneurones : 5 synapses excitatrices ⊕<br>et 1 synapse inhibitrice ⊖</span></p>
+<!-- page 05 -->
+<!-- NOTE: page 05: the letters visible in the left margin belong to the facing notebook page and are not transcribed -->
+<p class="subhead t-red">La transmission synaptique</p>
+<!-- PROOFREAD: 4926 part1 p05 — title "La transmission synaptique": top of the letters cut by the photo edge -->
+<p class="subhead">I - <span class="t-red">Les étapes de la transmission synaptique par une synapse excitatrice :</span></p>
+<p class="para">① L'arrivée d'un potentiel d'action jusqu'au bouton synaptique</p>
+<p class="para">② L'ouverture des CVD à CA<sup>2+</sup> ce qui permet l'entrée de CA<sup>2+</sup> dans le bouton<br>synaptique.</p>
+<p class="para">③ Migration des Vésicules synaptiques vers la membrane pré synaptique et leur<br>exocytose pour libérer le neurotransmitteur.</p>
+<p class="para">④ Le neurotransmitteur excitateur (tel que l'acétylcholine) se fixe sur les<br>récepteurs spécifiques de la membrane post-synaptique.</p>
+<p class="para">⑤ ouverture des Canaux ionique chimio-dépendants (CCD) à Na<sup>+</sup> permettant<br>l'entrée des Na<sup>+</sup> dans l'élement postsynaptique.</p>
+<p class="para">⑥ Il y a diminution de la négativité interne ; c'est une légère dépolarisation<br>appelée potentiel post synaptique excitateur (PPSE).</p>
+<p class="para">Remarque : Le PPSE se propage directement vers le cône axonique en diminuant<br>d'amplitude ; Le cône axonique est un site générateur : premier pt de l'axone<br>postsynaptique qui contient des CVD à Na<sup>+</sup> et à K<sup>+</sup>.<br>Si le PPSE atteint le cône axonique avec un d ddp ≥ − 50 mV (seuil)<br>il y a naissance d'un PA propageable.</p>
+<p class="subhead">II - <span class="t-red">Les étapes de la transmission synaptique par une synapse inhibitrice :</span></p>
+<p class="para">① + ② + ③ : identiques à la synapse excitatrice.</p>
+<p class="para">④ Le neurotransmitteur inhibiteur (tel que le GABA) se fixe sur les récepteurs<br>spécifiques de la membrane post-synaptique.</p>
+<p class="para">⑤ ouverture des CCD à K<sup>+</sup> ou des CCD à Cl<sup>−</sup><br>Il y a sortie des K<sup>+</sup> vers la fente synaptique et/ou entrée des Cl<sup>−</sup> dans<br>l'élement postsynaptique ce qui augmente sa négativité.</p>
+<p class="para">⑥ on obtient une hyperpolarisation : potentiel post synaptique inhibiteur<br>(PPSI)</p>
+<p class="para">Remarque : Le PPSI se propage vers le cône axonique en diminuant d'amplitude<br>pour donner un potentiel de repos ensuite.</p>
+<!-- page 06 -->
+<p class="subhead t-red">Exercice n° 2 :</p>
+<table>
+<tr><th></th><th>PR</th><th>PA</th><th>PPSE</th><th>PPSI</th></tr>
+<tr><td>Niveau d'apparition</td><td>- tous les pts de la membrane cytoplasmique du neurone</td><td>* Au niveau d'un site generateur :<br>- Le cône axonique de l'élement postsynaptique<br>- Recepteur sensoriels : l'extrémité dendritique de la fibre sensitive</td><td>Au niveau de la membrane postsynaptique</td><td>" &nbsp; " &nbsp; "<br>" &nbsp; " &nbsp; "</td></tr>
+<tr><td>canaux ioniques mis en jeux</td><td>- Les Canaux de fuite toujours ouverts</td><td>- Au cours de phase de depolarisation : ouverture des CVD à Na<sup>+</sup> (à − 50 mV<br>- A la repolarisation : à 30 mV : fermeture des CVD à Na<sup>+</sup> et ouverture des CVD K<sup>+</sup></td><td>- L'ouverture des CVD à Ca<sup>2+</sup> par l'arrivée de PA.<br>- ouverture des CCD à Na<sup>+</sup></td><td>- CCD à K<sup>+</sup> et/ou CCD à Cl<sup>−</sup>.</td></tr>
+<tr><td rowspan="2">- Sens du mouvement des ions impliqués</td><td colspan="4"><span class="t-red">Tous les canaux ioniques ((de fuite) CVD et CCD) permettent un transport passif des ions selon le gradiant des concentrations</span></td></tr>
+<tr><td>- entrée des Na<sup>+</sup> dans le MIC<sup>lc</sup> et Sortie des K<sup>+</sup> vers le MEC<sup>lc</sup></td><td>- dans la phase de depolarisation : Entrée <u>masive</u> des Na<sup>+</sup><br>- dans la repolarisation et l'hyperpolarisation : Sortie <u>massive</u> des K<sup>+</sup>.</td><td>- Entrée massive des Ca<sup>2+</sup> dans les boutons synaptiques<br>- Entreé des Na<sup>+</sup> dans l'élement postsynaptique</td><td>- Sortie des K<sup>+</sup> vers la fente synaptique et/ou entrée des Cl<sup>−</sup> dans l'élement postsynaptique</td></tr>
+<tr><td>Propriétés</td><td>* ddp = − 70 mV<br>- MIC chargé négativement par rapport au MEC.<br>- Maitenue par la travail active de la pompe Na<sup>+</sup>/K<sup>+</sup> contre la gradiant de concentration.</td><td>- Il obeît à la loi du seuil (− 50 mV)<br>- Il obeît à la loi du tout ou rien.<br>- Il est propageable tout le long de la fibre nerveuse avec la même amplitude</td><td colspan="2">- Ils sont graduables (codés en modulation d'amplitude)<br>- Ils se propagent sur faible distance vers le cône axonique en diminuant d'amplitude (à decrément spatial)</td></tr>
+</table>
+<!-- PROOFREAD: 4926 part1 p06 — "MIC<sup>lc</sup> / MEC<sup>lc</sup>" (small handwritten superscript); a crossed-out word in the PPSI cell of row 4 is left out; "Ca 2+" written over a crossed-out letter in "CVD" -->
+
+</section>
+
+</div>
+</body>
+</html>

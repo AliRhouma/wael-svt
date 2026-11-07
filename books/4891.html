@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Neuro (meddeb)</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="Chokri MEDDEB">
+<meta data-pagefind-meta="n[content]" content="4891">
+<meta data-pagefind-meta="title[content]" content="Neuro (meddeb)">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Neuro (meddeb)" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Neuro (meddeb)</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Chokri MEDDEB</span> <span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/10uSBtMgS2JKoaNCSw8iYxewEe9213afg/view">↗ Neuro (meddeb).pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/10uSBtMgS2JKoaNCSw8iYxewEe9213afg/view">Anas Saïd · IDEAL BAC MATH(Anas Saïd) › SVT / sc(meddeb) (1) / neuro</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: Chokri MEDDEB -->
+<div class="exh"><span class="idx">Cours</span><h2>Neuro (meddeb)</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4891.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Chokri MEDDEB</span> <span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/10uSBtMgS2JKoaNCSw8iYxewEe9213afg/view">↗ Neuro (meddeb).pdf</a></div>
+
+<!-- page 01 -->
+<!-- ROTATE: 4891 part1 p01 90 -->
+<!-- CROP: 4891 1 1 0.020 0.020 0.980 0.980 4891_p01_systeme_nerveux -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p01_systeme_nerveux.png" alt=""></figure>
+
+<!-- page 02 -->
+<!-- ROTATE: 4891 part1 p02 90 -->
+<!-- CROP: 4891 1 2 0.120 0.280 0.760 0.980 4891_p02_reflexe_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p02_reflexe_schema.png" alt=""></figure>
+
+<!-- page 03 -->
+<!-- NOTE: highlighter marks and framing drawn over printed words on this page are not transcribed -->
+<p class="para">Relation entre les <b>corps cellulaires</b> de la substance grise ; les <b>fibres nerveuses centrales</b> de la substance blanche et les <b>fibres nerveuses périphériques</b> du nerf ?</p>
+<table>
+<tr><th>Expériences</th><th>Résultats</th><th>Conclusion</th></tr>
+<tr><td>Expérience de <b>Mérotomie</b> :<br>Une amibe est coupée en deux : <b>schéma)</b><!-- PROOFREAD: 4891 part1 p03 — opening "(" of "(schéma)" hidden under a drawn frame --></td><td>Seul le fragment renfermant le noyau demeure en vie et régénère l'amibe entière.<br>Le fragment sans noyau dégénère.</td><td>Le fragment nucléé est <b>capable</b> de régénérer l'amibe entière.<br>=&gt; le noyau est responsable de la regenerescence de l'amibe<!-- PROOFREAD: 4891 part1 p03 — handwritten "=> le noyau est responsable de la regenerescence de l'amibe" (accents/spelling uncertain) --></td></tr>
+<tr><td>Expérience de <b>dégénérescence wallérienne</b> :<br>Section d'un nerf rachidien <b>(schéma)</b></td><td><u>à court terme:</u><br>- le BC reste intacte<br>- l'axone et les Gaines de myline du BP degenerent<br>- les gaines de Schwann reste intactes.<br><br><u>à long termes</u>:<br>- l'axon du B.C se prolonge et regenère l'axone entier<br>- chaque cellule de Schwann regenère sa gaine de mylinne<!-- PROOFREAD: 4891 part1 p03 — handwritten Résultats cell, spelling of "myline", "mylinne", "regenère", "entier" uncertain --></td><td><br><br><br><br><br><br>→ le noyau du corps cellulaire est responsable de la regenerescence de l'axone.<br>→ le noyau de chaque C de Schwann regenere une gaine de myline.<!-- PROOFREAD: 4891 part1 p03 — handwritten Conclusion cell; "C" after "chaque" is an abbreviation mark (C with a stroke), "regenerescence" written over the cell edge --></td></tr>
+<tr><td>Expérience : <b>Culture de tissu nerveux embryonnaire,</b>
+<!-- CROP: 4891 1 3 0.06 0.605 0.29 0.65 4891_p03_culture_croquis -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p03_culture_croquis.png" alt=""></figure></td><td>les jeunes cellules émettent de nombreux prolongements qui se ramifient (<u>dendrites</u>), un seul prolongement évolue en <u>axone</u> très long qui se ramifie à son extrémité</td><td>Le corps cellulaire émet un axone qui s'engage dans la SB en s'entourant de la gaine de myéline puis s'engage dans le nerf et s'entoure de la gaine de Schwann.</td></tr>
+</table>
+<table>
+<tr><th>Constatation</th><th>Conclusion</th></tr>
+<tr><td>Au cours d'une maladie : la poliomyélite, un virus détruit les corps cellulaires de la corne ventrale de la ME. Ceci provoque une dégénérescence des fibres qui innervaient les muscles correspondants ce qui entraîne une paralysie.</td><td>Les fibres nerveuses périphériques sont liées aux corps cellulaires (structure nucléée) de la corne ventral de la ME.
+<!-- CROP: 4891 1 3 0.50 0.725 0.93 0.775 4891_p03_poliomyelite_croquis -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p03_poliomyelite_croquis.png" alt=""></figure></td></tr>
+</table>
+<!-- CROP: 4891 1 3 0.05 0.81 0.39 0.97 4891_p03_merotomie_amibe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p03_merotomie_amibe.png" alt=""></figure>
+<!-- CROP: 4891 1 3 0.42 0.77 0.87 0.99 4891_p03_degenerescence_wallerienne -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p03_degenerescence_wallerienne.png" alt=""></figure>
+
+<!-- page 04 -->
+<!-- NOTE: handwritten margin notes ("Tissu Nerveux = Neurones + C gliales", "zone de contacte entre neuron-neuron") are not transcribed -->
+<p class="para">Conclusion Il y a une continuité entre corps cellulaires de la substance grise, fibres centrales de la substance blanche et fibres périphériques du nerf. En effet, le corps cellulaire émet un axone qui s'engage dans la substance blanche en s'entourant de la gaine de myéline puis s'engage dans le nerf et s'entoure de la gaine de Schwann. L'ensemble constitue la <u>cellule nerveuse</u> ou <u>neurone</u></p>
+<!-- CROP: 4891 1 4 0.14 0.10 0.94 0.39 4891_p04_neurone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p04_neurone.png" alt=""></figure>
+<!-- CROP: 4891 1 4 0.05 0.39 0.47 0.54 4891_p04_types_neurones -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p04_types_neurones.png" alt=""></figure>
+<p class="para">*a- neuron multipolaire (étoilé) <span class="t-red">CVSGTIE</span><br>
+b- neuron pyramidal <span class="t-red">cortex cérébral</span><br>
+c - neuron piriforme <span class="t-red">cortex cérébelleux</span><br>
+d- neuron bipolaire <span class="t-red">retine</span><br>
+*e- neuron unipolaire <span class="t-red">ganglion spinal</span></p>
+<!-- PROOFREAD: 4891 part1 p04 — handwritten legend a–e: "neuron/neurone", "CVSGTIE" (abbreviation, letters uncertain), "retine" uncertain -->
+<!-- CROP: 4891 1 4 0.09 0.52 0.53 0.82 4891_p04_synapses_neuro_neuroniques -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p04_synapses_neuro_neuroniques.png" alt=""></figure>
+<div class="data">
+<p class="subhead t-navy"><b>Schéma d'une <u>synapse</u> neuro-neuronique.</b></p>
+<p class="para">A: synapse .<span class="t-red">axo</span>.-dendritique<br>
+B: synapse....<span class="t-red">axo</span>..-somatique<br>
+C: synapse....<span class="t-red">axo</span>..-axonique</p>
+</div>
+<!-- PROOFREAD: 4891 part1 p04 — handwritten answers in the dotted blanks ("axo" in red, "-dendritique / -somatique / -axonique" in blue); exact dots not countable -->
+<!-- CROP: 4891 1 4 0.31 0.77 0.94 0.97 4891_p04_synapse_neuromusculaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p04_synapse_neuromusculaire.png" alt=""></figure>
+
+<!-- page 05 -->
+<!-- ROTATE: 4891 part1 p05 180 -->
+<p class="para">* rôle protecteur du S.N</p>
+<!-- PROOFREAD: 4891 part1 p05 — handwritten heading "* rôle protecteur du S.N" (read from a 180° rotated copy) -->
+<!-- CROP: 4891 1 5 0.010 0.045 0.990 0.990 4891_p05_moelle_epiniere_nerf_rachidien -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p05_moelle_epiniere_nerf_rachidien.png" alt=""></figure>
+
+<!-- page 06 -->
+<!-- ROTATE: 4891 part1 p06 180 -->
+<!-- PROOFREAD: 4891 part1 p06 — whole page handwritten, read from a 180° rotated copy; spelling kept as best read -->
+<p class="para">R<sub>1</sub> { - perte de sensibilite<br>
+- perte de motricité</p>
+<p class="para">R<sub>2</sub> - seuls les fibres des BP du nerf degenere</p>
+<!-- CROP: 4891 1 6 0.030 0.110 0.970 0.300 4891_p06_exp1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p06_exp1.png" alt=""></figure>
+<p class="subhead">exp 1 :</p>
+<p class="para">R<sub>1</sub> { - perte de sensibilité<br>
+- motricité (maintenue)</p>
+<p class="para">R<sub>2</sub> : { * seul les fibres des nerfs et d'autres du ganglion degenerent<br>
+** seul les fibres de <u>la partie dorsale du nerf</u> degenère</p>
+<!-- PROOFREAD: 4891 part1 p06 — "* seul les fibres des nerfs et d'autres du ganglion degenerent" uncertain -->
+<!-- CROP: 4891 1 6 0.030 0.370 0.980 0.585 4891_p06_exp2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p06_exp2.png" alt=""></figure>
+<p class="subhead">exp 2 :</p>
+<p class="para">R<sub>1</sub> { - Sensibilité maintenue<br>
+- perte de motricité</p>
+<p class="para">R<sub>2</sub> : { * seul les fibres du BP de cette racine degenerent<br>
+** seul les fibres de la partie ventrale du nerfs degenère</p>
+<!-- CROP: 4891 1 6 0.030 0.690 0.980 0.890 4891_p06_exp3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p06_exp3.png" alt=""></figure>
+<p class="subhead">exp 3 :</p>
+
+<!-- page 07 -->
+<!-- NOTE: highlighter marks over printed words and the green margin marks "C1", "C2" are not transcribed -->
+<!-- PROOFREAD: 4891 part1 p07 — handwritten answers typed into the dotted blanks; exact number of dots not reproduced, words best reading -->
+<p class="subhead t-red"><b>Eléments anatomiques du réflexe à point de départ cutané</b></p>
+<table>
+<tr><th>Expérience 1</th><th>Expérience 2</th><th>Expérience 3</th></tr>
+<tr><td><b>Lésion</b> de la <b>moelle épinière.</b></td><td>- Disparition du réflexe de retrait de la main suite une piqure</td><td>La ME est.le centre nerveux de ces......<br>..reflexes.................................. .<br><br>Ce réflexe est ..medullaire..(adj. moelle epinière)</td></tr>
+<tr><td><b>Section du nerf rachidien</b> innervant les muscles de l'avant-bras.</td><td>- Disparition de ce réflexe</td><td>.Le nerf rachidien ..intervient................ dans ce réflexe. Il est .conducteur de l'influx nerveux....</td></tr>
+<tr><td><b>Application de l'éther</b> sur la peau avant la piqure</td><td>- Disparition de ce réflexe</td><td>La...peau..renferme..des..recepteurs..........<br>.sensoriels.cutanés...................................</td></tr>
+</table>
+<p class="subhead"><b>Expérience de Magendi</b></p>
+<table>
+<tr><th>Expérience 1</th><th>Expérience 2</th><th>Expérience 3</th></tr>
+<tr><td>- <b>Le nerf rachidien</b> est ...mixte.......... . il est à la fois ...sensitif... et ..moteur......... : il contient des .fibres..sensitifs.. ......... et ..des..fibres..motrices.......
+<!-- CROP: 4891 1 7 0.05 0.525 0.35 0.59 4891_p07_fibres_CN -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p07_fibres_CN.png" alt=""></figure></td><td>- <b>La racine postérieure</b> renferme des fibres sensitives.... (.dendrites.... et.axones......).<br><br>- Ces fibres conduisent l'influx nerveux vers la ..moelle.epinière</td><td>- <b>La racine antérieure</b> renferme des fibres motrices..... (axones..)<br><br>- Ces fibres conduisent l'Influx nerveux vers le .muscle.(effecteur)</td></tr>
+<tr><td>les <b>corps cellulaires</b> de ces fibres sont localisés ..du..côté..du..BC..</td><td>les <b>corps cellulaires</b> de ces fibres sont localisés dans le ..ganglion..spinal..*. (voir fig)<br><br><br>- La partie dorsale. du nerf rachidien renferme les fibres .sensitives..(dendrites) * *</td><td>les <b>corps cellulaires</b> de ces fibres sont localisés dans le.C.V.S.G.M.E..:.corne.ventrale de.la..substance...grise.de.la.. moelle.epinière.......*.....<br><br>- La partie ventrale... du nerf rachidien renferme les fibres .motrices(axons) * *<br>- Ces fibres sont liées aux neurones moteurs ou .......................</td></tr>
+</table>
+
+<!-- page 08 -->
+<!-- ROTATE: 4891 part1 p08 90 -->
+<!-- CROP: 4891 1 8 0.010 0.030 0.520 0.980 4891_p08_flexion_jambe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p08_flexion_jambe.png" alt=""></figure>
+<!-- CROP: 4891 1 8 0.520 0.200 0.960 0.980 4891_p08_flexion_avant_bras -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p08_flexion_avant_bras.png" alt=""></figure>
+
+<!-- page 09 -->
+<!-- ROTATE: 4891 part1 p09 90 -->
+<!-- CROP: 4891 1 9 0.010 0.010 0.980 0.990 4891_p09_arc_reflexe_jambe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p09_arc_reflexe_jambe.png" alt=""></figure>
+
+<!-- page 10 -->
+<!-- NOTE: highlighter marks over printed words/table values and the handwritten left-margin formula ("[Na+] [K+] / [K+] [Na+] = PR") are not transcribed -->
+<!-- CROP: 4891 1 10 0.10 0.0 0.40 0.285 4891_p10_experience1_figure1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p10_experience1_figure1.png" alt=""></figure>
+<p class="para">=&gt; m charge sur toute la surface externe de la mb de la fibre</p>
+<!-- PROOFREAD: 4891 part1 p10 — handwritten note beside "Figure 1": "=> m charge sur toute la surface externe de la mb de la fibre" ("m" uncertain) -->
+<div class="data">
+<p class="para">E<sub>1</sub> et E<sub>2</sub> sont des électrodes réceptrices</p>
+<ul class="b">
+<li>E<sub>1</sub>: électrode intracellulaire</li>
+<li>E<sub>2</sub>: électrode de référence.</li>
+</ul>
+</div>
+<!-- CROP: 4891 1 10 0.60 0.0 0.90 0.29 4891_p10_experience2_figure2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p10_experience2_figure2.png" alt=""></figure>
+<!-- CROP: 4891 1 10 0.11 0.295 0.86 0.38 4891_p10_membrane_polarisee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p10_membrane_polarisee.png" alt=""></figure>
+<div class="data"><p class="para">La membrane cytoplasmique est polarisée, chargée positivement à la surface et négativement à l'intérieur.</p></div>
+
+<p class="subhead"><b>______. Quelle est l'origine du potentiel de repos ?</b></p>
+<p class="para">Le document suivant montre la composition ionique du milieu intracellulaire et du milieu extracellulaire.</p>
+<p class="para">le PR s'explique par la repartition inegale des concentrations des ions de part et d'autre de la membrane de la fibre.</p>
+<table>
+<tr><th rowspan="2">Ions</th><th colspan="2">Concentration en mmoles/l</th></tr>
+<tr><th>Milieu intracellulaire</th><th>Milieu extracellulaire</th></tr>
+<tr><td>x [ Na<sup>+</sup></td><td>49</td><td>440</td></tr>
+<tr><td>K<sup>+</sup></td><td>410</td><td>22</td></tr>
+<tr><td>Cl<sup>-</sup></td><td>40</td><td>500</td></tr>
+<tr><td>Gros anions (R<sup>-</sup>)</td><td>400</td><td>0</td></tr>
+</table>
+<p class="para"><span class="t-red">→ milieu extra = S° de NaCl</span><br>
+<span class="t-red">→ milieu intra = S° de KA</span></p>
+<!-- PROOFREAD: 4891 part1 p10 — handwritten notes around the table: "S° de NaCl" written "NaCe"?, "S° de KA" uncertain; "x [" is a handwritten bracket joining Na+ and K+ -->
+<table>
+<tr><td>- Entrée de Na<sup>+</sup><br>- Sortie de K<sup>+</sup> } → <span class="t-red">selon leur gradient de [ ]<br>+ → -</span><br><br>
+- par des <u>canaux de fuites</u><br><br>
+- ne necessitent pas de l'energie =&gt; transports passifs (<u>diffusion</u>)<br>
+↳ <span class="t-red">elle tend à etablir l'equilibre des [ ]</span></td>
+<td>- sortie de Na<sup>+</sup><br>- entrée de K<sup>+</sup> } → <span class="t-red">contre le gradient de [ ]<br>- → +</span><br><br>
+- par une <u>enzyme ATPase ou pompe Na<sup>+</sup>/K<sup>+</sup></u><br><br>
+- necessitent de <u>l'energie</u> =&gt; transports actifs<br>
+car ils est contre de gradient des [ ]<br>
+ATP <u>ATPase</u>→ ADP + Pi + energie<br>
+- la sortie de Na<sup>+</sup> depend de l'entrée de K<sup>+</sup> et inversement <span class="t-red">(3 Na<sup>+</sup> → 2K<sup>+</sup>)</span>.</td></tr>
+</table>
+<!-- PROOFREAD: 4891 part1 p10 — two-column handwritten explanation; small note "car ils est contre de gradient des [ ]" squeezed above "ATP" very uncertain; "selon leur", "equilibre" (cut at line edge) best reading -->
+<!-- CROP: 4891 1 10 0.41 0.72 0.95 0.82 4891_p10_pompe_canaux_croquis -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p10_pompe_canaux_croquis.png" alt=""></figure>
+<!-- CROP: 4891 1 10 0.10 0.80 0.34 0.965 4891_p10_efflux_Na_figure1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p10_efflux_Na_figure1.png" alt=""></figure>
+<!-- CROP: 4891 1 10 0.34 0.80 0.57 0.965 4891_p10_efflux_Na_figure2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p10_efflux_Na_figure2.png" alt=""></figure>
+<!-- CROP: 4891 1 10 0.57 0.80 0.88 0.965 4891_p10_efflux_Na_figure3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_p10_efflux_Na_figure3.png" alt=""></figure>
+
+
+<!-- page 11 -->
+<!-- NOTE: highlighter marks over words and the handwritten margin brace "PA" are left out -->
+<!-- CROP: 4891 1 11 0.03 0.0 0.995 0.345 4891_potentiels_locaux_action -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_potentiels_locaux_action.png" alt=""></figure>
+<table>
+<tr><td>PL.....est...graduable..:....................................<br>...l'intensité..de...la..stimulation..infra.↗...<br>...l'amplitude...de...P.L..↗.......................<br>.......................................................................</td><td>.........PA...obeit...à..la..loi..du..tout...ou..rien...:..........<br>...∀..l'intensité..de...la..stimulation...efficace.........<br>..on..obtient...<u>une seule</u>...reponse...<u>maximale</u>.......<br>..........(.P.A...d'amplitude..100...mV..)..(.P.A..n'est..pas.graduable)<br>propageable, de cte durée, vitesse variable,</td></tr>
+</table>
+<!-- PROOFREAD: 4891 part1 p11 — handwritten fill-ins "infra ↗", "∀", "de cte durée" uncertain -->
+<!-- CROP: 4891 1 11 0.05 0.44 0.45 0.56 4891_figure1_dispositif_stimulation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_figure1_dispositif_stimulation.png" alt=""></figure>
+<!-- CROP: 4891 1 11 0.50 0.445 0.89 0.58 4891_figure2_potentiel_action -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_figure2_potentiel_action.png" alt=""></figure>
+<p class="para">O :..artefact..de..stimulation...:..signal...qui..indique.....l'..instant..de...la...stimulation.............................<br>
+OA:..temps..de...latence.....:..temps....mis...par...le....PA....pour....parcourir....la...distance.....S.E..........................<br>
+ABC:..φ..de...depolarisation:...la...negativité...interne...↘..,..la...ddp.......s'inverse...(...-70....→.+30..)..........................<br>
+CDE:..φ...de.....repolarisation:.....la....negativité...interne...↗,...la..d.d.p.....s'inverse...(+30......→...-70..)...................<br>
+EF:....φ....d'hyperpolarisation:....la...negativité......interne...↗..davantage....puis...le...P.R.....se...retablit.......................</p>
+<!-- PROOFREAD: 4891 part1 p11 — handwritten "φ" (phase abbreviation, written like a circled Q) and the fill-ins O…EF uncertain -->
+<!-- CROP: 4891 1 11 0.04 0.715 0.36 0.98 4891_periode_refractaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_periode_refractaire.png" alt=""></figure>
+<p class="para"><b>Analyse</b> quelques millisecondes qui suivent sa depolarisation, des stimulations efficaces entrainent un PL qui atteint le seuil Sans declancher un PA.<br>
+<u>ce</u> pendant ces q'q ms, la fibre devient inexcitable :<br>
+elle passe par une periode refractaire</p>
+<p class="para"><b>Explication</b> Pendant la periode refractaire les canaux de CVD restent fermés.</p>
+<!-- page 12 -->
+<!-- NOTE: highlighter marks over printed and handwritten words are left out -->
+<!-- CROP: 4891 1 12 0.0 0.0 0.985 0.607 4891_origine_chimique_potentiels -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_origine_chimique_potentiels.png" alt=""></figure>
+<p class="para"><b>Fig.7. Origine chimique des potentiels de la fibre nerveuse.</b></p>
+<p class="para"><span class="t-red">* periode refractoire</span></p>
+<p class="para">. Dépolarisation ⇒ ddp atteint -50mV ① → ouverture ② de CVD à Na<sup>+</sup> → ③ entrée massive de Na<sup>+</sup><br>
+( CVD à K<sup>+</sup> fermés)<br>
++ 30mV ← ddp s'inverse ↲</p>
+<p class="para">: Repolarisation ⇒ ddp atteint 30 mV → ouverture de CVD à K<sup>+</sup> → sortie massive de K<sup>+</sup><br>
+(CVD à Na<sup>+</sup> fermé)<br>
+-70mV ← ddp s'inverse ↲</p>
+<p class="para">- Hyperpolarisation ⇒ CVD à K<sup>+</sup> restent ouverts davantage → sortie d'avantage de K<sup>+</sup><br>
+⊖té interne ↗ ↲<br>
+- fermeture de CVD à K<sup>+</sup> → la pompe retablit le PR.</p>
+<!-- PROOFREAD: 4891 part1 p12 — handwritten notes: circled numbers placement, "⊖té interne ↗" uncertain -->
+<!-- CROP: 4891 1 12 0.40 0.935 0.70 0.995 4891_hyperpolarisation_croquis -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_hyperpolarisation_croquis.png" alt=""></figure>
+<!-- page 13 -->
+<table>
+<tr><th><span class="t-red">Conduction dans une fibre myélinisée</span></th><th><span class="t-red">Conduction dans une fibre amyélinisée</span></th></tr>
+<tr><td><!-- CROP: 4891 1 13 0.02 0.055 0.52 0.195 4891_conduction_fibre_myelinisee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_conduction_fibre_myelinisee.png" alt=""></figure>
+<span class="t-green">propagation unidirectionnelle</span><br><br>
+•GM gaine de myline<br>
+•ER Etranglement de Ranvier<br>
+•CL courant locaux<br>
+•ZD zone depolarisée<br>
+•ZR. zone refractaire<br>
+<!-- CROP: 4891 1 13 0.34 0.225 0.515 0.35 4891_cas_experimental_croquis -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_cas_experimental_croquis.png" alt=""></figure>
+Propagation est. <u><span class="t-red">discontinue/ saltatoire</span></u></td>
+<td><!-- CROP: 4891 1 13 0.52 0.055 0.97 0.195 4891_conduction_fibre_amyelinisee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_conduction_fibre_amyelinisee.png" alt=""></figure>
+<span class="t-green">propagation unidirectionnelle.</span><br><br>
+CL<br>ZD<br>ZR<br><br>
+Propagation est: . <span class="t-red">continue | de proche en proche</span></td></tr>
+</table>
+<p class="subhead t-navy">Mode de propagation =</p>
+<p class="para">① entre la zone depolarisée et ses zones voisines s'etablissent des <span class="t-red">courants locaux</span> !<br>
+(⊖ attirée par ⊕). Ces <span class="t-red">CL</span> stimulent l'ouverture des <span class="t-red">CVD à Na<sup>+</sup></span> des zones voisines permettant l'entrée massive de Na<sup>+</sup> et donc la depolarisation.<br>
+② la zone qui vient d'être depolarisée passe par une periode refractoire au court de laquelle les CVD à Na<sup>+</sup> restent fermés ce qui empêche le PA de revenir en arrière</p>
+<p class="para">- dans une fibre myelinisée qui est isolante, assure la propagation saltatoire et discontinue.<br>
+- dans une fibre amyélinisée, l'absence de GM isolante assure une conduction de proche en proche et continue.</p>
+<!-- PROOFREAD: 4891 part1 p13 — handwritten lines "qui est isolante", "l'absence de GM isolante assure" uncertain -->
+<p class="subhead t-red">Calcul</p>
+<!-- CROP: 4891 1 13 0.03 0.70 0.27 0.84 4891_calcul_m1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_calcul_m1.png" alt=""></figure>
+<!-- CROP: 4891 1 13 0.33 0.70 0.66 0.84 4891_calcul_m2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_calcul_m2.png" alt=""></figure>
+<p class="para"><span class="t-red">Propriètés du msg nerveux :</span><br>
+- la vitesse est <u>cte</u> dans une <u>m̂</u> fibre<br>
+- V dependt de : ⊕ diametre de la fibre ⇒ V ↗<br>
+- V<sub>F mye</sub> &gt;&gt; V<sub>F amyé</sub></p>
+<!-- page 14 -->
+<p class="subhead t-navy">3 : Comment s'effectue le codage du message nerveux ?</p>
+<!-- PROOFREAD: 4891 part1 p14 — the number before ":" is partly cut/faint ("3"?) -->
+<div class="data">
+<p class="para"><b>Exercice :</b><br>
+Dans une cuve contenant du liquide physiologique, un corpuscule de Pacini, isolé accompagné de sa fibre nerveuse, est soumis à des pressions d'intensité variable. Une microélectrode implantée dans la fibre capte le passage éventuel de messages nerveux.<br>
+Les 4 enregistrements correspondent aux messages captés par la microélectrode lorsqu'on applique sur le corpuscule de Pacini différentes pressions constantes.</p>
+<ol class="qn">
+<li>L'amplitude et / ou la fréquence des signaux varient-elles en fonction de la pression exercée sur le corpuscule tactile ? Si oui dans quel sens s'effectuent ces variations ?</li>
+<li>Le seuil de stimulation de la fibre nerveuse est la valeur minimale de la pression exercée sur le corpuscule, capable de déclencher l'apparition d'un message nerveux. Quel est ce seuil de stimulation ?( Faites un encadrement).</li>
+</ol>
+<!-- CROP: 4891 1 14 0.54 0.06 0.895 0.325 4891_corpuscule_pacini_enregistrements -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_corpuscule_pacini_enregistrements.png" alt=""></figure>
+</div>
+<!-- CROP: 4891 1 14 0.08 0.40 0.45 0.515 4891_stimulations_fibre_croquis -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_stimulations_fibre_croquis.png" alt=""></figure>
+<p class="para">Justification : car le PA obeit à la loi du tout ou rien</p>
+<p class="subhead t-red">Conditions physiologiques</p>
+<!-- CROP: 4891 1 14 0.48 0.40 0.99 0.515 4891_recepteur_sensoriel_croquis -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_recepteur_sensoriel_croquis.png" alt=""></figure>
+<p class="para">rôle <b>RS</b><br>
+→ <u>transduction</u> : conversion de l'energie du stimulus en signaux electriques (PA)<br>
+→ codage : le msg nerveux est codé en modulation de frequence de PA</p>
+<!-- page 15 -->
+<!-- CROP: 4891 1 15 0.08 0.02 0.905 0.17 4891_propagation_neurones -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_propagation_neurones.png" alt=""></figure>
+<p class="subhead t-navy">Ultrastructure d'une synapse neuro-neuronique.</p>
+<!-- CROP: 4891 1 15 0.09 0.245 0.985 0.42 4891_ultrastructure_synapse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_ultrastructure_synapse.png" alt=""></figure>
+<p class="subhead t-navy">Modes de fonctionnement des synapses neuro-neuronique.</p>
+<!-- CROP: 4891 1 15 0.06 0.47 0.50 0.76 4891_synapse_inhibitrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_synapse_inhibitrice.png" alt=""></figure>
+<p class="para">Synapse: ..<span class="t-green">inhibitrice</span></p>
+<!-- CROP: 4891 1 15 0.50 0.465 0.92 0.76 4891_synapse_excitatrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_synapse_excitatrice.png" alt=""></figure>
+<p class="para">Synapse:.. <span class="t-gold">excitatrice</span></p>
+<!-- page 16 -->
+<!-- ROTATE: 4891 part1 p16 180 -->
+<!-- NOTE: highlighter marks over handwritten words are left out -->
+<table>
+<tr><td><!-- CROP: 4891 1 16 0.005 0.080 0.320 0.620 4891_sommation_temporelle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_sommation_temporelle.png" alt=""></figure>
+⟹ 2 stim rapprochées portées sur N2 entraine en R3 un PPSEg qui resulte de la sommation temporelle.<br>
+l'amplitude de ce PPSE = 10 + 10 = 20mV et<br>
+Ce PPSEg atteint le seuil de -50 mV et declanche un PA</td>
+<td><!-- CROP: 4891 1 16 0.330 0.120 0.645 0.610 4891_cone_axonique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_cone_axonique.png" alt=""></figure>
+⊕ le nbr des neurotransmetteurs libérés est ↗<br>↓<br>
+⊕ le - CCD à Na<sup>+</sup> ouverts ↗<br>↓<br>
+⊕ — de Na<sup>+</sup> entrants ↗<br>↓<br>
+⊕ l'amplitude de PPSE</td>
+<td><p class="para">PPSE = -55mV d'amplitude 15mV</p>
+<!-- CROP: 4891 1 16 0.665 0.150 0.990 0.600 4891_ppse_synapse_excitatrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_ppse_synapse_excitatrice.png" alt=""></figure>
+<span class="t-red">Analyse</span> : la stim efficace portée sur N1, entraine en R1 une depolarisation qui rapproche le potentiel de la mb post au seuil (-50).<br>
+<span class="t-red">→</span> PPSE<br>
+<span class="t-red">→</span> la synapse N1 - M est excitatrice<br>
+<span class="t-red">Analyse</span> : le PPSE diminue d'amp en s'eloignant<br>
+<span class="t-red">→</span> il n'est pas propageable</td></tr>
+</table>
+<!-- PROOFREAD: 4891 part1 p16 — handwritten "CCD", "PPSEg", "+ 10 = 20mV et" uncertain; column order kept as on the page -->
+<!-- page 17 -->
+<!-- ROTATE: 4891 part1 p17 270 -->
+<!-- NOTE: highlighter marks over handwritten words are left out -->
+<table>
+<tr><td><!-- CROP: 4891 1 17 0.010 0.100 0.330 0.590 4891_sommation_temporelle_ppsi -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_sommation_temporelle_ppsi.png" alt=""></figure>
+⟹ 2 Stim rapprochées portées sur N3 entraine en R3 un PPSIg qui resulte de la sommation temporelle de PPSI.<br>
+l'amplitude de ce PPSI = 5+5 = 10mV<br>
+Ce PPSI = -80 mV</td>
+<td><!-- CROP: 4891 1 17 0.360 0.110 0.645 0.560 4891_synapse_inhibitrice_n4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_synapse_inhibitrice_n4.png" alt=""></figure>
+de m̂</td>
+<td><p class="para">PPSI = -80mV → amp: 10mV</p>
+<!-- CROP: 4891 1 17 0.670 0.110 0.975 0.530 4891_ppsi_synapse_inhibitrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_ppsi_synapse_inhibitrice.png" alt=""></figure>
+<span class="t-red">Analyse</span> : la stim efficace portée sur N3, entraine en R1 une hyperpolarisation qui eloigne le potentiel du seuil.<br>
+<span class="t-red">→</span> PPSI<br>
+<span class="t-red">→</span> la synapse est N3 - M est inhibitrice<br>
+<span class="t-red">Analyse</span> : de m̂<br>
+<span class="t-red">→</span> de m̂</td></tr>
+</table>
+<!-- page 18 -->
+<!-- ROTATE: 4891 part1 p18 180 -->
+<!-- NOTE: highlighter marks over handwritten words are left out -->
+<table>
+<tr><td><p class="para">une stim efficace sur N5 donne en R3 un PPSE = -55mV</p>
+<!-- PROOFREAD: 4891 part1 p18 — corner note "une stim efficace sur N5 donne" partly smudged -->
+<!-- CROP: 4891 1 18 0.005 0.005 0.470 0.620 4891_sommation_spatiale_n2_n5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_sommation_spatiale_n2_n5.png" alt=""></figure>
+2 Stim simultanées portées sur N2 et N5 entraine en R3 un PPSEg qui resulte de la sommation spatial de 2 PPSE.<br>
+l'amp de ce PPSEg = 15 + 10 = 25 mV<br>
+Ce PPSE = -45 mV &gt; seuil ⇒ PA</td>
+<td><!-- CROP: 4891 1 18 0.480 0.015 0.990 0.680 4891_sommation_spatiale_n1_n2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_sommation_spatiale_n1_n2.png" alt=""></figure>
+2 Stim simultanées portées sur N1 et N2 entraine en R3 un PPSEg qui resulte de la sommation spatial de 2 PPSE.<br>
+l'ap de ce PPSEg = 5+10 = 15 mV<br>
+Ce PPSE = -55mV &lt; seuil</td></tr>
+</table>
+<!-- page 19 -->
+<!-- ROTATE: 4891 part1 p19 180 -->
+<!-- NOTE: highlighter marks over handwritten words and small margin scribbles ("Intégrat…", "N0 - 80") are left out -->
+<table>
+<tr><td><p class="subhead t-navy">4 stimulations efficace, <u>simultanées</u>.</p>
+<!-- CROP: 4891 1 19 0.005 0.075 0.490 0.570 4891_integration_4_stimulations -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_integration_4_stimulations.png" alt=""></figure>
+4 stim simultanées entraine en R3 un PPSEg qui resulte de la sommation spatial de 2 PPSE et 2 PPSI<br>
+l'amp de ce PPSE = |+10 - 5 - 10 + 15| = +10 mV<br>
+Ce PPSE = -60 mV &lt; seuil ⇒ PR</td>
+<td><!-- CROP: 4891 1 19 0.520 0.015 0.970 0.560 4891_sommation_spatiotemporelle_n2_n3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_sommation_spatiotemporelle_n2_n3.png" alt=""></figure>
+2 stim rapprochées portées simultanément sur N2 et N3, entraine un PPSEg qui resulte de la sommation spaciotemporelle de 2 PPSE et de 2 PPSI.<br>
+l'amp de ce PPSE = 10 mV<br>
+Ce PPSE = -60mV &lt; seuil ⇒ PR</td></tr>
+</table>
+<!-- PROOFREAD: 4891 part1 p19 — handwritten "|+10 - 5 - 10 + 15|" and "spaciotemporelle" uncertain -->
+<!-- page 20 -->
+<!-- ROTATE: 4891 part1 p20 270 -->
+<!-- CROP: 4891 1 20 0.010 0.010 0.990 0.990 4891_circuits_polysynaptiques -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_circuits_polysynaptiques.png" alt=""></figure>
+<p class="para">NU : neurone unipolaire<br>MN : motoneurone</p>
+<p class="para">① + ② : l'activation du NU active le MN du MF<br>
+⇒ Cl<sub>1</sub> = NU et MN du MF ∈ à un circuit excitateur<br>
+① + ③ : -0,3 + 1,8 = 1,5 ms<br>
+⇒ Cl<sub>2</sub> : le circuit renferme 3 synapses<br>
+⇒ le circuit est polysynaptiques excitateur.</p>
+<p class="para">① - ②' = l'activation du NU inhibe le MN du ME<br>
+Cl<sub>1</sub> ⇒ NU et MN du ME ∈ à un circuit inhibiteur<br>
+① + ③' = 1,8 - 0,3 = 1,5 ms<br>
+Cl<sub>2</sub> ⇒ Ce circuit contient 3 synapses<br>
+⇒ circuit polysynaptique inhibiteur.</p>
+<p class="para"><u>Role des interneurones:</u><br>
+le msg sensitif est transmit à des inter-N. Exc. en relation avec les MN du MF et à des inter-N. Inh relié à des MN de ME.</p>
+<!-- PROOFREAD: 4891 part1 p20 — handwritten "est transmit", "-0,3 + 1,8", "inter-N. Exc." uncertain -->
+<!-- page 21 -->
+<!-- ROTATE: 4891 part1 p21 90 -->
+<!-- CROP: 4891 1 21 0.015 0.020 0.980 0.990 4891_bilan_reflexe_organigramme -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4891/4891_bilan_reflexe_organigramme.png" alt=""></figure>
+<!-- page 22 -->
+<table>
+<tr><th><span class="t-red">Types de canaux ioniques</span></th><th>Localisation</th><th>État (fermé ou ouvert)<br>Condition de fonctionnement</th><th>Rôle<br>Sens du mouvement d'ions et importance</th></tr>
+<tr><td><b>Canaux de fuite à Na+</b></td><td rowspan="2">Au niveau de toute la membrane plasmique du neurone</td><td rowspan="2">Toujours ouverts</td><td>Entrée passive de Na+.<br>Participe à l'établissement du PR</td></tr>
+<tr><td><b>Canaux de fuite à K+</b></td><td>Sortie passive de K+.<br>Participe à l'établissement du PR</td></tr>
+<tr><td><b>CVD à Na+</b></td><td rowspan="2">Au niveau du cône axonique du neurone postsynaptique<br>Au niveau de la fibre nerveuse (nœuds de Ranvier pour les fibres myélinisées)</td><td>Fermés. S'ouvrent lorsque le potentiel de membrane atteint de seuil (-50mV)</td><td>Entrée passive de Na+<br>Dépolarisation de la membrane nerveuse</td></tr>
+<tr><td><b>CVD à K+</b></td><td>Fermés. S'ouvrent lorsque le potentiel de membrane atteint +30mV</td><td>Sortie passive de K+<br>Repolarisation de la membrane</td></tr>
+<tr><td><b>CVD à Ca2+</b></td><td>Terminaisons axoniques (boutons synaptiques)</td><td>Fermés.<br>S'ouvrent lors de l'arrivée d'un PA présynaptique</td><td>Entrée passive des ions Ca2+ ce qui déclenche l'exocytose du neurotransmetteur dans la fente (espace) synaptique.</td></tr>
+<tr><td><b>CCD à Na+</b></td><td>Membrane postsynaptique d'une synapse excitatrice</td><td>Fermés.<br>S'ouvrent suite à la fixation du neurotransmetteur excitateur sur les récepteurs spécifiques de la membrane postsynaptique</td><td>Entrée de Na+ dans l'élément postsynaptique<br>Naissance d'un PPSE (légère dépolarisation de la membrane postsynaptique)</td></tr>
+<tr><td><b>CCD à K+</b></td><td rowspan="2">Membrane postsynaptique d'une synapse inhibitrice</td><td rowspan="2">Fermés.<br>S'ouvrent suite à la fixation du neurotransmetteur inhibiteur sur les récepteurs spécifiques de la membrane postsynaptique</td><td>Sortie de K+ dans l'élément postsynaptique<br>Naissance d'un PPSI (légère hyperpolarisation de la membrane postsynaptique)</td></tr>
+<tr><td><b>CCD à Cl-</b></td><td>Entrée de Cl- dans l'élément postsynaptique<br>Naissance d'un PPSI (légère hyperpolarisation de la membrane postsynaptique)</td></tr>
+</table>
+<table>
+<tr><th colspan="2">Synapse</th><th>Excitatrice</th><th>Inhibitrice</th></tr>
+<tr><td colspan="2"><b>Points communs</b></td><td colspan="2"><ul class="b">
+<li>Arrivée d'un PA dans la terminaison présynaptique.</li>
+<li>Entrée des ions Ca2+ à travers les CVD calciques.</li>
+<li>Fixation du neurotransmetteur sur les sites récepteurs spécifiques situés dans la membrane postsynaptique.</li>
+<li>Inactivation rapide (par recapture ou par dégradation) du neurotransmetteur dans l'espace synaptique.</li>
+</ul></td></tr>
+<tr><td rowspan="4"><b>Points de différence</b></td><td>- Nature du neurotransmetteur</td><td>- Excitateur (noradrénaline ou acétylcholine) Ouverture des et dans l'élément postsynaptique.</td><td>- Inhibiteur (GABA) Ouverture.</td></tr>
+<tr><td>- Nature des CCD</td><td>- CCD à Na+</td><td>- CCD à Cl- et CCD à K+</td></tr>
+<tr><td>- Mouvement ionique postsynaptique</td><td>- Entrée de ces ions</td><td>- Entrée de Cl- et sortie de K+</td></tr>
+<tr><td>- Nature de la réponse postsynaptique</td><td>- PPSE</td><td>- PPSI</td></tr>
+</table>
+<table>
+<tr><th>Nom</th><th>PPSE</th><th>PPSI</th><th>PA</th></tr>
+<tr><td><b>Lieux d'enregistrement</b></td><td><ul class="b"><li>Cône axonique</li><li>Membrane postsynaptique</li></ul></td><td><ul class="b"><li>Cône axonique</li><li>Membrane postsynaptique</li></ul></td><td>Cône axonique</td></tr>
+<tr><td><b>Canaux ioniques mis en jeu</b></td><td>CCD à Na+</td><td>CCD à K+ et ou Cl-</td><td>CVD à Na<sup>+</sup> et CVD à K<sup>+</sup></td></tr>
+<tr><td><b>Propriétés (se limiter à deux)</b></td><td><ul class="b"><li>Graduable</li><li>Sommable</li><li>Non propageable</li></ul></td><td><ul class="b"><li>Graduable</li><li>Sommable</li><li>Non propageable</li></ul></td><td><ul class="b"><li>Obéit à la loi du tout ou rien</li><li>Propageable</li></ul></td></tr>
+</table>
+
+</section>
+
+</div>
+</body>
+</html>

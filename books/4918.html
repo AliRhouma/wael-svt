@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · cours neuro kammoun </title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="Kammoun Ahmed SVT">
+<meta data-pagefind-meta="n[content]" content="4918">
+<meta data-pagefind-meta="title[content]" content="cours neuro kammoun">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Muscle squelettique (contraction)">
+<meta data-pagefind-filter="chapter[content]" content="Régulation de la pression artérielle">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · cours neuro kammoun " data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>cours neuro kammoun </h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Kammoun Ahmed SVT</span> <span class="tg">Cours</span><span class="tg">Résumé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1DOEHRVpRDwlvG18lNuOUFQRnd86DJ2Ya/view">↗ cours neuro kammoun .pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1DOEHRVpRDwlvG18lNuOUFQRnd86DJ2Ya/view">une · Bac science 2026 › Science / Resumés / Theme 4: neurophysiologie</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: Kammoun Ahmed SVT -->
+<div class="exh"><span class="idx">Cours</span><h2>Cours NEUROPHYSIOLOGIE : 4ème SC EXP</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4918.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Kammoun Ahmed SVT</span> <span class="tg">Cours</span><span class="tg">Résumé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1DOEHRVpRDwlvG18lNuOUFQRnd86DJ2Ya/view">↗ cours neuro kammoun .pdf</a></div>
+<!-- NOTE: handwritten annotations on the pages (margin notes, words added on figures, highlighter, glued handwritten notes) not transcribed — marks added on top of the printed course -->
+<!-- page 01 -->
+<p class="subhead t-red">Cours</p>
+<p class="subhead t-blue">NEUROPHYSIOLOGIE :</p>
+<p class="subhead t-gold">4ème SC EXP</p>
+<!-- NOTE: handwritten note "(+++) (Neuro / muscle / pression)" and a handwritten personal name on the cover not transcribed — annotations added on the printed page -->
+<!-- CROP: 4918 1 1 0.26 0.395 0.73 0.805 4918_p01_couverture -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p01_couverture.png" alt=""></figure>
+<!-- page 02 -->
+<p class="subhead t-red"><b>NEUROPHYSIOLOGIE :</b></p>
+<p class="subhead t-navy"><b>TISSU NERVEUX :</b></p>
+<p class="subhead t-navy"><b>LA STRUCTURE HISTOLOGIQUE DU TISSU NERVEUX</b></p>
+<p class="subhead t-red">I- Organisation du système nerveux</p>
+<!-- CROP: 4918 1 2 0.06 0.155 0.47 0.395 4918_p02_systeme_nerveux -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p02_systeme_nerveux.png" alt=""></figure>
+<div class="data">
+<p class="para">1- Cerveau</p>
+<p class="para">2- Cervelet</p>
+<p class="para">3- Bulbe rachidien</p>
+<p class="para">4- Encéphale</p>
+<p class="para">5- Moelle épinière</p>
+<p class="para">6- Système nerveux central (centres nerveux)</p>
+<p class="para">7- Nerfs crâniens</p>
+<p class="para">8- Nerfs rachidiens</p>
+<p class="para">9- Système nerveux périphérique</p>
+</div>
+<p class="subhead t-red">II- Organisation de la moelle épinière</p>
+<!-- CROP: 4918 1 2 0.08 0.42 0.54 0.62 4918_p02_coupe_moelle_photo -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p02_coupe_moelle_photo.png" alt=""></figure>
+<!-- CROP: 4918 1 2 0.54 0.415 0.88 0.625 4918_p02_coupe_moelle_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p02_coupe_moelle_schema.png" alt=""></figure>
+<div class="data">
+<p class="para">1- substance blanche &nbsp;&nbsp; 3- ganglion spinal &nbsp;&nbsp; 5- nerf rachidien</p>
+<p class="para">2- substance grise &nbsp;&nbsp; 4- racine dorsale &nbsp;&nbsp; 6- racine ventrale</p>
+</div>
+<p class="subhead t-red">III- Etude de la structure du tissu nerveux</p>
+<p class="subhead t-navy"><b>1) Observation microscopique au niveau d'un centre nerveux (moelle épinière)</b></p>
+<p class="subhead t-navy"><b>a- Observation microscopique au niveau de la substance grise :</b></p>
+<!-- CROP: 4918 1 2 0.08 0.755 0.48 0.885 4918_p02_substance_grise -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p02_substance_grise.png" alt=""></figure>
+<!-- PROOFREAD: 4918 part1 p02 — caption under the substance grise figure partly hidden by a glued handwritten note; only "…d'interprétation légendé" visible -->
+<div class="data">
+<p class="para">La substance grise est constituée de :</p>
+<p class="para">► <span class="t-red"><b>Corps cellulaires</b></span> de forme étoilée contenant chacun un noyau et présentant des prolongements cytoplasmiques (<span class="t-red"><b>dendrite(s)</b></span> et un axone).</p>
+<p class="para">► <b>Cellules gliales</b> plus petites et plus nombreuses, cellules de soutien et de nutrition de défense et d'isolant électrique.</p>
+</div>
+<!-- page 03 -->
+<p class="subhead t-navy"><b>b- Observation microscopique au niveau de la substance blanch</b></p>
+<!-- PROOFREAD: 4918 part1 p03 — end of the title hidden by a glued handwritten note ("blanch…") -->
+<!-- CROP: 4918 1 3 0.04 0.09 0.85 0.24 4918_p03_substance_blanche -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p03_substance_blanche.png" alt=""></figure>
+<p class="para">La substance blanche renferme des :</p>
+<p class="para">► <span class="t-red">fibres nerveuses centrales</span> (disposées d'une manière non parallèle) dont chacune est constituée d'un <span class="t-blue">axone</span> central entouré d'une <span class="t-red">gaine de myéline</span> de <u>nature lipidique</u>.</p>
+<p class="para">► <span class="t-gold">cellules gliales</span> qui assurent la <u>synthèse de la gaine de myéline</u>.</p>
+<p class="subhead t-navy"><b>2) Observation microscopique au niveau d'un nerf rachidien</b></p>
+<!-- CROP: 4918 1 3 0.01 0.345 0.94 0.55 4918_p03_nerf_rachidien -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p03_nerf_rachidien.png" alt=""></figure>
+<p class="para">Le nerf est constitué des <span class="t-red">fibres nerveuses périphériques</span> : (disposées d'une manière parallèle)</p>
+<p class="para">-certaines fibres sont formées chacune d'un <span class="t-blue">axone</span> entouré d'une <span class="t-red">gaine de myéline étranglée</span> (<span class="t-blue">nœud de Ranvier</span>) doublée d'une <span class="t-green">gaine de Schwann</span>: Ce sont les <span class="t-red">fibres myélinisées</span>.<br>-d'autres sont formées chacune d'un <span class="t-blue">axone</span> entouré seulement d'une <span class="t-green">gaine de Schwann</span> : Ce sont les fibres sans myéline ou <span class="t-red">fibres amyélinisées</span>.</p>
+<p class="subhead t-red">III- Comparaison entre les fibres nerveuses centrales et périphériques</p>
+<!-- CROP: 4918 1 3 0.17 0.665 0.87 0.81 4918_p03_fibres_comparaison -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p03_fibres_comparaison.png" alt=""></figure>
+<table>
+<tr><th rowspan="2"></th><th colspan="2">Fibres nerveuses centrales</th><th colspan="2">Fibres nerveuses périphériques</th></tr>
+<tr><th>myélinisées</th><th>amyélinisées</th><th>myélinisées</th><th>amyélinisées</th></tr>
+<tr><td>Structure</td><td>Axone + gaine de myéline</td><td>Axone</td><td>Axone + gaine de myéline + gaine de Schwann</td><td>Axone + gaine de Schwann</td></tr>
+<tr><td>Localization</td><td colspan="2">Substance blanche</td><td colspan="2">Nerfs</td></tr>
+<tr><td>Origine de la gaine de myéline</td><td>Cellules gliales</td><td></td><td>Cellules de Schwann</td><td></td></tr>
+</table>
+<!-- PROOFREAD: 4918 part1 p03 — row label read "Localization" (small decorative font); the two empty cells of the last row are filled black on the page -->
+<!-- page 04 -->
+<p class="subhead t-navy"><b>ETUDE DE L'UNITE STR</b></p>
+<!-- PROOFREAD: 4918 part1 p04 — top title cut by the photo edge after "ETUDE DE L'UNITE STR…" -->
+<p class="subhead t-red"><b>Mise en évidence de la continuité cytologique des p</b></p>
+<p class="subhead t-red"><b>système nerveux</b></p>
+<!-- PROOFREAD: 4918 part1 p04 — title line cut at the top-right edge after "des p…" -->
+<p class="para"><span class="t-blue"><b>1) Observation médicale</b></span> :</p>
+<p class="para">La poliomyélite est une maladie virale qui se traduit par la paralysie musculaire au niveau des membres inférieurs. Chez les sujets atteints, on constate <b>la destruction des corps cellulaires de la moelle épinière</b> ; <span class="t-red">cette destruction entraine la dégénérescence des fibres nerveuses en relation avec les muscles paralysés.</span></p>
+<p class="para"><span class="t-blue"><b>2) Observation d'une culture de cellules nerveuses embryonnaires.</b></span></p>
+<p class="para">La culture de tissu nerveux embryonnaire permet de suivre la différenciation de cellules nerveuses embryonnaires. <span class="t-red">Chaque cellule émet au cours de sa différenciation de nombreux prolongements dont certains se ramifient : ce sont les dendrites ; l'un des prolongements s'allonge progressivement en axone qui ne se ramifie qu'à son extrémité.</span></p>
+<p class="para"><span class="t-blue"><b>3) Expériences de Mérotomie et de dégénérescence Wallérienne (Waller ; 1851)</b></span></p>
+<!-- CROP: 4918 1 4 0.05 0.26 0.46 0.435 4918_p04_experience_waller -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p04_experience_waller.png" alt=""></figure>
+<!-- CROP: 4918 1 4 0.46 0.265 0.91 0.4 4918_p04_degenerescence_fibre -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p04_degenerescence_fibre.png" alt=""></figure>
+<p class="para">Document 10 : étapes de la dégénérescence (b et c) et de la régénéres-cence (c et d) d'une fibre nerveuse (a) aprés section</p>
+<table>
+<tr><th></th><th><span class="t-red">Analyse des résultats</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td><b>Expérience de Mérotomie</b></td><td>Suite à la section de l'amibe on note la dégénérescence du fragment anucléé et la régénération du fragment nucléé</td><td><span class="t-red"><b>La régénération cellulaire nécessite l'information génétique localisée dans le noyau</b></span></td></tr>
+<tr><td><b>Expérience de Waller</b></td><td>-La section du nerf rachidien entraine la dégénérescence des fibres dans le BP: l'axone et la gaine de myéline disparaissent et la gaine de Schwann persiste<br>- Après un certain temps le bout central régénère : l'axone s'allonge et s'enfile dans la gaine de Schwann qui reconstitue la gaine de myéline.</td><td><span class="t-blue"><b>- La régénération de l'axone de la fibre nerveuse est assurée par le noyau du corps cellulaire</b></span><br><span class="t-blue"><b>-L'axone de la fibre nerveuse est un prolongement de l'axone du corps cellulaire, d'où la continuité cytologique entre le corps cellulaire et la fibre nerveuse</b></span></td></tr>
+</table>
+<p class="para"><b>Schéma d'un neurone (unité structurale et fonctionnelle du tissu nerveux)</b></p>
+<!-- CROP: 4918 1 4 0.27 0.725 0.94 0.905 4918_p04_schema_neurone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p04_schema_neurone.png" alt=""></figure>
+<!-- page 05 -->
+<p class="subhead t-navy"><b>Le mode de connexion entre les neurones : notion de synapse neuroneuronique</b></p>
+<div class="data">
+<p class="para">► La synapse est un simple contact entre une terminaison nerveuse de l'axone (bouton synaptique) d'un neurone et le dendrite ou le corps cellulaire ou l'axone du neurone voisin.</p>
+<p class="para">► On distingue :</p>
+<ul class="dash">
+<li>S<sub>1</sub> : synapse axo-dendritique</li>
+<li>S<sub>2</sub> : synapse axo-somatique</li>
+<li>S<sub>3</sub> : synapse axo-axonique</li>
+</ul>
+</div>
+<!-- PROOFREAD: 4918 part1 p05 — "axo-dendritique" and "axo-somatique" partly covered by highlighter and ink; best reading -->
+<!-- CROP: 4918 1 5 0.51 0.09 0.84 0.265 4918_p05_synapses -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p05_synapses.png" alt=""></figure>
+<p class="subhead t-navy"><b>CHAPITRE 2 : ETUDE D'UNE RÉACTION MOTRICE (réflexe myotatique)</b></p>
+<p class="subhead t-navy"><b>LES SUPPORTS ANATOMIQUES DU RÉFLEXE MYOTATIQUE :</b></p>
+<!-- CROP: 4918 1 5 0.04 0.345 0.42 0.555 4918_p05_reflexe_achilleen -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p05_reflexe_achilleen.png" alt=""></figure>
+<!-- CROP: 4918 1 5 0.52 0.35 0.9 0.56 4918_p05_reflexe_rotulien -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p05_reflexe_rotulien.png" alt=""></figure>
+<p class="para">En percutant le tendon du muscle extenseur, celui-ci est étiré et il réagit à cet étirement par une contraction. Cette réaction tend à ramener le muscle à sa longueur initiale : il s'agit du <span class="t-red"><b>réflexe myotatique</b></span></p>
+<p class="subhead t-red">I- Les supports anatomiques du réflexe myotatique</p>
+<p class="subhead t-navy"><b>Arc réflexe du réflexe myotatique :</b></p>
+<!-- CROP: 4918 1 5 0.11 0.695 0.86 0.915 4918_p05_arc_reflexe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p05_arc_reflexe.png" alt=""></figure>
+<!-- page 06 -->
+<p class="subhead t-navy"><b>1) Rôle des racines rachidiennes dans le réflexe myotatique</b></p>
+<table>
+<tr><th>Déductions</th><th><span class="t-red">Conséquences immédiates</span></th><th>Observations à long terme (dégénérescence)</th><th>Déductions</th></tr>
+<tr><td rowspan="2"><span class="t-red"><b>Déduction 1 :</b></span><br>Le nerf rachidien renferme des fibres nerveuses sensitives et d'autres motrices : <span class="t-red">c'est un nerf mixte</span></td><td colspan="2"><!-- CROP: 4918 1 6 0.25 0.095 0.74 0.25 4918_p06_section_nerf_rachidien --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p06_section_nerf_rachidien.png" alt=""></figure><b>Section d'un nerf rachidien</b></td><td rowspan="2"><b>Déduction 2 :</b><br>Les corps cellulaires des fibres rachidiens se trouvent du coté de la moelle épinière.</td></tr>
+<tr><td><span class="t-red">❶</span>La partie du corps innervé par le nerf rachidien sectionné perd toute sensibilité et toute Motricité</td><td><span class="t-green">❷</span> Les fibres nerveuses dégénèrent dans le bout périphérique du nerf (BP)</td></tr>
+<tr><td rowspan="2"><span class="t-red"><b>Déduction 1 :</b></span><br>Les fibres nerveuses de la racine <b>postérieure</b> sont responsables de la sensibilité, elles conduisent un MN sensitif de la périphérie vers la ME :<span class="t-red">ce sont des fibres nerveuses afférentes= centripètes= sensitives.</span></td><td colspan="2"><!-- CROP: 4918 1 6 0.26 0.335 0.73 0.49 4918_p06_section_ganglion_spinal --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p06_section_ganglion_spinal.png" alt=""></figure><b>Section de part et d'autre du ganglion spinal</b></td><td rowspan="2"><b>Déduction 2 :</b><br>Les corps cellulaires des fibres nerveuses de la racine postérieure et de la moitié postérieure du nerf rachidien sont localisés dans le ganglion spinal (corps cellulaire unipolaire)</td></tr>
+<tr><td><span class="t-red">❶<b>Section</b></span> ⇨la région du corps innervée par le nerf dont la racine est sectionnée perd sa sensibilité mais garde sa motricité.<br><u>Stimulation du BC</u>⇨ douleur<br>(contraction du muscle du membre innervé)<br><u>Stimulation du BP</u>⇨ aucun effet</td><td><span class="t-green">❷</span> Les fibres nerveuses dégénèrent de part et d'autre du ganglion spinal et dans la moitié postérieure du nerf rachidien</td></tr>
+<tr><td rowspan="2"><span class="t-red"><b>Déduction 1 :</b></span><br>Les fibres nerveuses de la racine <b>antérieure</b> sont responsables de la motricité : elles conduisent un MN moteur de la moelle épinière vers le muscle : <span class="t-red">ce sont des voies nerveuses efférentes= centrifuges= motrices.</span></td><td colspan="2"><!-- CROP: 4918 1 6 0.26 0.63 0.73 0.785 4918_p06_section_racine_anterieure --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p06_section_racine_anterieure.png" alt=""></figure><b>Section d'une racine antérieure</b></td><td rowspan="2"><b>Déduction 2 :</b><br>Les corps cellulaires des fibres nerveuses de la racine antérieure et de la moitié antérieure du nerf rachidien sont localisés dans la SG de la moelle épinière (corps cellulaire multipolaire de la corne antérieure)</td></tr>
+<tr><td><span class="t-red">❶<b>Section</b></span> ⇨la région du corps innervée par le nerf dont la racine antérieure est sectionnée perd sa motricité mais garde sa sensibilité.<br><u>Stimulation du BC</u>⇨ aucun effet<br><u>Stimulation du BP</u>⇨ contraction du muscle du membre innervé</td><td><span class="t-green">❷</span> Les fibres nerveuses dégénèrent dont le bout périphérique de la racine antérieure et dans la moitié antérieure du nerf rachidien</td></tr>
+</table>
+<!-- page 07 -->
+<p class="subhead t-navy"><b>2) Schéma incomplet des supports anatomiques impliqués dans le réflexe myotatique</b></p>
+<!-- CROP: 4918 1 7 0.05 0.2 0.86 0.605 4918_p07_supports_reflexe_myotatique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p07_supports_reflexe_myotatique.png" alt=""></figure>
+<p class="subhead t-navy"><b>NATURE ET ORIGINE IONIQUE DU MESSAGE NERVEUX</b></p>
+<p class="subhead t-red"><span class="t-red">1)</span> <span class="t-navy">Étude du potentiel du repos</span></p>
+<table>
+<tr><th colspan="3">Expériences</th></tr>
+<tr><td><span class="t-red"><b>Expérience1</b></span><!-- CROP: 4918 1 7 0.11 0.68 0.35 0.76 4918_p07_experience1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p07_experience1.png" alt=""></figure>Les deux microélectrodes (R<sub>1</sub> et R<sub>2</sub>) sont insérées dans l'axone.</td><td><span class="t-red"><b>Expérience2</b></span><!-- CROP: 4918 1 7 0.35 0.68 0.6 0.76 4918_p07_experience2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p07_experience2.png" alt=""></figure>Les deux électrodes sont à la surface de l'axone (dans le milieu extracellulaire)</td><td><span class="t-red"><b>Expérience3</b></span><!-- CROP: 4918 1 7 0.61 0.68 0.89 0.76 4918_p07_experience3 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p07_experience3.png" alt=""></figure>Dès que la pointe de R<sub>1</sub> est insérée dans la cellule (l'électrode R<sub>2</sub> dans la solution extracellulaire)</td></tr>
+<tr><th colspan="3">Résultats</th></tr>
+<tr><td colspan="2"><!-- CROP: 4918 1 7 0.27 0.81 0.5 0.93 4918_p07_resultat_exp1_2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p07_resultat_exp1_2.png" alt=""></figure></td><td>t<sub>1</sub> : introduction de R<sub>1</sub><!-- CROP: 4918 1 7 0.65 0.82 0.87 0.935 4918_p07_resultat_exp3 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p07_resultat_exp3.png" alt=""></figure></td></tr>
+</table>
+<!-- page 08 -->
+<p class="subhead t-navy"><b>Enregistrement du potentiel de repos</b></p>
+<table>
+<tr><th></th><th><span class="t-red">Analyse des résultats</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td><b>Expériences 1+2</b></td><td>Lorsque les deux électrodes R<sub>1</sub> et R<sub>2</sub> sont placées dans le même milieu (MEC ou MIC) la ddp est nulle</td><td><span class="t-blue"><b>-MEC est isopotentiel</b></span><br><span class="t-blue"><b>-MIC est isopotentiel</b></span></td></tr>
+<tr><td><b>Expérience 3</b></td><td>Lorsqu'on introduit l'électrode R<sub>1</sub> dans MIC et l'électrode R<sub>2</sub> reste placée dans le même milieu MEC, la ddp devient non nulle de l'ordre de -70 mv<br><br><b>MEC : milieu extracellulaire</b><br><b>MIC : milieu intracellulaire</b></td><td><span class="t-green"><b>-MEC et MIC ne sont pas isopotentiels</b></span><br><span class="t-green"><b>- la ddp (-70 mv) s'appelle</b></span> <span class="t-red"><b>potentiel de repos</b></span><br><span class="t-green"><b>-la membrane plasmique du neurone au repos est</b></span> <span class="t-red"><b>polarisée</b></span><!-- CROP: 4918 1 8 0.5 0.185 0.9 0.265 4918_p08_membrane_polarisee --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p08_membrane_polarisee.png" alt=""></figure></td></tr>
+</table>
+<p class="subhead t-navy"><b>2) Origine ionique du potentiel de repos</b></p>
+<p class="para"><span class="t-navy"><b>Le potentiel de repos résulte d'une</b></span> <span class="t-red"><b>répartition inégale</b></span> <span class="t-navy"><b>des ions Na<sup>+</sup> et K<sup>+</sup> de part est d'autre de la membrane plasmique du neurone</b></span></p>
+<p class="para">La perméabilité de la membrane aux ions Na<sup>+</sup> et K<sup>+</sup> est due à la présence de canaux (protéines membranaires), <u>toujours ouverts</u>, appelés <span class="t-blue"><b>canaux de fuite</b></span>. Ces canaux sont <u>traversés passivement</u> par les ions Na<sup>+</sup> et K<sup>+</sup> <u>selon leur gradient de concentration</u> (du milieu le plus concentré vers le milieu le moins concentré) afin d'assurer l'égalité de concentration</p>
+<p class="para">Il existe d'autres types de protéines, il s'agit d'une <span class="t-red"><b>pompe Na<sup>+</sup> - K<sup>+</sup></b></span> qui assure le <u>transport actif couplé</u> des ions Na<sup>+</sup> et K<sup>+</sup> <u>contre le gradient de concentration</u> (du milieu le moins concentré vers le milieu le plus concentré). Ce transport nécessite de l'énergie fournie par l'hydrolyse de l'ATP réalisée par cette pompe.</p>
+<!-- PROOFREAD: 4918 part1 p08 — the lines of these two paragraphs overlap on the page (text boxes interleaved); typed in reading order -->
+<div class="data">
+<p class="para">► Le potentiel de repos est dû à la répartition inégale des ions <span class="t-red"><b>Na<sup>+</sup> et K<sup>+</sup></b></span> de par et d'autre de la membrane plasmique.</p>
+<p class="para">► Cette répartition inégale est maintenue constante par <span class="t-red"><b>un flux actif</b></span> grâce à la <span class="t-red"><b>pompe Na<sup>+</sup>-K<sup>+</sup></b></span> qui corrige les effets d'un <span class="t-navy"><b>flux passif</b></span> assuré les <span class="t-blue"><b>canaux de fuites</b></span>.</p>
+<!-- CROP: 4918 1 8 0.12 0.655 0.81 0.795 4918_p08_canaux_pompe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p08_canaux_pompe.png" alt=""></figure>
+<p class="para">Flux passif des ions Na<sup>−</sup> et K<sup>−</sup> à travers les canaux de fuite toujours ouverts &nbsp;&nbsp;&nbsp; Flux actif des ions Na<sup>−</sup> et K<sup>−</sup> à travers la pompe Na<sup>−</sup>- K<sup>−</sup> qui consomme de l'énergie</p>
+<!-- PROOFREAD: 4918 part1 p08 — in the two captions under the membrane figure the ion signs print like "−" (probably a font rendering of "+"); typed as seen -->
+</div>
+<!-- page 09 -->
+<p class="subhead t-red"><b>I- Étude du potentiel d'action</b></p>
+<p class="subhead t-navy"><b>1) Enregistrement du potentiel d'actio</b></p>
+<p class="para"><b>Dispositif d'enregistrement</b></p>
+<!-- CROP: 4918 1 9 0.14 0.09 0.5 0.27 4918_p09_dispositif_enregistrement -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p09_dispositif_enregistrement.png" alt=""></figure>
+<!-- CROP: 4918 1 9 0.6 0.08 0.93 0.285 4918_p09_trace_potentiel_action -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p09_trace_potentiel_action.png" alt=""></figure>
+<p class="para">► <b>Analyse des phases du tracé a :</b></p>
+<ul class="b">
+<li><span class="t-red"><b>0 : Artéfact de stimulation</b></span><br>Il indique le moment de la stimulation</li>
+<li><span class="t-red"><b>0A : Temps de latence</b></span><br>C'est le temps mis par le potentiel d'action pour parcourir la distance entre les électrodes stimulatrices et les électrodes réceptrice</li>
+</ul>
+<p class="para"><b>ABCD : PA</b></p>
+<ul class="b">
+<li><span class="t-red"><b>AB : Phase de dépolarisation</b></span><br>La ddp passe de <span class="t-red">-70mv</span> à +30mv donc il y a <span class="t-red">inversion de polarité</span> (MEC devient chargé négativement et MIC devient chargé positivement)</li>
+<li><span class="t-red"><b>BC : Phase de repolarisation</b></span><br>La ddp passe de +30mv à <span class="t-red">-70mv</span>, donc il ya <span class="t-blue">retour à la polarité initiale</span> (MEC redevient chargé positivement et MIC redevient chargé négativement)</li>
+<li><span class="t-red"><b>CD : Phase d'hyperpolarisation</b></span><br>Il ya <span class="t-red">augmentation de la négativité interne</span> par rapport à celle de repos</li>
+</ul>
+<p class="para">L'amplitude du PA = 100mv</p>
+<p class="subhead t-navy"><b>Polarité de la membrane plasmique durant les trois phases du potentiel d'action</b></p>
+<p class="subhead t-navy"><b>2) Condition de la naissance d'un potentiel d'action</b></p>
+<!-- CROP: 4918 1 9 0.11 0.615 0.92 0.8 4918_p09_condition_naissance_pa -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p09_condition_naissance_pa.png" alt=""></figure>
+<!-- CROP: 4918 1 9 0.12 0.795 0.61 0.905 4918_p09_enregistrement_o2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p09_enregistrement_o2.png" alt=""></figure>
+<p class="para">• les potentiels locaux ne sont pas propageables, ils sont amortis.<br>• les potentiels d'action sont propageables tout long de la fibre et ne sont pas amortis</p>
+<!-- PROOFREAD: 4918 part1 p09 — handwritten answer written on the printed dotted lines next to the O2 recording; best reading -->
+<!-- page 10 -->
+<table>
+<tr><th><span class="t-red">Analyse<br>(O1)</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td>• Les stimulations appliquées sur la fibre nerveuse entrainent la variation du potentiel de la membrane (dépolarisation) qui est enregistrée au niveau des électrodes réceptrices</td><td><b>La fibre nerveuse est excitable et conductrice</b></td></tr>
+<tr><td>• L'intensité I<sub>4</sub> <b>c'est l'intensité minimale capable d'engendrer un potentiel d'action: il s'agit d'une intensité seuil (intensité liminaire).</b> Le potentiel d'action se produit chaque fois que la dépolarisation provoquée par la stimulation fait atteindre au potentiel de membrane une <span class="t-red"><b>valeur seuil</b></span> dite le seuil de potentiel <span class="t-red">(-50 mV)</span></td><td><b>Le PA exige un seuil</b></td></tr>
+<tr><td>• Les intensités de I<sub>1</sub> à I<sub>3</sub> sont incapables d'engendrer un PA, mais engendrent des potentiels locaux dont l'amplitude est proportionnelle à l'intensité de la stimulation</td><td>- il s'agit des intensités <span class="t-red"><b>infraliminaires</b></span><br>- Les stimulations de S<sub>1</sub> à S<sub>3</sub> sont <span class="t-blue"><b>Inefficaces</b></span> . <b>les potentiels locaux sont</b> <span class="t-red"><b>graduable en amplitude</b></span> <b>; ils n'exige pas de seuil.</b></td></tr>
+<tr><td>• Les intensités I<sub>5</sub> et I<sub>6</sub> sont capables d'engendrer un PA</td><td>- il s'agit des intensités supra <span class="t-red"><b>liminaires</b></span><br>- Les stimulations de S<sub>4</sub> à S<sub>6</sub> sont <span class="t-blue"><b>efficaces</b></span>.</td></tr>
+<tr><td>• Les stimulations efficaces de S<sub>4</sub> à S<sub>6</sub> engendrent des PA· de mêmes amplitudes (100 mv)</td><td><b>Le PA obéit à la loi du « tout ou rien »</b></td></tr>
+</table>
+<!-- PROOFREAD: 4918 part1 p10 — subscript numbers of I and S (I4, I1–I3, I5 et I6, S4–S6) small and blurred; best reading -->
+<p class="para"><b>Comparaison entre le PL et le PA</b></p>
+<table>
+<tr><th></th><th>PL</th><th><span class="t-red">PA</span></th></tr>
+<tr><td><span class="t-red"><b>Similitude</b></span></td><td colspan="2">Ce sont des phénomènes électriques, obtenus à la suite de l'excitation de la fibre nerveuse</td></tr>
+<tr><td rowspan="3"><span class="t-red"><b>Différences et Propriétés</b></span></td><td>Ne nécessite pas une intensité seuil pour naître</td><td>Exige une <span class="t-red">intensité seuil</span> (-50mv)</td></tr>
+<tr><td><span class="t-red">Graduable</span> : son amplitude augmente avec l'intensité de la stimulation</td><td><span class="t-red">Non graduable</span> : l'amplitude est indépendante de l'intensité de la stimulation<br>Le PA est un phénomène qui <span class="t-red">obéit à la loi de tout ou rien</span></td></tr>
+<tr><td>Non propageable (amorti)</td><td>Propageable (non amorti)</td></tr>
+</table>
+<p class="subhead t-navy"><b><u>3) Origine ionique du potentiel d'action</u></b></p>
+<div class="data">
+<p class="para">Le potentiel d'action résulte d'une modification passagère de la perméabilité de la membrane aux ions Na+ et K+ grâce à l'ouverture des canaux ioniques voltage-dépendants :</p>
+</div>
+<!-- CROP: 4918 1 10 0.51 0.69 0.92 0.905 4918_p10_flux_ioniques_pa -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p10_flux_ioniques_pa.png" alt=""></figure>
+<!-- page 11 -->
+<table>
+<tr><td><span class="t-red"><b>Pendant la phase de dépolarisation</b></span> :<br>lorsque la ddp atteint la valeur seuil de -50 mv il y a ouverture des CVD Na+ → entrée brutale et massive des ions Na+ → une diminution de la négativité interne jusqu' à l'inversion de la polarité<br><br><span class="t-red"><b>Pendant la phase de repolarisation</b></span> :<br>lorsque la ddp atteint la valeur +30 mv , il y a ouverture des CVD K+ → sortie lente et progressive des ions K+ → une augmentation de la négativité interne jusqu' à le retour à la polarité initiale.<br><span class="t-red"><b>Pendant la phase d'hyperpolarisation</b></span> :<br>l'ouverture prolongée des CVD K+ → un excès des ions K+ dans le milieu extracellulaire → la négativité interne dépasse celle de repos</td><td><span class="t-red"><b>Pendant la phase de dépolarisation</b></span><!-- CROP: 4918 1 11 0.43 0.06 0.91 0.2 4918_p11_depolarisation_canaux --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p11_depolarisation_canaux.png" alt=""></figure><span class="t-blue"><b>Pendant la phase de repolarisation et d'hyperpolarisation</b></span><!-- CROP: 4918 1 11 0.43 0.23 0.91 0.375 4918_p11_repolarisation_canaux --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p11_repolarisation_canaux.png" alt=""></figure></td></tr>
+</table>
+<p class="subhead t-navy"><b>N.B</b></p>
+<p class="para"><span class="t-blue"><b>Le retour à la polarisation normale de la membrane (potentiel de repos) se fait grâce à l'activité de</b></span> <span class="t-red"><b>la pompe Na<sup>+</sup> - K<sup>+</sup></b></span> <span class="t-blue"><b>après l'hyperpolarisation.</b></span></p>
+<p class="para"><span class="t-red"><b>La fibre nerveuse, après avoir été le siège d'un potentiel d'action, suite à une stimulation efficace, ne peut pas réagir immédiatement à une nouvelle stimulation pendant quelques millisecondes : c'est la période réfractaire. Elle est due à la</b></span> <b>fermeture momentanée des canaux voltage-dépendants à Na<sup>+</sup></b> <span class="t-red"><b>après la dépolarisation</b></span></p>
+<p class="subhead t-navy"><b>NAISSANCE ET CODAGE DU MESSAGE NERVEUX AU NIVEAU D'UN RÉCEPTEUR SENSORIEL</b></p>
+<p class="subhead t-navy"><b>(fuseau neuromusculaire)</b></p>
+<p class="subhead t-red">I- Structure du fuseau neuromusculaire</p>
+<!-- CROP: 4918 1 11 0.15 0.685 0.51 0.85 4918_p11_fuseau_observation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p11_fuseau_observation.png" alt=""></figure>
+<p class="para"><b>Observation microscopique d'un fuseau neuromusculaire (x 400)</b></p>
+<!-- CROP: 4918 1 11 0.54 0.685 0.93 0.81 4918_p11_fuseau_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p11_fuseau_schema.png" alt=""></figure>
+<p class="para"><b>Schéma d'interprétation d'un fuseau neuromusculaire vue au microscope optique (x 400)</b></p>
+<!-- page 12 -->
+<p class="subhead t-red"><b>II- Naissance du message nerveux au niveau du fuseau neuromusculaire</b></p>
+<!-- CROP: 4918 1 12 0.12 0.11 0.92 0.37 4918_p12_enregistrements_fuseau -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p12_enregistrements_fuseau.png" alt=""></figure>
+<table>
+<tr><th colspan="3"><span class="t-red">Analyse des enregistrements</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td colspan="3">Le tracé a est une légère dépolarisation qui n'atteint pas + 30mv</td><td rowspan="2"><b>Tracé a : potentiel de récepteur (potentiel local)</b><br><b>Tracé b : potentiel d'action</b></td></tr>
+<tr><td colspan="3">Le tracé <b>b</b> est une dépolarisation qui atteint + 30mv</td></tr>
+<tr><td>Au niveau de O<sub>1</sub></td><td colspan="2">il y a enregistrement d'un potentiel de récepteur dont l'amplitude est proportionnelle à l'intensité de l'étirement</td><td><b>Le potentiel du récepteur est codé en modulation d'amplitude :graduable en amplitue</b></td></tr>
+<tr><td rowspan="2">Au niveau de O<sub>2</sub></td><td>E<sub>1</sub>, E<sub>2</sub> et E<sub>3</sub></td><td>il y a enregistrement d'un potentiel de récepteur dont l'amplitude est inférieure à celle enregistrée au niveau de O<sub>1</sub></td><td><b>Le potentiel du récepteur se propage à courte distance avec amortissement :non propqgeable</b></td></tr>
+<tr><td>E<sub>4</sub> et E<sub>5</sub></td><td>il y a enregistrement d'un potentiel de récepteur qui atteint le seuil au niveau du 2<sup>ème</sup> nœud de Ranvier et déclenche la naissance d'un potentiel d'action</td><td><b>Le premier nœud de Ranvier est appelé</b> <span class="t-red"><b>site générateur</b></span></td></tr>
+<tr><td>Au niveau de O<sub>3</sub></td><td colspan="2"></td><td></td></tr>
+</table>
+<p class="para"><b>Mécanisme de la naissance d'un message nerveux au niveau d'un récepteur sensoriel</b></p>
+<p class="para">Le fuseau neuromusculaire est un <b>mécanorécepteur</b> sensible à l'étirement, il comprend deux sites :</p>
+<ul class="b">
+<li>Un <span class="t-red"><b>site transducteur</b></span> qui convertit l'énergie mécanique de l'étirement en <b>potentiel de récepteur</b> <span class="t-red"><b>(transduction sensorielle).</b></span></li>
+<li>Lorsque le potentiel de récepteur atteint le <span class="t-red"><b>seuil</b></span> au niveau du <b>site générateur</b> (1<sup>er</sup> nœud de Ranvier), donne naissance à <b>un potentiel d'action.</b></li>
+</ul>
+<!-- page 13 -->
+<p class="subhead t-red"><b>III- Codage du message nerveux au niveau du fuseau neuromusculaire</b></p>
+<!-- CROP: 4918 1 13 0.1 0.05 0.92 0.33 4918_p13_codage_fuseau -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p13_codage_fuseau.png" alt=""></figure>
+<table>
+<tr><th><span class="t-red">Analyse</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td>La fréquence des PA véhiculés par la fibre sensitive I<sub>a</sub> est de l'ordre de :<br>-pour 4g : 26 PA/s.<br>-pour 20g : 54 PA/s<br>-pour 30g : 100 PA/s.</td><td><b>La fréquence des PA est proportionnelle à l'intensité de l'étirement → le fuseau neuromusculaire assure</b> <span class="t-red"><b>le codage</b></span> <b>du message nerveux en</b> <span class="t-red"><b>modulation de fréquence des PA</b></span><br><b>(message nerveux = train des PA)</b></td></tr>
+</table>
+<p class="subhead t-red"><b>IV- Tableau comparatif entre le potentiel de récepteur et le potentiel d'action</b></p>
+<table>
+<tr><th><span class="t-red">Points de comparaison</span></th><th>Potentiel de récepteur</th><th>Potentiel d'action</th></tr>
+<tr><td><span class="t-red"><b>Nature</b></span></td><td colspan="2"><b>Signal électrique</b></td></tr>
+<tr><td><b>Lieu de genèse</b></td><td><b>Site transducteur</b></td><td><b>Site générateur.</b></td></tr>
+<tr><td><b>Condition de genèse</b></td><td><b>Réception d'un stimulus</b></td><td><b>ddp atteint le seuil (-50mv)</b></td></tr>
+<tr><td><span class="t-green"><b>Propagation</b></span></td><td><b>coutre distance avec diminution d'amplitude</b></td><td><b>longue distance sans diminution d'amplitude</b></td></tr>
+<tr><td><b>Codage</b></td><td><b>Modulation d'amplitude</b></td><td><b>Modulation de fréquence</b></td></tr>
+</table>
+<!-- CROP: 4918 1 13 0.1 0.675 0.9 0.84 4918_p13_transduction_mecanorecepteur -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p13_transduction_mecanorecepteur.png" alt=""></figure>
+<p class="para"><span class="t-red"><b>La transduction au niveau d'un mécanorécepteur</b></span></p>
+<!-- page 14 -->
+<p class="subhead t-navy"><b>PROPAGATION DU M</b></p>
+<!-- PROOFREAD: 4918 part1 p14 — title cut by the photo edge after "PROPAGATION DU M" -->
+<p class="subhead t-red"><b>I- Les méthodes de calcul de la vitesse de sa propagation</b></p>
+<!-- CROP: 4918 1 14 0.08 0.06 0.62 0.3 4918_p14_montage_experimental -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p14_montage_experimental.png" alt=""></figure>
+<p class="para"><span class="t-navy"><b>Le montage expérimental</b></span></p>
+<!-- CROP: 4918 1 14 0.62 0.0 0.9 0.25 4918_p14_enregistrements -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p14_enregistrements.png" alt=""></figure>
+<p class="para"><span class="t-navy"><b>Les enregistrements</b></span></p>
+<table>
+<tr><th><span class="t-red">Calcul de la vitesse de propagation</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td><span class="t-red"><b>pour la distance d<sub>1</sub> :</b></span><br><b>V<sub>1</sub> = d<sub>1</sub> / t<sub>1</sub> (m.s<sup>-1</sup>) avec :</b><br><b>d<sub>1</sub> : distance entre les électrodes stimulatrices et R<sub>1</sub></b><br><b>t<sub>1</sub> : temps de latence du PA au niveau de O<sub>1</sub></b><br><b>AN : V= 0,04 m / 0,0004 s = 100m.s<sup>-1</sup></b><br><span class="t-red"><b>pour la distance d<sub>2</sub> :</b></span><br><b>V<sub>2</sub> = d<sub>2</sub> / t<sub>2</sub> (m.s<sup>-1</sup>) avec :</b><br><b>d<sub>2</sub> : distance entre les électrodes R<sub>1</sub> et R<sub>2</sub></b><br><b>t<sub>2</sub> : décalage entre les PA au niveau de O<sub>1</sub> et O<sub>2</sub></b><br><b>AN : V= 0,06 m / 0,006 s = 10 m.s<sup>-1</sup></b></td><td><b>Le potentiel d'action se propage en gardant la</b> <span class="t-red"><b>même vitesse</b></span> <b>le long de la fibre nerveuse</b></td></tr>
+</table>
+<!-- PROOFREAD: 4918 part1 p14 — first AN: denominator partly covered by a mark ("…004 s"); read "0,0004 s" -->
+<p class="para"><span class="t-red"><b>Remarque</b></span> : <b>les potentiels locaux ne sont pas propageable.</b></p>
+<p class="subhead t-red"><b>II- Relation entre la vitesse de propagation du message nerveux et les caractéristiques de la fibre nerveuse</b></p>
+<p class="para"><b>-la vitesse de conduction du message nerveux</b> <span class="t-red"><b>augmente</b></span> <b>avec le diamètre de la fibre</b><br><b>-la vitesse de conduction du message nerveux</b> <span class="t-red"><b>augmente</b></span> <b>avec la température</b><br><b>-la présence de la gaine de myéline</b> <span class="t-red"><b>augmente</b></span> <b>la vitesse de conduction du message nerveux</b></p>
+<!-- page 15 -->
+<p class="subhead t-red"><b>- Mécanisme de propagation du message nerveux</b></p>
+<!-- CROP: 4918 1 15 0.12 0.06 0.5 0.32 4918_p15_propagation_saltatoire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p15_propagation_saltatoire.png" alt=""></figure>
+<!-- CROP: 4918 1 15 0.51 0.08 0.9 0.32 4918_p15_propagation_continue -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p15_propagation_continue.png" alt=""></figure>
+<div class="data">
+<ul class="b">
+<li>L'arrivée d'un PA en une zone de la fibre nerveuse crée entre cette zone et la zone voisine des <span class="t-red">courants électriques locaux</span> (attraction des charges + par les charges -), ce qui entraine une dépolarisation de cette zone voisine.</li>
+<li>La zone qui vient d'être le siège d'un PA reste inexcitable pendant un certain temps → l'existence d'une <span class="t-red">période réfractaire</span> expliquée par la fermeture des CVD à Na<sup>+</sup> → la propagation du PA est <span class="t-red">unidirectionnelle</span>.</li>
+<li>Dans le cas d'une fibre myélinisée, la gaine de myéline est un isolant électrique, ce qui impose la propagation <span class="t-green">saltatoire</span> (discontinue) d'un nœud de Ranvier à un autre (seul lieu où sont localisés les canaux ioniques voltage dépendants).</li>
+<li>Dans le cas d'une fibre amyélinisée la propagation est de <span class="t-blue">proche en proche</span> (continue)</li>
+</ul>
+</div>
+<p class="subhead t-navy"><b>N.B</b></p>
+<!-- CROP: 4918 1 15 0.07 0.71 0.42 0.89 4918_p15_neurone_sens_propagation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p15_neurone_sens_propagation.png" alt=""></figure>
+<p class="para"><b>Dans les conditions physiologiques, le sens de propagation du message nerveux suit toujours la même direction qui va des dendrites au corps cellulaire et du corps cellulaire aux</b> <span class="t-red"><b>terminaisons de l'axone.</b></span></p>
+<!-- page 16 -->
+<p class="subhead t-navy"><b>TRANSMISSION SYNAPTIQUE DU MESSAGE NERVEUX</b></p>
+<p class="subhead t-red"><b>I- Ultra structure et caractéristiques d'une synapse neuroneuronique</b></p>
+<!-- CROP: 4918 1 16 0.08 0.105 0.42 0.285 4918_p16_microphotographie_synapse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p16_microphotographie_synapse.png" alt=""></figure>
+<p class="para"><span class="t-gold"><b>Microphotographie d'une synapse neuroneuronique</b></span></p>
+<!-- CROP: 4918 1 16 0.41 0.1 0.92 0.285 4918_p16_schema_synapse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p16_schema_synapse.png" alt=""></figure>
+<p class="para"><span class="t-gold"><b>Schéma d'interprétation d'une synapse neuroneuronique</b></span></p>
+<p class="para">Une synapse neuroneuronique est caractérisée par la présence:</p>
+<ul class="dash">
+<li>d'un bouton synaptique riche en <span class="t-red"><b>vésicules synaptiques</b></span>.</li>
+<li>d'une fente (espace) synaptique qui prouve que le neurone présynaptique et le neurone postsynaptique sont <span class="t-blue"><b>électriquement isolés</b></span></li>
+<li>d'une membrane postsynaptique plus épaisse donc <span class="t-green"><b>riche en protéines (canaux ioniques)</b></span></li>
+</ul>
+<p class="subhead t-red"><b>II- Mécanisme de la transmission synaptique du message nerveux</b></p>
+<p class="subhead t-navy"><b>1) Mode de transmission</b></p>
+<!-- CROP: 4918 1 16 0.11 0.455 0.87 0.66 4918_p16_synapse_repos_activee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p16_synapse_repos_activee.png" alt=""></figure>
+<table>
+<tr><th colspan="2"><span class="t-red">Etats structuraux des synapses</span></th><th><span class="t-red">Au repos</span></th><th><span class="t-red">Activée</span></th></tr>
+<tr><td rowspan="2"><b>Comparaison</b></td><td>Nombre des vésicules synaptiques</td><td>Le bouton synaptique est riche en vésicules synaptiques</td><td>Le bouton synaptique est pauvre en vésicules synaptiques</td></tr>
+<tr><td>état des vésicules synaptiques</td><td>Toutes les vésicules synaptiques sont fermées</td><td>Certaines vésicules synaptiques sont en <span class="t-red">exocytose</span></td></tr>
+<tr><td><b>Déduction</b></td><td colspan="3">L'existence des vésicules synaptiques en exocytose suite à l'arrivée d'un potentiel d'action présynaptique prouve qu'il y a libération d'une <b>substance chimique</b> <span class="t-red"><b>(neurotransmetteur)</b></span> dans la fente synaptique, qui assure la transmission du message nerveux</td></tr>
+</table>
+<!-- page 17 -->
+<p class="subhead t-navy"><b>2) Les étapes de la naissance d'un PPS (transmission synaptique)</b></p>
+<p class="para">1-Arrivée d'un potentiel d'action dans le bouton synaptique, ce qui entraine l'ouverture des CVD Ca<sup>++</sup><br>2-Entrée des ions Ca<sup>++</sup> dans le bouton synaptique, ce qui active l'exocytose des vésicules synaptiques<br>3-Libération du <span class="t-blue">neurotransmetteur</span> dans la fente synaptique<br>4-Fixation du neurotransmetteur sur les récepteurs spécifiques situés dans la membrane postsynaptique<br>5-Ouverture des canaux ioniques chimio-dépendants (CCD)<br>6-Mouvements ioniques à travers les canaux ioniques chimio-dépendants ouverts<br>7-Modification du potentiel de la membrane postsynaptique appelée Potentiel Post Synaptique (PPS)</p>
+<!-- CROP: 4918 1 17 0.44 0.19 0.94 0.38 4918_p17_etapes_pps -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p17_etapes_pps.png" alt=""></figure>
+<p class="para"><span class="t-red"><b>Enregistrement des PPS</b></span></p>
+<!-- CROP: 4918 1 17 0.24 0.36 0.83 0.585 4918_p17_enregistrement_pps -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p17_enregistrement_pps.png" alt=""></figure>
+<table>
+<tr><th>Enregistrement au niveau</th><th>Nom</th><th>Justification</th><th>Nature de synapse</th></tr>
+<tr><td>E<sub>1</sub></td><td><span class="t-blue"><b>PPSE</b></span></td><td>C'est une <span class="t-blue"><b>légère dépolarisation</b></span> qui atteint -55 mv donc <b>rapproche</b> le potentiel de la valeur <span class="t-red"><b>seuil (- 50 mv)</b></span></td><td><b>La synapse N<sub>1</sub>-N<sub>3</sub> est excitatrice</b></td></tr>
+<tr><td>E'<sub>1</sub></td><td><b>PPSI</b></td><td>C'est une <b>légère hyperpolarisation</b> qui atteint -80 mv donc <b>éloigne</b> le potentiel de la valeur <span class="t-red"><b>seuil</b></span> <b>(- 50 mv)</b></td><td><b>La synapse N<sub>2</sub>-N<sub>3</sub> est inhibitrice</b></td></tr>
+<tr><td colspan="4">- Pour le PPSE l'amplitude en E<sub>2</sub> est 10 mv donc inferieure à celle en E<sub>1</sub> qui est de l'ordre de 15mv<br>- Pour le PPSI l'amplitude en E<sub>2</sub> est 5 mv donc inferieure à celle en E'<sub>1</sub> qui est de l'ordre de 10mv<br><b>→ Les PPS se propagent à courte distance avec diminution d'amplitude :à décrément spatial ;non propageable.</b></td></tr>
+</table>
+<!-- page 18 -->
+<p class="subhead t-red"><b>III- Fonctionnement des synapses excitatrices et inhibitrices</b></p>
+<table>
+<tr><th>Etapes</th><th><span class="t-green">Synapse excitatrice</span></th><th><span class="t-gold">Synapse inhibitrice</span></th></tr>
+<tr><td>1</td><td colspan="2">Arrivée d'un potentiel d action dans le bouton synaptique, ce qui entraine l'ouverture des CV Ca<sup>++</sup></td></tr>
+<tr><td>2</td><td colspan="2">Entrée des ions Ca<sup>++</sup> dans le bouton synaptique, ce qui active l'exocytose des vésicules synaptiques</td></tr>
+<tr><td>3</td><td>Libération du <span class="t-blue"><b>neurotransmetteur excitateur</b></span> <span class="t-blue"><b>(acétylcholine)</b></span> dans la fente synaptique</td><td>Libération du <b>neurotransmetteur inhibiteur</b> <b>(GABA)</b> dans la fente synaptique</td></tr>
+<tr><td>4</td><td>Fixation du neurotransmetteur excitateur sur les récepteurs spécifiques situés dans la membrane postsynaptique</td><td>Fixation du neurotransmetteur inhibiteur sur les récepteurs spécifiques situés dans la membrane postsynaptique</td></tr>
+<tr><td>5</td><td>Ouverture <span class="t-blue"><b>des canaux ioniques chimio-dépendants Na<sup>+</sup></b></span></td><td>Ouverture des <b>canaux ioniques chimio-dépendants K<sup>+</sup> et Cl<sup>-</sup></b></td></tr>
+<tr><td>6</td><td><span class="t-blue"><b>Entrée des ions Na+</b></span> à travers les canaux ioniques chimio-dépendants ouverts</td><td><b>Entrée des ions Cl<sup>-</sup> et sortie des ions K+</b> à travers les canaux ioniques chimio-dépendants ouverts</td></tr>
+<tr><td>7</td><td><span class="t-blue"><b>Légère dépolarisation (PPSE)</b></span></td><td><b>Légère hyperpolarisation (PPSI)</b></td></tr>
+</table>
+<!-- PROOFREAD: 4918 part1 p18 — step 1: "CV…" cut at the right edge of the table; several cells are under green/purple highlighter, colours of the words underneath uncertain -->
+<p class="subhead t-red"><b>IV- Tableau comparatif entre les CVD Na+ et K+ et les CCD</b></p>
+<table>
+<tr><th><span class="t-red">Canaux ioniques</span></th><th></th><th><span class="t-red">CVD</span></th><th><span class="t-red">CCD</span></th></tr>
+<tr><td colspan="2"><b>Similitudes</b></td><td colspan="2">- nature protéique<br>-assure le flux ionique passif<br>- fermés au repos</td></tr>
+<tr><td rowspan="3"><span class="t-blue"><b>Différences</b></span></td><td><b>Localisation</b></td><td>-Cône axonique<br>-nœuds de "<br>Ranvier<br>-arborisation terminale</td><td>Membrane postsynaptique</td></tr>
+<tr><td><b>Condition d'ouverture</b></td><td>potentiel seuil de la membrane</td><td>fixation d'un neurotransmetteur sur les récepteurs spécifiques</td></tr>
+<tr><td><b>Rôle physiologique</b></td><td>Naissance et propagation du message nerveux</td><td>Transmission synaptique du message nerveux</td></tr>
+</table>
+<p class="subhead t-navy"><b>N.B</b></p>
+<ul class="b">
+<li>Après la naissance du PPS il y a <span class="t-blue"><b>inactivation rapide du neurotransmetteur</b></span> dans la fente synaptique (dégradation dans la fente ou recapture par le bouton synaptique)</li>
+<li>L'amplitude de PPS est <span class="t-green"><b>proportionnelle à la dose du neurotransmetteur</b></span> libéré dans la fente synaptique</li>
+<li>On appelle <span class="t-red"><b>délai synaptique</b></span> le temps mis par le message nerveux pour <span class="t-red"><b>franchir une synapse</b></span>; il est de l'ordre de <span class="t-red"><b>0,5 ms</b></span></li>
+</ul>
+<p class="subhead t-navy"><b>RÔLE INTÉGRATEUR DU NEURONE POSTSYNAPTIQUE</b></p>
+<p class="subhead t-red"><b>I- Étude de l'intégration postsynaptique</b></p>
+<!-- CROP: 4918 1 18 0.1 0.755 0.34 0.9 4918_p18_neurone_boutons_abc -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p18_neurone_boutons_abc.png" alt=""></figure>
+<!-- CROP: 4918 1 18 0.35 0.745 0.89 0.895 4918_p18_stimulations_isolees -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p18_stimulations_isolees.png" alt=""></figure>
+<!-- page 19 -->
+<!-- CROP: 4918 1 19 0.05 0.0 0.93 0.29 4918_p19_traces_d_e_f -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p19_traces_d_e_f.png" alt=""></figure>
+<table>
+<tr><td>On applique deux stimulations très rapprochées sur le bouton A</td><td>On applique simultanément des stimulations sur les boutons A et B</td><td>On applique simultanément des stimulations sur les boutons A , B et C</td></tr>
+</table>
+<p class="para"><span class="t-red"><b>Tableau 2</b></span></p>
+<p class="subhead t-red"><b>Tableau 1 :</b></p>
+<table>
+<tr><th>Tracés</th><th>Nom</th><th>Justification</th><th>Nature de synapse</th></tr>
+<tr><td>a</td><td><span class="t-blue"><b>PPSE</b></span></td><td>C'est une <span class="t-blue"><b>légère dépolarisation</b></span> qui atteint -55 mv donc <span class="t-blue"><b>rapproche</b></span> le potentiel de la valeur <span class="t-red"><b>seuil (- 50 mv)</b></span></td><td><span class="t-blue"><b>La synapse A-M est excitatrice</b></span></td></tr>
+<tr><td>b</td><td><span class="t-blue"><b>PPSE</b></span></td><td>C'est une <span class="t-blue"><b>légère dépolarisation</b></span> qui atteint -65 mv donc <span class="t-blue"><b>rapproche</b></span> le potentiel de la valeur <span class="t-red"><b>seuil (- 50 mv)</b></span></td><td><span class="t-blue"><b>La synapse B-M est excitatrice</b></span></td></tr>
+<tr><td>c</td><td><span class="t-green"><b>PPSI</b></span></td><td>C'est une <span class="t-green"><b>légère hyperpolarisation</b></span> qui atteint -75 mv donc <span class="t-green"><b>éloigne</b></span> le potentiel de la valeur <span class="t-red"><b>seuil (- 50 mv)</b></span></td><td><span class="t-green"><b>La synapse C-M est inhibitrice</b></span></td></tr>
+</table>
+<p class="subhead t-red"><b>Tableau 2 :</b></p>
+<table>
+<tr><td rowspan="2"><span class="t-blue"><b>Tracé d</b></span></td><th><span class="t-red">Explication</span></th></tr>
+<tr><td>Les deux stimulations efficaces très rapprochées portées sur le bouton présynaptique A , engendrent au du niveau cône axonique du neurone postsynaptique M (au niveau de O<sub>1</sub>) un <span class="t-blue"><b>PPS global</b></span> qui résulte de <b>la sommation temporelle</b> de <span class="t-blue"><b>2 PPSE successifs</b></span> d'amplitude <span class="t-blue"><b>15 mv + 15 mv = 30 mv</b></span> : il s'agit d'un PPSE qui atteint le seuil <span class="t-red"><b>(-50 mv)</b></span> et déclenche un PA postsynaptique</td></tr>
+<tr><td rowspan="2"><span class="t-blue"><b>Tracé e</b></span></td><th><span class="t-red">Explication</span></th></tr>
+<tr><td>L'application des stimulations simultanées sur les boutons présynaptiques A et B, engendre au du niveau cône axonique du neurone postsynaptique M (au niveau de O<sub>1</sub>) un <span class="t-green"><b>PPS global</b></span> qui résulte de <b>la sommation spatiale</b> dont l'amplitude égale à la <span class="t-green"><b>somme algébrique de 2 PPSE unitaires</b></span> <b>( 15 mv + 5 mv = 20 mv)</b> : il s'agit d'un PPSE qui atteint le seuil <span class="t-red"><b>(-50 mv)</b></span> et déclenche un PA postsynaptique</td></tr>
+<tr><td rowspan="2"><span class="t-blue"><b>Tracé f</b></span></td><th><span class="t-red">Explication</span></th></tr>
+<tr><td>L'application des stimulations simultanées sur les boutons présynaptiques A, B et C engendre au du niveau cône axonique du neurone postsynaptique M (au niveau de O<sub>1</sub>) un <span class="t-green"><b>PPS global</b></span> qui résulte de <b>la sommation spatiale</b> dont l'amplitude égale à la <span class="t-green"><b>somme algébrique de 2 PPSE et d'un PPSI unitaires</b></span> <b>(15 mv + 5 mv – 5 mv = 15 mv)</b> : il s'agit d'un PPSE qui n'atteint pas le seuil <span class="t-red"><b>(-50 mv)</b></span></td></tr>
+</table>
+<!-- PROOFREAD: 4918 part1 p19 — caption under the third trace reads only "Tracé" (letter missing on the page); "Tableau 2" printed in red between the captions and "Tableau 1 :" kept as printed -->
+<!-- page 20 -->
+<p class="subhead t-red"><b>Définition de l'intégration postsynaptique</b></p>
+<p class="para"><b>C'est la capacité du neurone postsynaptique d'intégrer à tout instant les PPS (PPSE et PPSI) qui lui parviennent des neurones présynaptiques par sommation spatiale et temporelle. Si la somme obtenue au niveau du cône axonique est égale ou supérieure au seuil (-50 mv) il y a émission d'un potentiel d'action postsynaptique</b></p>
+<p class="subhead t-red"><b>II- Comparaison de la sommation temporelle et la sommation spatiale</b></p>
+<table>
+<tr><th><span class="t-red">Types de sommation</span></th><th><span class="t-red">Temporelle</span></th><th><span class="t-red">Spatiale</span></th></tr>
+<tr><td><span class="t-blue"><b>Définition</b></span></td><td>La sommation est dite temporell lorsqu'un <span class="t-red"><b>même</b></span> ne <span class="t-red"><b>présynaptique</b></span> transmet des potentiel d'action <span class="t-red"><b>très rapprochés</b></span> à un ne postsynaptique par une syna <span class="t-blue"><b>excitatrice</b></span> <span class="t-red"><b>ou</b></span> <span class="t-blue"><b>inhibitrice</b></span></td><td>La sommation est dite spatiale lorsque <span class="t-red"><b>plusieurs neurones présynaptiques</b></span> transmettent leur message <span class="t-red"><b>simultanément</b></span> au même neurone postsynaptique par des synapses <span class="t-green"><b>excitatrices</b></span> <span class="t-red"><b>et / ou</b></span> <span class="t-green"><b>inhibitrices</b></span></td></tr>
+<tr><td><b>Localisation</b></td><td>Corps cellulaire</td><td>Cône axonique</td></tr>
+<tr><td><span class="t-blue"><b>Amplitude du PPS global (PPSG)</b></span></td><td><span class="t-red"><b>Somme</b></span> des amplitudes des PPS successifs ; sauf que le PPSG peut atteindre ou dépasse le seuil (-50 mv) et ne déclenche pas un PA postsynaptique au niveau du corps cellulaire vue l'absence des CVD→ le PPSG se propage vers le cône axonique où existent les CVD ; s'il atteint le seuil il y a émission d'un PA postsynaptique</td><td><span class="t-red"><b>Somme algébrique</b></span> des amplitudes des PPS unitaires</td></tr>
+<tr><td><span class="t-blue"><b>Types de PPSG</b></span></td><td>-PPSE qui atteint le seuil → PA<br>-PPSE qui n'atteint pas le seuil<br>- PPSI</td><td>-PPSE qui atteint le seuil → PA<br>-PPSE qui n'atteint pas le seuil<br>- PPSI<br>-Potentiel de repos</td></tr>
+</table>
+<!-- PROOFREAD: 4918 part1 p20 — "Temporelle / Définition" cell: words cut at the cell's right edge on the page ("temporell", "ne", "un ne", "syna"); typed only the visible letters -->
+<p class="subhead t-navy"><b>COORDINATION DE L'ACTIVITÉ DES MUSCLES ANTAGONISTES AU COURS DU RÉFLEXE MYOTATIQUE</b></p>
+<p class="subhead t-red"><b>I- Mécanisme de la coordination de l'activité des muscles antagonistes</b></p>
+<!-- CROP: 4918 1 20 0.18 0.68 0.83 0.9 4918_p20_coordination_muscles_antagonistes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p20_coordination_muscles_antagonistes.png" alt=""></figure>
+
+
+<!-- page 21 -->
+<!-- CROP: 4918 1 21 0.085 0.012 0.890 0.438 4918_p21_oscillogrammes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p21_oscillogrammes.png" alt=""></figure>
+<p class="subhead t-navy">1) Le circuit neuronique reliant  le neurone sensitif avec  le motoneurone du muscle extenseur</p>
+<table>
+<tr><th>Exploitation des résultats</th><th>Type du circuit neuronique</th></tr>
+<tr><td><ul class="b">
+<li>Le passage du message nerveux de l’axone du neurone sensitif I<sub>a</sub> sur le corps cellulaire du motoneurone α innervant le muscle extenseur étiré nécessite le temps L<sub>2</sub> = 0,7 ms  = <span class="t-red">0,5</span> + L<sub>1</sub>; donc il y a un seul délai synaptique → le circuit neuronique renferme <b><span class="t-red">une seule synapse</span></b>.</li>
+<li>L’enregistrement d’une série de PPSE (au niveau de O<sub>2</sub>) dans le corps cellulaire du motoneurone α qui est à l’origine d’un série de PA au niveau de O<sub>4</sub> → synapse entre le neurone I<sub>a</sub> et motoneurone α est <b><span class="t-red">excitatrice</span></b></li>
+</ul></td><td><span class="t-gold">circuit monosynaptique excitateur</span></td></tr>
+</table>
+<p class="subhead t-navy">2) Le circuit neuronique reliant le neurone sensitif avec le motoneurone du muscle fléchisseur</p>
+<table>
+<tr><th>Exploitation des résultats</th><th>Type du circuit neuronique</th></tr>
+<tr><td><ul class="dash">
+<li>Le passage du message nerveux de l’axone du neurone sensitif I<sub>a</sub> sur le corps cellulaire du motoneurone α innervant le muscle fléchisseur étiré nécessite le temps L<sub>3</sub>= 1,2 ms = <span class="t-red">0,5</span> + <span class="t-red">0,5</span> + L<sub>1</sub>; donc il y a deux délais synaptiques → le circuit neuronique renferme <b><span class="t-red">deux synapses</span></b> → au niveau de la substance grise de la moelle épinière s’articule un <b>interneurone</b> entre le neurone sensitif et le motoneurone α innervant le muscle fléchisseur</li>
+<li>L’enregistrement d’une série de PPSI (au niveau de O<sub>3</sub>) dans le corps cellulaire du motoneurone α qui se propage avec amortissement, d’où le potentiel de repos au niveau de O<sub>5</sub> →l’interneurone est <b>inhibiteur</b></li>
+</ul></td><td><span class="t-gold">Circuit polysynaptique inhibiteur</span></td></tr>
+</table>
+<!-- page 22 -->
+<p class="subhead t-red">II- Innervation réciproque qui assure la coordination</p>
+<!-- CROP: 4918 1 22 0.170 0.130 0.845 0.478 4918_p22_innervation_reciproque -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p22_innervation_reciproque.png" alt=""></figure>
+<!-- NOTE: handwritten annotations (a word "Ex… :" above the paragraph, a bracket around it) and highlighter marks on the printed text not transcribed — marks on top of the printed page -->
+<p class="para"><b>Au cours d’un réflexe myotatique <span class="t-red">la coordination</span> de l’activité des muscles antagonistes est assurée par <span class="t-blue">l’innervation réciproque</span>. En effet les messages nerveux sensitifs provenant des fuseaux neuromusculaires du muscle étiré ont une <u><span class="t-green">double action</span></u> :</b></p>
+<ul class="b">
+<li><b><span class="t-red">Activation directe</span> du motoneurone α du même muscle étiré grâce à un circuit neuronique <span class="t-red">monosynaptique excitateur</span> d’où la <span class="t-red">contraction</span> du muscle étiré.</b></li>
+<li><b><span class="t-red">Inhibition</span> du motoneurone α du muscle antagoniste  grâce à un circuit neuronique <span class="t-red">polysynaptique inhibiteur</span> (présence <span class="t-red">d’interneurone inhibiteur</span> qui s’articule entre le neurone sensitif et le motoneurone α au niveau de la substance grise de la moelle épinière)  d’où <span class="t-red">le relâchement</span>  du muscle antagoniste.</b></li>
+</ul>
+<p class="para">N. B <b><span class="t-red">Réflexe myotatique</span></b> : contraction correctrice d’un muscle étiré</p>
+<ul class="b">
+<li><b><span class="t-red">Tonus musculaire</span></b> : légère contraction d’un muscle au repos pour le maintien de la posture.</li>
+<li><b><span class="t-red">Caractéristique du réflexe myotatique</span></b> :
+<ul class="dash">
+<li><b>médullaire</b> → ayant comme centre nerveux la moelle épinière</li>
+<li><b>monosynaptique</b> → une seule synapse entre la voie sensitive et la voie motrice</li>
+<li><b>proprioceptif</b> → le récepteur sensoriel est logé dans l’organe effecteur</li>
+</ul></li>
+</ul>
+<!-- page 23 -->
+
+<div class="chtag"><span>Chapitre</span> Muscle squelettique (contraction)</div>
+
+<p class="subhead t-navy"><b>CHAPITRE 3 : FONCTIONNEMENT   DU MUSCLE SQUELETTIQUE</b></p>
+<p class="subhead t-red">STRUCTURE ET ULTRASTRUCTURE DU MUSCLE ET DE LA JONCTION NEUROMUSCULAI</p>
+<!-- PROOFREAD: 4918 part1 p23 — "NEUROMUSCULAI" printed so (last letters missing/cut at the end of the highlighted band) -->
+<p class="subhead t-red">I- Structure et ultra structure du muscle squelettique</p>
+<p class="subhead t-navy">1) Observation macroscopique et microscopique du muscle squelettique</p>
+<!-- CROP: 4918 1 23 0.140 0.155 0.435 0.352 4918_p23_muscle_en_place -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p23_muscle_en_place.png" alt=""></figure>
+<p class="para"><b>Muscle squelettique en place</b></p>
+<!-- CROP: 4918 1 23 0.440 0.160 0.750 0.348 4918_p23_schema_muscle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p23_schema_muscle.png" alt=""></figure>
+<p class="para"><b>schéma d’interprétation légendé</b></p>
+<p class="para">Chaque fibre musculaire est une cellule géante. Elle est limitée par une membrane plasmique ou <b><span class="t-red">sarcolemme</span></b>. Son cytoplasme ou <b><span class="t-green">sarcoplasme</span></b> contient plusieurs <u>noyaux</u> disposés en <u>périphérie</u>, des <u>mitochondries</u> et de nombreux éléments allongés et parallèles à l’axe d’allongement de la fibre: ce sont les <b><span class="t-red">myofibrilles</span></b> <u>striation longitudinale</u> de la fibre musculaire.</p>
+<!-- CROP: 4918 1 23 0.565 0.388 0.940 0.560 4918_p23_fibre_musculaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p23_fibre_musculaire.png" alt=""></figure>
+<p class="para"><b>Schéma d’interprétation légendé</b></p>
+<!-- CROP: 4918 1 23 0.125 0.545 0.545 0.875 4918_p23_microphotographie_myofibrille -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p23_microphotographie_myofibrille.png" alt=""></figure>
+<p class="para">Microphotographie d’une myofibrille</p>
+<!-- CROP: 4918 1 23 0.555 0.585 0.765 0.845 4918_p23_schema_sarcomere -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p23_schema_sarcomere.png" alt=""></figure>
+<p class="para">1 strie Z<br>2 1/2 disque I<br>3 disque A<br>4 bande H<br>5 sarcomère<br>6 filament de myosine<br>7 filament d’actine</p>
+<p class="para">schéma légendé d’un sarcomère</p>
+<!-- page 24 -->
+<ul class="b">
+<li>Chaque myofibrille est constituée d’une alternance de <b><span class="t-red">disques clairs</span></b> (disques I) et de <b>disq</b> <b><span class="t-green">sombres</span></b> (disque A).</li>
+<!-- PROOFREAD: 4918 part1 p24 — word cut by the page edge, only "disq" visible -->
+<li>L’alignement des disques dans les différentes myofibrilles est responsable de la <u>striation transversale</u> de la fibre musculaire.</li>
+<li>Chaque disque clair montre en son milieu une fine ligne sombre c’est la <b><span class="t-red">strie Z</span></b>.</li>
+<li>Chaque disque sombre montre en son milieu une bande plus au moins claire c’est la <b><span class="t-red">bande H</span></b>.</li>
+<li>La zone de la myofibrille délimitée par deux stries Z  successives est appelée <b><span class="t-red">sarcomère</span></b>.<br>Celui-ci représente <b><u><span class="t-red">l’unité fonctionnelle</span></u></b> de la fibre musculaire.</li>
+</ul>
+<p class="para"><b><span class="t-red">Sarcomère = 1/2 disque I + disque A +1/2 disque I</span></b></p>
+<p class="para">L’observation de la fibre musculaire au microscope électronique montre que <u>chaque sarcomère</u> est constitué de deux types de filaments :</p>
+<ul class="b">
+<li>Des <b><span class="t-blue">filaments épais</span></b> de <b><span class="t-blue">myosine</span></b> localisés au niveau des disques sombres (disque A) :<br>La molécule de myosine est une protéine constituée de deux chaines qui s’enroulent en spirales pour former la queue et les « têtes » de myosine où se trouve le site de liaison de l’ATP et le site de liaison sur l’actine
+<!-- CROP: 4918 1 24 0.115 0.395 0.720 0.550 4918_p24_molecule_myosine -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p24_molecule_myosine.png" alt=""></figure></li>
+<li>Des <b><span class="t-green">filaments minces</span></b> d’<b><span class="t-green">actine</span></b> rattachés aux stries <b>Z :</b> Les protéines globulaires d’actine G s’associent pour former le filament d’actine. L’actine porte des <b><span class="t-red">sites de liaison</span></b> (masqués au repos) sur lesquels les <b>têtes de myosine se fixent lors de la contraction</b></li>
+</ul>
+<p class="subhead t-navy">2) Utrastructure tridimensionnelle de la fibre  musculaire</p>
+<!-- CROP: 4918 1 24 0.230 0.655 0.815 0.942 4918_p24_ultrastructure_fibre -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p24_ultrastructure_fibre.png" alt=""></figure>
+<!-- page 25 -->
+<p class="para">Le sarcolemme de la fibre musculaire présente des replis, appelés <b><span class="t-red">tubules transverses (système T)</span></b>, pénétrant à l’intérieur de la fibre et entrant en contact avec des <b><span class="t-green">citernes de réticulum sarcoplasmique</span></b> riches en ions Ca<sup>++</sup>. Ces citernes se moulent autour des myofibrilles.</p>
+<p class="para">Le sarcoplasme de la fibre musculaire est riche en <b><span class="t-blue">glycogène</span></b> et en <b><span class="t-red">mitochondries</span></b></p>
+<p class="subhead t-navy"><b>N.B</b></p>
+<p class="para">La coloration rouge du muscle squelettique est due à un pigment rouge proche de l’hémoglobine : la <span class="t-red">myoglobine</span>.</p>
+<p class="subhead t-red">II- Etude de la synapse neuromusculaire (plaque motrice)</p>
+<p class="subhead t-navy">1) Etude structurale</p>
+<!-- CROP: 4918 1 25 0.080 0.345 0.735 0.578 4918_p25_unite_motrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p25_unite_motrice.png" alt=""></figure>
+<ul class="b">
+<li><b><span class="t-blue">L’unité motrice</span></b> est définie comme étant l’ensemble du <b><span class="t-blue">motoneurone alpha, de son axone et des fibres musculaires qu’il innerve</span></b>. L’unité motrice est le plus petit élément contractile que le système nerveux peut mettre en jeu.</li>
+</ul>
+<!-- CROP: 4918 1 25 0.090 0.635 0.530 0.838 4918_p25_microphotographie_plaque_motrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p25_microphotographie_plaque_motrice.png" alt=""></figure>
+<p class="para">Microphotographie de la plaque motrice</p>
+<!-- CROP: 4918 1 25 0.555 0.630 0.935 0.868 4918_p25_schema_plaque_motrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p25_schema_plaque_motrice.png" alt=""></figure>
+<p class="para">Schéma d’interprétation de la plaque motrice</p>
+<div class="data"><p class="para">1-axone        2- Gaine de myéline     3- Cellule de Schwann 4- Noyau de la cellule de Schwann</p>
+<p class="para">5- Membrane présynaptique    6- Vésicule synaptique     7- fente synaptique      <b><span class="t-red">8- appareil sous neural</span></b></p></div>
+<!-- page 26 -->
+<!-- NOTE: the top strip of the photo shows part of another sheet (a figure with handwritten labels) lying under this page — not transcribed, not part of this page -->
+<p class="para">-La <b><span class="t-red">plaque motrice</span></b> est une <b><span class="t-red">jonction neuromusculaire</span></b> qui assure la transmission du message nerveux du motoneurone à la fibre musculaire (<b><span class="t-red">synapse neuromusculaire</span></b>)</p>
+<p class="para">-<b><span class="t-red">L’appareil sous neural</span></b> représente de nombreux replis du sarcolemme (membrane postsynaptique) augmentant la surface d’échange</p>
+<p class="subhead t-navy"><b><span class="t-green">2) Étude fonctionnelle :</span></b></p>
+<!-- CROP: 4918 1 26 0.130 0.215 0.505 0.388 4918_p26_dispositif_plaque_motrice -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p26_dispositif_plaque_motrice.png" alt=""></figure>
+<!-- CROP: 4918 1 26 0.505 0.190 0.950 0.458 4918_p26_experiences_1_4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p26_experiences_1_4.png" alt=""></figure>
+<table>
+<tr><th colspan="2"><span class="t-red">Analyse des résultats</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td><b>Expérience 1</b></td><td>La stimulation efficace de l’axone moteur entraine la naissance d’une série des potentiels d’action musculaire</td><td><b><span class="t-red">Au niveau de la plaque motrice se fait la transmission neuromusculaire du message nerveux</span></b></td></tr>
+<tr><td><b>Exp 2 +3</b></td><td><ul class="dash"><li>l’injection de l’acétylcholine dans la fente synaptique engendre la naissance des potentiels d’action musculaire</li><li>la fréquence des potentiels d’action musculaire est proportionnelle à la dose d’acétylcholine injectée dans la fente synaptique</li></ul></td><td><b><span class="t-blue">L’acétylcholine est un neurotransmetteur excitateur</span></b></td></tr>
+<tr><td><b>Expérience 4</b></td><td>l’injection de l’acétylcholine dans le sarcoplasme n’engendre pas la naissance des potentiels d’action musculaire</td><td><b><span class="t-green">Les récepteurs de l’acétylcholine sont localisés à la surface de la membrane postsynaptique</span></b></td></tr>
+</table>
+<p class="subhead t-red"><b>Les étapes de la transmission neuromusculaire :</b></p>
+<!-- CROP: 4918 1 26 0.535 0.688 0.935 0.918 4918_p26_transmission_neuromusculaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p26_transmission_neuromusculaire.png" alt=""></figure>
+<ol class="qn">
+<li>Arrivée du potentiel d’action au niveau de la terminaison nerveuse ;</li>
+<li>Entrée massive d’ions Ca <sup>2+</sup> à travers la membrane présynaptique par l’ouverture des CVD Ca<sup>++</sup></li>
+<li>Libération par exocytose, dans la fente synaptique de l’acétylcholine</li>
+<li>Fixation de l’acétylcholine sur les récepteurs spécifiques de la membrane postsynaptique ce qui entraine l’ouverture des CCD Na<sup>+</sup></li>
+<li>Entrée massive de Na<sup>+</sup> qui déclenche la dépolarisation de la membrane postsynaptique : <span class="t-red">P</span>otentiel de la <span class="t-red">P</span>laque <span class="t-red">M</span>otrice <b><span class="t-red">(PPM)</span></b> qui atteint le seuil.</li>
+<li>Naissance d’un potentiel d’action musculaire</li>
+<li>Hydrolyse de l’acétylcholine par une enzyme, l’acétylcholinestérase</li>
+</ol>
+<!-- page 27 -->
+<p class="subhead t-red">III- Comparaison entre la synapse neuroneuronique et la synapse neuromusculaire</p>
+<table>
+<tr><th colspan="2">Caractéristiques</th><th>Synapse neuroneuronique</th><th>Synapse neuromusculaire</th></tr>
+<tr><td colspan="2"><b>Structurales</b></td><td><!-- CROP: 4918 1 27 0.388 0.086 0.622 0.200 4918_p27_synapse_neuroneuronique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p27_synapse_neuroneuronique.png" alt=""></figure>Absence de l’appareil sous neural</td><td><!-- CROP: 4918 1 27 0.665 0.100 0.868 0.207 4918_p27_synapse_neuromusculaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p27_synapse_neuromusculaire.png" alt=""></figure>présence de l’appareil sous neural</td></tr>
+<tr><td rowspan="4"><b>Fonctionnelles</b></td><td><b>Nature</b></td><td>Excitatrice ou inhibitrice</td><td>Excitatrice</td></tr>
+<tr><td><b>Types du neurotransmetteur</b></td><td>Plusieurs types (Ach , GABA)</td><td>Acétylcholine (Ach)</td></tr>
+<tr><td><b>Types de réponses postsynaptiques</b></td><td>PPSE et PPSI</td><td>Potentiel d’action</td></tr>
+<tr><td><b>Condition de naissance d’un PA postsynaptique</b></td><td>Sommation spatio-temporelle</td><td>Sans sommation</td></tr>
+</table>
+<table>
+<tr><th></th><th>Synapse neuroneuronique</th><th>Synapse neuromusculaire</th></tr>
+<tr><td>Particularités structurales</td><td>* Bouton n’est pas enfoncé dans l’élément postsynaptique<br>* Membrane postsynaptique épaisse et non plissée</td><td>* Bouton enfoncé dans l’élément postsynaptique<br>* Membrane postsynaptique fortement plissée (appareil sous neural)</td></tr>
+<tr><td>Particularités fonctionnelles</td><td>* Neurotransmetteur qui peut varier  d’une synapse à une autre<br>* La synapse peut être inhibitrice ou excitatrice<br>* Absence de CVD à Na+ et CVD à K+</td><td>* 1 seul neurotransmetteur l’acétylcholine<br>* La synapse est toujours excitatrice<br>* Présence de CVD à Na+ et K+ ⇨le PA né au niveau de la membrane postsynaptique</td></tr>
+</table>
+<p class="subhead t-red"><b>ÉTUDE DE LA CONTRACTION MUSCULAIRE</b></p>
+<p class="subhead t-red">I- Rapport entre le potentiel d’action musculaire et la contraction  musculaire</p>
+<!-- CROP: 4918 1 27 0.210 0.655 0.815 0.895 4918_p27_electromyogramme_myogramme -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p27_electromyogramme_myogramme.png" alt=""></figure>
+<!-- page 28 -->
+<table>
+<tr><th>Analyse des tracés</th><th>Déduction</th></tr>
+<tr><td>La stimulation efficace appliquée sur le muscle entraine un potentiel d’action accompagné d’une secousse musculaire qui comprend trois phases :<ul class="dash"><li>L = phase de latence</li><li>C = phase de contraction d’amplitude A</li><li>R = phase de relâchement</li></ul></td><td><b><span class="t-red">Le muscle est <u>excitable</u> et <u>contractile</u></span></b></td></tr>
+<tr><td>Le potentiel d’ action musculaire précède  la  contraction, il se situe dans la phase de latence  L</td><td><b>Le  potentiel  d’action  musculaire provoque la contraction de la fibre musculaire.</b></td></tr>
+</table>
+<p class="subhead t-red">II- Les manifestations thermiques de la contraction muscul</p>
+<!-- PROOFREAD: 4918 part1 p28 — title printed ending "muscul" (truncated on the page) -->
+<!-- CROP: 4918 1 28 0.135 0.330 0.880 0.505 4918_p28_energie_thermique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p28_energie_thermique.png" alt=""></figure>
+<p class="para"><b>Enregistrement de l’énergie thermique de la contraction musculaire</b></p>
+<table>
+<tr><th>Analyse des résultats</th><th>Hypothèse proposée</th></tr>
+<tr><td><ul class="b"><li>la chaleur dégagée par le muscle se fait en deux temps :</li></ul>
+<ul class="dash"><li>une <b>chaleur initiale</b> qui se dégage pendant la secousse</li><li>une <b>chaleur retardée</b> qui se dégage lentement après la secousse</li></ul>
+<ul class="b"><li>la chaleur initiale comprend deux types :</li></ul>
+<ul class="dash"><li>une <b>chaleur de contraction</b></li><li>une <b>chaleur de relâchement</b></li></ul></td><td><b>Le  muscle  est  le  siège  des réactions métaboliques qui sont à  l’origine  de  manifestation thermique</b></td></tr>
+</table>
+<p class="subhead t-red">III- Origine d’énergie nécessaire pour la contraction</p>
+<p class="para"><b>*source immédiate : hydrolyse de la molécule d’ATP</b></p>
+<p class="para"><b><span class="t-blue">ATP + H<sub>2</sub>O —Myosine ATPase / Ca<sup>2+</sup>→ ADP + Pi + Energie</span></b></p>
+<p class="para"><b><span class="t-red">↗ énergie mécanique</span></b><br><b><span class="t-red">↘ chaleur initiale de contraction</span></b></p>
+<!-- page 29 -->
+<p class="subhead t-red"><b>ques de la régénération d’ATP</b></p>
+<!-- PROOFREAD: 4918 part1 p29 — title cut by the top edge of the photo, only "…ques de la régénération d’ATP" visible -->
+<p class="subhead t-navy"><b>*Voie métabolique rapide</b></p>
+<p class="para"><b><span class="t-blue">Moins de 30 s</span></b> <span class="t-red">après</span> une contraction, <u><span class="t-red">deux réactions de régénération de l’ATP</span></u> se produisent :</p>
+<p class="para"><b>* ADP+PC (phosphocréatine)    ⇨    ATP +C (créatine) + <span class="t-red">chaleur initiale de relâchement</span></b><br><b><span class="t-red">Créatine kinase</span></b></p>
+<p class="para"><b>* ADP + ADP    ⇨    ATP  +  AMP</b><br><b><span class="t-red">Myokinase</span></b></p>
+<p class="subhead t-navy"><b>*Voie métabolique lente</b></p>
+<p class="para"><b>La fibre musculaire</b> contient d’importantes réserves de glycogène qui fournissent du <span class="t-red">glucose phosphorylé</span> (glucose~P). Le glucose~P donne deux molécules d’acide pyruvique (molécule en C3) avec production de <span class="t-red">deux ATP</span> c’est la <span class="t-red">glycolyse</span> :</p>
+<p class="para"><b>Glucose~P    ⇨    2 acides pyruviques + <span class="t-red">2 ATP</span></b></p>
+<p class="para"><b><u>Deux cas peuvent se présenter :</u></b></p>
+<table>
+<tr><td><b>* En présence de dioxygène</b>, l’acide pyruvique est oxydé complètement dans les <span class="t-red">mitochondries</span> pour former beaucoup d’ATP (18 ATP par acide pyruvique dégradé)  avec libération de CO<sub>2</sub>, d’eau et de chaleur retardée : c’est la <b><span class="t-red">respiration cellulaire</span></b> qui se déroule selon la réaction suivante:<br><b>Acide pyruvique + O<sub>2</sub>    ⇨    H<sub>2</sub>O + CO<sub>2</sub> + 18 ATP +</b><br><b><span class="t-red">chaleur retardée</span></b></td>
+<td><b>* Si le dioxygène devient insuffisant</b>, l’ATP provenant de la respiration devient insuffisant (l’acide pyruvique est réduit en acide lactique) :<span class="t-red">fermentation lactique</span><br><b>2 acides pyruviques ⇨ 2 acides lactiques</b></td></tr>
+</table>
+<p class="para"><b>N.B :</b> L’accumulation de l’acide lactique gène la contraction, ce qui entraine la <b><span class="t-red">fatigue musculaire</span></b>.</p>
+<p class="subhead t-red">IV- Mécanisme de la contraction</p>
+<p class="subhead t-navy"><b>1) Mécanique de la contraction</b></p>
+<table>
+<tr><th>Comparaison des sarcomères</th><th>Déduction</th><th></th></tr>
+<tr><td><ul class="dash"><li>Les filaments d’actine et de myosine gardent la même taille</li><li>une constance des disques sombres (inchangés)</li><li>une réduction de la longueur des disques clairs</li><li>un rétrécissement de la bande H</li></ul></td>
+<td><span class="t-red">La contraction se traduit par un raccourcissement du sarcomère le raccourcissement résulte d’un glissement des myofilaments d’actine par rapport aux myofilaments de myosine.<br>L’énergie servant au glissement  des filaments d’actine entre les filaments de myosine provient de l’hydrolyse de l’ATP (conversion de l’énergie chimique en énergie mécanique)</span></td>
+<td><!-- CROP: 4918 1 29 0.500 0.590 0.950 0.872 4918_p29_sarcomere_repos_contracte -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p29_sarcomere_repos_contracte.png" alt=""></figure></td></tr>
+</table>
+<!-- page 30 -->
+<p class="subhead t-navy"><b><span class="t-green">2) Conversion de l’énergie chimique (ATP) en énergi mécanique (contraction)</span></b></p>
+<!-- PROOFREAD: 4918 part1 p30 — "énergi" cut by the page edge (last letters not visible) -->
+<!-- CROP: 4918 1 30 0.100 0.130 0.885 0.428 4918_p30_mecanisme_contraction -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p30_mecanisme_contraction.png" alt=""></figure>
+<p class="para">-Naissance et propagation d’un potentiel d’action musculaire à travers les tubules transverses jusqu’au réticulum endoplasmique riche en ions Ca<sup>++</sup>.</p>
+<p class="para">-Libération des ions Ca<sup>++</sup>  dans le sarcoplasme assurant le démasquage des sites d’attachement de  la myosine sur l’actine.</p>
+<p class="para">-La fixation du complexe ATP-myosine sur l’actine. Cette fixation active la propriété ATPasique de la myosine.</p>
+<p class="para">-L’hydrolyse de  l’ATP et libération de l’énergie.</p>
+<p class="para">-Le pivotement des têtes des molécules de myosine ce qui entraine le glissement des filaments d’actine: c’est <span class="t-red">la contraction</span></p>
+<p class="para">-La fixation d’une nouvelle molécule d’ATP provoque la séparation de la myosine de l’actine.</p>
+<p class="para">-Les ions Ca<sup>++</sup> sont  de nouveau accumulés dans le réticulum par transport actif et le muscle revient à son état initial: c’est <span class="t-green">le relâchement</span></p>
+<!-- page 31 -->
+
+<div class="chtag"><span>Chapitre</span> Régulation de la pression artérielle</div>
+
+<p class="subhead t-navy"><b>CHAPITRE 4 : RÉGULATION DE LA PRESSION ARTÉRIELLE</b></p>
+<p class="subhead t-red"><b>ETUDE DE LA REGULATION DE LAPRESSION ARTERIELLE</b></p>
+<p class="subhead t-red"><b>Définition de la pression artérielle</b></p>
+<p class="para">La pression (ou tension) artérielle, correspond à la <b><span class="t-red">pression</span></b> exercée par le <b><span class="t-blue">sang</span></b> sur la paroi interne des <b><span class="t-green">artères</span></b></p>
+<p class="subhead t-red">I- Les paramètres qui conditionnent la variation de la pression artérielle</p>
+<p class="para">- La pression artérielle est <b><span class="t-blue">conditionnée</span></b> par les paramètres suivants:</p>
+<!-- NOTE: handwritten Arabic words written next to the vasodilatation / vasoconstriction drawings not transcribed — annotations on the printed page -->
+<table>
+<tr><th colspan="3"><b>L’activité cardiaque</b> (rythme cardiaque)</th></tr>
+<tr><td>Cardio<span class="t-gold">modération</span></td><td>Rythme cardiaque normal</td><td>Cardio<span class="t-green">accélération</span></td></tr>
+<tr><td><span class="t-red">Hypo</span>tension</td><td>Pression artérielle normale</td><td><span class="t-green">Hyper</span>tension</td></tr>
+<tr><th colspan="3"><b>La vasomotricité</b> (calibre de l’artère)</th></tr>
+<tr><td>vaso<span class="t-gold">dilatation</span><!-- CROP: 4918 1 31 0.140 0.355 0.305 0.468 4918_p31_vasodilatation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p31_vasodilatation.png" alt=""></figure></td><td>Vasomotricité  normale<!-- CROP: 4918 1 31 0.415 0.355 0.635 0.462 4918_p31_vasomotricite_normale -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p31_vasomotricite_normale.png" alt=""></figure></td><td>vaso<span class="t-gold">constriction</span><!-- CROP: 4918 1 31 0.680 0.370 0.820 0.452 4918_p31_vasoconstriction -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p31_vasoconstriction.png" alt=""></figure></td></tr>
+<tr><td><span class="t-red">Hypo</span>tension</td><td>Pression artérielle normale</td><td><span class="t-green">Hyper</span>tension</td></tr>
+<tr><th colspan="3"><b>volémie</b> (volume du sang dans le système vasculaire)</th></tr>
+<tr><td><span class="t-red">Hypo</span>volémie</td><td>Volémie normale</td><td><span class="t-green">Hyper</span>volémie</td></tr>
+<tr><td><span class="t-red">Hypo</span>tension</td><td>Pression artérielle normale</td><td><span class="t-green">Hyper</span>tension</td></tr>
+</table>
+<p class="subhead t-red">II-Mesure de la pression artérielle</p>
+<!-- CROP: 4918 1 31 0.080 0.585 0.930 0.722 4918_p31_pression_systolique_diastolique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p31_pression_systolique_diastolique.png" alt=""></figure>
+<!-- page 32 -->
+<!-- NOTE: handwritten words at the top of the page (annotation) not transcribed -->
+<p class="subhead t-red">III-  Etude de la régulation nerveuse de la pression artérielle.</p>
+<p class="subhead t-navy"><b>1) Innervation du système cardiovasculaire</b></p>
+<!-- CROP: 4918 1 32 0.100 0.180 0.635 0.508 4918_p32_innervation_cardiovasculaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p32_innervation_cardiovasculaire.png" alt=""></figure>
+<div class="data">
+<p class="para">1- nerf de Héring<br>2- nerf de Cyon<br>3- nerf parasympathique cardiaque (nerf X)<br>4- nerf orthosympathique cardiaque<br>5- nerf orthosympathique artériolaire  } <span class="t-red">Système neurovégétatif</span></p>
+<p class="para">6- centre bulbaire sensitif<br>7- centre vasomoteur<br>8- noyau moteur de X<br>9- centre médullaire  } <span class="t-blue">Centres nerveux</span></p>
+<p class="para">10- sinus carotidien<br>11- crosse aortique</p>
+</div>
+<p class="subhead t-navy"><b>2) Rôle du sinus carotidien et de la crosse aortique</b></p>
+<!-- CROP: 4918 1 32 0.120 0.565 0.890 0.752 4918_p32_sinus_carotidien_enregistrements -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p32_sinus_carotidien_enregistrements.png" alt=""></figure>
+<table>
+<tr><th>Exploitation des enregistrements</th><th>Déduction</th></tr>
+<tr><td>La fréquence des potentiels d’action véhiculés par le nerf de Héring est <b><span class="t-blue">proportionnelle</span></b> à la valeur de la pression artérielle dans le sinus carotidien</td><td><b>Au niveau du sinus carotidien il y a des récepteurs sensoriels qui assurent la <span class="t-red">transduction</span> de la pression artérielle en message nerveux codé en modulation de fréquence, il s’agit des <span class="t-blue">barorécepteurs</span></b></td></tr>
+</table>
+<!-- page 33 -->
+<p class="subhead t-navy"><b>3) Rôle du système neurovégétatif</b></p>
+<!-- PROOFREAD: 4918 part1 p33 — "Stimulation du BC / BP" blurred, some occurrences may read "Simulation" -->
+<table>
+<tr><th rowspan="2">Expériences</th><th colspan="2" rowspan="2">Conditions expérimentales</th><th colspan="2">Résultats enregistrés</th></tr>
+<tr><th>Rythme cardiaque</th><th>Vasomotricité</th></tr>
+<tr><td>1</td><td colspan="2">Animal intact</td><td>Normal</td><td>Normale</td></tr>
+<tr><td rowspan="3">2</td><td rowspan="3">Nerf de Héring et de Cyon</td><td>Section</td><td>cardioaccélération</td><td>vasoconstriction</td></tr>
+<tr><td>Stimulation du BC</td><td>cardiomodération</td><td>vasodilatation</td></tr>
+<tr><td>Stimulation du BP</td><td>pas d’effet</td><td>pas d’effet</td></tr>
+<tr><td rowspan="3">3</td><td rowspan="3">Nerf parasympathique cardiaque (nerf X)</td><td>Section</td><td>cardioaccélération</td><td rowspan="3">pas d’effet</td></tr>
+<tr><td>Stimulation du BC</td><td>pas d’effet</td></tr>
+<tr><td>Stimulation du BP</td><td>cardiomodération</td></tr>
+<tr><td rowspan="3">4</td><td rowspan="3">Nerf orthosympathique cardiaque</td><td>Section</td><td>cardiomodération</td><td rowspan="3">pas d’effet</td></tr>
+<tr><td>Stimulation du BC</td><td>pas d’effet</td></tr>
+<tr><td>Stimulation du BP</td><td>cardioaccélération</td></tr>
+<tr><td rowspan="3">5</td><td rowspan="3">Nerf orthosympathique artériolaire</td><td>Section</td><td rowspan="3">pas d’effet</td><td>vasodilatation</td></tr>
+<tr><td>Stimulation du BC</td><td>pas d’effet</td></tr>
+<tr><td>Stimulation du BP</td><td>vasoconstriction</td></tr>
+</table>
+<table>
+<tr><td><b>nerf de Héring et nerf de Cyon :</b><br>- cardiomodérateurs<br>- vasodilatateurs<br><b><span class="t-gold">Nerfs dépresseurs</span></b><br><b><span class="t-green">voie sensitive</span></b></td>
+<td><b>nerf parasympathique cardiaque (nerf X) :</b><br>- cardiomodérateur<br>sans effet sur la vasomotricité<br><b><span class="t-red">voie motrice</span></b></td></tr>
+<tr><td><b>nerf orthosympathique cardiaque :</b><br>- cardioaccélérateur<br>- sans effet sur la vasomotricité<br>- <b><span class="t-red">voie motrice</span></b></td>
+<td><b>nerf orthosympathique artériolaire :</b><br>- sans effet sur le rythme cardiaque<br>- vasoconstricteur<br><b><span class="t-red">voie motrice</span></b></td></tr>
+</table>
+<p class="subhead t-navy"><b>4) Mode d’action du système neurovégétatif sur le cœur</b></p>
+<!-- CROP: 4918 1 33 0.245 0.518 0.720 0.752 4918_p33_experience_loewi -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p33_experience_loewi.png" alt=""></figure>
+<table>
+<tr><th><span class="t-red">Exploitation des résultats</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td><ul class="dash"><li>La stimulation du nerf parasympathique du cœur de la grenouille 1 entraine un ralentissement cardiaque</li><li>avec un retard par rapport au cœur de la grenouille 1, il ralentissement cardiaque du cœur de la grenouille 2 dénervé</li></ul></td>
+<td><b>Les terminaisons nerveuses des fibres du nerf X (nerf parasympathique) du cœur de grenouille 1 libèrent une substance <span class="t-red">cardiomodératrice</span> appelée <span class="t-red">acétylcholine</span>, cette dernière passe par transfert de fluide vers le cœur de la grenouille 2 et entraine une cardiomodération</b></td></tr>
+</table>
+<!-- page 34 -->
+<p class="para"><b>N.B : Les terminaisons nerveuses des fibres des nerfs orthosympathiques cardiaque et vasomoteur libèrent une substance <span class="t-green">cardioaccélératrice</span> et <span class="t-green">vasoconstrictrice</span> appelée <span class="t-green">noradrénaline</span>.</b></p>
+<p class="subhead t-navy"><b>Rôle des centres nerveux et bulbaire et médullaire</b></p>
+<table>
+<tr><th colspan="2">Expériences réalisées</th><th colspan="2">Résultats enregistrés</th></tr>
+<tr><td>1</td><td>Animal intact normal</td><td colspan="2">pression artérielle de l’ordre de 120 mm Hg</td></tr>
+<tr><td rowspan="2">2</td><td rowspan="2">Stimulation du centre bulbaire sensitif</td><td colspan="2">pression artérielle de l’ordre de 80 mm Hg</td></tr>
+<tr><td>Activation du noyau moteur de X</td><td>inhibition du centre vasomoteur</td></tr>
+<tr><td>3</td><td>Stimulation de la zone médullaire</td><td colspan="2">pression artérielle de l’ordre de 140 mm Hg</td></tr>
+</table>
+<table>
+<tr><th colspan="2"><span class="t-red">Exploitation des résultats</span></th><th><span class="t-red">Déduction</span></th></tr>
+<tr><td rowspan="2">2</td><td rowspan="2">La stimulation du centre bulbaire sensitif entraine une chute de la pression artérielle accompagnée d’une activation du noyau moteur de X et d’une inhibition du centre vasomoteur</td><td><b>Le centre bulbaire sensitif est hypotenseur</b></td></tr>
+<tr><td><ul class="dash"><li><b>L’interneurone situé entre le centre bulbaire sensitif et le noyau moteur de X est <span class="t-red">excitateur</span></b></li><li><b>L’interneurone situé entre le centre bulbaire sensitif et le centre vasomoteur est <span class="t-blue">inhibiteur</span></b></li></ul><b>→ il s’agit d’une <span class="t-red">innervation réciproque</span></b></td></tr>
+<tr><td>3</td><td>La stimulation de la zone médullaire entraine une augmentation de la pression artérielle</td><td><b><span class="t-blue">Le centre médullaire est hypertenseur</span></b></td></tr>
+</table>
+<p class="subhead t-navy"><b>5) Conclusion générale</b></p>
+<p class="para">La régulation nerveuse de la pression artérielle nécessite les structures suivantes:</p>
+<p class="para">- <b><span class="t-red">Récepteurs sensoriels:</span></b> il s’agit des <b><span class="t-red">barorécepteurs</span></b> carotidiens et aortiques</p>
+<p class="para">- <b><span class="t-red">Voie sensitive:</span></b> il s’agit des <b><span class="t-red">nerfs dépresseurs</span></b> ( nerf de Héring et nerf de Cyon)</p>
+<p class="para">-<b><span class="t-red">Centres nerveux:</span></b> il s’agit du centre bulbaire hypotenseur et du centre médullaire hypertenseur</p>
+<p class="para">-<b><span class="t-red">Voie motrice:</span></b></p>
+<p class="para">+ nerf parasympathique (nerf X= pneumogastrique) <b><span class="t-red">cardiomodérateur</span></b><br>+ nerf sympathique cardiaque <span class="t-green">cardioaccélerateur</span><br>+ nerf sympathique vasomoteur <b><span class="t-blue">vasoconstricteur</span></b></p>
+<p class="para">- <b><span class="t-red">Organes effecteurs :</span></b> il s’agit du cœur et des vaisseaux sanguins</p>
+<p class="para"><b><span class="t-red">Donc la régulation nerveuse de la pression artérielle est de <u><span class="t-blue">type</span></u>   réflexe.</span></b></p>
+<!-- page 35 -->
+<p class="subhead t-navy"><b>6) Les réflexes régulateurs de la pression artérielle</b></p>
+<p class="subhead t-red"><b>A- Schéma fonctionnel commenté du réflexe correcteur de l’hypertension suite à une course</b></p>
+<p class="subhead t-navy"><b>Schéma fonctionnel :</b></p>
+<!-- CROP: 4918 1 35 0.095 0.125 0.925 0.552 4918_p35_schema_fonctionnel_hypertension -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p35_schema_fonctionnel_hypertension.png" alt=""></figure>
+<p class="subhead t-navy"><b><i>Commentaire</i></b></p>
+<p class="para"><b><span class="t-blue">L’augmentation de la pression artérielle</span> au niveau du <span class="t-red">sinus carotidien</span> et de la <span class="t-red">crosse aortique</span> est détectée par les <span class="t-red">barorécepteurs</span> ce qui <span class="t-red">augmente la fréquence des potentiels d’action</span> dans les nerfs de <span class="t-red">Cyon</span> et de <span class="t-red">Héring</span>. <span class="t-blue">Ce message sensitif</span> active le <span class="t-red">centre bulbaire cardiomodérateur</span> qui envoie un <span class="t-red">message modérateur</span> vers le <span class="t-red">cœur</span> par l’intermédiaire du nerf X, ce qui entraine un <span class="t-red">ralentissement cardiaque</span>.</b><br>
+<b><span class="t-blue">Le même message sensitif</span> <span class="t-red">stimule l’interneurone inhibiteur</span> qui <span class="t-red">inhibe</span> les neurones du <span class="t-red">centre vasomoteur</span> ⇨ <span class="t-red">inhibition du centre médullaire</span> (orthosympathiques) ce qui entraîne une <span class="t-red">vasodilatation</span>.</b><br>
+<b>⇨ Le <span class="t-red">ralentissement cardiaque</span> et la <span class="t-red">vasodilatation</span> corrigent l’hypertension et ramènent la pression artérielle à sa valeur normale.</b></p>
+<!-- page 36 -->
+<p class="subhead t-red"><b>B- Schéma fonctionnel commenté du réflexe correc l’hypotension suite à une hémorragie.</b></p>
+<!-- PROOFREAD: 4918 part1 p36 — end of the first title line cut by the photo edge after "réflexe correc…" (rest of the line not visible) -->
+<p class="subhead t-navy"><b>Schéma fonctionnel :</b></p>
+<!-- CROP: 4918 1 36 0.055 0.075 0.825 0.508 4918_p36_schema_fonctionnel_hypotension -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p36_schema_fonctionnel_hypotension.png" alt=""></figure>
+<p class="subhead t-navy"><b><i>Commentaire</i></b></p>
+<p class="para"><b><span class="t-blue">Dans le cas d’une baisse de la pression artérielle (hypotension)</span>, dans le <span class="t-red">sinus carotidien</span> et de la <span class="t-red">crosse aortique</span>, suite à une hémorragie par exemple, <span class="t-red">la fréquence des potentiels d’action</span> parcourant les nerfs <span class="t-red">sensitifs de Héring</span> et de <span class="t-red">Cyon</span> devient <span class="t-red">très faible</span>. <span class="t-green">L’inhibition du centre vasomoteur par le centre cardiomodérateur est levée</span>. Il envoie alors, par les fibres <span class="t-red">orthosympathiques</span> un <span class="t-red">message stimulateur</span> au cœur qui <span class="t-red">accélère son rythme</span> et provoque également la <span class="t-red">vasoconstriction</span>.</b><br>
+<b>Il stimule aussi la <span class="t-red">médullosurrénale</span> par l’intermédiaire du <span class="t-red">nerf splanchnique</span>. Cette glande libère une hormone, l’<span class="t-red">adrénaline</span> qui provoque la <span class="t-red">vasoconstriction</span> et <span class="t-red">l’accélération du rythme cardiaque</span>.</b><br>
+<b>⇨Ces deux effets, <span class="t-red">vasoconstriction</span> et <span class="t-red">accélération du rythme cardiaque</span>, corrigent l’hypotension initiale et ramenent la pression artérielle à sa valeur normale</b></p>
+<!-- page 37 -->
+<p class="subhead t-red">ormonale   de la pression artérielle</p>
+<!-- PROOFREAD: 4918 part1 p37 — start of this title cut by the top edge of the photo, only "…ormonale   de la pression artérielle" readable -->
+<p class="subhead t-navy"><b>1) L’effet de l’hormone adrénaline</b></p>
+<p class="para">En cas d’hypotension le centre <b><span class="t-blue">vasomoteur activé stimule</span></b> la <b><span class="t-blue">médullosurrénale</span></b> par l’intermédiaire du nerf <b><span class="t-blue">splanchnique</span></b>; cette glande sécrète une hormone, l’<b><span class="t-blue">adrénaline</span></b> qui provoque la <b><span class="t-blue">vasoconstriction</span></b> et la <b><span class="t-blue">cardioaccélération</span></b></p>
+<!-- CROP: 4918 1 37 0.075 0.108 0.465 0.318 4918_p37_glande_surrenale -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p37_glande_surrenale.png" alt=""></figure>
+<!-- CROP: 4918 1 37 0.570 0.118 0.865 0.345 4918_p37_nerf_splanchnique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p37_nerf_splanchnique.png" alt=""></figure>
+<p class="subhead t-navy"><b>2) L’effet du système rénine – angiotensine - aldostérone</b></p>
+<!-- CROP: 4918 1 37 0.135 0.368 0.945 0.775 4918_p37_renine_angiotensine_aldosterone -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p37_renine_angiotensine_aldosterone.png" alt=""></figure>
+<p class="subhead t-navy"><b>3) L’effet de l’hormone antidiurétique (ADH)</b></p>
+<p class="para"><b>L’hypothalamus possède des neurones sécréteurs produisant des neurohormones.<br>L’une d’elles, appelée vasopressine ou hormone antidiurétique <span class="t-red">(ADH)</span> diminue l’élimination d’eau par les reins.<br>Elle contribue à <span class="t-red">augmenter la volémie</span>, et donc la pression artérielle</b></p>
+<!-- CROP: 4918 1 37 0.665 0.830 0.925 0.982 4918_p37_adh -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4918/4918_p37_adh.png" alt=""></figure>
+<!-- page 38 -->
+<p class="para"><b>N.B :</b> <b>Les mécanismes (nerveux et hormonal) de régulation de la pression artérielle ne sont pas totalement indépendants les uns des autres. Ils interviennent le plus souvent ensemble dans une réponse intégrée: c’est l’<span class="t-blue">intégration neurohormonale</span>.</b></p>
+<p class="para"><b>-La régulation à <u><span class="t-red">court terme</span></u> qui assure un contrôle immédiat des variations de pression, met surtout en jeu <u><span class="t-red">le système nerveux</span></u>.</b></p>
+<p class="para"><b>-La régulation à <u><span class="t-green">moyen ou à long terme</span></u> n’entre en jeu que si la variation de pression se maintient pendant un certain temps, met en jeu <u><span class="t-green">le système hormonal</span></u></b></p>
+<p class="subhead t-red"><b>*Les maladies cardiovasculaires</b></p>
+<table>
+<tr><th colspan="2">Affections cardiaques</th><th>Caractéristiques</th><th>Causes</th></tr>
+<tr><td rowspan="2">Les cardiopathies ischémiques</td><td><b>L’angine de poitrine</b></td><td>Douleurs aigues à la poitrine.</td><td>Rétrécissement de la lumière des coronaires.</td></tr>
+<tr><td><b>L’infarctus du myocarde</b></td><td>Douleurs thoraciques prolongées</td><td>Occlusion coronarienne aigue due à l’évolution d’une plaque athérosclérose.</td></tr>
+</table>
+<table>
+<tr><th>Affections vasculaires</th><th>Caractéristiques</th><th>Causes</th></tr>
+<tr><td><b>L’athérosclérose :</b> atteintes de l’aorte abdominale, des artères coronaires, des artères des membres inférieurs (artérites) et des artères carotides.</td><td>Accumulation de graisses amorphes, de cellules dégénérées et de débris de tissus formant des plaques (athérome) dans les parois internes des artères.</td><td>- Traumatisme de la paroi artérielle,<br>-  Substances mutagènes contenues dans le tabac,<br>- Graisses saturées d’origine animale.</td></tr>
+</table>
+<p class="subhead t-red"><b>*La prévention des maladies  cardiovasculaires</b></p>
+<p class="para">La promotion de la santé du cœur et des vaisseaux passe par le renforcement des comportements positifs regroupés autour de quatre axes :</p>
+<ul class="b">
+<li>Adopter de bonnes habitudes alimentaires</li>
+<li>Eradiquer le tabagisme</li>
+<li>Pratiquer régulièrement une activité physique</li>
+<li>Gérer son stress et apaiser ses tensions</li>
+</ul>
+
+</section>
+
+</div>
+</body>
+</html>

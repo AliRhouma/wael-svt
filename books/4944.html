@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Magazine+séries+devoirs — série réflexe myotatique</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4944">
+<meta data-pagefind-meta="title[content]" content="Magazine+séries+devoirs — série réflexe myotatique">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Génétique humaine">
+<meta data-pagefind-filter="chapter[content]" content="Muscle squelettique (contraction)">
+<meta data-pagefind-filter="chapter[content]" content="Procréation (fécondation, nidation, maîtrise)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Magazine+séries+devoirs — série réflexe myotatique" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Magazine+séries+devoirs — série réflexe myotatique</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">SBK · Website : www.TakiAcademy.com</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1k-sO2hPYrKMhomloIRAikG_XBcddvF99/view">↗ 65.._Série 20 Réflexe myotatique (26-01-20120).pdf</a> <a href="https://drive.google.com/file/d/14_x_CzXlw92jISrmdNB8f_QazG_Hd8mg/view">↗ 72.._Série 22 Réflexe myotatique (09-02-20120).pdf</a> <a href="https://drive.google.com/file/d/1GSmi0TE-ZaoL6qHA_yH2A26ZfKE34shW/view">↗ 26._Série 23 réflexe myotatique 17-02-2019.pdf</a> <a href="https://drive.google.com/file/d/1slSV98wOgOmDLcdN1CjqQvS_PHJCfIuU/view">↗ 28._Série 24 réflexe myotatique 24-02-2019.pdf</a> <a href="https://drive.google.com/file/d/1EOEIG1iO_ksmGriXfbLE27a8pBTNoPI5/view">↗ 29._Série 25 réflexe myotatique 03-03-2019.pdf</a> <a href="https://drive.google.com/file/d/1gf3MZB8P-YUnVzZCubz226Blpiu0NRIE/view">↗ 67.._correction série 20 Réflexe myotatique (26-01-2020).pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (13)</b><ul><li><a href="https://drive.google.com/file/d/1k-sO2hPYrKMhomloIRAikG_XBcddvF99/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1u0Rod3Vbr6MMHW3LK9BsFToDS7GmCdch/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / SVT TakiAcademy (+100 PDF)</a></li><li><a href="https://drive.google.com/file/d/14_x_CzXlw92jISrmdNB8f_QazG_Hd8mg/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1zj0sBxfwYRVOw68ZDNsio89MDDCJILsZ/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / SVT TakiAcademy (+100 PDF)</a></li><li><a href="https://drive.google.com/file/d/1GSmi0TE-ZaoL6qHA_yH2A26ZfKE34shW/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/12iMnNla6MyLGEJZs01i95onyuiK6QEdU/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1Sr-kvnHN2x9Ql9Vzp7GoDQoc_s1eFryP/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1ubCHNzWWYRFclp500yaugLfU_3k-WTCb/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / SVT TakiAcademy (+100 PDF)</a></li><li><a href="https://drive.google.com/file/d/1iqn6V7JgdkAaBr7Dnkp6VCyhkRmk-zgp/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1slSV98wOgOmDLcdN1CjqQvS_PHJCfIuU/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1EOEIG1iO_ksmGriXfbLE27a8pBTNoPI5/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1gf3MZB8P-YUnVzZCubz226Blpiu0NRIE/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1rs6hj35gASFDz2JPWDthBeSmJTqAYUjB/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / SVT TakiAcademy (+100 PDF)</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: SBK · Website : www.TakiAcademy.com -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série 20 : Réflexe myotatique</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4944.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">SBK · Website : www.TakiAcademy.com</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1k-sO2hPYrKMhomloIRAikG_XBcddvF99/view">↗ 65.._Série 20 Réflexe myotatique (26-01-20120).pdf</a> <a href="https://drive.google.com/file/d/14_x_CzXlw92jISrmdNB8f_QazG_Hd8mg/view">↗ 72.._Série 22 Réflexe myotatique (09-02-20120).pdf</a> <a href="https://drive.google.com/file/d/1GSmi0TE-ZaoL6qHA_yH2A26ZfKE34shW/view">↗ 26._Série 23 réflexe myotatique 17-02-2019.pdf</a> <a href="https://drive.google.com/file/d/1slSV98wOgOmDLcdN1CjqQvS_PHJCfIuU/view">↗ 28._Série 24 réflexe myotatique 24-02-2019.pdf</a> <a href="https://drive.google.com/file/d/1EOEIG1iO_ksmGriXfbLE27a8pBTNoPI5/view">↗ 29._Série 25 réflexe myotatique 03-03-2019.pdf</a> <a href="https://drive.google.com/file/d/1gf3MZB8P-YUnVzZCubz226Blpiu0NRIE/view">↗ 67.._correction série 20 Réflexe myotatique (26-01-2020).pdf</a></div>
+
+
+<div class="exsub">65.._Série 20 Réflexe myotatique (26-01-20120)</div>
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-red"><b><i>Série 20 : Réflexe myotatique</i></b></span></p>
+<p class="para"><span class="t-blue"><i>26/01/2020</i></span></p>
+<div class="exsub">Exercice 1:</div>
+<p class="para"><b>1)</b> On se propose d'étudier les composants du tissu nerveux. Complétez la grille, en utilisant les définitions suivantes :</p>
+<table>
+<tr><td><b>1</b> - Ensemble de cellules.</td></tr>
+<tr><td><b>2</b> - Composant de la substance blanche.</td></tr>
+<tr><td><b>3</b> - Enveloppe des fibres nerveuses.</td></tr>
+<tr><td><b>4</b> - Elément localisé dans le crâne.</td></tr>
+<tr><td><b>5</b> - Voie afférente.</td></tr>
+<tr><td><b>6</b> - Ensemble d'organes.</td></tr>
+<tr><td><b>7</b> - Ensemble de fibres nerveuses.</td></tr>
+</table>
+<!-- CROP: 4944 1 1 0.180 0.433 0.842 0.757 4944_p1_01_grille -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p1_01_grille.png" alt=""></figure>
+<p class="para"><b>2) a)</b> Définissez le mot caché.<br>
+<b>b)</b> Précisez ses différents types.</p>
+<!-- page 02 -->
+<div class="exsub">Exercice 2 :</div>
+<p class="para"><b>A)</b> Le document 1 ci-dessous, est un schéma simplifié d'un neurone qui intervient dans le réflexe myotatique. Il est divisé en cinq parties selon leur emplacement dans le tissu nerveux.</p>
+<!-- CROP: 4944 1 2 0.129 0.285 0.886 0.507 4944_p1_02_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p1_02_doc1.png" alt=""></figure>
+<p class="para"><b>1)</b> Reconnaissez ce neurone et nommez ces différentes parties en reportant sur votre copie les lettres A, B, C, D, E et F en précisant leur emplacement respectif.<br>
+<b>B)</b> Le document 2 illustre les mouvements ioniques de <b>Na<sup>+</sup></b> et de <b>K<sup>+</sup></b> à travers trois structures A', B' et C' d'une portion de la membrane d'une fibre nerveuse.</p>
+<!-- CROP: 4944 1 2 0.135 0.643 0.846 0.920 4944_p1_02_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p1_02_doc2.png" alt=""></figure>
+<!-- page 03 -->
+<p class="para">2) Nommez les structures A', B' et C' du document 2.<br>
+3) Exploitez les informations dégagées du document 2 et vos connaissances en vue de<br>
+a- préciser les deux types de transports ioniques présents dans ce document ainsi que leurs effets.<br>
+b- déterminer l'état de la fibre nerveuse. Justifiez votre réponse.<br>
+4) Expliquez le résultat du blocage de :<br>
+a- la structure B' en absence de stimulation.<br>
+b- la structure C' suite à une stimulation efficace.</p>
+<div class="exsub">Exercice 3 :</div>
+<p class="para">Dans le but d'étudier certaines activités de la fibre nerveuse on réalise les expériences suivantes :</p>
+<ul class="b">
+<li>Au temps t<sub>1</sub>, on porte sur la fibre nerveuse une stimulation efficace.</li>
+<li>Au temps t<sub>5</sub>, on place la fibre nerveuse en présence des cyanures qui tuent la cellule.<br>
+Le document suivant montre les résultats des mesures des concentrations des ions Na<sup>+</sup> et K<sup>+</sup> à l'interieur de cette fibre :</li>
+</ul>
+<!-- CROP: 4944 1 3 0.198 0.529 0.804 0.793 4944_p1_03_graphe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p1_03_graphe.png" alt=""></figure>
+<p class="para">1) Identifiez C1 et C2.<br>
+2) Comment expliquez-vous la concentration des ions entre t<sub>0</sub> et t<sub>1</sub> ?</p>
+<!-- page 04 -->
+<p class="para">3) Nommez la ddp au temps t<sub>1</sub>.<br>
+4) Précisez, en le justifiant, la valeur de la ddp au temps t<sub>1</sub> ;t<sub>2</sub> ; t<sub>3</sub> et t<sub>4</sub>.<br>
+5) Représentez à l'aide d'un schéma clair et bien légendé, la structure de la membrane entre le temps t<sub>1</sub> et t<sub>2</sub> puis entre le t<sub>2</sub> et t<sub>3</sub>.<br>
+6) Décrivez l'activité de la membrane de la fibre qui est à l'origine des échanges ionique entre le temps t<sub>3</sub>et t<sub>4</sub>.<br>
+7) a- Expliquez les cause à l'origine de l'évolution de la concentration interne des ions Na<sup>+</sup> et K<sup>+</sup> entre t<sub>5</sub> et t<sub>6</sub>.</p>
+
+
+<div class="exsub">72.._Série 22 Réflexe myotatique (09-02-20120)</div>
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-red"><b><i>Série 22 : Réflexe myotatique</i></b></span></p>
+<p class="para"><span class="t-blue"><i>09/02/2020</i></span></p>
+<div class="exsub">Exercice 1 :</div>
+<p class="para">On se propose d'étudier quelques aspects de la communication nerveuse en considérant le montage théorique du document 1 suivant :</p>
+<!-- CROP: 4944 2 1 0.119 0.261 0.915 0.514 4944_p2_01_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p2_01_doc1.png" alt=""></figure>
+<p class="para"><b>I)</b> On applique sur la structure <b>A</b> trois étirements d'intensités <b>E1</b>, <b>E2</b> et <b>E3</b> telle que :<br>
+<b>E1 &lt; E2 &lt; E3</b>. Les enregistrements obtenus figurent dans le document 2 suivant :</p>
+<!-- CROP: 4944 2 1 0.119 0.566 0.892 0.836 4944_p2_01_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p2_01_doc2.png" alt=""></figure>
+<!-- page 02 -->
+<p class="para"><b>1)</b> Identifiez les structures A et D, les neurones B et C ainsi que les zones 1 et 2.<br>
+<b>2)</b> Analysez les enregistrements obtenus au niveau du neurone B, en vue de dégager :<br>
+<b>a)</b> la fonction de la structure <b>A</b>,<br>
+<b>b)</b> les propriétés des phénomènes électriques correspondants,<br>
+<b>c)</b> une caractéristique du message nerveux.<br>
+<b>3)</b> Expliquez, schéma a l'appui, la propagation du message nerveux dans la fibre du document (1) munie d'une structure A (document 1) active.<br>
+4) comparez, dans un tableau, les structures des deux zones 1 et 2 du document 1.</p>
+<p class="para"><b>II)</b> On s'intéresse maintenant à l'activité électrique du neurone <b>C</b>.<br>
+1) Analysez les enregistrements obtenus en <b>O<sub>4</sub></b> et <b>O<sub>5</sub></b> suite aux étirements <b>E<sub>2</sub></b> et <b>E<sub>3</sub></b> en vue d'expliquer les résultats obtenus.<br>
+<b>2)</b> On cherche à comprendre quelques aspects de l'activité de la <b>zone 1</b> à partir des expériences suivantes.<br>
+Les enregistrements sont visualisés au niveau des oscilloscopes <b>O<sub>3</sub></b> et <b>O<sub>4</sub></b>. (Document 4)<br>
+Le schéma du document 3 est un détail de cette zone.</p>
+<!-- CROP: 4944 2 2 0.631 0.328 0.958 0.483 4944_p2_02_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p2_02_doc3.png" alt=""></figure>
+<!-- CROP: 4944 2 2 0.119 0.497 0.878 0.746 4944_p2_02_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p2_02_doc4.png" alt=""></figure>
+<p class="para"><b>a)</b> Interprétez les résultats des expériences <b>a</b> et <b>b</b> ?<br>
+<b>b)</b> Analysez l'expérience <b>c</b> et proposez une hypothèse expliquant l'action de l'ésérine dans la zone F.<br>
+<b>c)</b> Quel enregistrement théorique prévoyez-vous en <b>O<sub>5</sub></b> dans l'expérience <b>c</b> ? Faites un schéma.</p>
+<!-- page 03 -->
+<p class="para"><b>III)</b> Dans le but de déterminer l'origine du tracé <b>S</b> enregistré en <b>O<sub>3</sub></b> lors de l'expérience <b>c (document</b> 4<b>),</b> on étudie l'état de la membrane cytoplasmique de la fibre <b>B</b> (voir document 5).</p>
+<!-- CROP: 4944 2 3 0.122 0.184 0.880 0.398 4944_p2_03_doc5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p2_03_doc5.png" alt=""></figure>
+<p class="para"><b><u>document 5</u></b></p>
+<p class="para"><b>1)</b> En exploitant les données du document 5 et vos connaissances, précisez, pour chaque phase du signal électrique <b>S</b>, l'origine ionique et le type de canaux ioniques mis en jeu. Justifiez votre réponse.<br>
+<b>2)</b> Le venin de certains scorpions comporte des neurotoxines qui inhibent le fonctionnement normal du système nerveux.<br>
+Pour déterminer le mode d'action de ce venin, on réalise les expériences suivantes :<br>
+<span class="t-blue"><b><i><u>Expérience 1</u></i></b></span> : sur le même dispositif du document 3 on applique :<br>
+- une première stimulation efficace, le neurone <b>B</b> étant normal ;<br>
+- une deuxième stimulation de même intensité que la première mais le neurone <b>B</b> a été préalablement traitée par du venin.<br>
+Le document 6 représente les résultats obtenus en <b>O<sub>3</sub></b><br>
+Le document 6 représente les résultats obtenus en <b>O<sub>3</sub></b> :</p>
+<!-- CROP: 4944 2 3 0.127 0.650 0.827 0.830 4944_p2_03_doc6 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p2_03_doc6.png" alt=""></figure>
+<p class="para"><b><u>document 6</u></b></p>
+<!-- page 04 -->
+<p class="para"><b>a-</b> Proposez deux hypothèses pouvant expliquer l'effet du venin sur la fibre nerveuse.<br>
+<span class="t-blue"><b><i><u>Expérience 2</u></i></b></span> : l'utilisation du venin marqué (radioactif) a montré que les molécules du poison se fixent uniquement sur le canal de type 2 du document 5.<br>
+<b>b-</b> En exploitant ces données, précisez l'hypothèse à retenir parmi celles proposées dans la réponse à la question précédente. Justifiez votre réponse.</p>
+<div class="exsub">Exercice 2 :</div>
+<p class="para">Chez l'homme un coup sec porté sur le tendon d'Achille entraine l'extension du pied (document 1)</p>
+<!-- CROP: 4944 2 4 0.118 0.373 0.880 0.677 4944_p2_04_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p2_04_doc1.png" alt=""></figure>
+<p class="para">1)Précisez, en justifiant votre réponse la nature de cette réaction,<br>
+2) Afin de préciser les circuits neuroniques impliqués dans cette réaction , on réalise une série d'expériences sur les neurones N1, N2 et N3 innervant les muscles M1 et M2 de certains sujets accidentés chez qui les sections S1, S2 et S3 peuvent être observées.<br>
+<b>NB</b>- Les trois sections ne peuvent pas être observées en même temps.</p>
+<!-- page 05 -->
+<table>
+<tr><th rowspan="2">Niveau de section</th><th colspan="2">S<sub>1</sub></th><th colspan="2">S<sub>2</sub></th><th colspan="2">S<sub>3</sub></th></tr>
+<tr><th>M<sub>1</sub></th><th>M<sub>2</sub></th><th>M<sub>1</sub></th><th>M<sub>2</sub></th><th>M<sub>1</sub></th><th>M<sub>2</sub></th></tr>
+<tr><td><b>Stimulation du bout central du neurone sectionné ( BC)</b></td><td>+</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td><b>Stimulation du bout périphérique du neurone sectionné ( BP)</b></td><td>-</td><td>-</td><td>+</td><td>-</td><td>-</td><td>+</td></tr>
+</table>
+<p class="para"><span class="t-red"><b>NB : + : contraction du muscle - : pas de contraction du muscle</b></span></p>
+<p class="para">Analysez ces résultats et que peut-on déduire à propos des types de ces trois neurones et nommer les.<br>
+3) Dans les muscles M1 et M2 on distingue plusieurs structures dont la structure F indiquée par le document 2</p>
+<!-- CROP: 4944 2 5 0.665 0.431 0.912 0.666 4944_p2_05_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p2_05_doc2.png" alt=""></figure>
+<p class="para">a- Légendez le document 2.<br>
+b- La variation de la fréquence des potentiels d'action qui se propagent le long de la fibre issue de la structure F est indiquée dans le tableau suivant :</p>
+<table>
+<tr><th><span class="t-red"><b><i>Longueur de la structure F</i></b></span></th><th>60mm</th><th>65 mm</th><th></th><th></th></tr>
+<tr><td><span class="t-red"><b><i>Fréquence des potentiels d'action propagés en 1 (doc 2)</i></b></span></td><td>30 /s</td><td>45/s</td><td>100/s</td><td>0/s</td></tr>
+</table>
+<p class="para"><span class="t-red"><b>NB- au repos la longueur de la structure f est 60mm</b></span></p>
+<p class="para">Exploitez ce tableau à fin d'identifier la structure F, indiquer à quelle catégorie ou type de récepteur appartient-elle ? et expliquez ses rôles dans l'élaboration de l'extension du pied suite au coup porté sur le tendon d'Achille.</p>
+<!-- page 06 -->
+<!-- NOTE: page 06 carries only decorative clip-art and the running footer — nothing to transcribe -->
+
+
+<div class="exsub">26._Série 23 réflexe myotatique 17-02-2019</div>
+<!-- page 01 -->
+<p class="subhead t-navy"><span class="t-blue"><i>Série 23 : neurophysiologie</i></span></p>
+<p class="para"><b><i>17/02/2019</i></b></p>
+<div class="exsub">Exercice 1 : (QCM)</div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes. Reportez sur votre copie, le numéro de chaque item et indiquez la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).</p>
+<p class="consigne"><b><u>NB-Toute réponse fausse annule la note attribuée à l'item considéré.</u></b></p>
+<p class="para"><span class="t-blue"><b>1) Un récepteur sensoriel :</b></span><br>
+a- est toujours localisé à la périphérie de l'organisme,<br>
+b- stimulé, il est le siège de la naissance d'un potentiel de récepteur,<br>
+c- envoie au centre nerveux un message codé en amplitude,<br>
+d- n'est sensible qu'a l'étirement.</p>
+<p class="para"><span class="t-blue"><b>2) La partie de la racine postérieure située entre le ganglion spinal et la moelle épinière comporte :</b></span><br>
+a- des axones,<br>
+b- des dendrites,<br>
+c- des axones et des dendrites,<br>
+d- une ou plusieurs synapses.</p>
+<p class="para"><span class="t-blue"><b>3) Au niveau d'une synapse :</b></span><br>
+a- l'arrivée d'un message nerveux au niveau du bouton synaptique provoque un accroissement de la perméabilité de la membrane aux ions Ca<sup>++</sup>,<br>
+b- les ions Ca<sup>++</sup> déclenchent le potentiel post synaptique,<br>
+c- la fixation d'une molécule du neurotransmetteur sur son récepteur est suffisante pour déclencher un PA,<br>
+d- le neurotransmetteur une fois son action est terminée, est libéré du site récepteur.</p>
+<p class="para"><span class="t-blue"><b>4) Un PPSE :</b></span><br>
+a- correspond à une hyperpolarisation de la membrane post synaptique,<br>
+b- ne modifie pas la polarisation membranaire post synaptique,<br>
+c- correspond à une dépolarisation de la membrane post synaptique,<br>
+d- rend plus facile la naissance d'un PA post synaptique.</p>
+<!-- page 02 -->
+<p class="para"><span class="t-blue"><b>5) Un neurotransmetteur donné :</b></span><br>
+a- est libéré au niveau de toutes les synapses neuro –neuroniques,<br>
+b- n'agit que sur certains neurones,<br>
+c- est synthétisé par tous les types de neurones,<br>
+d- agit toujours en déclenchant des PA post synaptiques.</p>
+<p class="para"><span class="t-blue"><b>6) Les potentiels locaux :</b></span><br>
+a- sont enregistrés lorsqu'on atteint le seuil de stimulation,<br>
+b- n'obéissent pas à la loi du tout ou rien,<br>
+c- diminuent d'amplitude en s'éloignant du lieu de stimulation,<br>
+d- sont des potentiels propageables.</p>
+<p class="para"><span class="t-blue"><b>7) Dans une cellule nerveuse au repos :</b></span><br>
+a- les ions Na<sup>+</sup> qui entrent et qui sortent ne sont pas à égalité,<br>
+b- la membrane plasmique présente à la fois un transport passif et un transport actif,<br>
+c- les canaux de fuite sont toujours fermés,<br>
+d-les canaux Na<sup>+</sup>et K<sup>+</sup> voltage dépendants sont ouverts.</p>
+<p class="para"><span class="t-blue"><b>8) La période réfractaire est une période :</b></span><br>
+a- d'inexcitabilité qui permet à la membrane de récupérer son PR,<br>
+b- pendant laquelle la membrane est dépolarisée,<br>
+c- pendant laquelle la membrane est hyper polarisée,<br>
+d- pendant laquelle les CVD Na<sup>+</sup> sont fermés.</p>
+<p class="para"><span class="t-blue"><b>9) Une chaîne neuronique est constituée de trois neurones : N<sub>1</sub> → N<sub>2</sub> →N<sub>3</sub>, en N<sub>3</sub> on a enregistré un PPSI :</b></span><br>
+a- le neurone N<sub>1</sub> est postsynaptique,<br>
+b- le neurone N<sub>2</sub> est excitateur,<br>
+c- le neurone N<sub>3</sub> est inhibé,<br>
+d- le neurone N<sub>2</sub> est inhibiteur.</p>
+<p class="para"><span class="t-blue"><b>10) Le délai synaptique est le temps mis par le message nerveux pour :</b></span><br>
+a- sauter d'un nœud de Ranvier à un autre,<br>
+b- parcourir la distance séparant les deux électrodes excitatrices,<br>
+c- parcourir la distance séparant le site transducteur du site générateur,<br>
+d- franchir une synapse.</p>
+<!-- page 03 -->
+<p class="para"><span class="t-blue"><b>11) Les canaux chimio-dépendants à K<sup>+</sup> se trouvent au niveau de la membrane :</b></span><br>
+a- post synaptique d'une synapse excitatrice,<br>
+b- post synaptique d'une synapse inhibitrice,<br>
+c- prèsynaptique d'une synapse inhibitrice,<br>
+d- prèsynaptique d'une synapse axo-axonique.</p>
+<p class="para"><span class="t-blue"><b>12) Sachant que la vitesse de propagation du message nerveux est de 50m/s et que le délai synaptique est de 0,5 ms : le temps nécessaire pour parcourir une portion d'un circuit neuronique de 30 cm comportant 4 synapses est de :</b></span><br>
+a- 6,5 ms , b- 7 ms , c- 8 ms , d- 11 ms.</p>
+<div class="exsub">Exercice 2 :</div>
+<p class="para"><b>I)</b> <span class="t-red"><u>Expérience 1 :</u></span></p>
+<p class="para">On percute le tendon du muscle extenseur (quadriceps) et on enregistre au niveau des oscilloscopes O<sub>1</sub>et O<sub>2</sub> les phénomènes électriques dans les fibres motrices 1 et 2 innervant respectivement le muscle extenseur et le muscle fléchisseur (biceps). (Document 1)</p>
+<!-- CROP: 4944 3 3 0.122 0.626 0.627 0.826 4944_p3_03_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p3_03_doc1.png" alt=""></figure>
+<!-- CROP: 4944 3 3 0.631 0.626 0.949 0.826 4944_p3_03_enreg -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p3_03_enreg.png" alt=""></figure>
+<!-- page 04 -->
+<p class="para">1) Exploitez les enregistrements obtenus en O<sub>1</sub> et en O<sub>2</sub> en vue de :<br>
+a-déduire la réponse du muscle extenseur et celle du muscle fléchisseur suite à la percussion.<br>
+b-précisez en le justifiant, le mouvement de la jambe qu'on devrait observer suite à cette percussion.</p>
+<p class="para"><span class="t-red"><b><u>Expérience 2 :</u></b></span></p>
+<!-- PROOFREAD: 4944 part3 p04 — "extense" / "exten" : end of these two lines hidden under the figure on the page; only the visible letters are typed -->
+<p class="para">La Zone X est la zone de jonction de l'arborisation terminale de la fibre motrice 1 et les cellules du quadriceps ou muscle extense<br>
+Le tracé suivant représente la variation de la ddp enregistrée au niveau de la membrane de chacune des cellules du muscle exten<br>
+2) Identifiez et analysez les phénomènes électriques P1 et P2 de ce tracé.</p>
+<!-- CROP: 4944 3 4 0.712 0.339 0.951 0.472 4944_p3_04_trace -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p3_04_trace.png" alt=""></figure>
+<p class="para"><b>II)</b> On coupe le tendon du muscle extenseur (quadriceps) et on effectue les mêmes enregistrements au niveau des fibres motrices 1 et 2 (document 2)<br>
+3) Représentez en le justifiant les enregistrements qu'on devrait obtenir au niveau des oscilloscopes O<sub>1</sub> et O<sub>2</sub>.</p>
+<!-- CROP: 4944 3 4 0.643 0.485 0.941 0.654 4944_p3_04_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p3_04_doc2.png" alt=""></figure>
+<p class="para"><b>III)</b> Afin de comprendre la réponse des deux muscles antagonistes au cours du réflexe myotatique et puisque ce réflexe est médullaire, on dégage les corps cellulaires et les connexions synaptiques des motoneurones innervant les deux muscles (document 3) et on réalise les séries des expériences suivantes représentés dans le tableau du document</p>
+<!-- page 05 -->
+<!-- CROP: 4944 3 5 0.202 0.173 0.838 0.333 4944_p3_05_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p3_05_doc3.png" alt=""></figure>
+<table>
+<tr><th><span class="t-red">Expériences</span></th><th><span class="t-red">Expérience 1</span></th><th><span class="t-red">Expérience 2</span></th><th><span class="t-red">Expérience 3</span></th><th><span class="t-red">Expérience 4</span></th></tr>
+<tr><td><span class="t-red"><b>Substance chimique injectée</b></span></td><td>Acétylcholine au niveau de la fente de S1</td><td>GABA au niveau de la fente de S1</td><td>Acétylcholine au niveau de la fente de S2</td><td>GABA au niveau de la fente de S2</td></tr>
+<tr><td><span class="t-red"><b>Résultats</b></span><br><br><b><u>document 4</u></b></td><td>Augmentation de la concentration des ions Na+ dans le corps cellulaire du motoneurone 1</td><td>Pas de variation de la concentration des Ions Na<sup>+</sup>, K<sup>+</sup> et Cl<sup>−</sup></td><td>Pas de variation de la concentration des Ions Na<sup>+</sup>, K<sup>+</sup> et Cl</td><td>Augmentation de la concentration des ions Cl<sup>−</sup> dans le corps cellulaire du motoneurone 2</td></tr>
+</table>
+<p class="para">4) Exploitez les informations du tableau du document 4 et vos connaissances en vue de :<br>
+a- expliquer les résultats obtenus dans chacune des expériences 1, 2, 3 et 4.<br>
+b- représenter les enregistrements qu'on peut obtenir au niveau des corps cellulaires des motoneurones 1 et 2 lors de la transmission synaptique.<br>
+c- déduire l'état des deux motoneurones 1 et 2.<br>
+5) Réalisez un schéma de synthèse légendé représentant tous les éléments anatomiques et le circuit nerveux mis en jeu dans le réflexe myotatique.</p>
+
+
+<div class="exsub">28._Série 24 réflexe myotatique 24-02-2019</div>
+<!-- page 01 -->
+<p class="subhead t-navy"><span class="t-blue"><i>Série 24 : neurophysiologie</i></span></p>
+<p class="para"><b><i>24/02/2019</i></b></p>
+<div class="exsub">Exercice 1 : (Bac principale 2012)</div>
+<p class="para">On se propose d'étudier les mécanismes de la naissance et de la transmission du message nerveux.<br>
+Pour cela on utilise le dispositif expérimental représenté par le document 1.</p>
+<!-- CROP: 4944 4 1 0.228 0.248 0.764 0.391 4944_p4_01_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p4_01_doc1.png" alt=""></figure>
+<p class="para">On réalise des expériences de stimulations sur des fibres nerveuses des neurones A, B et C du doc 1 puis on enregistre leurs réponses à l'aide des oscilloscopes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>. Les expériences réalisées et les enregistrements obtenus sont représentés dans le tableau du document 2.</p>
+<!-- CROP: 4944 4 1 0.069 0.455 0.954 0.833 4944_p4_01_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p4_01_doc2.png" alt=""></figure>
+<p class="para"><b><u>Document 2</u></b></p>
+<!-- page 02 -->
+<p class="para">1/ A partir des informations de l'expérience 1 et du tracé A<sub>1</sub>, dégagez une propriété de la fibre nerveuse.<br>
+2/ Analysez les résultats des expériences 1 et 2 en vue de déduire :</p>
+<ul class="dash">
+<li>une deuxième propriété de la fibre nerveuse.</li>
+<li>la nature de la synapse S<sub>1</sub>.</li>
+</ul>
+<p class="para">3/ Analysez les tracés C1, C2 et C3 en vue de déduire la nature de la synapse S<sub>2</sub>.<br>
+4/ Expliquez l'obtention du tracé D<sub>2</sub> en vue de : déduire la fonction du neurone C. La nature de la synapse S<sub>3</sub>.<br>
+5/<br>
+a- A partir de vos connaissances et des informations tirées des expériences précédentes, expliquez l'obtention du tracé D<sub>3.</sub><br>
+b- Représentez le phénomène qui se déroule au niveau du neurone B suite à la stimulation SB.</p>
+<div class="exsub">Exercice 2 :</div>
+<p class="para">On se propose d'étudier le mode de fonctionnement des synapses. Pour cela, on réalise deux expériences selon le dispositif expérimental représenté dans le document 1</p>
+<!-- CROP: 4944 4 2 0.119 0.490 0.879 0.736 4944_p4_02_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p4_02_doc1.png" alt=""></figure>
+<p class="para"><span class="t-red">Expérience 1</span> : On porte deux stimulations d'intensité croissante I1 et I2 et on enregistre parallèlement, les différences de potentiels au niveau des oscilloscopes O1, O2, O3 et O4.</p>
+<!-- page 03 -->
+<p class="para">Les résultats sont représentés dans le tableau suivant :</p>
+<table>
+<tr><th colspan="2" rowspan="2"></th><th colspan="4"><span class="t-red"><b>ddp (en mv) enregistrée au niveau de :</b></span></th></tr>
+<tr><th>O1</th><th>O2</th><th>O3</th><th>O4</th></tr>
+<tr><td rowspan="2"><b>Intensité du stimulus</b></td><td><b>I1</b></td><td>-60</td><td>-70</td><td>-70</td><td>-70</td></tr>
+<tr><td><b>I2 &gt; I1</b></td><td>+30</td><td>-58</td><td>+30</td><td>+30</td></tr>
+</table>
+<p class="para">1) Expliquez les données fournies dans le tableau en vue :<br>
+a- d'identifier la nature des potentiels obtenus en O1, O2, O3 et O4 suite aux stimulations d'intensités I1 et I2.<br>
+b- d'expliquer la différence de réponse enregistrées en O2 et en O3 suite à la stimulation I2.<br>
+c- de déduire la nature de la synapse N1-N3.</p>
+<p class="para"><span class="t-red"><b><u>Expérience 2</u></b></span> : On porte en E deux stimulations très rapprochées d'intensité I2. Le document 2 représente l'enregistrement obtenu en O3.</p>
+<!-- CROP: 4944 4 3 0.270 0.480 0.733 0.656 4944_p4_03_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p4_03_doc2.png" alt=""></figure>
+<p class="para">2) Exploitez les résultats des expériences 1 et 2 en vue :<br>
+a- d'expliquer l'enregistrement obtenu en O3 (document 2).<br>
+b- de déduire la nature de la synapse N2-N3.</p>
+<!-- page 04 -->
+<p class="para">3) Les document (3a) et (3b), montrent deux électronographies de la zone X encadrée (voir doc 1) dans deux situations différentes.</p>
+<!-- CROP: 4944 4 4 0.140 0.209 0.469 0.396 4944_p4_04_doc3a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p4_04_doc3a.png" alt=""></figure>
+<!-- CROP: 4944 4 4 0.471 0.209 0.802 0.396 4944_p4_04_doc3b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p4_04_doc3b.png" alt=""></figure>
+<p class="para">a- Comparez les deux électronographies et conclure.<br>
+b- A l'aide d'un schéma soigné et bien annoté, expliquez le mécanisme de transmission synaptique au niveau de la zone X encadrée (voir doc 1).</p>
+
+
+<div class="exsub">29._Série 25 réflexe myotatique 03-03-2019</div>
+<!-- page 01 -->
+<p class="subhead t-navy"><span class="t-blue"><i>Série 25 : neurophysiologie</i></span></p>
+<p class="para"><b><i>03/03/2019</i></b></p>
+<div class="exsub">Exercice 1 :</div>
+<p class="para">On se propose d'étudier le mécanisme de naissance et de transmission du message nerveux dans un circuit impliqué dans l'établissement du réflexe myotatique. Pour ce faire, on réalise trois expériences selon le dispositif expérimental représenté dans le document 1.</p>
+<!-- CROP: 4944 5 1 0.120 0.245 0.879 0.464 4944_p5_01_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p5_01_doc1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para">1) <span class="t-red"><b><u>Expérience 1</u></b></span> : On soumet le fuseau neuromusculaire à un étirement E1 d'intensité efficace I1 en reliant le muscle à une masse de 3 g. Les enregistrements de l'activité électrique au niveau des oscilloscopes O1, O2 et O3 sont présentés par le document 2.</p>
+<!-- CROP: 4944 5 1 0.147 0.545 0.887 0.717 4944_p5_01_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p5_01_doc2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para">a- Identifiez les tracés a, b et c du document 2.<br>
+b- Faites correspondre chacun des tracés a, b et c aux oscilloscopes O1, O2 et O3.<br>
+c- Expliquez le phénomène à l'origine du tracé b.</p>
+<!-- page 02 -->
+<p class="para"><span class="t-red"><b><u>Expérience 2</u></b></span> : On soumet le fuseau-neuromusculaire (FNM) à un étirementE2 d'intensité I2 supérieure à I1, en reliant le muscle à une masse de 4g. L'enregistrement obtenu au niveau de l'oscilloscope O1 est représenté dans le document 3.</p>
+<!-- CROP: 4944 5 2 0.179 0.207 0.866 0.343 4944_p5_02_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p5_02_doc3.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para">Exploitez les données des expériences 1 et 2 et utiliser vos connaissances en vue :<br>
+a- d'expliquer le fonctionnement du neurone N2 suite à l'étirement E2.<br>
+b- de déduire la nature de la synapse N1-N2 ;</p>
+<p class="para">3) Expérience 3 : On enregistre au niveau de l'oscilloscope 04 l'activité électrique de la fibre musculaire extrafusale de (M) dans deux situations expérimentales et on note dans chaque situation, l'état de cette fibre musculaire. Les résultats obtenus sont représentés par le document 4.</p>
+<!-- CROP: 4944 5 2 0.178 0.506 0.937 0.688 4944_p5_02_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p5_02_doc4.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para">Exploitez les informations fournies par les expériences 2 et 3 et faites appel à vos connaissance en vue :<br>
+a- d'expliquer le fonctionnement du neurone N2.<br>
+b- de déduire la nature de la synapse N2-N3.</p>
+<p class="para">4) Proposez une explication logique du fonctionnement du neurone N3 impliqué dans l'établissement du réflexe myotatique.</p>
+<!-- page 03 -->
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<div class="exsub">Exercice 2 :</div>
+<p class="para">Le document 1 ci-dessous représente l'arbre généalogique d'une famille dont certains sujets sont atteints d'une maladie héréditaire.</p>
+<!-- CROP: 4944 5 3 0.267 0.246 0.729 0.411 4944_p5_03_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p5_03_doc1.png" alt=""></figure>
+<p class="para">1) L'allèle responsable de la maladie est-il dominant ou récessif ? Argumentez votre réponse.<br>
+<b>NB : Adoptez la convention (A, a) pour le gène en question.</b></p>
+<p class="para">2) S'agit-il d'un cas d'hérédité autosomale ou liée au sexe (X ou Y) ? Discutez chacune de ces hypothèses.<br>
+3) Afin de lever l'ambiguïté posée en 2<sup>ème</sup> question, on procède à une étude plus détaillée des gènes par la technique de l'électrophorèse. Les résultats obtenus pour les individus I1, I2, II2 et III2 sont donnés en désordre par le document 2.</p>
+<!-- CROP: 4944 5 3 0.121 0.603 0.640 0.803 4944_p5_03_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p5_03_doc2.png" alt=""></figure>
+<!-- CROP: 4944 5 3 0.638 0.603 0.876 0.803 4944_p5_03_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p5_03_doc3.png" alt=""></figure>
+<p class="para"><b>a-</b> Quelle est l'hypothèse confirmée par ces résultats ? Justifiez.</p>
+<!-- page 04 -->
+<p class="para"><b>b-</b> Faites correspondre les résultats : 1, 2, 3 et 4 aux individus I1, I2, II2 et III2 en précisant leurs génotypes.</p>
+<p class="para">4) Pourquoi est-il peu probable de rencontrer une fille malade ?<br>
+5) Mme II4 est inquiète sur le sort de son futur enfant (III3). Le médecin lui propose de réaliser le caryotype de son fœtus (document 3). Déterminez le sexe et le phénotype du fœtus.</p>
+
+<div class="chtag"><span>Chapitre</span> Muscle squelettique (contraction)</div>
+
+<div class="exsub">Exercice 3 :</div>
+<p class="para">Le document 1 suivant montre un schéma d'interprétation d'une portion d'une cellule contractile.</p>
+<!-- CROP: 4944 5 4 0.270 0.368 0.724 0.580 4944_p5_04_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p5_04_doc1.png" alt=""></figure>
+<p class="para"><b>1) a)</b> Identifiez cette cellule.<br>
+<b>b)</b> Faites, sur votre copie, la légende du document 1.<br>
+<b>2)</b> Faites un schéma d'interprétation légendés, de chacun des éléments 6 et 7 du document 1 :<br>
+<b>a)</b> en cas de relâchement,<br>
+<b>b)</b> en cas de contraction.<br>
+<b>3)</b> La contraction de l'élément 1 du document 1 fait dégager de la chaleur.<br>
+Indiquez, dans l'ordre, les réactions biochimiques qui sont à l'origine de ces dégagements de chaleur.</p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">67.._correction série 20 Réflexe myotatique (26-01-2020)</div>
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-red"><i>Correction de la série 20</i></span></p>
+<p class="para"><span class="t-blue"><i>26/01/2020</i></span></p>
+<div class="exsub">Exercice 1 :</div>
+<p class="para">1)</p>
+<!-- CROP: 4944 6 1 0.180 0.172 0.845 0.487 4944_p6_01_mots_croises -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p6_01_mots_croises.png" alt=""></figure>
+<p class="para"><b>2)a)</b> Le mot caché est : synapse. C'est une jonction (contact) entre deux neurones voisins.<br>
+<b>b)</b> On distingue trois types de synapses neuro-neuroniques</p>
+<table>
+<tr><td>Synapse axo- dendritique</td><td>Synapse axo – somatique</td><td>Synapse axo-axonique</td></tr>
+</table>
+<div class="exsub">Exercice 1 :</div>
+<p class="para"><b>A)</b> 1)neurone sensitif Ia</p>
+<table>
+<tr><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+<tr><td><b>Terminaison dendritique</b></td><td>dendrite</td><td>Corps cellulaire unipolaire</td><td>Axone</td><td>Fibre nerveuse centrale</td><td>Arborisation terminale</td></tr>
+<tr><td><b>Récepteurs sensoriels :FNM</b></td><td>Nef rachidien<br>+<br>Racine postérieure</td><td>Ganglion spinal</td><td>Racine postérieure</td><td>Substance blanche de la moelle épinière</td><td>Substance grise de la moelle épinière</td></tr>
+</table>
+<!-- page 02 -->
+<p class="para"><b>B)</b> 2)</p>
+<table>
+<tr><th>A’</th><th>B’</th><th>C’</th></tr>
+<tr><td><b>Canaux de fuite de Na<sup>+</sup> et K<sup>+</sup></b></td><td>Pompe Na<sup>+</sup>/K<sup>+</sup></td><td>Canaux voltages dépendants (CVD) à Na<sup>+</sup> et K<sup>+</sup></td></tr>
+</table>
+<p class="para">3)a-</p>
+<table>
+<tr><td><span class="t-red">Transport passif</span></td><td><b>Transport qui ne nécessite aucun apport d’énergie, dans le sens du gradient de concentration :</b>
+<ul class="dash">
+<li><b>pour les canaux de fuite : entrée de Na+ et sortie de K<sup>+</sup>.</b></li>
+<li><b>pour les CVD à Na<sup>+</sup> : entrée de Na<sup>+</sup>.</b></li>
+</ul></td></tr>
+<tr><td><span class="t-red">Transport actif</span></td><td>Transport contre le gradient de concentration , pompe Na<sup>+</sup>/K<sup>+</sup>, assurant  la sortie de 3 Na<sup>+</sup> et l’entrée de 2 K<sup>+</sup>, c’est un transport qui nécessite de l’énergie (ATP).</td></tr>
+</table>
+<p class="para">b- la fibre nerveuse en phase de dépolarisation car il y a entrée de Na+ à travers les CVD à Na<sup>+</sup><br>
+4) a- <span class="t-gold">Blocage de B’ : en absence de stimulation</span>, seuls les canaux de fuite restent fonctionnels assurant une entrée de Na+ et sortie de K+ dans le sens de gradient de concentration jusqu’à un <span class="t-gold">équilibre ionique</span>.<br>
+b- <span class="t-gold">Blocage de CVD suite à une stimulation</span> : dans ce cas la pompe Na+/K+ assure un mouvement ionique contre le gradient de concentration de Na+ et K+ conduisant à un déséquilibre ionique, <span class="t-gold">c’est l’état de repos</span>.</p>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<p class="para">1)</p>
+<table>
+<tr><th><span class="t-red">Exploitation</span></th><th><span class="t-red">Identification</span></th></tr>
+<tr><td>1 : petite cellule périphérique haploïde à n=2 chromosomes dupliqués.</td><td>premier globule polaire</td></tr>
+<tr><td>2 : noyau non accompagné de centriole.</td><td>pronucléus ♀</td></tr>
+<tr><td>3 : noyau accompagné par un centriole.</td><td>pronucléus ♂</td></tr>
+<tr><td>4 : petite haploïde ayant un chromosome simple</td><td>deuxième globule polaire</td></tr>
+</table>
+<p class="para">2)</p>
+<ul class="b">
+<li>La cellule C serait à l’origine d’un fœtus présentant une anomalie chromosomique. En effet, après caryogamie, la cellule-œuf comportera  trois exemplaires du chromosome 21, c’est un  cas de trisomie 21.</li>
+<li>Le pronucléus ♀ présente une garniture chromosomique anormale : présence de deux chromosomes 21 alors que le pronucléus ♂ présente une garniture chromosomique
+<!-- page 03 -->
+normale (présence d’un seul chromosome 21) → cette anomalie est d’origine maternelle : elle s’est produite au cours de l’ovogenèse.</li>
+<!-- NOTE: the arrow "→" is printed at the foot of page 02, in the gap of this line on page 03 -->
+<li>Le 1<sup>er</sup> globule polaire présente un chromosome 21, alors que le 2<sup>ème</sup> globule polaire ne contient pas un chromosome 21, ce qui confirme que cette anomalie s’est produite au cours de la division équationnelle : cette anomalie est expliquée par la non séparation des deux chromatides sœurs du chromosome 21 au cours de l’anaphase II de l’ovogenèse.</li>
+</ul>
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<p class="para">3)</p>
+<ul class="b">
+<li>Le fœtus sera une fille : la présence de deux chromosomes sexuels X.</li>
+<li>Le couple d’allèle (a<sub>1</sub>, a<sub>2</sub>) est porté par le chromosome sexuel X.</li>
+<li>Le génotype du fœtus est Xa<sub>1</sub>Xa<sub>2</sub>.</li>
+<li>Les génotypes de ses parents :
+<ul class="b">
+<li>La mère : Xa<sub>1</sub>Xa<sub>2</sub></li>
+<li>Le père : Xa<sub>2</sub>Y</li>
+</ul></li>
+</ul>
+<p class="para">4)	Etant donné que le fœtus est hétérozygote comme sa mère,<br>
+a-	Il serait atteint si sa mère est atteinte.<br>
+b-	Il serait sain si sa mère est saine.</p>
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<div class="exsub">Exercice 3 :</div>
+<p class="para"><b>1)</b></p>
+<table>
+<tr><th><span class="t-red">N°</span></th><th>1</th><th>2</th><th>3</th></tr>
+<tr><td><span class="t-red"><b>Réponse</b></span></td><td>Synapse axo-somatique</td><td>Synapse axo-dendritique</td><td>Synapse axo-axonique</td></tr>
+</table>
+<p class="para"><b>2)</b> La structure présentée par le document est un corps cellulaire multipolaire se trouve au niveau de la corne antérieure de la substance grise de la moelle épinière.</p>
+<p class="para"><b>3) a)</b></p>
+<table>
+<tr><th><span class="t-red">N°</span></th><th>Elément</th><th>4</th><th>5</th><th>6</th><th>7</th></tr>
+<tr><td><span class="t-red"><b><i>Réponse</i></b></span></td><td>Fibre nerveuse périphérique car l’axone myélinisée est entourée d’une gaine de Schwann</td><td>Myéline</td><td>Axone ou dendrite</td><td>Nœud ou étranglement de Ranvier</td><td>Gaine de Schwann</td></tr>
+</table>
+<p class="para"><b><i>b)</i></b> Les corps cellulaires situés dans la substance grise  présentent des prolongements ramifiés, les dendrites et un prolongement long : l’axone qui se prolonge dans la substance blanche et dans le nerf.<br>
+<span class="t-red"><b>1<sup>er</sup> argument :</b></span> Chez les sujets atteints par la poliomyélite, on constate la destruction des corps cellulaires de la corne antérieure de la substance grise de la moelle épinière. Cette destruction entraine la dégénérescence des fibres nerveuses en relation avec les muscles paralysés. Ou
+<!-- page 04 -->
+Expérience de métrotomie une section de l’amibe en deux portions l’une nucléé et l’autre anucléé , la première persiste puis régénère et la deuxième dégénère.<br>
+<span class="t-red"><b>2<sup>ème</sup> argument :</b></span> La section d’un nerf rachidien d’un animal entraine la dégénérescence des fibres dans le bout périphérique du nerf : l’axone et la gaine de myéline se fragmentent, se décomposent puis disparaissent. Cependant ; la gaine de Schwann, pourvue de noyau, reste intacte.<br>
+Après un certain temps le bout central régénère : l’axone s’allonge et s’enfile dans la gaine de Schwann qui reconstitue la gaine de myéline.</p>
+<div class="exsub">Exercice 3 :</div>
+<p class="para"><span class="t-red"><b>1)</b></span></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+<tr><td>SB</td><td>SG</td><td>Racine postérieure</td><td>Ganglion spinal</td><td>Racine antérieure</td><td>Nerf rachidien</td><td>Axone ou fibre nerveuse périphérique</td><td>Arborisation terminale</td></tr>
+</table>
+<p class="para">2)</p>
+<!-- CROP: 4944 6 4 0.118 0.386 0.530 0.558 4944_p6_04_structure_A -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p6_04_structure_A.png" alt=""></figure>
+<!-- CROP: 4944 6 4 0.528 0.386 0.880 0.558 4944_p6_04_structure_B -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p6_04_structure_B.png" alt=""></figure>
+<p class="para"><span class="t-red"><b>1)</b></span></p>
+<!-- CROP: 4944 6 4 0.118 0.584 0.880 0.818 4944_p6_04_degenerescence_wallerienne -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4944/4944_p6_04_degenerescence_wallerienne.png" alt=""></figure>
+
+</section>
+
+</div>
+</body>
+</html>

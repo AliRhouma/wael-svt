@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · correction</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Correction">
+<meta data-pagefind-filter="resource[content]" content="MME CHAOUCH">
+<meta data-pagefind-meta="n[content]" content="4981">
+<meta data-pagefind-meta="title[content]" content="correction">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · correction" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>correction</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">MME CHAOUCH</span> <span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/13dm7M1r7Aij5AsuSxvgnCg9K4HyJ-InK/view">↗ correction.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/13dm7M1r7Aij5AsuSxvgnCg9K4HyJ-InK/view">Eya Masmoudi · Bac math 2026 › Svt / Mme chaouch / Neuro</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Neurophysiologie (tissu nerveux, réflexe, message nerveux)</h2></div>
+<!-- SOURCE: MME CHAOUCH -->
+<div class="exh"><span class="idx ex">Correction</span><h2>SERIE 2 NEURO 4 MATH</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4981.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">MME CHAOUCH</span> <span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/13dm7M1r7Aij5AsuSxvgnCg9K4HyJ-InK/view">↗ correction.pdf</a></div>
+<!-- page 01 -->
+<div class="exsub">Ex1</div>
+<p class="consigne">La <b>figure a</b> du document suivant représente une partie du système nerveux de l'Homme.<br>
+La <b>figure b</b> est un schéma d'une demi coupe d'un organe de la <b>figure a</b>.</p>
+<!-- CROP: 4981 1 1 0.234 0.120 0.888 0.286 4981_ex1_figures_a_b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex1_figures_a_b.png" alt=""></figure>
+<p class="consigne">1. Complétez la légende de la <b>figure a</b> en reportant les chiffres correspondants sur votre copie.</p>
+<p class="consigne">2. A quel organe correspond la figure b ?</p>
+<p class="consigne">3. Complétez la légende de la figure b</p>
+<p class="consigne">4. Reproduisez le tableau suivant sur votre copie et complétez-le par ce qui convient.</p>
+<table>
+<tr><th>Eléments du document 1</th><th>structures microscopiques constitutives</th></tr>
+<tr><td>6</td><td></td></tr>
+<tr><td>7</td><td></td></tr>
+<tr><td>8</td><td></td></tr>
+<tr><td>9</td><td></td></tr>
+<tr><td>11</td><td></td></tr>
+</table>
+<p class="para"><b>EXERCICE 2</b> Tout être humain normal retire rapidement sa main quand il touche un objet très chaud.</p>
+<p class="consigne">1. Identifiez, en justifiant la réponse, le type de cette réaction.</p>
+<p class="consigne">2. Le document 1 suivant montre certains éléments anatomiques et cellulaires intervenant dans cette réaction.</p>
+<!-- CROP: 4981 1 1 0.320 0.580 0.940 0.806 4981_ex2_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex2_document1.png" alt=""></figure>
+<p class="consigne">a) Complétez la légende de ce document en reportant les chiffres correspondants sur votre copie.</p>
+<p class="consigne">b) Précisez le rôle de la structure désignée par le numéro 11 dans la réaction observée.</p>
+<div class="exsub">Correction</div>
+<!-- page 02 -->
+<p class="subhead t-red">EX1</p>
+<p class="para"><b>II// A)</b> <b>1.</b> 1= cerveau ; 2 = cervelet ; 3 = bulbe rachidien ; 4 = encéphale ; 5 = moelle épinière<br>
+<b>2.</b> La coupe à la moelle épinière.<br>
+<b>3.</b> 6 = nerf rachidien ; 7 = ganglion spinal ; 8 = racine dorsale ; 9 = substance blanche ; 10 = racine ventrale 11 = substance grise .<br>
+<b>4.</b></p>
+<table>
+<tr><th>Eléments du document 1</th><th>Constituants microscopiques fondamentaux</th></tr>
+<tr><td>6</td><td>Fibres nerveuses périphériques</td></tr>
+<tr><td>7</td><td>Corps cellulaires unipolaire + cellules gliales</td></tr>
+<tr><td>8</td><td>Fibre nerveuses périphériques</td></tr>
+<tr><td>9</td><td>Fibre nerveuses centrales + cellule gliales</td></tr>
+<tr><td>12</td><td>Corps cellulaire multipolaires + cellules gliales 8x025</td></tr>
+</table>
+<p class="para">EX2)1. Nom : réflexe. Justification : il s'agit d'une réaction involontaire déclenchée par un stimulus.</p>
+<p class="para">2. a) 1 = substance blanche ; 2 = axone ; 3 = corps cellulaire ; 4 = dendrite ; 5 = neurone unipolaire ( ou neurone sensitif) ;</p>
+<p class="para">6 = gaine de Schwann ; 7 = nœud de Ranvier ; 8 = gaine de myéline ; 9 = dendrite ; 10 = cellule de Schwann ;</p>
+<p class="para">11 = thermorécepteur ; 12 = racine ventrale ; 13 = sillon ventral 14 = moelle épinière 15 = ganglion spinal</p>
+<p class="para">b) le thermorécepteur joue le rôle de récepteur sensoriel sensible à la chaleur, c'est le siège del'élaboration du M.N. sensitif sous l'effet du stimulus.</p>
+<p class="para">c)</p>
+<!-- CROP: 4981 1 2 0.536 0.516 0.800 0.558 4981_ex2_fibre_centrale -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex2_fibre_centrale.png" alt=""></figure>
+<p class="para"><b><u>Schéma d'une fibre nerveuse centrale en coupe transversale</u></b></p>
+<p class="para">d) - nom des structures : fibres motrices (ou fibres nerveuses périphériques).</p>
+<p class="para">- nom des cellules correspondantes : les neurones moteurs.</p>
+<p class="para">- rôle : conducteur moteur (ou efférents)</p>
+<p class="subhead t-red">EX3</p>
+<p class="para"><b>Définition :</b> le PR est la ddp existant entre la face interne et la face externe de la membrane cytoplasmique (c'est-à-dire entre le MEC et le MIC) du neurone en absence de toute stimulation.</p>
+<p class="para"><b>-Explication :</b>L'un des facteurs à l'origine du PR est le déséquilibre de concentration en ions entre le MIC et le MEC.Le transport actif, en assurant (par les pompes Na+/K+</p>
+<!-- page 03 -->
+<p class="para">) le passage des ions Na+ et K+contre leur gradient de concentration, s'oppose à l'égalisation des concentrations de ces ions de part et d'autre de la membrane de la fibre nerveuse qui pourrait se produire par la diffusion à travers les canaux de fuite et assure ainsi le maintien du PR.</p>
+<!-- CROP: 4981 1 3 0.047 0.172 0.473 0.362 4981_ex3_origine_maintien_PR -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex3_origine_maintien_PR.png" alt=""></figure>
+<!-- PROOFREAD: 4981 part1 p03 — table header "Structures membranaires ..." (end of the header blurred) -->
+<table>
+<tr><th>Mécanisme des mouvements ioniques</th><th>Structures membranaires ...</th><th>Sens des mouvements ioniques</th></tr>
+<tr><td rowspan="2">Diffusion</td><td>Canaux de fuite Na<sup>+</sup></td><td>Suivant le gradient de concentration : du MEC au MIC</td></tr>
+<tr><td>Canaux de fuite K<sup>+</sup></td><td>Suivant le gradient de concentration : du MIC au MEC</td></tr>
+<tr><td rowspan="2">Transport actif</td><td rowspan="2">Pompe Na<sup>+</sup> / K<sup>+</sup></td><td>Na<sup>+</sup> : Contre le gradient de concentration : du MIC au MEC</td></tr>
+<tr><td>K<sup>+</sup> : Contre le gradient de concentration : du MEC au MIC</td></tr>
+</table>
+<p class="subhead t-navy"><b><u>2<sup>ème</sup> partie</u></b></p>
+<p class="para"><b>1) <u>(3pts)</u></b></p>
+<ul class="dash">
+<li><b>O = artéfact de stimulation :</b> c'est un phénomène d'origine artificielle. Il indique le moment de la stimulation.</li>
+<li><b>Phase OA :</b> c'est le temps de latence: temps mis par le message nerveux crée par la stimulation pour se déplacer des électrodes stimulatrices vers l'électrode d'enregistrement.</li>
+<li><b>Phase AB:</b> c'est la phase de dépolarisation: au cours de cette phase la ddp transmembranaire augmente de -70 à +30 mv, ce qui traduit une variation de la négativité interne qui diminue, s'annule au point C puis s'inverse en positivité.</li>
+<li><b>Phase BC : c'est la phase de</b> repolarisation: au cours de cette phase la ddp diminue de +30 à -70 mv, ce qui traduit le retour à la polarité initiale.</li>
+<li><b>Phase CD :</b> c'est la phase d'hyperpolarisation : la ddp continue à diminuer légèrement et au dessous de -70 mv puis retrouve la valeur stable de – 70 mv , ce qui traduit une augmentation transitoire de la négativité interne.</li>
+</ul>
+<p class="subhead t-red">EXERCICE 5</p>
+<p class="para">La stimulation est efficace car elle a engendré sur la fibre excitée un PA (dépolarisation d'amplitude 100 mv).</p>
+<p class="para">2. I peut être qualifiée de liminaire ou de supraliminaire.</p>
+<p class="para">3. Le tracé 1 est obtenu par O2 car il ne comporte pas un potentiel local (ou car il comporte un temps de latence) .</p>
+<p class="para">4. O = artéfact de stimulation</p>
+<p class="para">- Phase OA : temps de latence.</p>
+<p class="para">- Phase AB: c'est la phase de dépolarisation.</p>
+<p class="para">- Phase BC : c'est la phase de repolarisation.</p>
+<p class="para">- Phase CD : c'est la phase d'hyperpolarisation.</p>
+<!-- page 04 -->
+<p class="para">EXR6 - Identification : Cette réaction correspond à un réflexe inné à point de départ cutané</p>
+<p class="para">- Justification : réaction involontaire déclenchée par un stimulus (réflexe), existant depuis la naissance (innée) dont le récepteur sensoriel se trouve dans la peau (à point de départ cutané).</p>
+<p class="para"><b>II)</b> <b>1.</b></p>
+<!-- CROP: 4981 1 4 0.050 0.186 0.510 0.350 4981_ex6_propagation_amyelinisee -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex6_propagation_amyelinisee.png" alt=""></figure>
+<p class="para"><b><u>Mécanisme de la propagation du message nerveuse dans une fibre amyélinisées</u></b></p>
+<p class="para"><b>Commentaire :</b> L'existence d'un PA en une zone de la fibre nerveuse à un instant donné crée entre cette zone devenue dépolarisée et les deux zones voisines des <b>courants locaux :</b> les charges positives sont attirées par les charges négatives. Ces courants locaux entraînent une dépolarisation des 2 zones voisines jusqu'au seuil du potentiel. Mais il en résulte une ouverture des CVD à Na<sup>+</sup> et donc naissance d'un nouveau PA uniquement au niveau de la zone non réfractaire (car les CVD sont momentanément bloqués au niveau de la zone réfractaire). Ainsi le PA est <i>continuellement régénéré le long de la fibre.</i><br>
+<i>L'existence de période réfractaire empêche le PA de rebrousser chemin et lui impose un sens unique de propagation.</i></p>
+<!-- PROOFREAD: 4981 part1 p04 — the left edge of the next two lines and of the table's first column is cut off in the scan; only the visible letters are typed -->
+<p class="para">. Le corps cellulaire devrait exister du <b>coté 1</b> car dans un neurone, le PA se propage toujours du corps cellulaire ers l'axone.</p>
+<p class="para">. Dans ce type de fibre la propagation est <b>moins rapide</b> et elle se fait <b>de proche en proche.</b></p>
+<table>
+<tr><th></th><th>localisation</th><th>Condition d'ouverture</th><th>Conséquence....</th><th>Mécanisme du mvt ionique</th></tr>
+<tr><td>VD à Na+</td><td>Membrane de la fibre nerveuse</td><td>ddp transmembranaire atteint -50 mv</td><td>Entrée massif et passif de Na<sup>+</sup> dans le MIC d'où la phase de dépolarisation du PA</td><td>Diffusion</td></tr>
+<tr><td>VD à Ca<sup>++</sup></td><td>Membrane du bouton synaptique</td><td>Arrivée d'un PA dans le bouton synaptique</td><td>Entrée passif de Ca<sup>2+</sup> dans le BS, ce qui entraine l'exocytose du neurotransmetteur</td><td>diffusion</td></tr>
+<tr><td>:D à Cl<sup>-</sup></td><td>Membrane postsynaptique des</td><td>Fixation du neurotransmetteur inhibiteur sur les récepteurs spécifiques de la membrane</td><td>Entrée de Cl<sup>-</sup> dans l'élément postsynaptique</td><td>diffusion</td></tr>
+</table>
+<p class="para"><b>2/</b> <b>b)</b></p>
+<table>
+<tr><th></th><th>Tracés théoriques</th><th>Justification</th></tr>
+<tr><td><b>1<sup>er</sup> cas</b></td><td><!-- CROP: 4981 1 4 0.221 0.569 0.393 0.644 4981_ex_b_1er_cas -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex_b_1er_cas.png" alt=""></figure></td><td>- <b>Une stimulation efficace de C engendre un PPSI élémentaire car C-M est inhibitrice.</b><br>
+- <b>Suite à la stimulation de A et B simultanément, le neurone M a fait une sommation algébrique spatiale des PPS→ L'amplitude du PPSE global = L'amplitude du PPSE élémentaire (10mv) - L'amplitude du PPSI élémentaire = 5mv<br>
+→ L'amplitude du PPSI élémentaire = 10 -5 = 5mv.</b></td></tr>
+<tr><td><b>2<sup>ème</sup> cas</b></td><td><!-- CROP: 4981 1 4 0.221 0.650 0.393 0.725 4981_ex_b_2eme_cas -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex_b_2eme_cas.png" alt=""></figure></td><td><b>Deux stimulations successives et rapprochées de A engendrent en O4 un PPSE global d'amplitude 10 + 10 = 20 mv , par sommation temporelle.<br>
+Ainsi le seuil du potentiel sera atteint au niveau du cône axonique d'où la naissance d'un PA postsynaptique.</b></td></tr>
+</table>
+<!-- NOTE: a black redaction bar below this table (blacked-out line) is not transcribed -->
+<p class="para"><b>c)</b><br>
+<b>On obtient un PPSE global d'amplitude supérieure à 20 mv sans PA.</b><br>
+<b>Justification :</b></p>
+<ul class="dash">
+<li><b>La sommation temporelle se fait au niveau de la membrane postsynaptique.</b></li>
+<li><b>Le PPSE se propage vers le cône axonique en s'amortissant.</b></li>
+<li><b>Pas de CVD au niveau du cops cellulaire d'où l'absence de PA.</b></li>
+</ul>
+<!-- page 05 -->
+<p class="para">1. – Entre t0 et t1, lorsque les électrodes réceptrices R1 et R 2 sont en surface, la ddp en registrée est nulle.</p>
+<p class="para">- Après l'introduction de R1 dans la fibre nerveuse à t1, on enregistre une ddp constante de -70 mv entre le MIC et le MEC : c'est le potentiel de repos.</p>
+<p class="para">- Suite à la stimulation St1 au t2 on enregistre en O1 une légère augmentation lente de ddp de -70 à -50 mv traduisant une diminution de la négativité interne : c'est un potentiel local qui atteint le seuil du potentiel, suivie d'une brève variation de ddp de plus grande amplitude : c'est un potentiel d'action comportant 3 phases : une phase de dépolarisation................., une phase de repolarisation.................................... et une phase d'hyperpolarisation ........................(à détailler conformément au cours)</p>
+<p class="para">- retour au potentiel de repos.</p>
+<p class="para">- Suite à la stimulation st2 at temps t3, on enregistre une légère et provisoire dépolarisation de très faible amplitude (15 mv environ) : c'est un potentiel local qui n'atteint pas le seuil du potentiel.</p>
+<p class="para">2. St1 est efficace. Son intensité est supraliminaire (ou au moins liminaire).<br>
+St2 est inefficace. Son intensité est infraliminaire.</p>
+<p class="para">3. Origine du potentiel de repos. (voir cours)</p>
+<p class="para">4.</p>
+<!-- CROP: 4981 1 5 0.198 0.565 0.800 0.716 4981_q4_trace_PR_PA -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_q4_trace_PR_PA.png" alt=""></figure>
+<p class="para"><b>Justification :</b> le PL est non propageable alors le PA est propageable sans amortissement.</p>
+<p class="para"><b>5.</b> On mesure la distance séparant R1 de R'1 = Δd.<br>
+On mesure le décalage de temps Δt entre les deux PA obtenu (en O1 et en O2) : c'est le temps mis par le PA pour parcourir Δd.<br>
+On calcule la vitesse V/ V = Δd/Δt ms<sup>-1</sup></p>
+<!-- page 06 -->
+<!-- CROP: 4981 1 6 0.144 0.032 0.888 0.540 4981_synapse_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_synapse_document1.png" alt=""></figure>
+<p class="consigne">1) Nommez cette structure et la fonction qu'elle assure.</p>
+<p class="consigne">2) Ecrivez la légende correspondant à ce document en reportant les chiffres et les lettres sur votre copie.</p>
+<p class="consigne">3) Identifiez chacun des tracés obtenus en O1 et en O2 et comparez-les en citant une ressemblance et 3 différences.</p>
+<p class="consigne">4) Citez la succession des étapes du fonctionnement de cette structure.</p>
+<!-- page 07 -->
+<!-- NOTE: the yellow mark boxes in the right margin are cut off by the scan edge (only "0.", "1", "0" partly visible) and are not transcribed -->
+<p class="para"><b>1)</b> Synapse neuro-neuronique : assure la transmission synaptique</p>
+<p class="para"><b>2)</b> <b>1=</b> Mitochondrie ; <b>2=</b> Bouton synaptique ; <b>3=</b> Vésicule synaptique ; <b>4 =</b> Fente synaptique ; <b>5 =</b> Neurotransmetteur ; <b>6 =</b> Membrane post-synaptique ; <b>A</b> = Elément pré-synaptique ; <b>B =</b> Elément post-synaptique.</p>
+<p class="para"><b>3)</b></p>
+<table>
+<tr><th>Enregistrements</th><th><b>En O1 : PA (</b>une brève variation de ddp d'amplitude 100 mv)</th><th><b>En O2 : PPSI</b> (une hyperpolarisation provisoire au niveau de la membrane <b>post synaptique)</b></th></tr>
+<tr><td><b>Ressemblance</b></td><td colspan="2"><b>2 phénomènes électriques obtenus suite à une stimulation électrique</b></td></tr>
+<tr><td rowspan="3"><b>Différences</b></td><td><b>Non graduable</b></td><td><b>Graduable</b></td></tr>
+<tr><td><b>Non sommable</b></td><td><b>Sommable</b></td></tr>
+<tr><td><b>Non amorti</b></td><td><b>Amorti</b></td></tr>
+</table>
+<p class="para"><b>4)</b></p>
+<ul class="b">
+<li>Arrivée d'un ou plusieurs PA au niveau du bouton synaptique</li>
+<li>Ouverture des CVD à ca<sup>2+</sup>et entrée de ca<sup>2+</sup> du MEC vers le MIC du bouton synaptique.</li>
+<li>Exocytose des vésicules synaptiques et libération du neurotransmetteur inhibiteur (exemple le GABA)</li>
+<li>Fixation des molécules de neurotransmetteurs sur les récepteurs spécifiques de la membrane post-synaptique</li>
+<li>Ouverture des CCD à K <sup>+</sup> et /ou CCD à Cl <sup>-</sup> situés au niveau de la membrane post-synaptique, ce qui conduit à la sortie<br>
+K<sup>+</sup> et /ou à l'entrée du Cl<sup>-</sup> dans l'élément post-synaptique d'où l'hyperpolarisation de la membrane et naissance d'un PI</li>
+<li>Inactivation, détachement du neurotransmetteur et son retour au bouton synaptique.</li>
+</ul>
+<!-- PROOFREAD: 4981 part1 p07 — item 4) 5th bullet: the line ends are cut by the scan edge ("la sortie" / "d'un PI") -->
+<!-- page 08 -->
+<p class="consigne">On se propose d'étudier les conditions de la naissance et de la transmission du message nerveux. Le document 1 représente le dispositif expérimental utilisé.</p>
+<!-- CROP: 4981 1 8 0.618 0.069 0.893 0.238 4981_dispositif_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_dispositif_document1.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="consigne">1) On porte des stimulations isolées sur les éléments A et B, d'intensités respectives IA et IB telle que IA&lt; IB</p>
+<p class="consigne">On enregistre les phénomènes électriques au niveau des O1, O3 et O4. Les résultats obtenus sont consignés <u>dans</u> le document 2 suivant :</p>
+<!-- CROP: 4981 1 8 0.162 0.252 0.875 0.416 4981_document2_enregistrements -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_document2_enregistrements.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="consigne">a) Identifiez, en justifiant, les tracés obtenus :</p>
+<p class="consigne">▯en O1 et O4 suite à la stimulation en A.</p>
+<p class="consigne">▯en O3 et O4 suite à la stimulation en B.</p>
+<p class="consigne">NB : présentez votre réponse dans un tableau.</p>
+<p class="consigne">b) A partir d'une exploitation des données du document 2, dégagez :</p>
+<p class="consigne">- une condition nécessaire pour la naissance d'un message nerveux sur une fibre nerveuse.</p>
+<p class="consigne">- une condition nécessaire pour que se réalise la transmission synaptique.</p>
+<p class="consigne">- la nature de la synapse B-M.</p>
+<p class="consigne">2) On porte simultanément : une stimulation efficace sur l'élément B et une stimulation efficace sur l'élément C. Le document 3 suivant montre le tracé enregistré au niveau de l'oscilloscope O4:</p>
+<!-- CROP: 4981 1 8 0.144 0.630 0.532 0.802 4981_document3_O4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_document3_O4.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<!-- page 09 -->
+<p class="consigne">a) Comparez ce tracé à celui obtenu suite à la stimulation de l'élément B seul (document 2) en vue de déduire la nature de la synapse C-M.</p>
+<p class="consigne">b) Représentez, en justifiant, les tracés théoriques qu'on obtiendrait en O4 dans les cas suivants :- 1er cas : on porte une stimulation efficace sur C.</p>
+<p class="consigne">- 2ème cas : on porte deux stimulations successives et rapprochées sur B.</p>
+<p class="consigne">c) Qu'obtiendrait-on au niveau de la membrane postsynaptique de la synapse B-M dans le 2ème cas. Justifiez.</p>
+<p class="consigne">3) Comparez les mécanismes de la naissance des phénomènes électriques postsynaptiques relatifs aux synapses B-M et C-M. (sous forme d'un tableau).</p>
+<!-- page 10 -->
+<p class="para"><b>1. a)</b></p>
+<table>
+<tr><th></th><th colspan="2">Stimulation de A</th><th colspan="2">Stimulation de B</th></tr>
+<tr><td><b>enregistrement</b></td><td>En O<sub>1</sub></td><td>En O<sub>4</sub></td><td>En O<sub>3</sub></td><td>En O<sub>4</sub></td></tr>
+<tr><td><b>identification</b></td><td>Potentiel local (PL)</td><td>PR</td><td>PA</td><td>PPSE</td></tr>
+<tr><td><b>justification</b></td><td>Légère dépolarisation au voisinage des électrodes stimulatrices</td><td>ddp constante de -70mv</td><td>Brève variation de ddp d'amplitude 100mv.</td><td>Dépolarisation post-synaptique suite à une stimulation présynaptique</td></tr>
+</table>
+<p class="para"><b>b)</b></p>
+<table>
+<tr><th>Exploitation</th><th>Déduction</th></tr>
+<tr><td>- Avec la stimulation d'intensité I<sub>A</sub>, on n'a pas obtenu un PA.<br>
+- Avec la stimulation d'intensité I<sub>B</sub> &gt; I<sub>A</sub>, on a obtenu un PA</td><td>La naissance d'un PA nécessite une intensité seuil de stimulation.</td></tr>
+<tr><td>- Avec un PL présynaptique, il n'y a pas de transmission synaptique.<br>
+- Avec un PA présynaptique, il y a une transmission synaptique.<br>
+-</td><td>La transmission synaptique nécessite un PA présynaptique</td></tr>
+<tr><td>La transmission synaptique au niveau de la synapse B-M a engendré un PPSE.</td><td>La synapse PM est excitatrice.</td></tr>
+</table>
+<p class="para"><b>2. a)</b></p>
+<table>
+<tr><th></th><th>S<sub>A</sub></th><th>S<sub>(A+B)</sub></th></tr>
+<tr><td><b>Similitudes</b></td><td colspan="2">PPSE qui n'atteignent pas le seuil du potentiel</td></tr>
+<tr><td><b>Différences</b></td><td>PPSE élémentaire d'amplitude 10 mv</td><td>PPSE global d'amplitude 5 mv</td></tr>
+</table>
+<p class="para">→l'amplitude plus faible du PPSE global montre que la synapse C-M a engendré un PPSI. Elle est donc inhibitrice</p>
+<!-- page 11 -->
+<p class="para">3.</p>
+<table>
+<tr><th></th><th><u>Naissance de PPSE</u></th><th><u>Naissance de PPSI</u></th></tr>
+<tr><td><b><u>Etapes commune</u></b></td><td colspan="2"><ol class="qn">
+<li>Arrivée d'un potentiel d'action à la terminaison axonique</li>
+<li>Ouverture des CVD à Ca<sup>2+</sup> et diffusion de ces ions dans le milieu intracellulaire du BS</li>
+<li>Ces ions Ca<sup>2+</sup> déclenchent l'exocytose des vésicules synaptiques : libération du neurotransmetteur dans l'espace synaptique (N.T. excitateur dans le cas du PPSE et inhibiteur dans le cas du PPSI)</li>
+<li>Le neurotransmetteur se fixe sur des récepteurs spécifiques de la membrane postsynaptique.</li>
+<li>Ouverture de canaux chimio-dépendants (CCD) :</li>
+</ol></td></tr>
+<tr><td><b><u>Différences</u></b></td><td>CCD à Na<sup>+</sup>→<br>
+Entrée de Na<sup>+</sup> dans le neurone postsynaptique d'où la dépolarisation de la membrane postsynaptique (= PPSE)</td><td>CCD à K<sup>+</sup> ou /et à Cl<sup>-</sup>→<br>
+Sortie de K<sup>+</sup> ou / et entrée de Cl<sup>-</sup> dans le neurone postsynaptique d'où la hyperpolarisation de la membrane postsynaptique (= PPSI)</td></tr>
+</table>
+<p class="para">ans les 2 cas il y a une inactivation et une recapture du neurotransmetteur et donc fin de la transmission</p>
+<!-- page 12 -->
+<p class="para">Bac math 2025 SP</p>
+<p class="subhead t-red"><b>II- Neurophysiologie (5 points)</b></p>
+<p class="consigne">On se propose d'étudier certains aspects de l'activité nerveuse. Pour ce faire, on réalise deux séries d'expériences en utilisant le dispositif expérimental représenté par le document 3.</p>
+<!-- CROP: 4981 1 12 0.204 0.103 0.840 0.272 4981_bac2025_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_bac2025_document3.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para"><b>Première série d'expériences :</b></p>
+<p class="consigne">On porte des stimulations simultanées sur deux neurones parmi N<sub>1</sub>, N<sub>2</sub> et N<sub>3</sub> et on enregistre les phénomènes électriques par l'oscilloscope (O).<br>
+Les deux neurones stimulés dans chaque cas et les enregistrements obtenus sont représentés par le document 4.</p>
+<!-- CROP: 4981 1 12 0.104 0.383 0.937 0.500 4981_bac2025_document4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_bac2025_document4.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="consigne">1- En vous référant au document 3 et en exploitant les données du document 4 :<br>
+a- identifiez les enregistrements obtenus,<br>
+b- déterminez les valeurs algébriques des enregistrements obtenus en (O) lorsqu'on applique des stimulations isolées en St<sub>1</sub>, en St<sub>2</sub> et en St<sub>3</sub>,<br>
+c- déduisez la nature de chacune des synapses N<sub>1</sub>-M, N<sub>2</sub>-M et N<sub>3</sub>-M.</p>
+<p class="para"><b>Deuxième série d'expériences :</b></p>
+<ul class="dash">
+<li>Au temps t<sub>1</sub> : on porte trois stimulations rapprochées sur un neurone parmi N<sub>1</sub>, N<sub>2</sub> et N<sub>3</sub>.</li>
+<li>Au temps t<sub>2</sub> : on reprend l'expérience précédente mais en stimulant un neurone autre que celui stimulé à t<sub>1</sub>.</li>
+<li>On détermine à chaque fois la valeur algébrique du potentiel enregistré par (O).</li>
+</ul>
+<p class="consigne">Le document 5 présente les conditions expérimentales et les résultats obtenus.</p>
+<table>
+<tr><th>Temps</th><th>Trois stimulations rapprochées d'un neurone</th><th>Valeur algébrique du potentiel enregistré (mV)</th></tr>
+<tr><td>t<sub>1</sub></td><td>parmi N<sub>1</sub>, N<sub>2</sub> et N<sub>3</sub>.</td><td>- 9</td></tr>
+<tr><td>t<sub>2</sub></td><td>autre que celui stimulé à t<sub>1</sub>.</td><td>+ 100</td></tr>
+</table>
+<p class="para"><b>Document 5</b></p>
+<p class="consigne">2- Exploitez les données du document 5 et utilisez les informations tirées précédemment en vue d'identifier le neurone stimulé dans chaque cas parmi N<sub>1</sub>, N<sub>2</sub> et N<sub>3</sub>.</p>
+<p class="consigne">3- En intégrant les informations précédentes, expliquez le rôle du neurone M.</p>
+<!-- page 13 -->
+<table>
+<tr><td><b>1-</b><br>
+<b>Exploitation</b><br>
+Les enregistrements obtenus sont des légères dépolarisations d'amplitudes diffétentes résultant de sommations spatiales des potentiels des neurones (N<sub>1</sub>, N<sub>2</sub>), (N<sub>1</sub>, N<sub>3</sub>) et (N<sub>2</sub>, N<sub>3</sub>) stimulés deux à deux.<br>
+a- Les enregistrements obtenus sont des PPSE globaux.</td><td>3,25 pts<br>0,5<br>0,5</td></tr>
+<tr><td>b- Soient V<sub>1</sub>, V<sub>2</sub> et V<sub>3</sub> les valeurs algébriques des potentiels enregistrés par O à la suite des stimulations isolées respectivement de N<sub>1</sub>, N<sub>2</sub> et N<sub>3</sub>.<br>
+Deux stimulations simultanées de :<br>
+- N<sub>1</sub> et N<sub>2</sub> engendrent en O un PPSE global : V<sub>1</sub>+V<sub>2</sub> = +2 mV;<br>
+- N<sub>1</sub> et N<sub>3</sub> engendrent en O un PPSE global : V<sub>1</sub>+V<sub>3</sub> = +4 mV,<br>
+- N<sub>2</sub> et N<sub>3</sub> engendrent en O un PPSE global : V<sub>2</sub>+V<sub>3</sub> = +12 mV.<br>
+⇨ { V<sub>2</sub> = 2 - V<sub>1</sub><br>
+V<sub>3</sub> = 4- V<sub>1</sub><br>
+2 - V<sub>1</sub> + 4 - V<sub>1</sub> = 12 ; 6 -2 V<sub>1</sub> = 12 ; V<sub>1</sub>= (6-12) /2 = - 3 mV<br>
+⇨V<sub>2</sub> = 2 - (-3) = +5 mV<br>
+V<sub>3</sub> = 4-(-3) = +7 mV</td><td>Détermination : 0,75<br><br>Valeurs : 0,75</td></tr>
+<tr><td>c-<br>
+- La synapse N<sub>1</sub>-M est inhibitrice.<br>
+- La synapse N<sub>2</sub>-M est excitatrice.<br>
+- La synapse N<sub>3</sub>-M est excitatrice.</td><td>0,75 (0.25x3)</td></tr>
+<tr><td>2-<br>
+- Trois stimulations rapprochées d'un neurone parmi N<sub>1</sub>, N<sub>2</sub> et N<sub>3</sub> donnent un PPSI global de valeur -9 mV résultant de la sommation temporelle de trois PPSI élémentaires de -3 mV chacun. Comme N<sub>2</sub> et N<sub>3</sub> sont excitateurs donc, N<sub>1</sub> est le neurone stimulé dans le 1<sup>er</sup> cas.<br><br>
+- Trois stimulations rapprochées d'un neurone parmi N<sub>2</sub> ou N<sub>3</sub> donnent un PA issu d'un PPSE global de valeur ≥ 20 mV. Ce PPSE global résulte de la sommation temporelle de trois PPSE élémentaires.<br>
+Puisque trois stimulations rapprochées de N<sub>2</sub> donnent un PPSE global de valeur 15 mV (3x5mV) alors N3 est le neurone stimulé car il donne un PPSE d'amplitude 21 mV (7mVx3).</td><td><b>1,25 pt</b><br><b>(0,5 + 0,75)</b></td></tr>
+<tr><td>3- M est un neurone postsynaptique qui intègre les PPS lui parvenant de N<sub>1</sub>, N<sub>2</sub> et N<sub>3</sub> par sommation spatiale (1<sup>ère</sup> série d'expériences) ou temporelle (2<sup>ème</sup> série d'exp) et les traduit en PPSI, PPSE ou PA, donc M est un neurone intégrateur.</td><td><b>0.5 pt</b></td></tr>
+</table>
+<!-- page 14 -->
+<p class="consigne"><b>5- Exploitez les réponses aux questions 3 et 4 afin de déduire la propriété du neurone P.</b></p>
+<div class="exsub">Exercice N° 10:</div>
+<p class="consigne">On se propose d'étudier quelques aspects de la transmission synaptique de messages nerveux à un neurone M connectés à 4 boutons synaptiques (voir document 1).</p>
+<!-- CROP: 4981 1 14 0.394 0.145 0.679 0.424 4981_ex10_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex10_document1.png" alt=""></figure>
+<p class="consigne">On porte des stimulations isolées sur les différentes afférences de cette zone. Les résultats obtenus sont consignés dans le tableau suivant :</p>
+<table>
+<tr><th>Afférence stimulée</th><th colspan="2">Valeur de la ddp atteinte après stimulation (mv)</th></tr>
+<tr><td>A</td><td>En O<sub>1</sub> : -58</td><td>En O<sub>5</sub> : -62</td></tr>
+<tr><td>B</td><td>En O<sub>2</sub> : -56</td><td>En O<sub>5</sub> : -58</td></tr>
+<tr><td>C</td><td>En O<sub>3</sub> : - 78</td><td>En O<sub>5</sub> : -75</td></tr>
+<tr><td>D</td><td>En O<sub>4</sub> : -60</td><td>En O<sub>5</sub> : -62</td></tr>
+</table>
+<p class="consigne"><span class="t-red">N.B.</span> on a bloqué la synapse B-M avant la stimulation de l'afférence A, et la synapse A-M avant la stimulation de l'afférence B.</p>
+<p class="consigne">a. Identifiez, en justifiant, les variations de ddp enregistrées en O1, O2, O3, et O4 afin de déduire la nature des diverses synapses activées.</p>
+<p class="consigne">b. Représentez à l'échelle les enregistrements qu'on obtiendrait en O5 dans chacun des cas suivants :</p>
+<ul class="b">
+<li>1<sup>er</sup> cas : deux stimulations efficaces et rapprochées dans le temps de A.</li>
+<li>2<sup>ème</sup> cas ; une stimulation efficace unique sur la fibre donnant les afférences A et B. (Sans aucun blocage)</li>
+<li>3<sup>ème</sup> cas : trois stimulations simultanées : stimulation de A, stimulation de B et stimulation de C.</li>
+</ul>
+<p class="consigne">Pour chaque cas, justifiez la réponse.</p>
+<!-- page 15 -->
+<p class="subhead t-red"><b>Corrigé ex.10 – série neuro.</b></p>
+<p class="para"><b>a)</b></p>
+<table>
+<tr><th>Enregistrement en :</th><th>.Identification</th><th>Déduction</th></tr>
+<tr><td>O<sub>1</sub>, O<sub>2</sub>, ou O<sub>4</sub></td><td>Une dépolarisation qui rapproche la ddp de la membrane postsynaptique du seuil du potentiel suite à une stimulation présynaptique ; il s'agit de PPSE</td><td>Les synapses A-M, B-M et D-M sont excitatrices</td></tr>
+<tr><td>O<sub>3</sub></td><td>Une hyperpolarisation qui éloigne la ddp de la membrane postsynaptique du seuil de potentiel suite à une stimulation présynaptique ; il s'agit d'un PPSI.</td><td>La synapse C-M est inhibitrice</td></tr>
+</table>
+<p class="para"><b>b)</b></p>
+<table>
+<tr><th>cas</th><th>Enregistrement obtenu en O5</th><th>Justification</th></tr>
+<tr><td><b>1</b></td><td><!-- CROP: 4981 1 15 0.097 0.320 0.362 0.475 4981_ex10_cas1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex10_cas1.png" alt=""></figure></td><td>2 stimulations successives et rapprochées en A donnent au <b>cône axonique de M</b> un PPSE global d'amplitude 8 +8 = 16 mv. (résultant d'une <b>sommation temporelle</b> de deux PPSE unitaires successifs et rapprochés d'amplitude 8 mv chacun) Ainsi le seuil du potentiel n'est pas atteint, donc pas de PA postsynaptique.</td></tr>
+<tr><td><b>2</b></td><td><!-- CROP: 4981 1 15 0.097 0.477 0.364 0.676 4981_ex10_cas2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex10_cas2.png" alt=""></figure></td><td>Une stimulation unique de la fibre sensitive la met en activité les deux boutons synaptiques A et B simultanément ce qui donne au niveau axonique un PPSE global résultant d'une sommation spatiale de deux PPSE unitaires d'amplitude respective 8 mv et 12mv). Ce PPSE global (amplitude 20 mv) atteint le seuil et déclenche un PA postsynaptique.</td></tr>
+<tr><td><b>3</b></td><td><!-- CROP: 4981 1 15 0.097 0.679 0.364 0.798 4981_ex10_cas3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_ex10_cas3.png" alt=""></figure></td><td>3 stimulations simultanées de A, B et C donnent par <b>sommation spatiale</b> de 2 PPSE et 1PPSI, un PPSE global d'amplitude (8 + 12 - 5 = 15 mv) insuffisante pour d'déclencher un PA.</td></tr>
+</table>
+<!-- page 16 -->
+<!-- PROOFREAD: 4981 part1 p16 — the left edge of the page is cut off in the scan; the starts of many lines are missing and only the visible letters are typed -->
+<p class="consigne">but d'étudier certains aspects du fonctionnement des synapses dans une réaction de retrait de la main ı toucher d'un objet brûlant, on réalise des expériences en utilisant deux parties différentes des circuits ques mis en jeu dans ce réflexe.<br>
+ı utilisant la 1<sup>ère</sup> partie de ces circuits (document 1), on réalise deux expériences (document 2) :</p>
+<!-- CROP: 4981 1 16 0.146 0.131 0.694 0.259 4981_reflexe_document1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_reflexe_document1.png" alt=""></figure>
+<!-- CROP: 4981 1 16 0.098 0.264 0.742 0.403 4981_reflexe_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_reflexe_document2.png" alt=""></figure>
+<p class="consigne">xploitez les résultats de l'expérience ❶ en vue de déduire :</p>
+<ul class="b">
+<li>si la stimulation St1 est efficace.</li>
+<li>la nature de la synapse N<sub>1</sub> – N<sub>2</sub>.</li>
+<li>une propriété du phénomène enregistré en O1. (1,5 pts)</li>
+</ul>
+<p class="consigne">itez le résultat de l'expérience ❷ afin de déduire :</p>
+<p class="consigne">ıre de la synapse N2 – N3</p>
+<p class="consigne">du neurone N2.</p>
+<p class="consigne">ɔien de stimulations doit – on porter au minimum en St1 pour avoir l'enregistrement obtenu enO3 dans</p>
+<p class="consigne">ence 2 ? Justifiez.</p>
+<p class="consigne">ısentez, à l'échelle, et avec justification, les enregistrements qu'on doit obtenir au niveau des oscilloscopes</p>
+<p class="consigne">2.</p>
+<p class="consigne">ès les enregistrements obtenus, identifiez le muscle M1 et précisez sa réaction dans le réflexe deretrait de la main.</p>
+<p class="consigne">ilisant la 2ème partie de ces circuits (document 3), on réalise l'expérience ❸ (document 4) :</p>
+<!-- CROP: 4981 1 16 0.097 0.690 0.434 0.837 4981_reflexe_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_reflexe_document3.png" alt=""></figure>
+<div class="data">
+<p class="para"><b>Document 4</b></p>
+<p class="para">On injecte séparément, en SA et en SB (fentes synaptiques) du document 3, deux substances X<sub>1</sub> et X<sub>2</sub>. Les résultats sont consignés dans le tableau suivant :</p>
+<table>
+<tr><th>Injection dans :</th><th>X<sub>1</sub></th><th>X<sub>2</sub></th></tr>
+<tr><td><b>Fente SA</b></td><td>Légère dépolarisation du neurone B</td><td>Aucun effet</td></tr>
+<tr><td><b>Fente SB</b></td><td>Légère dépolarisation du neurone C</td><td>Aucun effet</td></tr>
+</table>
+</div>
+<!-- page 17 -->
+<p class="para"><b>1)</b></p>
+<table>
+<tr><th>Exploitation</th><th>Déduction</th></tr>
+<tr><td>Suite à la stimulation du neurone présynaptique N<sub>1</sub>, on enregistre :
+<ul class="b">
+<li>au niveau du cône axonique du neurone postsynaptique N<sub>2</sub>, une légère et provisoire dépolarisation d'amplitude 5 mV : c'est un PPSE.</li>
+<li>Au niveau de l'axone de N<sub>2</sub>, un PR</li>
+</ul></td><td><ul class="b">
+<li>La stimulation portée sur N<sub>1</sub> est efficace car elle a engendré sur ce neurone un PA. En effet le PPSE obtenue résulte d'une transmission synaptique dont la 1<sup>ère</sup> étape est l'arrivée d'un PA dans le bouton synaptique.</li>
+<li>L'obtention d'un PPSE montre que la synapse N<sub>1</sub>-N<sub>2</sub> est excitatrice.</li>
+<li>Le PPSE est non propageable.</li>
+</ul></td></tr>
+</table>
+<p class="para"><b>2)</b></p>
+<table>
+<tr><th>Exploitation</th><th>Déduction</th></tr>
+<tr><td>Après plusieurs stimulations rapprochées de N<sub>1</sub>, on enregistre en niveau du cône axonique de N<sub>3</sub>, une hyperpolarisation transitoire d'amplitude 7 mv environ : c'est un PPSI traduisant une transmission synaptique au niveau de la synapse N<sub>2</sub>-N<sub>3</sub> et donc la naissance d'un PA sur N<sub>2</sub></td><td><ul class="b">
+<li>L'obtention d'un PPSI montre que la synapse N<sub>2</sub>-N<sub>3</sub> est inhibitrice.</li>
+<li>La naissance d'un PA sur N<sub>2</sub> montre que ce neurone a eu un rôle intégrateur en réalisant une sommation temporelle de plusieurs PPSE rapprochés dans le temps.</li>
+</ul></td></tr>
+</table>
+<p class="para"><b>3)</b> Un seul PA présynaptique sur N<sub>1</sub> engendre un PPSE sur N<sub>2</sub> d'amplitude 5mV. Pour avoir un PA postsynaptique sur N<sub>2</sub>, il faut un PPSE d'amplitude 20mV au minimum.<br>
+Donc il faut au moins 4 stimulations efficaces et rapprochées sur N<sub>1</sub> pour avoir un PA postsynaptique sur N<sub>2</sub>.</p>
+<table>
+<tr><th></th><th>Tracés obtenus</th><th>Justification</th></tr>
+<tr><td>En O<sub>1</sub></td><td><!-- CROP: 4981 1 17 0.316 0.665 0.483 0.793 4981_trace_O1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_trace_O1.png" alt=""></figure></td><td>Les 4 stimulations engendrent au niveau du cône axonique de N<sub>2</sub> un PPSE global en 4 vagues qui atteint le seuil du potentiel ce qui déclenche un PA.</td></tr>
+<tr><td>En O<sub>2</sub></td><td><!-- CROP: 4981 1 17 0.316 0.796 0.483 0.922 4981_trace_O2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_trace_O2.png" alt=""></figure></td><td><ul class="b">
+<li>Le PA est un phénomène propageable et non amorti.</li>
+<li>Le PPSE est un phénomène non propageable.</li>
+</ul></td></tr>
+</table>
+<!-- page 18 -->
+<!-- NOTE: the top strip of this page repeats the bottom of the previous page (the "O2" row of the table: graph and "propageable et non amorti. / Le PPSE est un phénomène non propageable."); it is not typed twice -->
+<p class="para"><b>5)</b> Le neurone N<sub>3</sub> est inhibé suite à l'arrivée d'un PA dans N<sub>2</sub>. Ce circuit inhibiteur doit correspondre au muscle extenseur (le triceps) car le retrait de la main résulte de la contraction du muscle fléchisseur et du relâchement du muscle extenseur. M<sub>1</sub> correspond donc au muscle extenseur.</p>
+<p class="para"><b>B)</b><br>
+Suite à l'injection de X<sub>1</sub> en SA ou en SB on obtient une légère dépolarisation du neurone postsynaptique. Par contre en appliquant X<sub>2</sub> au même endroit rien n'est obtenu.<br>
+→ Seule X<sub>1</sub> peut être considérée comme neurotransmetteur.<br>
+→ M<sub>2</sub> correspond au muscle fléchisseur (le biceps). Il se contracte.</p>
+<!-- page 19 -->
+<p class="para"><b>C)</b></p>
+<!-- CROP: 4981 1 19 0.115 0.147 0.835 0.693 4981_C_circuit_reflexe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_C_circuit_reflexe.png" alt=""></figure>
+<p class="para"><b>Légende :</b> ⊖ : Synapse inhibitrice ; <b>MNE</b> : Message nerveux efférent<br>
+⊕ : Synapse excitatrice ; <b>MNA</b> : Message nerveux afférent ;</p>
+<p class="para">Bac 25</p>
+<!-- page 20 -->
+<!-- ROTATE: 4981 part1 p20 270 -->
+<!-- PROOFREAD: 4981 part1 p20 — sideways page read from a rotated copy; the bottom of the photographed sheet (right-hand ends of the lines in the right column, and of table 2) is cut off — only the visible letters are typed -->
+<!-- CROP: 4981 1 20 0.056 0.076 0.453 0.328 4981_p20_moelle_muscles -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_p20_moelle_muscles.png" alt=""></figure>
+<p class="consigne"><b>EXERCICE</b> Afin de comprendre les caractéristiques de l'élaboration du message nerveux au niveau des jonctions neuro-neuronales, on réalise des expériences en utilisant le dispositif expérimental présenté par le document 2 suivant :</p>
+<!-- CROP: 4981 1 20 0.253 0.386 0.609 0.672 4981_p20_document2_dispositif -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_p20_document2_dispositif.png" alt=""></figure>
+<p class="consigne">On porte une stimulation efficace et isolée en S1. Les valeurs des potentiels enregistrés dans les différents oscilloscopes sont indiquées dans le tableau 1 suivant :</p>
+<table>
+<tr><th>Oscilloscope</th><th>ddp atteinte en (mv) après la stimulation S1</th></tr>
+<tr><td>O<sub>1</sub></td><td>+30</td></tr>
+<tr><td>O<sub>2</sub></td><td>-64</td></tr>
+<tr><td>O<sub>M</sub></td><td>-58</td></tr>
+</table>
+<p class="consigne">1) Exploitez les données fournies dans le tableau 1 en vue de :</p>
+<p class="consigne">a. nommer les potentiels obtenus en O1, O2 et OM suite à la stimulation S1.</p>
+<p class="consigne"><b>Expérience 3 :</b>On stimule efficacement et simultanément les ne</p>
+<p class="consigne">Les potentiels enregistrés figurent dans le tableau 2 suivant :</p>
+<table>
+<tr><th>Oscilloscope</th><th>ddp a</th></tr>
+<tr><td>O<sub>1</sub></td><td></td></tr>
+<tr><td>O<sub>2</sub></td><td></td></tr>
+<tr><td>O<sub>M</sub></td><td></td></tr>
+</table>
+<p class="consigne">3) Quelle est la ddp atteinte dans chacun des oscilloscopes C</p>
+<p class="consigne">4) Exploitez les données du tableau 2 ainsi que les données p</p>
+<p class="consigne">a. déduire la nature de la synapse N2-M.</p>
+<p class="consigne">b. représenter le tracé obtenu en OM suite à une stimulation</p>
+<p class="consigne">c. Représenter le tracé obtenu en OM suite à la stimulation</p>
+<p class="consigne"><b>EXERCICE</b></p>
+<p class="consigne">Le document 4 montre trois neurones (A, B<br>
+contact avec un objet chaud.<br>
+On porte sur le neurone A une série de stim<br>
+St. Les enregistrements obtenus par deux os</p>
+<!-- CROP: 4981 1 20 0.744 0.303 0.915 0.518 4981_p20_document4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4981/4981_p20_document4.png" alt=""></figure>
+<p class="consigne">1. Nommez les neurones A, B et C ain</p>
+<p class="consigne">2. En exploitant ce document et en<br>
+a. attribuez à chacun des neur<br>
+Justifiez.<br>
+b. Dites quel enregistrement<br>
+placée au niveau de l'axor</p>
+<!-- page 21 -->
+<!-- NOTE: the marks printed in yellow boxes in the right margin are kept as t-gold spans at the end of the line they face -->
+<div class="exsub">Exercice 1 :</div>
+<p class="para"><b>1°) a-</b></p>
+<table>
+<tr><th>Exploitation</th><th>Déduction</th></tr>
+<tr><td>suite à la stimulation efficace et isolée de N<sub>1</sub> par S<sub>1</sub>, on enregistre :<br>
+• au niveau de son axone une brève variation de ddp d'amplitude 100 mv (de -70 à +30 mv)</td><td>➢ Il s'agit d'un PA</td></tr>
+<tr><td>• au niveau du cône axonique <b>du neurone post synaptique</b> N<sub>2</sub>. une dépolarisation provisoire d'amplitude 6 mv.</td><td>➢ il s'agit d'un PPSE.</td></tr>
+<tr><td>• au niveau du cône axonique <b>du neurone post synaptique</b> M. une dépolarisation provisoire d'amplitude 12 mv.</td><td>➢ il s'agit d'un PPSE</td></tr>
+</table>
+<p class="para"><span class="t-gold"><b>1</b></span></p>
+<p class="para"><b>b)</b> La différence d'amplitude s'explique par le fait que le PPSE en O<sub>2</sub> est un PPSE individuel (un seul bouton synaptique reliant N<sub>1</sub> à N<sub>2</sub>) alors qu' en O<sub>M</sub>, on a un PPSE global résultant d'une sommation spatiale de deux PPSE individuels en effet il y a 2 boutons synaptiques reliant N<sub>1</sub> à M. <span class="t-gold"><b>1</b></span></p>
+<p class="para"><b>c)</b> L'obtention de PPSE montre que les synapses N<sub>1</sub>-N<sub>2</sub> et N<sub>1</sub>-M sont excitatrices <span class="t-gold"><b>0.25</b></span></p>
+<p class="para"><b>2°) a)</b> En O<sub>M</sub>, l'enregistrement correspond à un PA précédé par un PPSE global résultant d'une sommation temporelle.</p>
+<p class="para"><b>b)</b> -propagation des deux PA résultant des 2 stimulations successives et rapprochées, vers le bouton synaptique de la synapse N<sub>3</sub>-M.<br>
+- transmission synaptique de ces deux PA successifs et rapprochés conduisant à la naissance de deux PPSE successifs et rapprochés qui s'additionnent <b>au niveau de la membrane postsynaptique</b> en donnant naissance à un PPSE global. <span class="t-gold"><b>1.5</b></span><br>
+<b>- Propagation avec amortissement du PPSE global vers le cône axonique</b> ce qui fait atteindre sa membrane le seuil du potentiel d'où la naissance d'un PA postsynaptique par ouverture des CVD à Na<sup>+</sup> puis à K<sup>+</sup>.</p>
+<p class="para"><b>c)</b> la synapse <b>N3-M est excitatrice.</b> <span class="t-gold"><b>0.25</b></span></p>
+<p class="para"><b>3°) En O<sub>1</sub> et en O<sub>2</sub></b> la ddp atteint +30 mv car les deux stimulations de N<sub>1</sub> et N<sub>2</sub> sont effaces donc elles engendrent chacune un PA<br>
+<i><span class="t-red">NB</span> : le PA crée en N<sub>2</sub> peut se propager vers O<sub>2</sub> et vers le bouton synaptique à la fois car il n'y a pas de période réfractaire initialement.</i> <span class="t-gold"><b>0.5</b></span></p>
+<p class="para"><b>4°) a)</b> Les 3 stimulations simultanées de N<sub>1</sub>, N<sub>2</sub> et N<sub>3</sub> ont donné un PPSE global résultant de la sommation spatiale, d'amplitude 19 mv &lt; 24 mv qui est l'amplitude du PPSE global qui serait créé si on avait stimulé simultanément N<sub>1</sub> et N<sub>3</sub> seulement. Donc la <b>synapse N<sub>2</sub>-M</b> a eu un effet hyperpolarisant ; elle a engendré un PPSI ; elle est donc <b>inhibitrice.</b> <span class="t-gold"><b>1</b></span></p>
+<p class="para">b) La stimulation efficace du neurone inhibiteur N<sub>2</sub> engendre au niveau du cône axonique du neurone postsynaptique M un PPSI d'amplitude X tel que 12 +12 - X = 19 , donc X = 24-19= 5mv. <b>+ le tracé du PPSI.</b> <span class="t-gold"><b>0.75</b></span></p>
+<p class="para"><b>c) la stimulation de N<sub>1</sub> et N <sub>2</sub></b> de façon simultanée engendre par sommation algébrique spatiale au niveau du cône axonique de M un PPSE d'amplitude 12-5 = 7mv. <b>+ tracé obtenu.</b> <span class="t-gold"><b>0.5</b></span></p>
+<div class="exsub">Exercice 2 :</div>
+<!-- NOTE: the page (and the file) ends right after the heading "Exercice 2 :"; nothing more is printed -->
+
+</section>
+
+</div>
+</body>
+</html>

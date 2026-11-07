@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Corrigé-Réflexe myotatique + GF</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Correction">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4754">
+<meta data-pagefind-meta="title[content]" content="Corrigé-Réflexe myotatique + GF">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="chapter[content]" content="Génétique des diploïdes (monohybridisme, dihybridisme)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Corrigé-Réflexe myotatique + GF" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Corrigé-Réflexe myotatique + GF</h1><div class="grule"></div><div class="sub">Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com</span> <span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1jCfv1gpct6sui04MbR1xWQs75LeJcLdE/view">↗ Corrigé-Réflexe myotatique + GF.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1jCfv1gpct6sui04MbR1xWQs75LeJcLdE/view">chahredine thamri · Chahredine thamri › Chahredine Thamri / Drive élite / Science élites / NR</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+<!-- SOURCE: Taki Academy · www.takiacademy.com -->
+<div class="exh"><span class="idx">Correction</span><h2>Corrigé-Réflexe myotatique + GF</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4754.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com</span> <span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1jCfv1gpct6sui04MbR1xWQs75LeJcLdE/view">↗ Corrigé-Réflexe myotatique + GF.pdf</a></div>
+<!-- page 01 -->
+<div class="exsub">Exercice 1</div>
+<p class="subhead t-red">I)</p>
+<p class="subhead t-red">1)</p>
+<table>
+<tr><th>structure</th><th>Nom</th><th>justification</th></tr>
+<tr><td>A</td><td>FNM</td><td>Sensible à l'étirement de plus il présente une terminaison dendritique.</td></tr>
+<tr><td>D</td><td>Fibre musculaire</td><td>ç allongée et présente des noyaux périphériques</td></tr>
+<tr><td>B</td><td>neurone sensitif en T, Ia</td><td>ç à corps ç<sup>aire</sup> unipolaire</td></tr>
+<tr><td>C</td><td>motoneurone α</td><td>ç à corps ç<sup>aire</sup> multipolaire en contact direct avec une fibre musculaire</td></tr>
+<tr><td>Zone 1</td><td>synapse neuro-neuronique</td><td>jonction entre 2 neurones, 1 sensitif et l'autre moteur</td></tr>
+<tr><td>Zone 2</td><td>synapse neuro-musculaire = plaque motrice</td><td>jonction entre un motoneurone et une fibre musculaire</td></tr>
+</table>
+<p class="subhead t-red">2)</p>
+<table>
+<tr><th>Analyse</th><th>Conclusion.</th></tr>
+<tr><td>- Un étirement E<sub>1</sub> inefficace d'intensité infraliminaire déclenche :<br>
+- en O<sub>1</sub> : une légère dépolarisation au niveau d'un site transducteur : Potentiel de récepteur (PR)</td>
+<td>ⓐ Le FNM (A) assure la transduction : il convertit l'énergie mécanique (étirement) en signal électrique (potentiel de récepteur puis PA en O<sub>2</sub>)</td></tr>
+</table>
+<!-- PROOFREAD: 4754 part1 p01 — handwriting hard to read throughout the tables ("ç<sup>aire</sup>", "puis PA en O2") -->
+<!-- page 02 -->
+<!-- ROTATE: 4754 part1 p02 180 -->
+<table>
+<tr><td>- en O<sub>2</sub> : un potentiel générateur (PG) moins ample que celui en O<sub>1</sub><br>
+- en O<sub>3</sub> : PR (-70 mv)</td>
+<td>ⓑ le potentiel de récepteur (PR) se propage avec amortissement ⇒ non propageable (à décrément spatial) ⇒ dégradable.<br>
+Le potentiel de récepteur est codé en modulation d'amplitude = graduable</td></tr>
+<tr><td>Un étirement E<sub>2</sub> (&gt;E<sub>1</sub>) efficace d'intensité liminaire déclenche<br>
+- en O<sub>1</sub> : un potentiel de récepteur plus ample, et qui dépasse le seuil, que celui de l'exp 1.<br>
+- en O<sub>2</sub> : un potentiel générateur qui atteint le seuil d'où naissance d'un PA (100 mv)<br>
+- en O<sub>3</sub> : 1 PA (100 mv)</td>
+<td>- le PA obéit à la loi du seuil<br>
+- le PA se propage sans amortissement ⇒ propageable.</td></tr>
+<tr><td>• Un étirement E<sub>3</sub> (&gt; E<sub>2</sub>) efficace d'intensité supra liminaire déclenche :<br>
+- en O<sub>1</sub> : un potentiel de récepteur encore plus ample.<br>
+- en O<sub>2</sub> : train de 3 PA (naissance) (100 mv)<br>
+- en O<sub>3</sub> : train de 3 PA (100 mv)</td>
+<td>- Le PA obéit à la loi de tout ou rien<br>
+ⓒ Le message nerveux est codé en modulation de fréquence de PA<br>
+⇒ c'est le codage</td></tr>
+</table>
+<!-- PROOFREAD: 4754 part1 p01-p02 — abbreviations in parentheses read "(PR)" / "(PG)" but the letters look like "(PL)" -->
+<!-- PROOFREAD: 4754 part1 p02 — last line "train de 3 PA (100 mv)" value partly hidden by highlight -->
+<!-- page 03 -->
+<p class="subhead t-red">3)</p>
+<!-- CROP: 4754 1 3 0.03 0.055 0.99 0.555 4754_p03_propagation_fibre -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4754/4754_p03_propagation_fibre.png" alt=""></figure>
+<p class="para">Propagation unidirectionnelle grâce à la période réfractaire durant laquelle la fibre nerveuse devienne innexcitable, de façon saltatoire, d'un noeud de Ranvier à un autre</p>
+<p class="para"><span class="t-red">⇒ Propagation unidirectionnelle saltatoire (condition physiologique naturelle)</span></p>
+<!-- page 04 -->
+<p class="subhead t-red">4)</p>
+<table>
+<tr><th></th><th><span class="t-red"><b><i>Synapses neuroneuronique</i></b></span></th><th><span class="t-red"><b><i>Synapse neuro-musculaire</i></b></span></th></tr>
+<tr><td><b>Particularités structurales</b></td>
+<td><ul class="b"><li>Petite taille</li><li>Membrane post synaptique lisse.</li><li>Présence de plusieurs types de CCD suivant la nature ( à Na+, K+, Cl- )</li><li>Absence de CVD sur la membrane post synaptique.</li></ul></td>
+<td><ul class="b"><li>Grande taille</li><li>Membrane post synaptique repliée formant l'appareil sous-neurale.</li><li>Présence d'un seul types de CCD à Na+.</li><li>Présence de CVD sur la membrane post synaptique ou sarcolemme.</li></ul></td></tr>
+</table>
+<!-- CROP: 4754 1 4 0.05 0.285 0.99 0.410 4754_p04_mb_post_synaptiques -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4754/4754_p04_mb_post_synaptiques.png" alt=""></figure>
+<!-- CROP: 4754 1 4 0.03 0.425 1.00 0.825 4754_p04_muscle_fibre -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4754/4754_p04_muscle_fibre.png" alt=""></figure>
+<p class="para">Fibre musculaire = ç musculaire allongée<br>
+{ long de 1 à 5 cm, φ = 10 à 100 µm } ç géante</p>
+<!-- page 05 -->
+<p class="subhead t-red">II-</p>
+<p class="subhead t-red">1)</p>
+<table>
+<tr><th>Analyse</th><th>Explication</th></tr>
+<tr><td>⊛ Un étirement E<sub>2</sub> efficace d'intensité liminaire déclenche<br>
+- en O<sub>4</sub> : un PPSE &lt; seuil<br>
+- en O<sub>5</sub> : un PPSE moins ample</td>
+<td>• La synapse B-C est une synapse excitatrice (PPSE) qui se propage avec amortissement c'est pourquoi il diminue d'amplitude.</td></tr>
+<tr><td>⊛ Un étirement E<sub>3</sub> efficace d'intensité supraliminaire déclenche :<br>
+- en O<sub>4</sub> : PPSE global &gt; seuil<br>
+- en O<sub>5</sub> : PPSE global qui atteint le seuil et déclenche un PA (100 mv)</td>
+<td>• Un train de 3 PA présynaptique et successives déclenchent par sommation temporelle (3 PPSE) un PPSE global qui atteint le seuil au niveau du cône axonique donc on obtient un PA (100 mv) en O<sub>5</sub></td></tr>
+</table>
+<!-- page 06 -->
+<!-- ROTATE: 4754 part1 p06 180 -->
+<p class="subhead t-red">2)</p>
+<table>
+<tr><th>Analyse</th><th>Conclusion</th></tr>
+<tr><td>ⓐ A : Une stimulation efficace portée en B dans un milieu dépourvu de Ca<sup>2+</sup> déclenche<br>
+- en O<sub>3</sub> : un PA (100 mv)<br>
+- en O<sub>4</sub> : un PR (-70 mv)</td>
+<td>La présence de Ca<sup>2+</sup> est indispensable pour la transmission synaptique</td></tr>
+<tr><td>B : Injection de Ca<sup>2+</sup> dans le bouton synaptique de B provoque<br>
+- un PPSE en O<sub>4</sub> malgré l'absence de PA en O<sub>3</sub></td>
+<td>Le Ca<sup>2+</sup> seul dans le bouton synaptique est capable de déclencher la naissance d'un PPSE.</td></tr>
+<tr><td>ⓑ expe : Dans un milieu riche en Ca<sup>2+</sup>, l'injection d'ésérine en F suivi d'une stimulation efficace en B déclenche :<br>
+- en O<sub>3</sub> : un PA (100 mv)<br>
+- en O<sub>4</sub> : une dépolarisation prolongée (PPSE)</td>
+<td>Hypothèse : l'ésérine agit sur la enzyme et bloque leurs fonctionnement ⇒ pas d'hydrolyse du neurotransmetteur.</td></tr>
+</table>
+<!-- page 07 -->
+<p class="para">ⓒ en principe on va avoir un train de PA (naissance)</p>
+<!-- CROP: 4754 1 7 0.22 0.120 0.97 0.360 4754_p07_train_PA -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4754/4754_p07_train_PA.png" alt=""></figure>
+<p class="subhead t-red">III-)</p>
+<p class="subhead t-red">1)</p>
+<table>
+<tr><th>Analyse</th><th>Conclusion.</th></tr>
+<tr><td>1<sup>re</sup> phase du signal électrique :<br>
+Canal de type 2 ouvert avec une diminution de la concentration extraç<sup>aire</sup> (MEC) de Na<sup>+</sup> de 440 à 340 mmol/l (↓ de 100) alors la [Na<sup>+</sup>] intraç<sup>aire</sup> augmente de 100 mmol/l et passe de 20 à 120 (20+100)</td>
+<td>⇒ Il y a entrée passive de Na<sup>+</sup> du MEC vers le MIC à travers les canaux de type 2 qui sont des CVD à Na<sup>+</sup> : phase de dépolarisation</td></tr>
+<tr><td><span class="t-red">2<sup>ème</sup> phase du signal électrique.</span><br>
+Canal de type ouvert avec</td><td></td></tr>
+</table>
+<!-- page 08 -->
+<table>
+<tr><td>augmentation de la [K<sup>+</sup>] extraç<sup>aire</sup> de 50 à 150 (augmentation de 100 mmol/l) alors qu'il y a ↓ [K<sup>+</sup>] intraç<sup>aire</sup> de 100 mmol/l qui passe de 400 à 300 (400-100)</td>
+<td>Il y a sortie de K<sup>+</sup> à travers les canaux de type 1 qui sont des CVD à K<sup>+</sup> ⇒ c'est la phase de repolarisation et d'hyperpolarisation</td></tr>
+</table>
+<p class="subhead t-red">2) ⓐ</p>
+<p class="para">Hyp 1 : Le venin du scorpion agit sur les CVD à Na<sup>+</sup> et empêche leur fermetures<br>
+Hyp 2 : le venin du scorpion agit sur les CVD à K<sup>+</sup> et empêche leur ouvertures</p>
+<p class="para">ⓑ La radioactivité s'observe au niveau des canaux type 2 ⇒ Ce venin de scorpion agit sur les CVD à Na<sup>+</sup> en empêchant leur fermeture et par la suite les CVD à K<sup>+</sup> restent fermé ⇒ conduisant à un équilibre ionique à l'origine de la mort ⇒ l'hypothèse 1 est confirmée</p>
+<!-- page 09 -->
+<!-- ROTATE: 4754 part1 p09 180 -->
+
+<div class="chtag"><span>Chapitre</span> Génétique des diploïdes (monohybridisme, dihybridisme)</div>
+
+<div class="exsub">Exercice 2</div>
+<p class="para"><span class="t-red">1) ⓐ</span> 1<sup>er</sup> caractère : P<sub>1</sub> (courte) x P<sub>2</sub> (grimpante) <span class="t-red">c &lt; G</span><br>
+D<sub>1</sub> : 100% grimpante<br>
+G &gt; c<br>
+⇒ Dominance absolue.</p>
+<p class="para">2<sup>ème</sup> caractère forme de Radis<br>
+R [Rond] = 41/163 x 100 = 25,15% ≃ 1/4<br>
+L [long] = 41/163 x 100 = 25,15% ≃ 1/4<br>
+[ovale] = 81/163 x 100 = 49,7% ≃ 1/2<br>
+} Codominance<br>
+R → Rond [R]<br>
+L → long [L]<br>
+R = L<br>
+[RL] ovale</p>
+<p class="para"><span class="t-red">ⓑ</span> Hyp : 2 gènes indépendants<br>
+(1/2 [G] + 1/2 [c]) x (1/4 [R] + 1/2 [RL] + 1/4 [L]) =<br>
+1/8 [GR] + 1/4 [G RL] + 1/8 [G L] + 1/8 [c R] + 1/4 [c RL] + 1/8 [c L]</p>
+<!-- PROOFREAD: 4754 part1 p09 — fourth fraction "1/8 [cR]" written like "1/3" -->
+<table>
+<tr><td>1/8 [GR]</td><td>1/4 [G RL]</td><td>1/8 [G L]</td><td>1/8 [c R]</td><td>1/4 [c RL]</td><td>1/8 [c L]</td><td></td></tr>
+<tr><td>↓ 20,37</td><td>↓ 40,75</td><td>↓ 20,37</td><td>↓ 20,37</td><td>↓ 40,75</td><td>↓ 20,37</td><td>RTh</td></tr>
+<tr><td>≃ <span class="t-red">20</span></td><td>≃ <span class="t-red">41</span></td><td>≃ <span class="t-red">21</span></td><td>≃ <span class="t-red">21</span></td><td>≃ <span class="t-red">40</span></td><td>≃ <span class="t-red">20</span></td><td>≃ <span class="t-red">Rp</span></td></tr>
+</table>
+<p class="para">RTh ≃ R.p ⇒ Hyp validée</p>
+<div class="data"><p>G<sub>1</sub> et G<sub>2</sub> : 2 gènes indépendants</p></div>
+<!-- page 10 -->
+<!-- ROTATE: 4754 part1 p10 180 -->
+<p class="para"><span class="t-red">ⓒ</span> P<sub>1</sub> [c R] c//c R//R<br>
+P<sub>2</sub> [G RL] G//G R//L<br>
+P<sub>3</sub> [c RL] c//c R//L<br>
+P<sub>4</sub> [G RL] = G//c R//L</p>
+<p class="para"><span class="t-red">2) ⓐ</span> G<sub>2</sub> et G<sub>3</sub> sont 2 gènes liés partiellement<br>
+d<sub>G2-G3</sub> = 10 cM ⇒ P = 10%</p>
+<div class="data"><p>L<sub>1</sub> &gt; L<sub>2</sub></p></div>
+<p class="para">2 parents de [ ] ≠<sup>ts</sup> ont donné une descendance homogène ⇒ d'après la 1<sup>ère</sup> loi de Mendel, les deux parents sont purs</p>
+<p class="para">P<sub>5</sub> [G L<sub>2</sub>] G L<sub>2</sub> // G L<sub>2</sub> x P<sub>6</sub> [c L<sub>1</sub>] c L<sub>1</sub> // c L<sub>1</sub><br>
+↓ 100% <u>G L<sub>2</sub></u> ↓ 100% <u>c L<sub>1</sub></u></p>
+<p class="para">P<sub>7</sub> 100% G L<sub>2</sub> // c L<sub>1</sub> [G L<sub>1</sub>]</p>
+<!-- page 11 -->
+<!-- ROTATE: 4754 part1 p11 180 -->
+<div class="data"><p>P<sub>8</sub> [c L<sub>2</sub>] c L<sub>2</sub> // c L<sub>2</sub></p></div>
+<p class="para"><span class="t-red">ⓑ</span> P<sub>7</sub> [G L<sub>1</sub>] G L<sub>2</sub> // c L<sub>1</sub> x P<sub>8</sub> [c L<sub>2</sub>] c L<sub>2</sub> // c L<sub>2</sub></p>
+<p class="para">(1-P)/2 = 45% <u>G L<sub>2</sub></u><br>
+(1-P)/2 = 45% <u>c L<sub>1</sub></u> } Pr<br>
+P/2 = 5% <u>G L<sub>1</sub></u><br>
+P/2 = 5% <u>c L<sub>2</sub></u> } R</p>
+<p class="para">↓ 100% <u>c L<sub>2</sub></u></p>
+<p class="para">100% → 500<br>
+45% → (45 x 500) / 100</p>
+<p class="para">Echiquier</p>
+<table>
+<tr><th>P<sub>7</sub> \ P<sub>8</sub></th><th>45% <u>G L<sub>2</sub></u></th><th>45% <u>c L<sub>1</sub></u></th><th>5% <u>G L<sub>1</sub></u></th><th>5% <u>c L<sub>2</sub></u></th></tr>
+<tr><td>100% <u>c L<sub>2</sub></u></td>
+<td>45% G L<sub>2</sub> // c L<sub>2</sub> <span class="t-red">[G L<sub>2</sub>]</span></td>
+<td>45% c L<sub>1</sub> // c L<sub>2</sub> <span class="t-red">[c L<sub>1</sub>]</span></td>
+<td>5% G L<sub>1</sub> // c L<sub>2</sub> <span class="t-red">[G L<sub>1</sub>]</span></td>
+<td>5% c L<sub>2</sub> // c L<sub>2</sub> <span class="t-red">[c L<sub>2</sub>]</span></td></tr>
+<tr><td></td><td>⇓ 225</td><td>⇓ 225</td><td>⇓ 25</td><td>⇓ 25</td></tr>
+</table>
+<p class="para"><span class="t-red">3)</span> G<sub>1</sub> et G<sub>2</sub> indépendant<br>
+G<sub>2</sub> et G<sub>3</sub> liés partielles<br>
+⇒ G<sub>1</sub> et G<sub>3</sub> : 2 gènes indépendant</p>
+<!-- page 12 -->
+<!-- ROTATE: 4754 part1 p12 180 -->
+<p class="para">[RL L<sub>2</sub>] R//L L<sub>2</sub>//L<sub>2</sub> x [R L<sub>1</sub>] : <u>purs</u>. R//R L<sub>1</sub>//L<sub>1</sub><br>
+↓ 1/2 <u>R</u> <u>L<sub>2</sub></u> ; 1/2 <u>L</u> <u>L<sub>2</sub></u> &nbsp; ↓ 100% <u>R</u> <u>L<sub>1</sub></u></p>
+<p class="para">Echiquier</p>
+<table>
+<tr><th></th><th>1/2 <u>R</u> <u>L<sub>2</sub></u></th><th>1/2 <u>L</u> <u>L<sub>2</sub></u></th></tr>
+<tr><td>100% <u>R</u> <u>L<sub>1</sub></u></td>
+<td>50% R//R L<sub>2</sub>//L<sub>1</sub> <span class="t-red">[R L<sub>1</sub>]</span></td>
+<td>50% L//R L<sub>2</sub>//L<sub>1</sub> <span class="t-red">[RL L<sub>1</sub>]</span></td></tr>
+</table>
+<p class="para">End</p>
+<!-- NOTE: small doodle and handwritten initials under "End" not transcribed — decorative signature -->
+
+</section>
+
+</div>
+</body>
+</html>
