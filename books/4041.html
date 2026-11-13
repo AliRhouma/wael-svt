@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Revision été</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Résumé">
+<meta data-pagefind-filter="resource[content]" content="Prof : kammoun Ahmed SVT">
+<meta data-pagefind-meta="n[content]" content="4041">
+<meta data-pagefind-meta="title[content]" content="Revision été">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="chapter[content]" content="Brassage génétique (méiose, fécondation)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Revision été" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Revision été</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Prof : kammoun Ahmed SVT</span> <span class="tg">Résumé</span><span class="tg">Révision</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/10y7phu3_i3XvBcmEssc6CA3LMHwXSnci/view">↗ 20260802_141924.jpg</a> <a href="https://drive.google.com/file/d/13e-OZ0i0SPnrYqPpTp01InDNMBa3wui9/view">↗ 20260802_141938.jpg</a> <a href="https://drive.google.com/file/d/1MH5CsbIZnrCVVs_27l7v8bH-oBfT9YFT/view">↗ 20260802_142008.jpg</a> <a href="https://drive.google.com/file/d/1nkvsZupQEYeOB3cktFG0LDOXwAIeM7YV/view">↗ 20260802_142020.jpg</a> <a href="https://drive.google.com/file/d/1oT6Cim-c8mxsUqmNOiUlI9RI6COsX8sC/view">↗ 20260802_142028.jpg</a> <a href="https://drive.google.com/file/d/16g4OWzbYakMBHdnvX1SFRthu9OosasLt/view">↗ 20260802_142110.jpg</a> <a href="https://drive.google.com/file/d/1eIKavFOuQADC68Cw-Nugd6BWLSYKcYb8/view">↗ 20260802_142119.jpg</a> <a href="https://drive.google.com/file/d/16LmV9pwyqUGGZriqtRJNiGomY8VPZC-f/view">↗ 20260802_142127.jpg</a> <a href="https://drive.google.com/file/d/102rbTHvGWNKr4PIbJHqBhn7t6LxYhCr7/view">↗ 20260802_142200.jpg</a> <a href="https://drive.google.com/file/d/1gJa83jXOUsnkZgDRkJT4B9mLgyzcFRku/view">↗ 20260802_142229.jpg</a> <a href="https://drive.google.com/file/d/1szvoj71BJPGmVYF-9ve0_Z3L9-HehrF7/view">↗ 20260802_142235.jpg</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (11)</b><ul><li><a href="https://drive.google.com/file/d/10y7phu3_i3XvBcmEssc6CA3LMHwXSnci/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li><li><a href="https://drive.google.com/file/d/13e-OZ0i0SPnrYqPpTp01InDNMBa3wui9/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li><li><a href="https://drive.google.com/file/d/1MH5CsbIZnrCVVs_27l7v8bH-oBfT9YFT/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li><li><a href="https://drive.google.com/file/d/1nkvsZupQEYeOB3cktFG0LDOXwAIeM7YV/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li><li><a href="https://drive.google.com/file/d/1oT6Cim-c8mxsUqmNOiUlI9RI6COsX8sC/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li><li><a href="https://drive.google.com/file/d/16g4OWzbYakMBHdnvX1SFRthu9OosasLt/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li><li><a href="https://drive.google.com/file/d/1eIKavFOuQADC68Cw-Nugd6BWLSYKcYb8/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li><li><a href="https://drive.google.com/file/d/16LmV9pwyqUGGZriqtRJNiGomY8VPZC-f/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li><li><a href="https://drive.google.com/file/d/102rbTHvGWNKr4PIbJHqBhn7t6LxYhCr7/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li><li><a href="https://drive.google.com/file/d/1gJa83jXOUsnkZgDRkJT4B9mLgyzcFRku/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li><li><a href="https://drive.google.com/file/d/1szvoj71BJPGmVYF-9ve0_Z3L9-HehrF7/view">une · Bac science 2026 › Science / Resumés / Revision été</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+<!-- SOURCE: Prof : kammoun Ahmed SVT -->
+<div class="exh"><span class="idx">Résumé</span><h2>Revision été</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4041.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Prof : kammoun Ahmed SVT</span> <span class="tg">Résumé</span><span class="tg">Révision</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/10y7phu3_i3XvBcmEssc6CA3LMHwXSnci/view">↗ 20260802_141924.jpg</a> <a href="https://drive.google.com/file/d/13e-OZ0i0SPnrYqPpTp01InDNMBa3wui9/view">↗ 20260802_141938.jpg</a> <a href="https://drive.google.com/file/d/1MH5CsbIZnrCVVs_27l7v8bH-oBfT9YFT/view">↗ 20260802_142008.jpg</a> <a href="https://drive.google.com/file/d/1nkvsZupQEYeOB3cktFG0LDOXwAIeM7YV/view">↗ 20260802_142020.jpg</a> <a href="https://drive.google.com/file/d/1oT6Cim-c8mxsUqmNOiUlI9RI6COsX8sC/view">↗ 20260802_142028.jpg</a> <a href="https://drive.google.com/file/d/16g4OWzbYakMBHdnvX1SFRthu9OosasLt/view">↗ 20260802_142110.jpg</a> <a href="https://drive.google.com/file/d/1eIKavFOuQADC68Cw-Nugd6BWLSYKcYb8/view">↗ 20260802_142119.jpg</a> <a href="https://drive.google.com/file/d/16LmV9pwyqUGGZriqtRJNiGomY8VPZC-f/view">↗ 20260802_142127.jpg</a> <a href="https://drive.google.com/file/d/102rbTHvGWNKr4PIbJHqBhn7t6LxYhCr7/view">↗ 20260802_142200.jpg</a> <a href="https://drive.google.com/file/d/1gJa83jXOUsnkZgDRkJT4B9mLgyzcFRku/view">↗ 20260802_142229.jpg</a> <a href="https://drive.google.com/file/d/1szvoj71BJPGmVYF-9ve0_Z3L9-HehrF7/view">↗ 20260802_142235.jpg</a></div>
+<!-- NOTE: highlighter marks, handwritten words, ticks, crosses and dates ("interphase", "2026", "2025") added on top of the printed sheets are left out -->
+<!-- page 01 (part1) -->
+
+<div class="chtag"><span>Chapitre</span> Brassage génétique (méiose, fécondation)</div>
+
+<p class="subhead t-red"><b>Tableau comparatif de la mitose et de la méiose</b></p>
+<table>
+<tr><th></th><th>Mitose</th><th>Méiose</th></tr>
+<tr><td>Cellules concernées</td><td><b>Cellules somatiques</b><br><i>Chez l'homme : cellules diploïdes (23 paires de chromosomes homologues)</i></td><td><b>Cellules germinales</b><br>(cellules susceptibles de former les gamètes)<br><i>Chez l'homme : cellules diploïdes (23 paires de chromosomes homologues)</i></td></tr>
+<tr><td>Déroulement</td><td><b>1 division cellulaire :</b><br>4 étapes (prophase, métaphase, anaphase, télophase)<br><br><b>Séparation des chromatides de chaque chromosome double</b></td><td><b>2 divisions cellulaires successives :</b><br>4 étapes par division (prophase, métaphase, anaphase et télophase)<br><br><b>1<sup>ère</sup> division : séparation des chromosomes homologues</b><br><i>NB : en prophase 1, on observe l'appariement des chromosomes homologues et la formation de tétrades (groupes de quatre chromatides).</i><br><br><b>2<sup>nde</sup> division : séparation de chromatides de chaque chromosome double</b></td></tr>
+<tr><td>Cellules filles</td><td><b>2 cellules filles possédant le même caryotype</b> que la cellule mère :<br><b>reproduction conforme</b><br><i>Chez l'homme, chaque cellule fille est diploïde et possède 23 paires de chromosomes simples.</i></td><td><b>4 cellules filles</b> possédant <b>la moitié du nombre de chromosomes</b> de la cellule mère. Les quatre cellules filles possèdent une combinaison allélique unique.<br><i>Chez l'homme, chaque cellule fille est haploïde et possède 23 chromosomes simples.</i></td></tr>
+<tr><td>Place dans l'organisme vivant</td><td>Concerne de très nombreuses cellules de l'organisme. Permet <b>l'augmentation du nombre de cellules</b> lors du développement du zygote. Assure la croissance et la <b>régénération des tissus</b>.<br><br><b>Reproduction conforme</b></td><td>Permet la fabrication des gamètes.<br><br><b>Est source de variabilité</b> (brassage inter et intra chromosomique)</td></tr>
+<tr><td>Evolution de la quantité d'ADN par cellule avant et pendant la division</td><td><!-- CROP: 4041 1 1 0.200 0.498 0.540 0.645 4041_p1_adn_mitose --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p1_adn_mitose.png" alt=""></figure></td><td><!-- CROP: 4041 1 1 0.545 0.500 0.885 0.630 4041_p1_adn_meiose --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p1_adn_meiose.png" alt=""></figure></td></tr>
+<tr><td>Schéma avec cellule mère à 2n=4</td><td><!-- CROP: 4041 1 1 0.280 0.655 0.500 0.865 4041_p1_schema_mitose --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p1_schema_mitose.png" alt=""></figure></td><td><!-- CROP: 4041 1 1 0.535 0.642 0.885 0.905 4041_p1_schema_meiose --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p1_schema_meiose.png" alt=""></figure></td></tr>
+</table>
+<!-- page 01 (part2) -->
+<!-- ROTATE: 4041 part2 p01 180 -->
+<table>
+<tr><th>Nom de l'étape</th><th>Photos</th><th>Schéma</th><th>Description</th></tr>
+<tr><td>Début de<br>prophase 1</td><td><!-- CROP: 4041 2 1 0.172 0.057 0.318 0.141 4041_p2_photo_debut_prophase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_photo_debut_prophase1.png" alt=""></figure></td><td><!-- CROP: 4041 2 1 0.318 0.057 0.552 0.141 4041_p2_schema_debut_prophase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_schema_debut_prophase1.png" alt=""></figure></td><td>La chromatine se condense pour former des chromosomes,<br>l'enveloppe nucléaire disparait.<br>La cellule compte 2n chromosomes à deux chromatides.</td></tr>
+<tr><td>Fin de<br>prophase 1</td><td><!-- CROP: 4041 2 1 0.172 0.141 0.318 0.241 4041_p2_photo_fin_prophase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_photo_fin_prophase1.png" alt=""></figure></td><td><!-- CROP: 4041 2 1 0.318 0.141 0.552 0.241 4041_p2_schema_fin_prophase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_schema_fin_prophase1.png" alt=""></figure></td><td>Les chromosomes homologues s'apparient, le noyau n'est plus visible.<br>La cellule compte 2n chromosomes à deux chromatides</td></tr>
+<tr><td>Métaphase 1</td><td><!-- CROP: 4041 2 1 0.172 0.241 0.318 0.329 4041_p2_photo_metaphase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_photo_metaphase1.png" alt=""></figure></td><td><!-- CROP: 4041 2 1 0.318 0.241 0.552 0.329 4041_p2_schema_metaphase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_schema_metaphase1.png" alt=""></figure></td><td>Les chromosomes s'alignent sur le plan équatorial (plan au milieu de la cellule).<br>La cellule compte 2n chromosomes à deux chromatides</td></tr>
+<tr><td>Anaphase 1</td><td><!-- CROP: 4041 2 1 0.172 0.329 0.318 0.421 4041_p2_photo_anaphase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_photo_anaphase1.png" alt=""></figure></td><td><!-- CROP: 4041 2 1 0.318 0.329 0.552 0.421 4041_p2_schema_anaphase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_schema_anaphase1.png" alt=""></figure></td><td>Les chromosomes homologues de chaque paire s'éloignent chacun vers un des pôle de la cellule, pour former deux lots homologues de chromosomes.<br>La cellule compte 2n chromosomes à deux chromatides</td></tr>
+<tr><td>Télophase 1</td><td><!-- CROP: 4041 2 1 0.172 0.421 0.318 0.507 4041_p2_photo_telophase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_photo_telophase1.png" alt=""></figure></td><td><!-- CROP: 4041 2 1 0.318 0.421 0.552 0.507 4041_p2_schema_telophase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_schema_telophase1.png" alt=""></figure></td><td>A chaque pôle on trouve un lot de chromosomes haploïdes, chaque chromosome comportant encore deux chromatides. La cellule se divise pour former deux cellules filles haploïdes.</td></tr>
+<tr><td>Prophase 2</td><td><!-- CROP: 4041 2 1 0.150 0.502 0.307 0.586 4041_p2_photo_prophase2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_photo_prophase2.png" alt=""></figure></td><td><!-- CROP: 4041 2 1 0.302 0.502 0.545 0.586 4041_p2_schema_prophase2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_schema_prophase2.png" alt=""></figure></td><td>Les chromosomes sont bien condensés, l'enveloppe nucléaire est absente.<br>Les cellules comportent n chromosomes à deux chromatides.</td></tr>
+<tr><td>Métaphase 2</td><td><!-- CROP: 4041 2 1 0.150 0.586 0.307 0.670 4041_p2_photo_metaphase2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_photo_metaphase2.png" alt=""></figure></td><td><!-- CROP: 4041 2 1 0.302 0.586 0.545 0.670 4041_p2_schema_metaphase2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_schema_metaphase2.png" alt=""></figure></td><td>Les chromosomes s'alignent sur la plaque équatoriale. Les chromatides sœur se plaçant de part et d'autre de se plan.<br>Les cellules comportent n chromosomes à deux chromatides</td></tr>
+<tr><td>Anaphase 2</td><td><!-- CROP: 4041 2 1 0.150 0.670 0.307 0.776 4041_p2_photo_anaphase2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_photo_anaphase2.png" alt=""></figure></td><td><!-- CROP: 4041 2 1 0.302 0.670 0.545 0.776 4041_p2_schema_anaphase2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_schema_anaphase2.png" alt=""></figure></td><td>Les centromères des chromosomes se séparent, les chromatides sœurs devenue des chromosomes fils, se déplacent vers les pôles opposés de la cellule.<br>Il se forme ainsi deux lots de chromosomes haploïdes à une seule chromatide.</td></tr>
+<tr><td>Télophase 2</td><td><!-- CROP: 4041 2 1 0.150 0.776 0.307 0.884 4041_p2_photo_telophase2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_photo_telophase2.png" alt=""></figure></td><td><!-- CROP: 4041 2 1 0.302 0.776 0.545 0.884 4041_p2_schema_telophase2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p2_schema_telophase2.png" alt=""></figure></td><td>Les noyaux vont se former aux deux pôles des cellules, la cytodiérèse a lieu, il se forme alors 4 cellules haploïdes. Les chromosomes vont ensuite se décondenser.</td></tr>
+</table>
+<!-- page 01 (part3) -->
+<!-- ROTATE: 4041 part3 p01 180 -->
+<p class="subhead t-red">Sujet de révision n°1 : Mitose et Méiose</p>
+<p class="para">Bien assimiler les notions de mitose et de méiose ainsi que leurs caractéristiques est une condition nécessaire pour être capable d'expliquer :</p>
+<ul class="dash">
+<li>Le déroulement de la gamétogenèse qui permet la formation des cellules sexuelles mâles et femelles (Reproduction humaine).</li>
+<li>Le brassage de l'information génétique (Génétique).</li>
+<li>L'obtention des individus génétiquement différents (Dihybridisme).</li>
+<li>L'origine de la trisomie 21 (Génétique humaine).</li>
+</ul>
+<p class="para">Et c'est pour toutes ces raisons qu'on va faire cette séance de révision</p>
+<p class="para">La mitose et la méiose se ressemblent au niveau de l'écriture, et possèdent un mécanisme très proche ; cependant, elles n'aboutissent pas au même résultat.</p>
+<p class="subhead t-navy"><b>1- La mitose :</b></p>
+<p class="para">La mitose correspond à une seule division cellulaire « asexuée » des cellules somatiques (presque toutes les cellules de l'organisme), et assure l'obtention de deux cellules filles à partir d'une cellule mère, qui seront identiques, et hériteront exactement du même patrimoine génétique, en effet ces deux cellules filles auront chacune un caryotype identique (même chromosomes) et un génotype identique (même allèles) à celui de la cellule mère.</p>
+<p class="subhead"><span class="t-red"><b>La mitose:</b></span></p>
+<p class="para"><b>Bien que la mitose soit un phénomène continu, le comportement des chromosomes permet de distinguer quatre phases.</b></p>
+<!-- CROP: 4041 3 1 0.472 0.455 0.840 0.836 4041_p3_mitose_phases --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p3_mitose_phases.png" alt=""></figure>
+<p class="para">1. La <b>prophase</b> (15 à 60 minutes).<br>- Condensation de la chromatine qui forme des chromosomes clivés longitudinalement en deux chromatides réunies par un centromère.<br>- Disparition de l'enveloppe du noyau.<br>- Apparition d'un fuseau de fibres entre deux pôles de la cellule.</p>
+<p class="para">2. La <b>métaphase</b> (quelques minutes seulement).<br>- Regroupement des centromères dans le plan équatorial du fuseau de division (l'ensemble des chromosomes clivés, ainsi rangés, forme une figure appelée plaque équatoriale).</p>
+<p class="para">3. L'<b>anaphase</b> (2 à 3 minutes).<br>- Les deux chromatides de chaque chromosome métaphasique s'écartent l'une de l'autre après coupure de chaque centromère.<br>- Migration en sens opposé de deux lots identiques de chromosomes à une chromatide (chaque chromosome de la cellule initiale est donc représenté par une chromatide dans chacun des deux lots ainsi constitués).</p>
+<p class="para">4. La <b>télophase</b> (15 à 60 minutes).<br>- Formation d'un noyau au niveau de chaque pôle par désindividualisation des chromatides qui retournent à l'état de chromatine diffuse et reconstitution d'une enveloppe nucléaire.<br>- Disparition du fuseau de division et division du cytoplasme entre les deux noyau-fils.<br>Les deux cellules filles entrent alors en interphase.</p>
+<!-- page 01 (part4) -->
+<p class="subhead t-navy"><b>2- La méiose :</b></p>
+<p class="para">La méiose correspond à deux divisions cellulaires successives « sexuées » n'affectant que les cellules germinales : en partant d'une cellule diploïde (chromosomes présents par paires), la méiose permet d'aboutir à la formation de quatre gamètes (cellules sexuelles, spermatozoïdes ou ovocytes) haploïdes (un seul exemplaire des chromosomes). Puis, au cours de la fécondation, deux gamètes (chacun issu de la méiose, chez le mâle et la femelle) se réunissent pour former un zygote, dans lequel la diploïdie sera rétablie.</p>
+<p class="subhead"><span class="t-red"><b>La méiose:</b></span></p>
+<p class="para"><span class="t-blue"><b><i>C'est l'ensemble de deux divisions cellulaires successives.</i></b></span></p>
+<!-- CROP: 4041 4 1 0.130 0.215 0.835 0.495 4041_p4_meiose_etapes --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p4_meiose_etapes.png" alt=""></figure>
+<ul class="b">
+<li><b>Première division méiotique :</b></li>
+</ul>
+<p class="para">1. Individualisation des chromosomes.<br>2. Formation des paires d'homologues.<br>3. Rangement des paires d'homologues à l'équateur d'un fuseau de fibres.<br>4. Séparation des chromosomes homologues.<br>5. Division cytoplasmique.</p>
+<ul class="b">
+<li><b>Deuxième division méiotique :</b></li>
+</ul>
+<p class="para">6. Séparation des chromatides.<br>7. Division cytoplasmique.</p>
+<p class="para">Pour la mitose, il y a une séparation des 2 chromatides de chaque chromosome, qui migrent vers les pôles cellulaires durant l'anaphase ; tandis que pour la méiose, il y a une séparation des chromosomes, qui migrent vers les pôles cellulaires durant la première anaphase. La mitose se fait dans presque toutes les cellules de l'organisme. Contrairement à la méiose qui est spécifique aux cellules germinales, impliquées dans la reproduction des espèces.</p>
+<p class="subhead t-navy"><b><i>3- Garniture chromosomique et quantité d'ADN :</i></b></p>
+<p class="para">Il faut savoir que chaque chromatide d'un chromosome renferme une molécule d'ADN. Si on pose que les cellules haploïdes à n chromosomes simples renferme une quantité d'ADN = Q :</p>
+<ul class="dash">
+<li>Dans les cellules à n chromosomes dupliqués issues de la première division de la méiose, il y a 2Q d'ADN.</li>
+<li>Dans les cellules diploïdes à 2n chromosomes simples (au repos ou issues de la mitose), il y a aussi 2Q d'ADN (même nombre de chromatides que les cellules à n chromosomes dupliqués).</li>
+<li>Dans les cellules diploïdes à 2n chromosomes dupliqués (issues de l'interphase qui précède la division cellulaire), il y a 4Q d'ADN.</li>
+</ul>
+<p class="para"><span class="t-green"><b><i>Remarque</i></b></span> : on peut aussi utiliser les quantités d'ADN Q/2, Q et 2Q.</p>
+<!-- page 01 (part5) -->
+<p class="subhead"><b>Tableau récapitulatif des évènements cytologiques de la méiose.</b></p>
+<table>
+<tr><td><b>Diagramme de variation de la quantité d'ADN</b></td><td colspan="8"><!-- CROP: 4041 5 1 0.138 0.110 0.862 0.430 4041_p5_diagramme_adn --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p5_diagramme_adn.png" alt=""></figure></td></tr>
+<tr><td><b>Schémas</b></td><td colspan="8"><!-- CROP: 4041 5 1 0.138 0.440 0.862 0.642 4041_p5_schemas --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p5_schemas.png" alt=""></figure></td></tr>
+<tr><td><b>Description rapide</b></td><td>• Condensation des chromosomes<br>• Disparition de l'enveloppe nucléaire<br>• Appariement des chromosomes homologues</td><td>Les paires de chromosomes se placent sur le plan équatorial qui définit la plaque métaphasique<!-- PROOFREAD: 4041 part5 p01 — "plan" / "définit" blurry, may read "pan" / "défnit" --></td><td>Les chromosomes homologues de chaque paire se sépare et migre à un pôle.<br>Le hasard entraine un brassage interchromo=somique</td><td>Le cytoplasme commence sa division et donne naissance à 2 cellules filles haploïdes à chromosomes bichromatidiens</td><td>Chaque chromosome se place perpendicu=lairement à la 1 division</td><td>Chaque chromosome bichromatidiens se place sur le nouveau plan équatorial</td><td>Dans chaque cellule fille, les chromatides de chaque chromosome se séparent et migrent à un pôle</td><td>Dans chaque cellule fille apparaît une cloison médiane qui donne naissance à4 cellules filles haploïdes à chromosomes mono=chromatidiens</td></tr>
+<tr><td><b>Etape</b></td><td><b>Prophase 1</b></td><td><b>Métaphase 1</b></td><td><b>Anaphase 1</b></td><td><b>Télophase 1</b></td><td><b>Prophase 2</b></td><td><b>Métaphase 2</b></td><td><b>Anaphase 2</b></td><td><b>Télophase 2</b></td></tr>
+</table>
+<!-- page 01 (part6) -->
+<p class="subhead"><b><i>En général :</i></b></p>
+<ul class="dash">
+<li><span class="t-gold"><b><i>Pour 2n = 4 chromosomes —&gt; n = 2 ===&gt; 2 <sup>2</sup> = 4gamètes différents.</i></b></span></li>
+<li><span class="t-gold"><b><i>Pour 2n = 6 chromosomes —&gt; n = 3 ===&gt; 2 <sup>3</sup> = 8 gamètes différents.</i></b></span></li>
+<li><span class="t-gold"><b><i>Pour 2n = 46 chromosomes —&gt; n = 23 ===&gt; 2 <sup>23</sup> gamètes différents.</i></b></span></li>
+<li><span class="t-gold"><b><i>Pour 2n ===&gt; 2 <sup>n</sup> gamètes génétiquement différents.</i></b></span></li>
+</ul>
+<p class="subhead t-navy"><b><i>II- Le brassage de l'information génétique au cours de la fécondation :</i></b></p>
+<p class="para">La fécondation amplifie ce double brassage, puisqu'elle réalise la rencontre au hasard de deux gamètes génétiquement différents (par leurs combinaisons alléliques). Toute cellule œuf est donc dotée d'une combinaison originale d'allèles parentaux ce qui rend chaque individu unique. Si on considère le brassage interchromosomique et la fécondation, on obtient : 2 <sup>2n</sup> = 2 <sup>n</sup> x 2 <sup>n</sup> combinaisons alléliques possibles qui correspondent à des zygotes et par suite des individus génotypiquement différents (<span class="t-blue"><b><i>2 <sup>46</sup> chez l'espèce humaine</i></b></span>).</p>
+<p class="para">===&gt;<b><i>La fécondation renforce la diversité génétique des individus.</i></b></p>
+<p class="para"><span class="t-green">******</span></p>
+<div class="exsub">Exercice :</div>
+<p class="consigne">Le document ci-contre représente une cellule en prophase de première division de méiose chez un individu :</p>
+<!-- CROP: 4041 6 1 0.550 0.400 0.840 0.597 4041_p6_cellule_prophase1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p6_cellule_prophase1.png" alt=""></figure>
+<p class="para">1- Combien de gènes et d'allèles sont-ils représentés ?<br>2- Repérez les affirmations correctes et corrigez celles qui sont fausses parmi la liste suivante :</p>
+<p class="para">a- Cet individu peut produire des gamètes renfermant les allèles d, F, g.<br>b- L'individu a reçu les allèles D, d, G de l'un de ses parents et les allèles F, f, g de l'autre.<br>c- Il peut y avoir recombinaison intrachromosomique entre les gènes (F, f) et (G, g).<br>d- Les allèles D et d ne se séparent qu'à l'anaphase 2.</p>
+<p class="subhead">Corrigé :</p>
+<p class="para">1- Il y a trois gènes et six allèles : G1(D, d), G2(F, f) et G3 (G, g)<br>2-</p>
+<!-- NOTE: a handwritten sticky note (in Arabic and French) covers the right part of the correction below; it is not transcribed and the hidden words are not completed -->
+<p class="para">a- <span class="t-red"><b><i>Vrai</i></b></span>, les allèles d et F peuvent être réunies dans un même chromosome par brassage intrachromosomique (crossing over entre les gènes G1 et G2) et le brassage interchromosomique<!-- PROOFREAD: 4041 part6 p01 — "G2) et le brassage interchromosomique" half hidden by the sticky note --> permet de les associer avec l'allèle g dans un même gamèt<br>b- <span class="t-red"><b><i>Faux</i></b></span>, on ne peut pas avoir dans un gamète les allèles d'u<br>au cours l'anaphase I (2<sup>ème</sup> loi de Mendel : loi de pureté d<br>allèles).<br>c- Faux, le brassage intrachromosomique se produit entre le<br>de chromosomes homologues).<br>d- <span class="t-red"><b><i>Faux</i></b></span>, les allèles d'un même gène se séparent au cours l'a<!-- PROOFREAD: 4041 part6 p01 — line ends hidden by the sticky note --></p>
+<!-- page 01 (part7) -->
+<p class="subhead t-navy"><b><i>2- Le brassage interchromosomique :</i></b></p>
+<p class="para">Le brassage interchromosomique se produit au cours de la division réductionnelle (DE) pendant <span class="t-red"><b><i>l'anaphase I</i></b></span> et il est dû à la <span class="t-red"><b><i>séparation aléatoire des chromosomes homologues</i></b></span> d'une façon indépendante d'une paire de chromosome à une autre.</p>
+<p class="para">Le brassage interchromosomique produit des nouvelles combinaisons alléliques (combinaisons recombinées) qui ont la même fréquence que celle des combinaisons parentales ce qui aboutit à une diversité génétique des gamètes.</p>
+<ul class="dash">
+<li><span class="t-green"><b><i>Exemple 1 : 2n = 4 chromosomes.</i></b></span></li>
+</ul>
+<!-- CROP: 4041 7 1 0.180 0.176 0.842 0.440 4041_p7_exemple1 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p7_exemple1.png" alt=""></figure>
+<p class="para">4 types de gamètes possibles à partir d'une cellule diploïde à 4 chromosomes</p>
+<ul class="dash">
+<li><span class="t-green"><b><i>Exemple 2 : 2n = 6 chromosomes.</i></b></span></li>
+</ul>
+<!-- CROP: 4041 7 1 0.082 0.488 0.948 0.815 4041_p7_exemple2 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p7_exemple2.png" alt=""></figure>
+<p class="para">Huit types de gamètes possibles à partir d'une cellule diploïde à 6 chromosomes.</p>
+<!-- page 01 (part8) -->
+<p class="subhead t-red">Sujet de révision n°2 : Le brassage de l'information génétique</p>
+<p class="para">La reproduction sexuée permet la transmission de l'information génétique des parents aux descendants. Elle est caractérisée par deux principaux événements :</p>
+<ul class="dash">
+<li>La méiose à l'origine de gamètes haploïdes ayant de nouvelles combinaisons alléliques.</li>
+<li>La fécondation amplifie le brassage génétique dans les cellules-œufs diploïdes obtenues.</li>
+</ul>
+<p class="para">Donc la reproduction sexuée est bien à l'origine d'une diversité génétique infinie des individus.<br>Les brassages de l'information génétique se produisent au cours de la méiose et au cours de la fécondation.</p>
+<p class="subhead t-navy"><b><i>I- Les brassages de l'information génétiques au cours de la méiose :</i></b></p>
+<p class="subhead t-navy"><b><i>1- Le brassage intrachromosomique :</i></b></p>
+<p class="para">Le brassage <b>allélique</b> intrachromosomique se déroule au cours de la division réductionnelle (DR) pendant <span class="t-red"><i>la prophase I.</i></span> Il est dû à un phénomène de <b>crossing-over</b> : des échanges des fragments de chromatides entre les <span class="t-red"><i>chromatides</i></span> <span class="t-red"><i>non sœurs</i></span> de <span class="t-red"><i>deux chromosomes homologues</i></span>.</p>
+<p class="para">Le brassage intrachromosomique produit des nouveaux chromosomes : chromosomes recombinés et des nouvelles combinaisons alléliques dans les gamètes.</p>
+<!-- CROP: 4041 8 1 0.130 0.316 0.920 0.592 4041_p8_meiose_crossing_over --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p8_meiose_crossing_over.png" alt=""></figure>
+<!-- CROP: 4041 8 1 0.085 0.598 0.960 0.817 4041_p8_chiasma --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p8_chiasma.png" alt=""></figure>
+<!-- page 01 (part9) -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+
+<p class="subhead t-red">Sujet de révision n° 3 : Notions de glande endocrine et d'hormone</p>
+<p class="subhead t-navy"><b><i>1- Définition d'une glande :</i></b></p>
+<p class="para">Une <b>glande</b> est un ensemble de cellules dont la fonction est de synthétiser des produits chimiques, tels que des hormones, pour les libérer, souvent dans le sang et à l'intérieur d'une cavité corporelle (glande endocrine), ou les excréter de sa surface externe (glande exocrine).</p>
+<p class="subhead t-navy"><b><i>2- Glande exocrine :</i></b></p>
+<p class="para">Une <b>glande exocrine</b> est une glande du corps, faisant partie de différents organes et dispositifs qui produisent différentes substances non hormonales qui remplissent une fonction spécifique, notamment enzymatique. Les glandes exocrines sont également appelées glandes sécrétoires externes.<br>Une glande exocrine produit et sécrète des substances à l'extérieur de la circulation sanguine (sur une surface épithéliale) au moyen d'un conduit ou canal excréteur.<br>Exemples de glandes exocrines : glandes salivaires(salive), glandes sudoripares(sueur), muqueuse intestinale (suc intestinal), acini pancréatiques (suc pancréatique) …</p>
+<!-- CROP: 4041 9 1 0.048 0.355 0.918 0.617 4041_p9_pancreas_exocrine --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p9_pancreas_exocrine.png" alt=""></figure>
+<p class="subhead t-navy"><b><i>3- Glande endocrine :</i></b></p>
+<p class="para">Une glande endocrine est une structure spécialisée dans la sécrétion d'<span class="t-red"><b><i>hormones</i></b></span>, produits qui sont déversés <span class="t-red"><b><i>dans le sang</i></b></span> et qui agissent sur le fonctionnement ou le développement des autres organes.<br>Exemples : hypophyse, thyroïde ; thymus…</p>
+<p class="subhead t-navy"><b><i>4- Notion d'hormone :</i></b></p>
+<p class="para">Une hormone est un messager chimique sécrété par une glande endocrine. • En fonction de sa nature chimique elle agit sur les récepteurs spécifiques de la cellule cible provoquant une séquence d'événements biochimique conduisant à une réponse spécifique. • Ces hormones sont véhiculées par le sang, elles agissent à distance de l'endroit où elles sont sécrétées • Les hormones agissent plutôt lentement et elles ont une durée d'action longue. • Seules les cellules cibles qui contiennent des récepteurs sont sensibles aux hormones.</p>
+<!-- page 01 (part10) -->
+<p class="subhead t-navy">*** <i>Les différents types de rétrocontrôle :</i></p>
+<p class="para">Le mécanisme de rétrocontrôle induit une diminution ou une augmentation des taux d'hormones dans le sang.</p>
+<p class="para"><span class="t-red"><b>a-</b> <i>Le rétrocontrôle négatif</i></span> : il aboutit à une diminution du taux d'une hormone dans le sang. Ainsi, l'augmentation du taux sanguin du testostérone (hormone masculinisante), au-delà d'un certain seuil, freine la sécrétion, par certaines cellules de l'hypophyse de <b>la</b> LH, une hormone qui accroît la sécrétion Du testostérone par les cellules de Leydig du testicule.</p>
+<p class="para"><span class="t-red"><b>b-</b> <i>Le rétrocontrôle positif</i></span> : aboutit à une augmentation du taux d'une hormone dans le sang. Le mécanisme se déclenche lorsque le taux sanguin d'une hormone donnée atteint un certain seuil. L'<span class="t-blue">œstradiol</span>, par exemple, est une hormone sexuelle produite par l'<span class="t-blue">ovaire</span> sous l'action d'une autre hormone, la FSH. Lorsqu'il se maintient plus de 48 heures au-delà d'un certain seuil, il peut provoquer une augmentation de la sécrétion de la FSH et de la LH par les cellules hypophysaires.</p>
+<!-- CROP: 4041 10 1 0.083 0.286 0.887 0.603 4041_p10_controle_retrocontrole --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4041/4041_p10_controle_retrocontrole.png" alt=""></figure>
+<!-- page 01 (part11) -->
+<div class="exsub"><span class="t-green">Exercice</span></div>
+<p class="consigne">A- Le système endocrinien est un ensemble de glandes qui fonctionne par rétroaction hormonale. Dans quel ordre ces différentes étapes de la rétroaction hormonale s'effectue-t-elle ?</p>
+<p class="para">1. l'hypophyse est informée de l'effet produit<br>2. la glande ciblée produit une hormone<br>3. la glande ciblée reçoit l'hormone<br>4. l'hypophyse sécrète une hormone<br>5. l'hypophyse arrête l'envoie d'hormone</p>
+<p class="consigne">B- Expliquer comment le fonctionnement d'une glande peut influencer l'activité d'une autre glande.</p>
+<p class="consigne">C- Dites si les glandes ou organes suivants sont endocrines, exocrines ou mixtes :</p>
+<!-- NOTE: the empty answer cells of this table are filled in by hand; the handwritten answers are typed in the cells -->
+<table>
+<tr><th>Glandes lacrymales</th><th>Testicules</th><th>Hypophyse</th><th>Glandes salivaires</th><th>Ovaires</th><th>Thyroïde</th><th>Pancréas</th></tr>
+<tr><td>Exocrine<!-- PROOFREAD: 4041 part11 p01 — handwritten "Exocrine" faint --></td><td>mixte</td><td>endocrine</td><td>exocrines</td><td>mixtes</td><td>endocrines</td><td>mixte</td></tr>
+</table>
+<p class="subhead"><span class="t-green"><b><i>Corrigé</i></b></span></p>
+<p class="para">A- 4 ----&gt; 3 ----&gt; 2 ----&gt; 1 ----&gt; 5</p>
+<p class="para">B- Une glande peut influencer l'activité d'une autre glande. La rétroaction ou feedback a pour effet de provoquer l'arrêt de la production d'une substance par une glande dès que cette substance atteint une concentration donnée dans le sang.</p>
+<p class="para">C-</p>
+<table>
+<tr><th>Glandes lacrymales</th><th>Testicules</th><th>Hypophyse</th><th>Glandes salivaires</th><th>Ovaires</th><th>Thyroïde</th><th>Pancréas</th></tr>
+<tr><td>Exocrines</td><td>Mixte</td><td>Endocrine</td><td>Exocrines</td><td>Mixtes</td><td>Endocrine</td><td>Mixte</td></tr>
+</table>
+
+</section>
+
+</div>
+</body>
+</html>

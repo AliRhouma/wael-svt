@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · QCM_reproduction__correction</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Correction">
+<meta data-pagefind-filter="resource[content]" content="Source non indiquée">
+<meta data-pagefind-meta="n[content]" content="4052">
+<meta data-pagefind-meta="title[content]" content="QCM_reproduction__correction">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="chapter[content]" content="Procréation (fécondation, nidation, maîtrise)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · QCM_reproduction__correction" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>QCM_reproduction__correction</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Série</span><span class="tg">Exercices</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1M7xxbWnDT20F_TxANwdW4bD9BGyCY1S_/view">↗ QCM_reproduction__correction.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1M7xxbWnDT20F_TxANwdW4bD9BGyCY1S_/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 1 - Reproduction humaine et santé / Séries et exercices</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+<div class="exh"><span class="idx ex">Correction</span><h2>Chapitre II : La reproduction</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4052.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Série</span><span class="tg">Exercices</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1M7xxbWnDT20F_TxANwdW4bD9BGyCY1S_/view">↗ QCM_reproduction__correction.pdf</a></div>
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-red"><b>Chapitre II : La reproduction</b></span></p>
+<p class="subhead t-navy"><span class="t-red">Leçon 1 :</span> <b>la fonction reproductrice chez l'homme</b></p>
+<p class="consigne"><b>1- On trouve des récepteurs spécifiques pour la testostérone au niveau</b></p>
+<p class="para">a- de l'hypophyse antérieure.<br>b- des cellules sécrétrices de FSH.<br>c- des cellules de Leydig.<br>d- des cellules de l'appareil génital.</p>
+<p class="consigne"><b>2- On trouve des récepteurs spécifiques pour l'inhibine au niveau</b></p>
+<p class="para">a- de l'hypophyse antérieure.<br>b- des cellules de Sertoli.<br>c- des cellules germinales.<br>d- des cellules de l'appareil génital.</p>
+<p class="consigne"><b>3- Chez les mammifères les spermatides sont des :</b></p>
+<p class="para">a- grosses cellules haploïdes.<br>b- petites cellules haploïdes.<br>c- petites cellules diploïdes.<br>d- grosses cellules diploïdes</p>
+<p class="consigne"><b>4- La testostérone est sécrétée par les cellules :</b></p>
+<p class="para">a- de Sertoli.<br>b- interstitielles.<br>c- germinales.<br>d- de Leydig.</p>
+<p class="consigne"><b>5- les spermatozoïdes humains:</b></p>
+<p class="para">a- ont 23 chromosomes.<br>b- ont tous un chromosome X.<br>c- ont tous un chromosome Y.<br>d- ont 46 chromosomes.</p>
+<p class="consigne"><b>6- La greffe d'une portion de testicule sous la peau d'un mâle castré :</b></p>
+<p class="para">a- corrige la stérilité.<br>b- restaure ses caractères sexuels secondaires.<br>c- provoque la baisse des sécrétions hypophysaires de FSH et de LH.<br>d- provoque les mêmes effets que les injections d'extraits hypophysaires.</p>
+<p class="consigne"><b>7- Parmi les cellules suivantes, les cellules qui sont haploïdes (à n chromosomes) sont :</b></p>
+<p class="para">a- les spermatogonies.<br>b- les cellules de Sertoli<br>c- les spermatocytes II.<br>d- les spermatides.</p>
+<!-- page 02 -->
+<p class="consigne"><b>8- La cellule de Sertoli est une cellule :</b></p>
+<p class="para">a- de la lignée germinale.<br>b- cible de FSH.<br>c- cible de LH.<br>d- sécrétrice de l'ABP et de l'inhibine.</p>
+<p class="consigne"><b>9- La FSH</b></p>
+<p class="para">a- permet indirectement la fixation de LH sur les cellules de Leydig.<br>b- secrétée sous forme de pulses par l'hypothalamus.<br>c- assure le développement des spermatogonies et des cellules de Sertoli.<br>d- permet le maintient des caractères sexuels secondaires après la puberté.</p>
+<p class="consigne"><b>10- La méiose est une division cellulaire qui affecte les cellules :</b></p>
+<p class="para">a- leydig.<br>b- germinales.<br>c- somatiques et germinales.<br>d- de Sertoli.</p>
+<p class="consigne"><b>11- Au cours de la spermatogenèse une spermatide subit :</b></p>
+<p class="para">a- une maturation pour donner des spermatogonies.<br>b- une maturation pour donner un spermatozoïde.<br>c- un accroissement pour donner un spermatozoïde.<br>d- une différenciation pour donner un spermatozoïde.</p>
+<p class="consigne"><b>12. L'inhibine est produite par :</b></p>
+<p class="para">a- l'hypothalamus.<br>b- l'hypophyse.<br>c- les cellules de Sertoli.<br>d- les cellules de Leydig.</p>
+<p class="consigne"><b>13. Dans le testicule, les cellules interstitielles ont pour rôle :</b></p>
+<p class="para">a- la sécrétion de LH.<br>b- la nutrition des spermatozoïdes.<br>c- la sécrétion de testostérone.<br>d- la sécrétion de GnRH.</p>
+<p class="consigne"><b>14. Les gonadolibérines (GnRH) :</b></p>
+<p class="para">a- sont sécrétées par les gonades.<br>b- sont sécrétées par l'hypothalamus.<br>c- ont des récepteurs sur les cellules de l'hypophyse.<br>d- ont des récepteurs sur des cellules cibles au niveau des gonades.</p>
+<p class="consigne"><b>15. La Testostérone est une hormone :</b></p>
+<p class="para">a- ovarienne.<br>b- Testiculaire.<br>c- hypophysaire.<br>d- hypothalamique.</p>
+<!-- page 03 -->
+<p class="consigne"><b>16. L'Hormone stimulant la sécrétion de testostérone est :</b></p>
+<p class="para">a- la FSH.<br>b- la LH.<br>c- la GnRH.<br>d- l'inhibine.</p>
+<p class="consigne"><b>17. L'injection massive de testostérone dans l'organisme provoquerait :</b></p>
+<p class="para">a- une accélération de la spermatogenèse.<br>b- une diminution de la spermatogenèse.<br>c- une augmentation des concentrations de LH et FSH.<br>d- une diminution des concentrations de LH et FSH.</p>
+<p class="consigne"><b>18. La GnRH est :</b></p>
+<p class="para">a- un neuromédiateur.<br>b- une neuro-hormone.<br>c- une hormone.<br>d- une enzyme.</p>
+<p class="consigne"><b>19. Chez l'homme la GnRh est sécrétée de manière :</b></p>
+<p class="para">a- cyclique et la durée du cycle de 28 jours.<br>b- cyclique et la durée du cycle de 21 jours.<br>c- pulsatile.<br>d- continue.</p>
+<p class="consigne"><b>20. La diminution du taux sanguin de testostérone entraine :</b></p>
+<p class="para">a- la diminution de la sécrétion de LH.<br>b- l'augmentation de la sécrétion de LH.<br>c- la diminution de la sécrétion de FSH.<br>d- l'augmentation de la sécrétion de FSH.</p>
+<!-- page 04 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<p class="subhead t-navy"><span class="t-red">Leçon 2 :</span> <b>la fonction reproductrice chez la femme</b></p>
+<p class="consigne"><b>1- les effets directs de l'hormone lutéinisante (LH) chez la femme sont :</b></p>
+<p class="para">a- l'ovulation.<br>b- la croissance de l'endomètre.<br>c- la stimulation de la croissance folliculaire.<br>d- la transformation de follicule rompu en corps jaune.</p>
+<p class="consigne"><b>2- Chez la femme, l'augmentation de la température au cours d'un cycle sexuel est sous l'effet de la sécrétion :</b></p>
+<p class="para">a- de la FSH.<br>b- de la LH.<br>c- des œstrogènes.<br>d- de la progestérone.</p>
+<p class="consigne"><b>3- l'ovogenèse :</b></p>
+<!-- PROOFREAD: 4052 part1 p04 — "débute" and "se" partly effaced in the print -->
+<p class="para">a- débute à la puberté.<br>b- ne se termine qu'en cas de fécondation.<br>c- est caractérisée par un seul blocage.<br>d- aboutit à la formation de gamètes fécondables.</p>
+<p class="consigne"><b>4- La folliculogenèse est:</b></p>
+<p class="para">a- l'évolution d'une ovogonie en ovocyte II.<br>b- l'évolution d'un follicule primordial en follicule mûr.<br>c- l'évolution d'un follicule mûr en corps jaune.<br>d- un processus qui englobe la formation des follicules, l'ovulation et l'évolution du corps jaune.</p>
+<p class="consigne"><b>5- Chez la femme, pendant la 1ère semaine de la phase folliculaire, l'augmentation de taux des œstrogènes :</b></p>
+<p class="para">a- stimule la sécrétion de FSH.<br>b- augmente la fréquence des pulses de GnRH.<br>c- stimule la sécrétion des gonadostimulines.<br>d- inhibe la sécrétion de FSH et de LH.</p>
+<p class="consigne"><b>6- La progestérone:</b></p>
+<p class="para">a- est sécrétée par le corps jaune.<br>b- stimule la contractilité du myomètre.<br>c- à fortes doses, stimule la sécrétion de GnRH.<br>d- à fortes doses, inhibe la sécrétion des gonadostimulines.</p>
+<p class="consigne"><b>7- Parmi les points communs à la spermatogenèse et à l'ovogenèse il y a :</b></p>
+<p class="para">a- toutes les deux se déroulent d'une manière discontinue.<br>b- toutes les deux commencent à partir de la naissance.<br>c- toutes les deux aboutissent à la formation des cellules haploïdes.<br>d- toutes les deux se déroulent entièrement dans les gonades.</p>
+<!-- page 05 -->
+<p class="consigne"><b>8- Parmi les points communs entre la progestérone et la testostérone il y a :</b></p>
+<p class="para">a- les deux sont sécrétés d'une façon cyclique à partir de la puberté.<br>b- les deux provoquent l'apparition des caractères sexuels secondaires à la puberté.<br>c- les deux agissent, par rétrocontrôle positif, sur le complexe hypothalamus-hypophyse.<br>d- les deux agissent, par rétrocontrôle négatif, sur le complexe hypothalamus-hypophyse.</p>
+<p class="consigne"><b>9- La folliculogenèse est l'évolution:</b></p>
+<table>
+<tr><td>a- d'une ovogonie en un ovocyte I.</td><td>c- d'un follicule primordial en follicule mûr.</td></tr>
+<tr><td>b- d'une ovogonie en ovocyte II.</td><td>d- d'un follicule mûr en corps jaune.</td></tr>
+</table>
+<p class="consigne"><b>10- Le cycle ovarien de la femme :</b></p>
+<p class="para">a- est suspendu après la fécondation.<br>b- a une durée moyenne de 7 jours.<br>c- est sous le contrôle des hormones hypophysaires.<br>d- est sous le contrôle du cycle utérin.</p>
+<p class="consigne"><b>11- Chez la femme, l'ovulation :</b></p>
+<p class="para">a- est la rupture du follicule mûr et expulsion de l'ovocyte I.<br>b- est déclenchée suite à une chute du taux d'œstrogène.<br>c- est déclenchée suite à un pic de LH.<br>d- se produit en général, 14 jours avant l'apparition de la menstruation.</p>
+<p class="consigne"><b>12- L'apparition du deuxième globule polaire au cours de l'ovogenèse indique :</b></p>
+<p class="para">a- l'évolution de l'ovocyte I en ovocyte II.<br>b- l'achèvement de la division réductionnelle et le début de la division équationnelle.<br>c- une fécondation.<br>d- l'achèvement de la division équationnelle.</p>
+<p class="consigne"><b>13- Parmi les points communs entre un follicule mûr et un corps jaune il y a :</b></p>
+<p class="para">a- les deux sécrètent les œstrogènes.<br>b- les deux sécrètent la progestérone.<br>c- les deux agissent, par l'intermédiaire de leurs hormones, sur l'hypothalamus.<br>d- les deux agissent, par l'intermédiaire de leurs hormones, sur la croissance des ovocytes.</p>
+<p class="consigne"><b>14- On trouve des récepteurs spécifiques à la progestérone au niveau :</b></p>
+<p class="para">a- des cellules du complexe hypothalamus-hypophyse.<br>b- des ovocytes.<br>c- du corps jaune.<br>d- des cellules de l'utérus.</p>
+<p class="consigne"><b>15- La menstruation est la conséquence directe de :</b></p>
+<p class="para">a- la chute du taux des hormones ovariennes.<br>b- la formation du corps jaune.<br>c- la fécondation.<br>d- l'ovulation.</p>
+<!-- page 06 -->
+<p class="consigne"><b>16. les œstrogènes</b></p>
+<p class="para">a- sont en permanence efficaces sur le développement de la dentelle utérine.<br>b- n'apparaissent qu'après l'ovulation.<br>c- n'apparaissent qu'après la menstruation.<br>d- sont présentes durant tout le cycle.</p>
+<p class="consigne"><b>17. Le rythme de sécrétion de LH est maximal lors</b></p>
+<p class="para">a- de la période des menstruations.<br>b- de la période pré-ovulatoire.<br>c- de la période post-ovulatoire.<br>d- de 21ème jour du cycle sexuel.</p>
+<p class="consigne"><b>18. L'ovocyte I :</b></p>
+<p class="para">a- contient le double de la quantité d'ADN que la spermatogonie.<br>b- contient la même quantité d'ADN que le spermatozoïde.<br>c- contient plus de cytoplasme que le spermatozoïde.<br>d- définit sa maturation lors de l'ovulation.</p>
+<p class="consigne"><b>19. Chez la femme, l'ovocyte II, contient :</b></p>
+<p class="para">a- un chromosome X ou un chromosome Y.<br>b- toujours un chromosome Y.<br>c- 23 chromosomes à deux chromatides chacun.<br>d- autant d'ADN que le deuxième globule polaire.</p>
+<p class="consigne"><b>20. La phase de maturation des ovocytes chez la femme:</b></p>
+<p class="para">a- s'achèvent dans l'utérus.<br>b- s'achève dans l'oviducte.<br>c- se déroule entièrement dans les ovaires.<br>d- se déroule entièrement dans l'oviducte.</p>
+<!-- page 07 -->
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<p class="subhead t-navy"><span class="t-red">Leçon 3 :</span> <b>La procréation</b></p>
+<p class="consigne"><b>1- On peut proposer la FIVETE à un couple dans les cas de :</b></p>
+<table>
+<tr><td>a- stérilité féminine au niveau des ovaires.</td><td>c- atrophie de l'utérus.</td></tr>
+<tr><td>b- obstruction des voies génitales féminines.</td><td>d- stérilité immunologique.</td></tr>
+</table>
+<p class="consigne"><b>2- L'arrêt de la prise de pilule combinée provoque directement chez la femme,</b></p>
+<p class="para">a- les menstruations.<br>b- le redéveloppement de l'endomètre.<br>c- la ré-augmentation du taux des gonadostimulines.<br>d- la diminution du taux des hormones ovariennes.</p>
+<!-- CROP: 4052 1 7 0.640 0.258 0.900 0.404 4052_p07_fig1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4052/4052_p07_fig1.png" alt=""></figure>
+<p class="consigne"><b>3- Dans la figure ci-contre,</b></p>
+<p class="para">a- la structure 1 présente des récepteurs aux spermatozoïdes.<br>b- la structure 2 est le 2ème globule polaire.<br>c- la structure 3 est une cellule diploïde.<br>d- la structure 4 est haploïde et les chromosomes sont dupliqués.</p>
+<p class="consigne"><b>4- Le dosages de LH chez trois femmes A, B et C a donné les graphes ci-contre :</b></p>
+<!-- CROP: 4052 1 7 0.686 0.453 0.912 0.580 4052_p07_fig2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4052/4052_p07_fig2.png" alt=""></figure>
+<p class="para">a- la femme A peut être ménopausée.<br>b- la femme B utilise la pilule combinée.<br>c- la femme C peut être enceinte.<br>d- la femme C est ovariectomisée.</p>
+<p class="consigne"><b>5- Voici quelques étapes de la FIVETE. L'ordre correct de ces étapes est :</b></p>
+<p class="para">a- prélèvement des ovocytes – injection de FSH – mise en contacte des gamètes – transfert d'embryons.<br>b- mise en contacte des gamètes - injection de FSH - prélèvement des ovocytes - transfert d'embryons.<br>c- injection de FSH - prélèvement des ovocytes - mise en contacte des gamètes - transfert d'embryons.<br>d- injection de FSH - Prélèvement des ovocytes - transfert d'embryons - mise en contacte des gamètes.</p>
+<p class="consigne"><b>6- Soit la figure ci-contre,</b></p>
+<!-- CROP: 4052 1 7 0.638 0.700 0.892 0.820 4052_p07_fig3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4052/4052_p07_fig3.png" alt=""></figure>
+<p class="para">a- le phénomène se déroule dans l'oviducte.<br>b- la figure montre une étape de la division équationnelle.<br>c- 1 contient des chromosomes dupliqués.<br>d- le titre est la caryogamie.</p>
+<p class="consigne"><b>7- on envisage la FIVETE pour corriger :</b></p>
+<p class="para">a- une stérilité masculine due à une oligospermie. (nombre de spermatozoïdes faibles).<br>b- une stérilité féminine due à une obstruction des trompes.<br>c- une stérilité due à un trouble de l'ovulation.<br>d- une stérilité masculine due à une azoospermie. (absence totale de spermatozoïdes).</p>
+<!-- page 08 -->
+<p class="consigne"><b>8- l'effet contraceptif de la pilule combinée consiste à :</b></p>
+<p class="para">a- stimuler la sécrétion d'œstradiol.<br>b- stimuler la croissance folliculaire.<br>c- inhiber la sécrétion de FSH et LH.<br>d- bloquer le développement de l'endomètre.</p>
+<p class="consigne"><b>9- Chez la femme suite à la fécondation, il se produit :</b></p>
+<p class="para">a- une diminution du taux des hormones hypophysaire.<br>b- une suspension du cycle sexuel.<br>c- une augmentation du taux de FSH et de LH.<br>d- une augmentation du taux de GnRH.</p>
+<p class="consigne"><b>10- La pilule combinée a une action :</b></p>
+<p class="para">a- stimulatrice sur la croissance des follicules.<br>b- inhibitrice sur le développement de myomètre.<br>c- stimulatrice sur le complexe hypothalamus-hypophyse.<br>d- inhibitrice sur le complexe hypothalamus-hypophyse.</p>
+<p class="consigne"><b>11- Les situations où il y a un risque de grossesse :</b></p>
+<p class="para">a- 2 jours après la menstruation.<br>b- quand la femme est ménopausée.<br>c- juste avant la menstruation.<br>d- le jour de l'ovulation.</p>
+<!-- page 09 -->
+<!-- NOTE: 4052 part1 p09 is an exact duplicate of p08 (identical image) — not transcribed twice -->
+<!-- page 10 -->
+<div class="exsub">Correction</div>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+
+<p class="subhead t-red"><span class="t-blue"><b>Chapitre II : La reproduction</b></span></p>
+<p class="subhead t-navy"><b>Leçon 1 : La fonction reproductrice chez l'homme</b></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th></tr>
+<tr><td>a, d</td><td>a</td><td>b</td><td>b,d</td><td>a</td><td>b, c</td><td>c, d</td><td>b, d</td><td>c</td><td>b</td><td>d</td><td>c</td><td>c</td><td>b, c</td><td>b</td><td>b</td><td>a</td><td>b</td><td>c</td><td>b</td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<p class="subhead t-navy"><b>Leçon 2 : La fonction reproductrice chez la femme</b></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th></tr>
+<tr><td>a, d</td><td>d</td><td>b, d</td><td>b</td><td>d</td><td>a, d</td><td>c</td><td>d</td><td>c</td><td>a, c</td><td>c, d</td><td>c, d</td><td>a, c</td><td>a, d</td><td>a</td><td>a, d</td><td>b</td><td>c</td><td>c, d</td><td>b</td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<p class="subhead t-navy"><b>Leçon 3 : La procréation</b></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th></tr>
+<tr><td>b, d</td><td>a, c</td><td>a, c</td><td>a, c</td><td>c</td><td>a</td><td>a, b</td><td>b</td><td>a, b</td><td>d</td><td>d</td></tr>
+</table>
+
+</section>
+
+</div>
+</body>
+</html>

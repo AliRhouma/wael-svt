@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · 1 - énoncé_COURS HOMME PARTIE 1</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Cours">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4111">
+<meta data-pagefind-meta="title[content]" content="1 - énoncé_COURS HOMME PARTIE 1">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · 1 - énoncé_COURS HOMME PARTIE 1" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>1 - énoncé_COURS HOMME PARTIE 1</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com · 73.832.000 · Nom du Prof : Abderraouf Amroussi</span> <span class="tg">Sujet BAC</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1QL_5QE0mVAag8kt_hb0HyLtSRTLWDHLm/view">↗ 1 - énoncé_COURS HOMME PARTIE 1.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1QL_5QE0mVAag8kt_hb0HyLtSRTLWDHLm/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Reproduction chez l&#x27;homme</h2></div>
+<!-- SOURCE: Taki Academy · www.takiacademy.com · 73.832.000 · Nom du Prof : Abderraouf Amroussi -->
+<div class="exh"><span class="idx">Cours</span><h2>Thème 1 : Reproduction humaine et santé</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4111.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com · 73.832.000 · Nom du Prof : Abderraouf Amroussi</span> <span class="tg">Sujet BAC</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1QL_5QE0mVAag8kt_hb0HyLtSRTLWDHLm/view">↗ 1 - énoncé_COURS HOMME PARTIE 1.pdf</a></div>
+<!-- page 01 -->
+<p class="para"><span class="t-blue">Classe : 4<sup>ème</sup> Sc Exp (Gr : Excellent 3 )</span></p>
+<p class="subhead t-red"><span class="t-gold">Thème 1 :<br>Reproduction humaine et santé</span></p>
+<p class="para"><span class="t-blue">Nom du Prof : Abderraouf Amroussi</span></p>
+<!-- page 02 -->
+<p class="subhead t-red"><span class="t-gold"><b><u>Cours 1</u> : La fonction reproductrice chez l’homme.</b></span></p>
+<p class="subhead t-navy"><span class="t-blue"><i><u>Première partie</u></i></span></p>
+<p class="para">La reproduction humaine est l’ensemble des phénomènes aboutissant à la naissance d’un nouveau-né (nouveau être humain). Il s’agit d’une reproduction sexuée qui nécessite :</p>
+<p class="para"><span class="t-red"><b>1.</b></span> Un accouplement entre <b>deux personnes de sexes différents</b> :<br>
+<span class="t-blue"><b>Un homme</b> :</span> qui fournit une cellule reproductrice mâle <span class="t-red"><b>=</b></span> ……………………….…<br>
+<span class="t-gold"><b>Et une femme :</b></span> qui fournit une cellule reproductrice femelle <span class="t-red"><b>=</b></span>………………..…<br>
+Ces cellules sexuelles appelées gamètes sont des cellules haploïdes issus d’un phénomène appelé <b>gamétogenèse</b>.</p>
+<p class="para"><span class="t-red"><b>2.</b></span> La réunion d’un ensemble de conditions favorables à la fusion d’un gamète male (spermatozoïde) et d’un gamète femelle (ovocyte) c’est la <b>fécondation</b>, qui permet la formation de la 1<sup>ère</sup> cellule d’un nouvel être humain, appelée cellule œuf ou zygote = (cellule diploïde).<br>
+Cette cellule œuf se divise activement par mitoses successives pour donner un embryon qui s’implante dans l’utérus de la mère : c’est la <b>nidation</b> qui marque le début de la <b>grossesse</b>.<br>
+La reproduction humaine assure la continuité de l’espèce.<br>
+<span class="t-red">Aujourd’hui, grâce aux progrès de la médecine et de la biotechnologie, on arrive à contrôler les naissances, traiter certaines formes de stérilité.</span><br>
+<span class="t-red">Dans le cadre de l’étude de ce thème, on se pose donc les questions suivantes :</span></p>
+<ul class="b">
+<li><span class="t-blue"><b>Comment se forment les cellules sexuelles (ou gamètes) chez les deux sexes ?</b></span></li>
+<li><span class="t-green"><b>Comment se fait la régulation de la fonction reproductrice chez les deux sexes ?</b></span></li>
+<li><span class="t-red"><b>Comment se fait la fécondation ?</b></span></li>
+<li><span class="t-blue"><b>Quel est le devenir de la cellule œuf ?</b></span></li>
+<li><span class="t-green"><b>Comment contrôler les naissances et remédier à certaines formes de stérilité masculine et féminine ?</b></span></li>
+</ul>
+<!-- page 03 -->
+<p class="subhead t-red"><b>I) Organisation de l’appareil génital masculin.</b></p>
+<p class="consigne"><span class="t-blue"><b>Activité 1 :</b></span> Utilisez les mots suivants pour annoter le <b><i>document 1</i></b> en associant à chaque numéro le nom correspondant.</p>
+<div class="data"><p class="para"><span class="t-blue">Prostate - vésicule séminale - gland - corps spongieux - corps caverneux - canal déférent – prépuce - glande de Cowper – testicule – épididyme – urètre –<br>scrotum ou bourse-- pénis ou verge - orifice urogénital.</span></p></div>
+<!-- CROP: 4111 1 3 0.02 0.210 0.96 0.505 4111_doc1a_vue_profil -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc1a_vue_profil.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>a - Vue de profil</b></span></p>
+<!-- CROP: 4111 1 3 0.06 0.545 0.94 0.830 4111_doc1b_vue_face -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc1b_vue_face.png" alt=""></figure>
+<p class="para"><span class="t-green"><b>b-</b></span> <span class="t-blue"><b>Vue de face</b></span></p>
+<p class="para"><span class="t-blue"><b>Document 1 : organisation de l’appareil génital de l’homme</b></span></p>
+<!-- page 04 -->
+<p class="para">L’appareil génital de l’homme comprend :</p>
+<ul class="b">
+<li><span class="t-red"><b>Les gonades mâles</b></span> : les deux testicules <span class="t-red"><b>(11)</b></span> se trouvent dans le scrotum ou bourse <span class="t-red"><b>(10)</b></span>. (Position extra-abdominale).</li>
+<li><span class="t-green"><b>Les glandes annexes</b></span> : deux vésicules séminales <span class="t-red"><b>(1)</b></span>, deux glandes de Cowper <span class="t-red"><b>(14)</b></span> et une prostate <span class="t-red"><b>(2)</b></span>.</li>
+<li><span class="t-gold"><b>Les voies génitales</b></span> : deux épididymes <span class="t-red"><b>(12),</b></span> deux spermiductes ou canaux déférents et un urètre <span class="t-red"><b>(13).</b></span></li>
+<li><b>Un organe de copulation</b> : C’est le pénis ou verge <span class="t-red"><b>(9),</b></span> formé de l’extérieur vers l’intérieur par un corps caverneux <span class="t-red"><b>(3)</b></span> et un corps spongieux <span class="t-red"><b>(4)</b></span> érectile parcouru ventralement par l’urètre <span class="t-red"><b>(6)</b></span> se terminant par le gland <span class="t-red"><b>(5)</b></span> et s’ouvrant à l’extérieur par l’orifice urogénital <span class="t-red"><b>(8).</b></span></li>
+</ul>
+<p class="para"><b><i>NB : chez le mâle l’urètre est une voie commune à l’appareil urinaire et à l’appareil génital d’où le nom d'uro-spermiducte.</i></b></p>
+<p class="subhead t-red"><b>II) Rôle(s) des organes de l’appareil génital.</b></p>
+<p class="subhead t-navy"><span class="t-green"><b>1) Les fonctions du testicule.</b></span></p>
+<p class="consigne">⇨ <b><i>Quelles conclusions peut-on tirer de l’analyse des constatations et de la série d’expériences suivante ?</i></b></p>
+<table>
+<tr><th><span class="t-blue"><u>Expériences</u></span></th><th><span class="t-blue"><u>Analyse et conclusions</u></span></th></tr>
+<tr><td><span class="t-red"><b><u>constatation 1 :</u></b></span><br>
+Chez un homme normal, en plus de la <span class="t-blue"><b>fertilité</b></span>, la puberté est caractérisée par l’apparition de <span class="t-red"><b>caractères sexuels secondaires masculins</b></span> = la barbe, les moustaches, pilosité type male, voix grave, élargissement du thorax</td>
+<td rowspan="3">……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………<br>……………………………</td></tr>
+<tr><td><span class="t-red"><b><u>Expérience 2 :</u></b></span><br>
+La castration bilatérale d’un garçon <span class="t-blue">avant la puberté</span> entraine un syndrome <span class="t-green"><b>d’eunuchisme</b></span> :<br>
+<span class="t-green"><b><i>Absence des caractères sexuels secondaires à la puberté</i></b></span> :
+<ul class="b">
+<li>Peau reste lisse et fine,</li>
+<li>Pas de barbe et de moustaches,</li>
+<li>Muscles peu développés (peu puissants),</li>
+<li>Répartition de la graisse type féminin,</li>
+<li>Organes génitaux à caractères infantiles,</li>
+<li>et il reste stérile.</li>
+</ul></td></tr>
+<tr><td><span class="t-red"><b><u>Expérience 3 :</u></b></span><br>
+La castration pour des raisons médicales <span class="t-red">après la puberté</span> provoque la régression des caractères sexuels secondaires et la stérilité.</td></tr>
+</table>
+<!-- page 05 -->
+<p class="para"><span class="t-blue"><b>Conclusion :</b></span>……………………………………………………………………………..<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………</p>
+<p class="consigne">⇨ En s’appuyant sur vos connaissances, sur les données du document 1 et sur les résultats des expériences précédentes, complétez le tableau suivant, concernant le ou les rôle(s)<br>des organes de l’appareil génital de l’homme.</p>
+<table>
+<tr><th><span class="t-blue"><u>Organes</u></span></th><th><span class="t-blue"><u>Nombres et noms</u></span></th><th><span class="t-blue"><u>Rôles</u></span></th></tr>
+<tr><td><span class="t-red"><b>Gonades</b></span></td><td></td><td>Les ………………assurent, à partir de la puberté et de façon continue, <span class="t-red">deux fonctions</span> :
+<ul class="b">
+<li>La production d’un grand nombre de spermatozoïdes :………………………………………………………<br>……………………………………………………………….<br>……………………………………………………………….</li>
+<li><b><i>L’apparition</i></b> et le <b><i>maintien</i></b> des caractères sexuels secondaires masculins à partir de la puberté………….<br>………………………………………………………………<br>………………………………………………………………<br>………………………………………………………………<br>………………………………………………………………</li>
+</ul></td></tr>
+<tr><td rowspan="3"><span class="t-gold"><b>Voies génitales</b></span></td><td></td><td>Ils représentent le lieu de transit (passage) et de maturation des spermatozoïdes.</td></tr>
+<tr><td></td><td>Assurant le transit des spermatozoïdes.</td></tr>
+<tr><td></td><td>Assure l’évacuation (sortie) du sperme.</td></tr>
+<tr><td rowspan="3"><span class="t-green"><b>Glandes annexes</b></span></td><td></td><td>Elles sécrètent un liquide nutritif riche en fructose.</td></tr>
+<tr><td></td><td>Elle sécrète un produit d’aspect laiteux riche en enzymes capables de transformer le fructose en <b>glucose</b> (source d’énergie pour les spermatozoïdes).</td></tr>
+<tr><td></td><td>Elles sécrètent un liquide diluant le sperme.</td></tr>
+<tr><td><b>Organe de copulation</b></td><td></td><td>Assure l’accouplement avec la femme, conduisant à l’éjaculation : la libération du sperme dans les voies génitales féminines.</td></tr>
+</table>
+<!-- page 06 -->
+<p class="para">………………………………………………………………………………………<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………</p>
+<!-- CROP: 4111 1 6 0.07 0.252 0.93 0.652 4111_schema_hormone_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_schema_hormone_testicule.png" alt=""></figure>
+<p class="para">………………………………………………………………………………………<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………<br>
+………………………………………………………………………………………</p>
+<!-- page 07 -->
+<p class="para"><span class="t-blue"><b>Remarque :</b> L<b><i>e sperme</i></b></span>……………………………………………………………………………<br>
+………………………………………………………………………………………….<br>
+………………………………………………………………………………………….<br>
+………………………………………………………………………………………….</p>
+<p class="subhead t-navy"><span class="t-green"><b>2) Les structures responsables des fonctions du testicule</b></span><b>.</b></p>
+<p class="consigne">Le document 2 représente une coupe longitudinale partielle du testicule. Les documents 3,4,et 5 montrent des observations microscopiques de coupes transversales du même organe.<br>
+Légendez ces documents en utilisant les termes suivants :</p>
+<div class="data"><p class="para"><span class="t-blue">lobules testiculaires, épididyme, canal épididymaire, canal déférent, tubes séminifères, cloison conjonctive, épididyme et enveloppe testiculaire, enveloppe conjonctive du tube séminifère, noyau cellule de Sertoli , spermatogonie, spermatocyte I, spermatocyte II, spermatide, spermatozoïde, vaisseau sanguin.  paroi du tube séminifère, tube séminifère, lumière du tube séminifère, et tissu interstitiel,</span></p></div>
+<!-- CROP: 4111 1 7 0.33 0.430 0.78 0.720 4111_doc2_testicule_coupe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc2_testicule_coupe.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b><u>Document 2</u> : Structure schématique d’un testicule de mammifère (en coupe partielle)</b></span></p>
+<p class="para">Les testicules, situés dans une poche cutanée appelé <span class="t-red"><b>« scrotum ou bourse »</b></span>, c’est-à-dire, ils sont disposés à l’extérieur du corps ce qui diminue leur température d’environ 2°C par rapport à la température corporelle. Bien qu’ils aient une taille variable, chaque testicule est divisé en plusieurs lobules testiculaires. Chaque lobule contient 2 à 3 tubes <span class="t-red"><b>séminifères contournés (pelotonnés)</b></span> d’une longueur de 80 cm à 1m et d’un diamètre de 150 µm à 300 µm. Les tubes séminifères convergent vers l’épididyme <span class="t-blue"><b><i>(est un cul-de-sac =</i></b></span></p>
+<!-- page 08 -->
+<p class="para"><span class="t-blue"><b><i>convergent vers une cavité anatomique )</i></b></span> , qui se poursuit par le canal déférent ou spermiducte dont la longueur globale mesure chez l'homme entre 40 à 45 cm et qui permet aux spermatozoïdes de sortir de chacun des testicules et de rejoindre l’ampoule où ils s’accumulent.</p>
+<!-- CROP: 4111 1 8 0.30 0.175 0.76 0.398 4111_doc3a_vue_microscopique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc3a_vue_microscopique.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>a : vue microscopique.</b></span></p>
+<!-- CROP: 4111 1 8 0.30 0.450 0.76 0.722 4111_doc3b_schema_interpretation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc3b_schema_interpretation.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>B : schéma d’interprétation</b></span></p>
+<p class="para"><span class="t-blue"><b><u>Document 3</u> : Coupe transversale de tubes séminifères.</b></span></p>
+<!-- page 09 -->
+<!-- CROP: 4111 1 9 0.38 0.078 0.68 0.234 4111_doc4_tube_seminifere_meb -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc4_tube_seminifere_meb.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b><u>Document 4 : Coupe transversale d’un tube séminifère agrandi (MEBX640)</u></b></span></p>
+<p class="para">Les cercles qui apparaissent sur la coupe du document 3 correspondent à des …………………………………………………………………….Chaque tube est formé d'une ………………………qui entoure une ……………………….. On distingue dans la ……………………………. Des spermatozoïdes.<br>
+C’est dans ces tubes séminifères que se …………………………………………. (fère = porte,  seminis = semence).<br>
+L’espace entre les tubes est occupé par des cellules : ……………………………. qui constituent le tissu interstitiel riche en capillaires sanguins</p>
+<!-- CROP: 4111 1 9 0.28 0.572 0.78 0.808 4111_doc5_coupe_partielle_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc5_coupe_partielle_testicule.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>Document 5 :  Schéma d’interprétation d’une coupe partielle de testicule</b></span></p>
+<!-- page 10 -->
+<p class="consigne">⇨ <b><i>Relevez à partir de l’analyse des documents 3,4 et 5 une dualité structurale du testicule.</i></b></p>
+<p class="para">⇨ <span class="t-blue">Les coupes réalisées au niveau des testicules mettent en évidence deux structures différentes :</span> <span class="t-red">les tubes séminifères</span> <span class="t-blue">et</span> <span class="t-green">le tissu interstitiel</span></p>
+<p class="para"><span class="t-red"><b>1.</b></span> <span class="t-red">Les tubes séminifères</span> : Chaque tube est formé d’une lumière entourée d’une paroi.<br>
+Au niveau de la paroi du tube séminifères existe <span class="t-red"><b>deux types de cellules :</b></span></p>
+<p class="para"><span class="t-gold"><b>a)</b></span> <span class="t-blue"><b>Des cellules somatiques :</b></span> ce sont les <span class="t-blue"><b>cellules de Sertoli</b></span> <span class="t-red"><b>(8)</b></span>. Elles s’étendent de la membrane basale ou enveloppe conjonctive <span class="t-red"><b>(1)</b></span> du tube séminifère jusqu’à sa lumière avec un noyau polygonal. Ce sont de grandes cellules jouant un rôle <b>sécrétion, de soutien et de nutrition</b> pour les cellules de la lignée germinale.<br>
+Les spermatozoïdes se trouvent implantés dans les replis cytoplasmiques de leur membrane, près de la lumière du tube.</p>
+<p class="para"><span class="t-gold"><b>b)</b></span> <span class="t-gold"><b>Des cellules germinales, qui décrivent des cercles concentriques,</b></span> en allant de l’enveloppe conjonctive vers la lumière du tube séminifère on rencontre :</p>
+<ul class="b">
+<li><span class="t-gold"><b>des spermatogonies (2)</b></span></li>
+<li><span class="t-gold"><b>des spermatocytes I (3)</b></span></li>
+<li><span class="t-gold"><b>des spermatocytes II (4)</b></span></li>
+<li><span class="t-gold"><b>des spermatides (5)</b></span></li>
+<li><span class="t-gold"><b>des spermatozoïdes (6)</b></span></li>
+</ul>
+<p class="para"><span class="t-red"><b>2.</b></span> <span class="t-red">Au</span> niveau du <span class="t-green">tissu interstitiel</span>, existent des cellules interstitielles appelées encore <b>cellules de Leydig</b> (10) en contact étroit avec des capillaires sanguins (9).</p>
+<p class="para"><span class="t-red"><u>Conclusion :</u></span> <span class="t-blue"><b>Une coupe transversale de testicule montre de nombreux tubes séminifères et un tissu interstitiel</b></span></p>
+<p class="subhead t-navy">⇨ <span class="t-red"><b>Structure des spermatozoïdes :</b></span> <span class="t-blue"><b>particularités cytologiques et chromosomiques du spermatozoïde.</b></span></p>
+<p class="para">Le spermatozoïde ou le gamète mâle est la cellule reproductrice masculine contenue dans le sperme.</p>
+<p class="para">Il s’agit de cellule <b>différenciée</b>, bien adaptée à sa fonction, ayant les caractéristiques suivantes :</p>
+<p class="para">Cellule de petite taille, de forme allongée, formée de trois parties Principales :</p>
+<ul class="b">
+<li><span class="t-blue"><b>Tête</b></span> <span class="t-red"><b>(7)</b></span> <span class="t-blue"><b>:</b></span> formée d’un noyau haploïde <span class="t-red"><b>(3)</b></span> coiffé d’un acrosome <span class="t-red"><b>(2)</b></span></li>
+<li><span class="t-blue"><b>Pièce intermédiaire</b></span> <span class="t-red"><b>(8)</b></span> <span class="t-blue"><b>:</b></span> formée par de nombreuses mitochondries <span class="t-red"><b>(5)</b></span> disposées en hélice autour de la base(début) du flagelle.</li>
+<li><span class="t-blue"><b>Queue</b></span> <span class="t-red"><b>(9).</b></span> Formée d’un long flagelle <span class="t-red"><b>(6),</b></span> entouré d’une très mince couche de cytoplasme.</li>
+</ul>
+<!-- page 11 -->
+<p class="para">Entre la tête et la pièce intermédiaire, sous le noyau existe un centrosome <span class="t-red"><b>(4)</b></span> formé de deux centrioles<b>.</b> Le tout est enveloppé par une membrane plasmique <span class="t-red"><b>(1)</b></span>.</p>
+<!-- CROP: 4111 1 11 0.12 0.135 0.43 0.600 4111_schema_spermatozoide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_schema_spermatozoide.png" alt=""></figure>
+<p class="para"><span class="t-gold"><b>1.</b></span>……………………………………………………………………<br>
+<span class="t-gold"><b>2.</b></span>……………………………………………………………………<br>
+<span class="t-gold"><b>3.</b></span>……………………………………………………………………<br>
+<span class="t-gold"><b>4.</b></span>……………………………………………………………………<br>
+<span class="t-gold"><b>5.</b></span>……………………………………………………………………<br>
+<span class="t-gold"><b>6.</b></span>……………………………………………………………………<br>
+<span class="t-gold"><b>7.</b></span>……………………………………………………………………<br>
+<span class="t-gold"><b>8.</b></span>……………………………………………………………………<br>
+<span class="t-gold"><b>9.</b></span>……………………………………………………………………</p>
+<p class="para">Le tableau suivant résume les différentes parties du spermatozoïde, leurs principaux constituants et leurs rôles :</p>
+<!-- page 12 -->
+<table>
+<tr><th><span class="t-blue">Parties</span></th><th><span class="t-blue">Constituants</span></th><th><span class="t-blue">Rôles</span></th></tr>
+<tr><td rowspan="3"><b>Tête</b></td><td>Noyau haploïde</td><td>Contient l’information génétique paternelle sous forme de n = 23 chromosomes simples, avec deux formules chromosomique possibles :<br><span class="t-gold"><b>22 autosomes+ X</b></span> <b>ou</b> <span class="t-blue"><b>22 autosomes +Y</b></span></td></tr>
+<tr><td><b>Acrosome</b> du grec « accros »= la pointe et « soma » le corps</td><td>C’est un petit sac qui coiffe le noyau, avec un contenu enzymatique, qui assure la pénétration du spermatozoïde dans le gamète femelle lors de la fécondation.</td></tr>
+<tr><td>Centrosome</td><td>À l’origine des asters lors de la division de la cellule œuf.</td></tr>
+<tr><td><b>Pièce intermédiaire</b></td><td>Mitochondries disposées en hélice</td><td>C’est la centrale énergétique des spermatozoïdes. C’est la source de l’énergie nécessaire aux activités métaboliques et aux mouvements du spermatozoïde.</td></tr>
+<tr><td><b>Queue</b></td><td>Long flagelle</td><td>Animé de mouvements ondulatoires, il propulse le spermatozoïde, la tête vers l’avant.</td></tr>
+</table>
+<p class="consigne"><b><i>2)</i></b> <span class="t-blue"><b><i>A partir de l’analyse de cette 2<sup>eme</sup> série d’expériences, établissez une relation entre les fonctions et les structures du testicule.</i></b></span></p>
+<p class="para"><span class="t-red"><b><u>2<sup>eme</sup> série d’expériences :</u></b></span><br>
+<span class="t-red"><b>Expérience 4 :</b></span><br>
+Chez un homme normal, les testicules sont situés dans une poche appelé "scrotum", c'est-à-dire ils sont disposés <b>à l’extérieur du corps</b>.<br>
+<span class="t-gold"><b>La cryptorchidie</b></span> est une anomalie qui affecte la descente des testicules de la cavité abdominale vers les bourses au cours de la vie fœtale (<i>la rétention des testicules à l'intérieur de la cavité abdominale soumet les cellules germinales à des températures élevées qui empêche leur développement normal</i>). Les individus cryptorchides présentent des caractères sexuels secondaires normaux mais ils sont <span class="t-red"><b>stériles</b></span>.</p>
+<!-- CROP: 4111 1 12 0.14 0.660 0.85 0.895 4111_cryptorchidie -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_cryptorchidie.png" alt=""></figure>
+<!-- page 13 -->
+<p class="para">La figure 1 du document 6 présente deux coupes de tubes séminifères de testicules d’un individu normal (a) et d’un cryptorchide (b) au même grossissement,</p>
+<table>
+<tr><td><!-- CROP: 4111 1 13 0.125 0.158 0.476 0.330 4111_doc6_fig1a_tube_normal -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc6_fig1a_tube_normal.png" alt=""></figure></td>
+<td><!-- CROP: 4111 1 13 0.537 0.158 0.845 0.330 4111_doc6_fig1b_tube_cryptorchide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc6_fig1b_tube_cryptorchide.png" alt=""></figure></td></tr>
+<tr><td>Tube seminifere d’un <span class="t-blue">homme normal</span></td><td>Tube seminifere d’un homme <span class="t-red">cryptorchide</span></td></tr>
+<tr><td colspan="2"><span class="t-green">Figure 1</span></td></tr>
+</table>
+<p class="para">La figure 2 du document 6 présente deux coupes de testicules d’un individu normal (c) et d’un cryptorchide (d) au même grossissement, montrant leur tissu interstitiel.</p>
+<table>
+<tr><td><!-- CROP: 4111 1 13 0.040 0.444 0.502 0.628 4111_doc6_fig2c_leydig_normal -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc6_fig2c_leydig_normal.png" alt=""></figure></td>
+<td><!-- CROP: 4111 1 13 0.524 0.444 0.960 0.628 4111_doc6_fig2d_leydig_cryptorchide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc6_fig2d_leydig_cryptorchide.png" alt=""></figure></td></tr>
+<tr><td>Cellule de leydig d’un <span class="t-blue">homme normal</span></td><td>Cellule de Leydig d’un homme <span class="t-red">cryptorchide</span></td></tr>
+<tr><td colspan="2"><span class="t-gold"><b>Figure 2</b></span></td></tr>
+</table>
+<p class="para"><span class="t-blue"><b>Document 6</b></span></p>
+<p class="consigne">⇨ <b><i>Comparez les deux coupes testiculaires. Que peut-on déduire ?</i></b></p>
+<!-- page 14 -->
+<table>
+<tr><th></th><th><span class="t-blue">Figure 1 : testicule normal</span></th><th><span class="t-red">Figure 2 : testicule cryptorchide</span></th></tr>
+<tr><td></td><td colspan="2">……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………</td></tr>
+<tr><td></td><td>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………</td><td>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………<br>……………………………………………………</td></tr>
+</table>
+<p class="para"><span class="t-gold"><b><u>Conclusion</u></b></span><br>
+Le testicule avec sa double structure est une gonade ou organe sexuel qui assure <span class="t-red"><b>deux fonctions :</b></span></p>
+<ul class="b">
+<li>La production des spermatozoïdes : c’est la <span class="t-blue"><b>fonction exocrine</b></span> qui se réalise dans les tubes séminifères (Fère = porte, seminis = semence).</li>
+<li>L’apparition et le maintien des caractères sexuels masculins, grâce à une hormone, la
+<!-- page 15 -->
+testostérone, produite par les cellules de Leydig. Il s’agit d’une <span class="t-green"><b>fonction hormonale ou endocrine.</b></span></li>
+</ul>
+<p class="subhead t-navy"><span class="t-green"><b>3) La fonction exocrine des testicules ou</b></span> <span class="t-blue"><b>la spermatogenèse :</b></span></p>
+<p class="para">L'observation au fort grossissement de la paroi d’un tube séminifère permet de déduire que :</p>
+<p class="para">⇨ Les cellules germinales décrivent des cercles concentriques à évolution centripète :<br>
+On observe de l'extérieur vers l'intérieur :</p>
+<p class="para"><span class="t-red"><b>3.</b></span> Les <span class="t-blue">spermatogonies</span> = Les cellules souches des gamètes à <span class="t-blue">2n chromosomes</span> dont certaines montrent des figures de <span class="t-blue">mitose</span>.<br>
+<span class="t-red"><b>4.</b></span> La deuxième rangée est formée par les <span class="t-red">spermatocytes I</span>, plus volumineux et à<br>
+<span class="t-red">2n chromosomes dupliqués</span>.<br>
+<span class="t-red"><b>5.</b></span> Puis les <span class="t-green">spermatocytes II</span> deux fois plus petits que les précédents, a <span class="t-green">n chromosomes dupliqués.</span><br>
+<span class="t-red"><b>6.</b></span> Les <span class="t-gold">spermatides</span> près de la lumière du tube, <span class="t-gold">a n chromosomes simples</span>.<br>
+<span class="t-red"><b>7.</b></span> Les <span class="t-gold">spermatozoïdes</span> avec une <span class="t-gold">forme caractéristique</span> et un noyau dense contenant<br>
+<span class="t-gold">n chromosomes simples.</span></p>
+<!-- CROP: 4111 1 15 0.07 0.415 0.94 0.772 4111_phases_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_phases_spermatogenese.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>Les différentes phases de la spermatogenèse</b></span></p>
+<!-- page 16 -->
+<p class="para"><span class="t-gold"><b><u>Conclusion</u></b></span><br>
+Chez l’homme la spermatogenèse est un <b>phénomène continu qui</b> commence à partir de la puberté jusqu’à la mort sans interruption.<br>
+Cette spermatogenèse se déroule dans les tubes séminifères en quatre phases successives :</p>
+<p class="para"><span class="t-blue"><b>multiplication</b></span><b>,</b> <span class="t-green"><b>accroissement,</b></span> <span class="t-gold"><b>maturation</b></span> <b>et</b> <span class="t-gold"><b>différenciation.</b></span></p>
+<!-- CROP: 4111 1 16 0.075 0.200 0.945 0.905 4111_schema_spermatogenese_a_completer -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_schema_spermatogenese_a_completer.png" alt=""></figure>
+<!-- page 17 -->
+<!-- CROP: 4111 1 17 0.075 0.085 0.945 0.905 4111_schema_spermatogenese_suite -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_schema_spermatogenese_suite.png" alt=""></figure>
+<!-- page 18 -->
+<p class="para">…………………………………………………………………………………………</p>
+<p class="para">L’observation de la paroi des tubes séminifères suggère que les différents aspects cellulaires correspondent à des stades d’évolution des cellules germinales en spermatozoïdes : c’est la <b>spermatogenèse</b>, qui comporte <span class="t-red"><b>4 phases</b></span> :</p>
+<p class="para"><span class="t-blue"><b>La phase de multiplication</b></span> : La division des spermatogonies (cellules souches à 2n chrs) situées à la périphérie des tubes séminifères, par mitose, permet leur multiplication.<br>
+Chaque spermatogonie, se divisant par <span class="t-gold"><b>mitose</b></span>, donne :</p>
+<ul class="b">
+<li>Une spermatogonie qui reste en périphérie du tube séminifère pour assurer la conservation du stock de spermatogonies,</li>
+<li>Une autre spermatogonie qui subit d’autres mitoses permettant la multiplication du nombre de spermatogonies qui s’engagent dans la spermatogenèse.</li>
+</ul>
+<p class="para">⇨ <span class="t-blue"><b>La phase d’accroissement</b></span> : Les spermatogonies ayant terminé leur multiplication subissent une légère augmentation du volume suite à l’accumulations de quelques réserves cytoplasmiques et une synthèse d’ADN dans le noyau. On obtient ainsi des <b>spermatocytes I</b> à 2n chromosomes dupliqués (fissurés ou dédoublés).</p>
+<p class="para">⇨ <span class="t-blue"><b>La phase de maturation</b></span> : elle est assurée par la méiose qui comprend deux divisions : une division réductionnelle puis une division équationnelle.</p>
+<ul class="b">
+<li>Chaque spermatocyte I subit la division réductionnelle de la méiose et donne deux <span class="t-green"><b>spermatocytes II</b></span> à n chromosomes dupliqués.</li>
+<li>Les deux spermatocytes II subissent la division équationnelle de la méiose et donnent quatre <span class="t-gold"><b>spermatides</b></span> à n chromosomes simples chacun.</li>
+</ul>
+<p class="para">⇨ <span class="t-blue"><b>La phase de différenciation ou spermiogenèse</b></span> : Au contact des cellules de Sertoli, chaque spermatide évolue en <b>spermatozoïde</b> suite a réduction cytoplasmique, condensation du noyau, formation de l’acrosome, de la pièce intermédiaire et du flagelle.<br>
+On obtient ainsi des spermatozoïdes à n chromosomes simples.</p>
+<!-- page 19 -->
+<!-- CROP: 4111 1 19 0.08 0.083 0.95 0.308 4111_doc7_differenciation_spermatide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4111/4111_doc7_differenciation_spermatide.png" alt=""></figure>
+<p class="para"><span class="t-blue"><b>Document 7 : Différenciation d’une spermatide en spermatozoïde</b></span></p>
+
+</section>
+
+</div>
+</body>
+</html>

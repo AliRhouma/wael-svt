@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · numérisé_20260718-1254</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Lycée tahar Sfar">
+<meta data-pagefind-meta="n[content]" content="4101">
+<meta data-pagefind-meta="title[content]" content="numérisé_20260718-1254">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · numérisé_20260718-1254" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>numérisé_20260718-1254</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Lycée tahar Sfar · B.Moussa</span> <span class="tg">Série</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1P7bQP6hA2WV4g1SRZFDJ_CZEkvuHY9nV/view">↗ numérisé_20260718-1254.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1P7bQP6hA2WV4g1SRZFDJ_CZEkvuHY9nV/view">BAC SCIENCE — Drive 1: Bac Science (Pilote Sousse docs) · Bac 2027 › Svt / Séries bn moussa / Homme</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Reproduction chez l&#x27;homme</h2></div>
+<!-- SOURCE: Lycée tahar Sfar · B.Moussa -->
+<div class="exh"><span class="idx ex">Série</span><h2>Fonction reproductrice masculine — EXERCICES CORRIGES</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4101.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Lycée tahar Sfar · B.Moussa</span> <span class="tg">Série</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1P7bQP6hA2WV4g1SRZFDJ_CZEkvuHY9nV/view">↗ numérisé_20260718-1254.pdf</a></div>
+<!-- page 01 -->
+<p class="subhead t-red"><b>Fonction reproductrice masculine<br>EXERCICES CORRIGES</b></p>
+<div class="exsub">BAC MATH 2021</div>
+<p class="subhead t-navy"><b>DEUXIEME PARTIE</b></p>
+<p class="subhead t-navy"><b>I- Fonction reproductrice chez l'homme (5 points)</b></p>
+<p class="para">On se propose de déterminer les causes du retard pubertaire chez deux garçons X et Y âgés de 18 ans et de proposer des traitements possibles. Pour cela on se réfère aux résultats de tests cliniques et d'une expérience.</p>
+<p class="para"><b><i>Test clinique 1</i> :</b> on réalise des dosages de LH, de FSH et de testostérone chez les garçons X et Y dont les tiges pituitaires (ou hypothalamo-hypophysaires) sont intactes.<br>Le document 2 résume les résultats obtenus chez les garçons X et Y et des résultats de référence d'un garçon pubère témoin.</p>
+<table>
+<tr><th>Garçons : / Taux plasmatique de :</th><th>LH (µg.mL<sup>-1</sup>)</th><th>FSH (µg.mL<sup>-1</sup>)</th><th>Testostérone (ng.dL<sup>-1</sup>)</th></tr>
+<tr><td>X</td><td>0,9</td><td>0,4</td><td>63</td></tr>
+<tr><td>Y</td><td>0,75</td><td>0,3</td><td>58</td></tr>
+<tr><td>témoin</td><td>2 à 10</td><td>1 à 12</td><td>500</td></tr>
+</table>
+<p class="para"><b>Document 2</b></p>
+<ol class="qn">
+<li>Comparez les résultats obtenus en vue de proposer deux causes possibles du retard pubertaire.</li>
+</ol>
+<p class="para"><b><i>Test clinique 2</i> :</b> le dosage des taux plasmatiques de l'inhibine et de la testostérone chez les deux garçons X et Y avant et après injection de GnRH donne les résultats résumés dans le document 3.</p>
+<!-- CROP: 4101 1 1 0.075 0.325 0.815 0.448 4101_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_doc3.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<ol class="qn" start="2">
+<li>Exploitez les données du document 3 afin de préciser la cause du retard pubertaire du garçon X.</li>
+</ol>
+<p class="para"><i>Expérience :</i> On cultive des cellules hypophysaires du garçon Y et du garçon pubère témoin dar deux milieux de culture. On augmente à chaque fois la concentration de GnRH radioactive ajouté aux milieux de culture et on mesure le pourcentage de fixation de la GnRH radioactive sur le cellules sécrétrices de FSH et de LH. Le protocole expérimental et les résultats obtenus soi présentés dans le document 4.</p>
+<!-- PROOFREAD: 4101 part1 p01 — "dar" / "le" / "soi": words cut by the right edge of the scan -->
+<!-- CROP: 4101 1 1 0.05 0.565 0.865 0.905 4101_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_doc4.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<ol class="qn" start="3">
+<li>Comparez les résultats obtenus en vue de préciser la cause du retard pubertaire du garçon Y.</li>
+<li>Proposez un traitement hormonal permettant de corriger le retard pubertaire de chaque garçon.</li>
+</ol>
+<!-- page 02 -->
+<p class="subhead t-red"><b><u>CORRIGE</u></b></p>
+<p class="subhead t-navy"><b>I- Reproduction masculine (5 points)</b></p>
+<p class="para">1) Chez les deux garçons X et Y, les taux plasmatiques de FSH, de LH et de testostérone sont inférieurs à ceux du garçon témoin.<br>
+Cause 1 : Anomalie de l'hypophyse antérieure.<br>
+Cause 2 : Anomalie de l'hypothalamus.</p>
+<p class="para">2) Garçon X :</p>
+<ul class="dash">
+<li>Avant injections de GnRH : taux faibles des hormones testiculaires.</li>
+<li>Après injections de GnRH : augmentation de la sécrétion d'inhibine et de testostérone.</li>
+</ul>
+<p class="para">Cause du retard pubertaire : anomalie hypothalamique.</p>
+<p class="para">3) Garçon Y :<br>
+La fixation de GnRH sur les cellules sécrétrices de gonadostimulines :<br>
+- augmente parallèlement avec sa concentration dans le milieu de culture chez le garçon témoin de 20 à 100%.<br>
+- reste constante et faible (≈ 10%) quelle que soit sa concentration dans le milieu de culture.<br>
+→ Cause du retard pubertaire : problèmes liés aux récepteurs spécifiques à la GnRH cellules sécrétrices de gonadostimulines).</p>
+<!-- PROOFREAD: 4101 part1 p02 — corrigé lines 1) and 2) are very faded (read from an enhanced copy); "(≈ 10%)" has a stray mark before ")" -->
+
+
+<div class="exsub"><u>EXERCICE</u></div>
+<p class="para">Le document ci-dessous montre l'évolution de la concentration de LH chez un singe Rhésus au cours d'une journée.<br>
+1. Avant castration.<br>
+2. Après castration.<br>
+3. Après castration et après deux jours de traitement à la testostérone</p>
+<!-- CROP: 4101 1 2 0.04 0.425 0.92 0.69 4101_lh_singe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_lh_singe.png" alt=""></figure>
+<p class="consigne">Analysez ce document en vu de montrer que la testostérone agit sur l'hypothalamus et que cette action est permanente</p>
+<p class="para">corrigé<br>
+Avant castration, il y a 4 pulses de LH en 10 heures<br>
+après castration, le rythme est de 12 pulses en 8 heures. } 0.5<br>
+chaque pulse de GnRH est suivie d'un pulse de LH ; il semble que la GnRH stimule la LH (0.5)<br>
+Comme le rythme de sécrétion de LH dépend de celui de GnRH, on peut dire que les testicules diminuent la fréquence d'émission des pulses de GnRH. L'injection de testostérone à l'animal castré rétablit le rythme initial de l'animal non castré. (0.75)<br>
+On en déduit que les testicules freinent la sécrétion de GnRH par l'intermédiaire de la testostérone qu'ils sécrètent.(0.75)<br>
+Puisque la castration est suivie d'une augmentation du rythme des pulses de GnRH c'est que celle-ci est en permanence ralentie. La fréquence des pulses de la GnRH est plus élevée que celle qui existe chez l'animal non castré.(1)</p>
+<!-- page 03 -->
+<div class="exsub"><u>EXERCICE I (de B.Moussa)</u></div>
+<!-- PROOFREAD: 4101 part1 p03 — first letters of "EXERCICE" and "Le document" partly cut by the left edge -->
+<p class="para">Le document ci-contre représente une coupe partielle d'une gonade humaine.</p>
+<!-- NOTE: pencil labels handwritten by a student around the printed schema are left out -->
+<!-- CROP: 4101 1 3 0.18 0.07 0.69 0.225 4101_coupe_gonade -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_coupe_gonade.png" alt=""></figure>
+<p class="para">1- Donnez un titre et une légende correspondant aux numéros Figurant sur le schéma</p>
+<p class="para">2- On se limitant a 2n=6 et dont une paire correspond aux chromosomes sexuels, représentez la phase de division des éléments 7 et 8</p>
+<p class="para">3- On réalise chez un animal les trois d'expériences suivantes<br>
+<b><u>-expérience 1</u></b> : L'hypophysectomie d'un animal pubère entraine la disparition des spermatozoïdes dans les tubes séminifères<br>
+<b><u>Expérience 2</u></b> : L'injection d'extraits hypophysaires est suivie de l'apparition des spermatozoïdes dans les tubes séminifères<br>
+<b><u>Expérience 3</u> :</b> On injecte a un animal mâle deux substances radioactives X1 et X2 qui interviennent dans la fonction reproductrice, puis on cherche la localisation de la radioactivité au niveau du complexe hypothalamo-hypophysaire. Les résultats sont indiqués dans le tableau ci-dessous</p>
+<table>
+<tr><th>Expériences</th><th>Localisation de la radioactivité</th></tr>
+<tr><td>Injection d'une forte dose de X1</td><td>Hypophyse et hypothalamus</td></tr>
+<tr><td>Injection d'une forte dose de X2</td><td>hypophyse</td></tr>
+</table>
+<p class="para"><b>a-</b> Expliquez les résultats des deux premières expériences<br>
+<b>b-</b> Identifiez en justifiant votre réponse les substances X1 et X2 puis indiquez les conséquences de ces injections sur les sécrétions de l'axe hypothalamo-hypophysaire<br>
+<b>c-</b> A partir de vos réponses précédentes et en se basant sur vos connaissances, expliquez comment interviennent les substances X1 et X2 dans la régulation des fonctions testiculaires</p>
+<p class="subhead t-red"><b><u>CORRIGE</u></b></p>
+<p class="para"><u>1) </u>Titre : Coupe transversale schématique d'un testicule pubère.<br>
+Légende : 1- capillaire sanguin 2- cellule de leydig 3- cellule de sertoli 4- spermatocyte I.<br>
+5- spermatide 6- spermatide évaluée (spermatozoïde jeune) <b>1pt</b><br>
+7- spermatogonie en anaphase de mitose.8- spermatocyte I en anaphase I 9- Membrane basale</p>
+<p class="para">2)</p>
+<!-- CROP: 4101 1 3 0.26 0.675 0.74 0.83 4101_anaphases -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_anaphases.png" alt=""></figure>
+<p class="para"><b>1pt</b></p>
+<p class="para"><b>3- (7pts) :a) (3pts)</b> Hypophysectomie ⟶ absence de spz : <u>déduction</u> :hypophyse est indispensable à la formation du spz <b>(0.25 X 2 )</b><br>
+Injection d'extraits ⟶ réapparition des spz : déduction : l'hypophyse intervient dans la formation des spz par l'intermédiaire des substances transportées par voie sanguine : il s'agit des hormones <b>(0.25x2)</b><br>
+<b>Explication(2pts)</b><br>
+L'hypophyse stimule l'activité du testicule par l'intermédiaire de FSH et LH<br>
+FSH stimule les cellules de sertoli qui produisent d'ABP</p>
+<!-- page 04 -->
+<!-- NOTE: on page 04 the first lines of the corrigé are printed overlapping/interleaved (left-hand line starts shifted against line ends); they are typed here in reading order -->
+<p class="para">LH stimule les cellules de leydig qui produisent la testostérone<br>
+La testostérone est indispensable à la formation du spz mais la fixation de cette hormone sur les cellules germinale nécessite l'ABP qui est une protéine de transport.<br>
+<b>b) (2pts)</b> La radioactivité détectée dans L'hypophyse et l'hypothalamus suite à l'injection de X1 montre que cette substance est une hormone possédant des récepteurs au niveau du complexe H-H <b>(0.5)</b><br>
+X1=la testostérone <b>(0,5)</b><br>
+La radioactivité détectée uniquement dans l'hypophyse suite à l'injection de X2 montre que cette substance est une hormone possédant des récepteurs dans l'hypophyse <b>(0.5)</b><br>
+X2 = inhibine <b>(0,5)</b><br>
+Conséquence de l'injection de X 1 : diminution de taux de GnRH de FSH et LH <b>(0,5)</b><br>
+-conséquence de l'injection de X2 : diminution de taux de FSH alors que le taux de LH reste constant<b>0.5</b><br>
+<b>c) -(2pts)</b> -Régulation de taux de testostérone (autorégulation) } voir cours } <b>(1x2)</b><br>
+-Régulation de la spermatogenèse (inhibine)</p>
+<!-- PROOFREAD: 4101 part1 p04 — line starts cut by the left edge ("LH", "La", "germinale", "b)", "que", "La", "est") -->
+<div class="exsub"><u>EXERCICE II (LPS)</u></div>
+<p class="para">Le document illustre un cas médical observé dans une famille. Deux frères (A et B) âgés tous deux de plus de 20 ans ont présenté un début de développement pubertaire qui n'est pas arrivé à terme. Les graphiques indiquent l'évolution et leur concentration plasmatique de testostérone durant 24 heures ainsi que les valeurs considérées comme physiologiquement normales. Ils ont un autre frère (C) dont le fonctionnement de l'appareil reproducteur est normal.</p>
+<p class="para"><b>Document: Sécrétions de LH et de testostérone durant 24 heures chez trois frères : A, B et C</b><br>
+En grisé, l'éventail des concentrations plasmatiques de testostérone considérées comme normales.</p>
+<!-- CROP: 4101 1 4 0.04 0.425 0.78 0.64 4101_lh_testosterone_freres -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_lh_testosterone_freres.png" alt=""></figure>
+<p class="para"><b>1-</b> Expliquer en quoi les données sur la concentration plasmatique de testostérone des deux personnes AetB permettent de comprendre le non-achèvement de leur puberté.<br>
+<b>2-</b> A partir d'informations précises extraites des graphes du document, indiquer à titre d'hypothèse l'origine du dysfonctionnement du système de régulation de la testostérone constaté chez ces deux personnes.<br>
+Comment pourrait-on tester cette hypothèse et donc proposer un traitement aux deux frères</p>
+<p class="subhead t-red"><b><u>CORRIGE</u></b></p>
+<p class="para"><b>1-</b> La concentration moyenne de testostérone, est tres faible par rapport au sujet normal (C) en effet elle est d'environ 700 ng/dL chez l'individu normal C, est nettement insuffisante chez les hommes A et B car elle n'est que de 300 à 350 ng/dL.<br>
+Sachant que la testostérone est indispensable à l'accomplissement de la puberté (apparition et développement des caractères sexuels IIaires et au déroulement normal de la spermatogenèse), sa sécrétion insuffisantes chez les deux freres (A) et (B) explique la cause du non achèvement de la puberté<br>
+Plusieurs causes de cette production insuffisante de testostérone peuvent être invoquées<br>
+-sécrétion faible de LH<br>
+-insuffisance dans la sécrétion de GnRH</p>
+<p class="para"><b>2. - <u>Cause du dysfonctionnement</u></b> : la fréquence des pulses de LH est anormalement faible: 6 ou 7 pulses par 24 heures chez les individus A et B contre 11 ou 12 chez l'individu normal. les pulses de LH sont déclenchés par les pulses de GnRH, ce sont ces derniers qui sont émis à un rythme insuffisant.<br>
+<b><u>Hypothèse</u></b> :Il s'agit d'un dysfonctionnement au niveau de certains neurones hypothalamiques.</p>
+<!-- page 05 -->
+<!-- NOTE: on page 05 several lines are printed interleaved (shifted line starts); they are typed here in reading order -->
+<p class="para">Traitements possibles. Il existe plusieurs possibilités :<br>
+- injecter de la GnRH, à proximité de l'hypophyse, de manière pulsatile avec une fréquence, semblable à la normale, de un pulse toutes les deux heures environ ; ce traitement permettrait de tester l'hypothèse émise<br>
+- sachant que l'émission pulsatile de LH n'est pas nécessaire, on peut imaginer un traitement à base d'injection de LH<br>
+- injecter de la testostérone (la pulsatilité n'étant pas nécessaire) de manière à atteindre et maintenir un taux correct permettant l'achèvement de la puberté.</p>
+<!-- PROOFREAD: 4101 part1 p05 — line starts cut/blurred at the left edge ("Traitements", "- injecter", "normale", "- sachant", "d'injection", "correct") -->
+<div class="exsub"><u>EXERCICE III( concours sousse)</u></div>
+<p class="para">A la Sa suite d'une lésion de l'hypophyse, on a pu faire chez un homme, les observations suivantes:<br>
+Observation :<br>
+- Une stérilité accompagnée d'une régression des caractères sexuels secondaires<br>
+- Paroi des tubes séminifères réduits<br>
+- Cellules de Leydïg en régression<br>
+-L'examen microscopique de prélèvements effectués au niveau du testicule de cette personne montre l'aspect représenté par le document ci contre.<br>
+Le dosage plasmatique de la testostérone montre chez cette personne une baisse du taux de cette hormone sexuelle par rapport à la normale.</p>
+<!-- CROP: 4101 1 5 0.65 0.265 0.89 0.39 4101_coupe_testicule_lesion -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_coupe_testicule_lesion.png" alt=""></figure>
+<p class="para">1- A l'aide des renseignements apportés par ces observations, comment expliquez les troubles apparus chez cette personne.<br>
+2- Quel (s) traitement(s) proposez-vous à cette personne:<br>
+<b>a)</b> pour corriger seulement tes caractères sexuels secondaires en régression?<br>
+<b>b)</b> pour corriger la stérilité et en même temps les caractères sexuels secondaires en régression ?</p>
+<p class="subhead t-red"><b><u>CORRIGE</u></b></p>
+<p class="para"><b>1- <u>Renseignements apportées par les observations cliniques</u></b><br>
+<b><u>1<sup>ère</sup> obsevation</u></b> : L'hypophyse est indispensable pour la fertilité et le maintien des caractères sexuels secondaires,<br>
+<b><u>2<sup>ème</sup> observation</u></b> : L'hypophyse stimule le développement dès tubes séminifères et les cellules de Leydig.<br>
+<b><u>3<sup>ème</sup> observation</u></b>: L'hypophyse est responsable au maintien du taux normal de la testostérone dans le sang.<br>
+<b><u>Explications des troubles observés</u></b><br>
+La lésion de l'hypophyse entraine la chute du taux de FSH et de LH :<br>
+La chute du taux de LH entraine la régression des cellules de Leydig (observation 2) ⟶ chute du taux de testostérone (observation 3) ⟶ régression des CSII (observation 1)<br>
+La chute du taux de FSH ⟶ régression des tubes séminifères (observation2), absence de spermatogenèse ⟶ stérilité (observation1)</p>
+<p class="para"><b><u>2) Traitements proposés pour corriger les troubles)</u></b><br>
+<b>a-</b> injection de LH ou de testostérone<br>
+<b>b-</b> injection de FSH et de LH ou FSH et testostérone</p>
+<div class="exsub"><u>BAC/ SESSION JUIN 2014</u></div>
+<p class="subhead t-navy"><b>I- Reproduction humaine (7,5 points)</b></p>
+<!-- NOTE: the introduction lines below are printed interleaved; typed in reading order -->
+<p class="para">Les mécanismes de la régulation des fonctions testiculaires chez l'homme font intervenir des interactions hormonales entre le complexe hypothalamo-hypophysaire et les testicules.<br>
+Pour comprendre ces mécanismes, on se réfère à une étude médicale réalisée chez un garçon pubère normal et à une étude réalisée chez deux garçons X et Y âgés de 19 ans et présentant des troubles de la puberté.<br>
+- Le document 2 représente des schémas d'interprétation d'observations microscopiques testiculaires réalisées chez un garçon pubère normal (document 2a) et chez les deux garçons X et Y (document 2b).<br>
+- Le document 3 représente les résultats du dosage de testostérone durant 24 heures chez le garçon pubère normal (document 3à) et chez les garçons X et Y (document 3b).</p>
+<!-- page 06 -->
+<!-- CROP: 4101 1 6 0.02 0.06 0.435 0.195 4101_doc2a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_doc2a.png" alt=""></figure>
+<!-- CROP: 4101 1 6 0.43 0.06 0.9 0.2 4101_doc2b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_doc2b.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<!-- CROP: 4101 1 6 0.02 0.195 0.44 0.297 4101_doc3a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_doc3a.png" alt=""></figure>
+<!-- CROP: 4101 1 6 0.44 0.195 0.9 0.3 4101_doc3b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_doc3b.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para">1)<br>
+a- Comparez l'aspect testiculaire observé chez les garçons X et Y à celui du garçon pubère normal<br>
+b- Faites une analyse comparée des résultats du dosage de testostérone (document 3).<br>
+c- En vous basant sur vos réponses précédentes (1-a et 1-b), établissez un lien entre la structure microscopique des testicules et la sécrétion de testostérone observée chez les garçons X et Y.<br>
+d- Proposez trois causes possibles qui pourraient être à l'origine des troubles observés chez les garçons XetY.</p>
+<ul class="dash">
+<li>Le document 4 représente les résultats du dosage de LH et de FSH observés chez le garçon normal et chez les garçons X et Y.</li>
+<li>Le document 5 représente les résultats de deux tests de stimulation réalisés chez les garçons X et Y.</li>
+</ul>
+<table>
+<tr><th></th><th>Concentration de LH (UI.L<sup>-1</sup>)</th><th>Concentration de FSH (UI.L<sup>-1</sup>)</th></tr>
+<tr><td>Garçon pubère normal</td><td>2à 10</td><td>1 à 12</td></tr>
+<tr><td>Garçons X et Y</td><td>0,5 à 0,9</td><td>0,1 à 0,4</td></tr>
+</table>
+<p class="para"><b>Document 4</b></p>
+<table>
+<tr><th>Tests de stimulation</th><th>Résultats</th></tr>
+<tr><td>Test 1 : Injections de HCG, dont l'action est analogue à celle de la LH, aux garçons X et Y.</td><td>- Correction des troubles de la sécrétion de testostérone chez les deux garçons. Aucune modification de l'aspect de la paroi du tube séminifère des deux garçons.</td></tr>
+<tr><td>Test 2 : Injections d'un mélange de HCG et de FSH aux garçons X et Y.</td><td>- Correction des troubles de la sécrétion de testostérone chez les deux garçons. - Aspect testiculaire des deux garçons devient analogue à celui du garçon normal.</td></tr>
+</table>
+<p class="para"><b>Document 5</b></p>
+<p class="para"><b>2)</b> Exploitez les résultats fournis par les documents 4 et 5 et vos connaissances en vue :<br>
+<b>a-</b> d'expliquer les résultats des tests 1 et 2.<br>
+<b>b-</b> de préciser parmi les causes proposées dans la réponse 1-d celle(s) qui est (sont) à retenir.<br>
+Le document 6 représente les résultats de tests réalisés chez le garçon normal et chez les garçons XetY.</p>
+<!-- CROP: 4101 1 6 0.078 0.85 0.292 0.95 4101_doc6_test3 -->
+<!-- CROP: 4101 1 6 0.294 0.848 0.507 0.95 4101_doc6_test4 -->
+<!-- CROP: 4101 1 6 0.508 0.858 0.738 0.955 4101_doc6_test5 -->
+<table>
+<tr><th></th><th>Test 3</th><th>Test 4</th><th>Test 5</th><th>Test 6</th></tr>
+<tr><td><b>Tests</b></td><td>Dosage de GnRH chez le garçon normal.</td><td>Dosage de GnRH chez le garçon X.</td><td>Dosage de GnRH chez le garçon Y.</td><td>Injections de GnRH chez le garçon Y suivies de dosage de LH et de FSH.</td></tr>
+<tr><td><b>Résultats</b></td><td><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_doc6_test3.png" alt=""></figure></td><td><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_doc6_test4.png" alt=""></figure></td><td><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_doc6_test5.png" alt=""></figure></td><td>Correction des troubles de sécrétion de LH et de FSH.</td></tr>
+</table>
+<p class="para"><b>Document 6</b></p>
+<!-- page 07 -->
+<!-- NOTE: the questions at the top of page 07 are printed interleaved (shifted line starts); typed here in reading order -->
+<p class="para">À partir de l'analyse comparée des résultats du dosage de GnRH chez le garçon normal (test 3) chez le garçon X (test 4) et des données du document 3-b, expliquez le résultat du dosage de GnRH obtenu chez le garçon X (test 4).<br>
+b- D'après les informations précédentes, précisez la cause des troubles observés chez le garçon X.<br>
+c- Analysez le résultat du test 5 en vue de préciser la cause des troubles observés chez le garçon Y.<br>
+d- En vous basant sur les résultats du test 6, établissez la relation fonctionnelle entre hypothalamus et hypophyse.<br>
+4) En intégrant vos réponses aux questions précédentes et à l'aide de vos connaissances, représentez par un schéma fonctionnel les interactions hormonales responsables de la régulation du fonctionnement normal des testicules chez un garçon pubère.</p>
+<!-- PROOFREAD: 4101 part1 p07 — the item number before "À partir" (probably "3) a-") and the starts of "chez", "GnRH", "b-", "c-", "d-", "et", "par", "fonctionnement" are cut by the left edge; "fonctionnel" printed like "fonctionne!" -->
+<p class="subhead t-red"><b><u>CORRIGE</u></b></p>
+<table>
+<tr><td><p class="para"><b>I- Reproduction humaine : 7,5 points</b><br><b>1)</b><br><b>a-</b></p>
+<table>
+<tr><th></th><th>document 2a</th><th>document 2b</th></tr>
+<tr><td>Cellules de Leydig</td><td>nombreuses<br>(ou développées)</td><td>peu nombreuses<br>(ou atrophiées)</td></tr>
+<tr><td>Cellules de Sertoli</td><td>développées</td><td>atrophiées</td></tr>
+<tr><td>Cellules germinales</td><td>toutes les catégories sont présentes</td><td>seules les spermatogonies sont présentes</td></tr>
+<tr><td>Spermatozoïdes</td><td>présents</td><td>absents</td></tr>
+</table></td><td>1 point</td></tr>
+<tr><td><b>b-</b> Chez le garçon pubère normal, on remarque que la sécrétion de la testostérone est pulsatile et de concentration entre 300 et 600 ng/ml ; par contre chez les garçons X et Y, la sécrétion de la testostérone est très faible.</td><td>0,5 point</td></tr>
+<tr><td><b>c-</b> Chez les garçons X et Y, les cellules de Leydig peu nombreuses et atrophiées secrètent un taux très faible de testostérone.</td><td>0,5 point</td></tr>
+<tr><td><b>d-</b> <u>Cause 1</u> : anomalie au niveau des testicules : testostérone.<br><u>Cause 2</u> : anomalie au niveau de l'hypophyse : LH et FSH.<br><u>Cause 3</u> : anomalie au niveau de l'hypothalamus : Gn-RH.<br>Accepter toute autre formulation en adéquation avec les causes précédentes.</td><td>0,75 point</td></tr>
+</table>
+<p class="para">session principale</p>
+<table>
+<tr><td><b>2)</b> Exploitation :<ul class="dash">
+<li>Les résultats de dosages de LH et de FSH chez les trois garçons montrent des taux faibles de gonadostimulines chez X et Y par rapport à ceux observés chez le garçon normal.</li>
+<li>Les injections de HCG corrigent les troubles de la sécrétion de testostérone chez les deux garçons X et Y mais n'ont aucun effet sur la paroi du tube séminifère.</li>
+<li>Les injections d'un mélange de HCG et de FSH aux garçons X et Y corrigent les troubles de sécrétion de testostérone et assurent le rétablissement de l'aspect testiculaire normal.</li>
+</ul></td><td>0,75 point</td></tr>
+<tr><td><b>a-</b> Explication :<br>→La LH stimule les cellules de Leydig qui se développent et secrètent la testostérone.<br>→La FSH stimule les cellules de Sertoli qui se développent et secrètent l'ABP indispensable à la réception de la testostérone par les cellules germinales, ce qui active la spermatogenèse.</td><td>0,25 point<br>0,25 point</td></tr>
+<tr><td><b>b-</b> les causes 2 (hypophyse) et 3 (hypothalamus) sont à retenir.</td><td>0,25 point</td></tr>
+<tr><td><b>3)</b><br><b>a-</b> Chez le garçon pubère normal, on remarque que la sécrétion de la Gn-RH est Normale : elle est pulsatile (un pulse par heure) et de concentration entre 8 et 30 pg/ml.<br>Chez le garçon X, on remarque une hypersécrétion de Gn-RH : fréquence des pulses plus importante : d'environ 3 pulses/heure et amplitude plus importante de 10 à 50 pg/ml<br>Le document 3 b montre un taux faible de testostérone chez le garçon X.</td><td>0,5 point</td></tr>
+<tr><td><b>Explication :</b><br>- L'hypersécrétion de Gn-RH est due à une levée de l'inhibition exercée par la testostérone sur l'hypothalamus.</td><td>0,25 point</td></tr>
+<tr><td><b>b- Cause :</b> les troubles de sécrétion de testostérone chez le garçon X sont dus à un problème hypophysaire.</td><td>0,25 point</td></tr>
+<tr><td><b>c-</b> Chez le garçon Y, la sécrétion de Gn-RH est très faible et constante.<br>La cause des troubles de sécrétion de testostérone chez le garçon Y est due à un dysfonctionnement de l'hypothalamus.</td><td>0,25 point<br>0,25 point</td></tr>
+<tr><td><b>d-</b> À la suite des injections répétées de Gn-RH, il y se produit une correction de la sécrétion des gonadostimulines.<br>→ l'hypothalamus agit par la Gn-RH sur l'hypophyse et stimule la sécrétion de LH et de FSH.</td><td>0,25 point<br>0,25 point</td></tr>
+</table>
+<!-- page 08 -->
+<table>
+<tr><td><p class="para"><b>4) Schéma :</b></p>
+<!-- CROP: 4101 1 8 0.03 0.07 0.76 0.315 4101_schema_regulation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_schema_regulation.png" alt=""></figure></td>
+<td>1,25point :<br>Relation H-h : 0,25 point<br>Relation h-testicule : 0,25 point<br>Fnt du testicule : 0,5 point<br>RC- : 0,25 point</td></tr>
+</table>
+<div class="exsub"><u>EXERCICE IV (B.moussa)</u></div>
+<!-- CROP: 4101 1 8 0.745 0.308 0.935 0.452 4101_spermatozoide_legende -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_spermatozoide_legende.png" alt=""></figure>
+<p class="para"><b>A/ 1-</b>légendez le document ci-contre et précisez le rôle des éléments 2,4 et 5.<br>
+<b>2-</b> Trois hommes A B et C sont atteints de stérilité.<br>
+A et B présentent également une régression de certains caractères sexuels<br>
+Pour déterminer les causes de ces troubles, on dose chez les trois hommes le taux plasmatique des gonadostimulines. Les résultats de ces dosages sont indiqués dans le tableau ci-après</p>
+<table>
+<tr><th>Hommes</th><th>A</th><th>B et C</th></tr>
+<tr><td>Taux de gonadostimulines</td><td>Faible</td><td>Très élevé</td></tr>
+</table>
+<p class="para">Proposez des hypothèses qui peuvent expliquer les résultats de ces dosages<br>
+Des dosages complémentaires effectués chez les hommes B et C, ont donné les résultats suivants</p>
+<table>
+<tr><th>Homme</th><th>B</th><th>C</th></tr>
+<tr><td>Taux de FSH</td><td>normal</td><td>élevé</td></tr>
+<tr><td>Taux de LH</td><td>élevé</td><td>normal</td></tr>
+</table>
+<p class="para"><b>Quels renseignements supplémentaires apportent ces nouveaux dosages quant à la cause exacte</b></p>
+<p class="subhead t-navy"><b>B/</b></p>
+<div class="exsub"><u>EXERCICE V</u></div>
+<p class="para">1-On mesure le taux de testostérone et de LH chez un rat adulte castré, on obtient les graphes du document 1<br>
+2- Un homme adulte normal subit a t<sub>0</sub> une injection de testostérone. On obtient les graphes du document 2</p>
+<!-- CROP: 4101 1 8 0.3 0.645 0.62 0.742 4101_ex5_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_ex5_doc1.png" alt=""></figure>
+<p class="para">Document 1</p>
+<!-- CROP: 4101 1 8 0.63 0.635 0.99 0.742 4101_ex5_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_ex5_doc2.png" alt=""></figure>
+<p class="para">Document 2</p>
+<p class="para">Analysez les graphes. Concluez<br>
+<b>3-</b> On a pu étudier les effets de la concentration de testostérone sur la sécrétion pulsatile de GnRH et de LH.<br>
+Les graphes ci-dessous exposent les résultats</p>
+<!-- CROP: 4101 1 8 0.18 0.775 0.475 0.918 4101_ex5_animal_normal -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_ex5_animal_normal.png" alt=""></figure>
+<!-- CROP: 4101 1 8 0.47 0.77 0.78 0.912 4101_ex5_animal_castre -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_ex5_animal_castre.png" alt=""></figure>
+<p class="para">A partir de l'analyse de ces graphes expliquez comment la testostérone règle te taux de testostérone.</p>
+<!-- page 09 -->
+<!-- NOTE: a handwritten note ("en présence de GnRH") added on top of the printed first line is left out -->
+<p class="para">4- On cultive dans des conditions appropriées, les cellules antéhypophysaires (hypophyse antérieure) en présence d'autres types de cellules et on enregistre le dosage des gonadostimulines libérées dans le milieu d'incubation . les résultats sont indiqués dans le tableau ci-dessous</p>
+<!-- PROOFREAD: 4101 part1 p09 — "4-", "en", "milieu" partly cut at the left edge -->
+<table>
+<tr><th>Situation expérimentale / Activité des cellules hypophysaires</th><th>Cellules hypophysaires seules</th><th>Cellules hypophysaires + cellules de rate ou de rein, ou autres</th><th>Cellules hypophysaires + cellules de Leydig.</th></tr>
+<tr><td>Libération de FSH</td><td>100%</td><td>100%</td><td>100%</td></tr>
+<tr><td>Libération de LH</td><td>100%</td><td>100%</td><td>60%</td></tr>
+</table>
+<p class="para">A partir des résultats du tableau déduisez la relation entre testicule et hypophyse.</p>
+<p class="subhead t-red"><b><u>CORRIGE</u></b></p>
+<!-- NOTE: the first corrigé lines (A) are printed interleaved; typed here in reading order -->
+<p class="para"><b>A) 1_membrane plasmique- 2acrosome-3noyau-4centriol-5mitochondries- -piece intermediaire<br>
+Roles :1-L'acrosome : Contient les enzymes nécessaires à la fécondation<br>
+mitochondries :Fournissent l'énergie nécessaire à la mobilité du spz le centriole proximal : est à l'origine de l'aster lors de la fécondation<br>
+2-a)L'homme A : taux de gonadostimulines faibles ; régression des cs II airesHypothèse : problème au niveau du complexe hypothalamo- hypophysaire Les hommes B et C : taux de gonadostimulines élevé Hypothèse : absence de rétrocontrôle negatif exercés par les hormones testiculaires sur le complexe hypothalamo-hypophysaire .<br>
+b)L'homme B= le taux élève de LH, absence de F.B.(-) exercé par la testostérone par absence ou insuffisance de cette hormone. Le problème est situé au niveau des cellules de leydig soit nombre insuffisant soit elles sont insensibles à la LH.L'homme c : le taux élevé de FSH montre qu'il ya absence(ou affaiblissement) de F.B.negatif exercé par l'inhibine. Le problème est situé au niveau des cellules de Sertoli.</b></p>
+<p class="para"><b>B) 1+2/ <u>Analyse du document 1</u></b></p>
+<table>
+<tr><th></th><th>Avant la castration</th><th>Après la castration</th></tr>
+<tr><td><b>Taux de testostérone</b></td><td><b>Est élevée et constant de 12 nanogramme par ml</b></td><td><b>Chute qui s'annule au Bout de 8 jours</b></td></tr>
+<tr><td><b>Taux de LH</b></td><td><b>Taux faible est constant de deux nanogramme par ml</b></td><td><b>Augmente progressivement et atteint 24 nanogrammes par ml au bout de 8 jours</b></td></tr>
+</table>
+<p class="para"><b>CONCLUSION:Les testicules en place freinent la sécrétion de la LH par l'intermédiaire de la testostérone.</b></p>
+<p class="para"><b><u>Analyse du Document 2</u> :</b><br>
+<b>Les taux de FSH et de LH est constant respectivement : FSH de 250mg/ml-1 75 mg/ml pour la LH.<br>
+Après l'injection le taux de deux hormones chute pour atteindre 50mg/ml dès le huitième jour après l'injection le taux de ces deux hormones augmente pour répondre leurs valeurs normales 3 jours après.</b><br>
+<b>CONCLUSION : La testostérone freine la sécrétion de LH et de FSH le retour à la normale montre l'existence d'un système de régulation.</b><br>
+<b>3 : voir exercice III, série d'application</b></p>
+<p class="para"><b>4)Tableau :</b><br>
+<b>Lorsque les cellules hypophysaires sont cultivées toute seule la libération de FSH et de LH est maximale de 100%<br>
+Lorsque les cellules hypophysaires sont cultivées en présence de cellules autres que les cellules de Leydig la libération reste maximale.<br>
+Si les cellules hypophysaires sont cultivées en présence de cellules de leydig la libération de FSH reste maximale alors que celle de LH diminue de 40%CONCLUSION :<br>
+Les cellules de leydig en présence de cellules hypophysaires sont capables de freiner uniquement les cellules sécrétrices de LH, il s'agit d'un rétrocontrôle négatif.</b></p>
+<!-- page 10 -->
+<div class="exsub"><u>Exercice</u> (HS:AB)</div>
+<!-- NOTE: the first lines of this exercise are printed interleaved; typed here in reading order -->
+<p class="para">On réalise chez deux Mammifères M<sub>1</sub> et M<sub>2</sub> , ayant atteints l'âge de la puberté, des dosages hormonaux et des observations de coupes de testicules<br>
+Les résultats obtenus révèlent certains troubles chez M<sub>2</sub>. Le document 1 résume les résultats de dosages et d'observations pour M<sub>1</sub> . Le document 2 correspond à M<sub>2</sub>.</p>
+<!-- PROOFREAD: 4101 part1 p10 — header blurred ("Exercice (HS:AB)"); line starts cut at the left edge -->
+<!-- CROP: 4101 1 10 0.01 0.065 0.468 0.268 4101_hs_doc1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_hs_doc1.png" alt=""></figure>
+<!-- CROP: 4101 1 10 0.462 0.078 0.985 0.268 4101_hs_doc2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_hs_doc2.png" alt=""></figure>
+<p class="para">1) A partir d'une comparaison des résultats montrés par document 1 et 2 ;<br>
+a- Expliquer les relations entre le profil hormonal et l'aspect des testicules pour chaque Mammifère.<br>
+b- Formuler une (ou des) hypothèse(s) sur l'origine des troubles du Mammifère M<sub>2</sub>.<br>
+2) Le Mammifère M<sub>2</sub> reçoit deux traitements hormonaux. Les effets, de chaque traitement, sur l'aspect des testicules sont résumés dans ce tableau :</p>
+<!-- CROP: 4101 1 10 0.27 0.345 0.51 0.44 4101_hs_traitement1 -->
+<!-- CROP: 4101 1 10 0.51 0.345 0.78 0.44 4101_hs_traitement2 -->
+<table>
+<tr><th></th><th>1<sup>er</sup> traitement :</th><th>2<sup>ème</sup> traitement :</th></tr>
+<tr><td>Aspect des testicules obtenus après le traitement :</td><td><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_hs_traitement1.png" alt=""></figure></td><td><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4101/4101_hs_traitement2.png" alt=""></figure></td></tr>
+</table>
+<p class="para">Exploiter ces données en vue de proposer un traitement correspondant à chaque cas.<br>
+3) Ces résultats permettent ils de confirmer l'origine exact des troubles du Mammifère M<sub>2</sub> ? Justifier</p>
+<p class="subhead t-red"><u>Correction de l'Exercice 2 :</u> 1) a-</p>
+<table>
+<tr><th></th><th>Mammifère M<sub>1</sub>.</th><th>Mammifère M<sub>2</sub></th></tr>
+<tr><td>Comparaison</td><td><ul class="dash">
+<li>La sécrétion de testostérone est pulsatile</li>
+<li>Chaque pulse de testostérone est précédée d'un pulse de GnRH</li>
+<li>Développement du tissu interstitiel</li>
+<li>La paroi du tube séminifère est épaisse et montre toutes les catégories de cellules germinales, dont les spz</li>
+</ul></td><td><ul class="dash">
+<li>La sécrétion de testostérone est nulle</li>
+<li>Les pulses de GnRH sont accélérées</li>
+<li>Le tissu interstitiel est atrophié</li>
+<li>La paroi est mince et ne montre qu'une couche de cellules souche → absence de spz.</li>
+</ul></td></tr>
+<tr><td>Explication</td><td>Le complexe HH sécrète la GnRH qui stimule la sécrétion de LH et de FSH<br>La LH stimule la sécrétion de testostérone par les cellules de Leydig qui se montrent développées<br>La FSH et la testostérone activent la spermatogénèse → développement de la paroi → Production de spz</td><td>L'absence de sécrétion de testostérone explique la blocage de la spermatogénèse<br>La levée d'inhibition exercée par la testostérone sur l'hypothalamus exp<br>les pulses accélérées de GnRH</td></tr>
+</table>
+<p class="para">b- L'absence de testostérone peut s'expliquer par une anomalie au niveau des cellules de Leydig ou au niveau de l'hypophyse qui ne sécrète pas de LH<br>
+→ Donc on peut supposer une anomalie ai niveau <b>des testicules</b> ou bien au niveau <b>de l'hypophyse</b><br>
+uite au 1<sup>er</sup> traitement, les cellules de Leydig restent atrophiés , et la paroi des tube séminifère se montre développée , avec une production de spz<br>
+.e <b>1<sup>er</sup> traitement consiste en une injection de testostérone + FSH ……..</b> La FSH stimule la sécrétion de l'ABP par les cellules de Sertoli , et le complexe 'estostérone –ABP se fixe sur les cellules germinales et active la spermatogénèse .</p>
+<p class="para"><b>2</b> Suite au 2<sup>ème</sup> traitement , on observe des cellules de Leydig développées , alors que la paroi des tubes séminifères reste mince → spermatogénèse reste bloquée → <b>Le 2<sup>ème</sup> traitement consiste en une injection de LH</b> qui a pour cible les cellules de Leydig…..</p>
+<p class="para"><b>3</b> Le 1<sup>er</sup> traitement montre que les cellules de Leydig répondent aux stimulations de la LH (d'où leur développent).<br>
+De même pour la paroi des tubes séminifères → L'anomalie est située au niveau de l'hypophyse qui ne sécrète pas de Gonadostimulines</p>
+<!-- PROOFREAD: 4101 part1 p10 — words cut by the edges: "exp" (right; "reste" completed from the second scan on page 12), "uite" / ".e" / "'estostérone" (left, for Suite / Le / testostérone) -->
+<!-- page 11 -->
+<!-- NOTE: page 11 is a second scan of the statement of "Exercice (HS:AB)" already transcribed on page 10 (same text, documents 1–2 and treatment table) — not transcribed again -->
+<!-- page 12 -->
+<!-- NOTE: page 12 is a second scan of the lower half of page 10 (questions 1–3 with the treatment table, and "Correction de l'Exercice 2") — same text, not transcribed again -->
+
+</section>
+
+</div>
+</body>
+</html>

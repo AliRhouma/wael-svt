@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Trimestre 1 — serie</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Correction">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4114">
+<meta data-pagefind-meta="title[content]" content="Trimestre 1 — serie">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="chapter[content]" content="Procréation (fécondation, nidation, maîtrise)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Trimestre 1 — serie" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Trimestre 1 — serie</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy www.takiacademy.com</span> <span class="tg">Sujet BAC</span><span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1IpTqAoIidNYkEQS6CZiE64g4Tqpg9bcR/view">↗ 4 - corrigé_SERIE1.pdf</a> <a href="https://drive.google.com/file/d/1o9Z3TBA4UhrCF5A6L1HKLkIApliAxNCF/view">↗ 5 - corrigé_SERIE 2.pdf</a> <a href="https://drive.google.com/file/d/1r-z1S1qQFn8sdEyfM9fNM4kSVmDKJURu/view">↗ 6 - corrigé_SERIE 3.pdf</a> <a href="https://drive.google.com/file/d/1C1gz-waJGgrxa7eCSUSXg6bNcGTMqBAh/view">↗ 8 - corrigé_SERIE 4.pdf</a> <a href="https://drive.google.com/file/d/1uDTrwl4UPB5kynjUYWkZ5uskmpho1wgh/view">↗ 9 - corrigé_SERIE 5.pdf</a> <a href="https://drive.google.com/file/d/1P-01YwATExyothRtX__4xeaYiU4sYzrY/view">↗ 12 - corrigé_SERIE.pdf</a> <a href="https://drive.google.com/file/d/1ieryH9qS5AWzyU_boBzNtvV5MaRAmKlY/view">↗ 13 - corrigé_SERIE 9.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (7)</b><ul><li><a href="https://drive.google.com/file/d/1IpTqAoIidNYkEQS6CZiE64g4Tqpg9bcR/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1o9Z3TBA4UhrCF5A6L1HKLkIApliAxNCF/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1r-z1S1qQFn8sdEyfM9fNM4kSVmDKJURu/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1C1gz-waJGgrxa7eCSUSXg6bNcGTMqBAh/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1uDTrwl4UPB5kynjUYWkZ5uskmpho1wgh/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1P-01YwATExyothRtX__4xeaYiU4sYzrY/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1ieryH9qS5AWzyU_boBzNtvV5MaRAmKlY/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+<!-- SOURCE: Taki Academy www.takiacademy.com -->
+<div class="exh"><span class="idx ex">Correction</span><h2>Correction Série 1</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4114.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy www.takiacademy.com</span> <span class="tg">Sujet BAC</span><span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1IpTqAoIidNYkEQS6CZiE64g4Tqpg9bcR/view">↗ 4 - corrigé_SERIE1.pdf</a> <a href="https://drive.google.com/file/d/1o9Z3TBA4UhrCF5A6L1HKLkIApliAxNCF/view">↗ 5 - corrigé_SERIE 2.pdf</a> <a href="https://drive.google.com/file/d/1r-z1S1qQFn8sdEyfM9fNM4kSVmDKJURu/view">↗ 6 - corrigé_SERIE 3.pdf</a> <a href="https://drive.google.com/file/d/1C1gz-waJGgrxa7eCSUSXg6bNcGTMqBAh/view">↗ 8 - corrigé_SERIE 4.pdf</a> <a href="https://drive.google.com/file/d/1uDTrwl4UPB5kynjUYWkZ5uskmpho1wgh/view">↗ 9 - corrigé_SERIE 5.pdf</a> <a href="https://drive.google.com/file/d/1P-01YwATExyothRtX__4xeaYiU4sYzrY/view">↗ 12 - corrigé_SERIE.pdf</a> <a href="https://drive.google.com/file/d/1ieryH9qS5AWzyU_boBzNtvV5MaRAmKlY/view">↗ 13 - corrigé_SERIE 9.pdf</a></div>
+
+
+<div class="exsub">4 - corrigé_SERIE1</div>
+<!-- page 01 -->
+<p class="para"><span class="t-blue">Classe :</span> <i>4<sup>ème</sup> Sc Exp</i> <i>(Gr : Excellent 3 )</i></p>
+<p class="subhead t-navy"><span class="t-blue"><u>Correction Série 1</u></span> <span class="t-gold">:</span></p>
+<p class="subhead t-red"><span class="t-gold"><i>La fonction reproductrice chez l'homme.</i></span></p>
+<div class="exsub">Exercice 1 — 25 min — 5 pt</div>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+<div class="exsub">Exercice 2 — 30 min — 6 pt</div>
+<p class="para"><b>1.</b> <span class="t-blue">Legende :<br>
+1 : Membrane basale = enveloppe Conjonctive.<br>
+2 – Cellule de Leydig.<br>
+3 : Cellule de Sertoli.<br>
+4 : Spermatogonie.<br>
+5 : spermatocyte I<br>
+6 : spermatocyte II.<br>
+7 : Spermatide.<br>
+8 : spermatozoïde :</span></p>
+<p class="para"><span class="t-red">2 :</span> <span class="t-gold">a)</span></p>
+<p class="para"><span class="t-blue"><span class="t-red">Cellule 1</span> : c'est une Cellule qui montre une figure d'Anaphase 1 de la meiose = spermatocyte I = Cellule a :</span></p>
+<!-- NOTE: small handwritten ticks in the margin and the boxes drawn around words left out -->
+<!-- page 02 -->
+<!-- ROTATE: 4114 part1 p02 180 -->
+<p class="para"><span class="t-blue"><span class="t-red">Cellule 2</span> : c'est une Cellule en anaphase d'une mitose = Spermatogonie = Cellule c<br>
+<span class="t-red">Cellule 3</span> = cellule en Anaphase II . = spermatocyte II = Cellule b .</span></p>
+<p class="para"><span class="t-gold">b)</span></p>
+<table>
+<tr><th></th><th>Cellule 1= <span class="t-blue">Cellule a</span></th><th>Cellule 2= <span class="t-blue">Cellule c</span></th><th>Cellule 3= <span class="t-blue">Cellule b</span></th></tr>
+<tr><td>Nom de la cellule</td><td><span class="t-blue">spermatocyte I</span></td><td><span class="t-blue">spermatogonie</span></td><td><span class="t-blue">spermatocyte II</span></td></tr>
+<tr><td>Type de division</td><td><span class="t-blue">Meiose = division réductionnelle.</span></td><td><span class="t-blue">Mitose</span></td><td><span class="t-blue">Meiose = division équationnelle.</span></td></tr>
+<tr><td>Etape de cette division avec justification</td><td><span class="t-blue">Anaphase I = Separation des ch. Homologues par ascension, sans clivage des Centromères.</span></td><td><span class="t-blue">Anaphase d'une mitose . separation de 4 chromosomes simples (chd) par ascension suite au clivage des Centromère</span></td><td><span class="t-blue">Anaphase II . separation de n = 2 chromosomes simples . à chaque pôle de la cellule</span></td></tr>
+<tr><td>Phase de la spermatogenèse</td><td><span class="t-blue">phase de Maturation .</span></td><td><span class="t-blue">phase de Multiplication</span></td><td><span class="t-blue">phase de Maturation.</span></td></tr>
+<tr><td><b><u>Résultat :</u></b><br>✓ Nom et nombre de la, ou des cellule(s) obtenue(s)<br>✓ Nombre et état des chromosomes par cellule</td><td><span class="t-blue">2 spermatocytes II à n = 2 dupliqués chacun.</span></td><td><span class="t-blue">2 spermatogonies à 2n = 4 chromosomes simples chacune.</span></td><td><span class="t-blue">2 spermatides à n = 2 chromosomes simples. chacun.</span></td></tr>
+</table>
+<!-- PROOFREAD: 4114 part1 p02 — handwritten "(chd)" in the Cellule 2 cell best reading -->
+<!-- page 03 -->
+<!-- ROTATE: 4114 part1 p03 180 -->
+<p class="para"><span class="t-blue">3 .<br>
+Rôles des Cellules de Leydig et des Cellules de Sertoli :</span></p>
+<p class="para">. Action sur la spermatogenèse :<br>
+<span class="t-blue">. la Cellule de Leydig secrète la testostérone<br>
+. la Cellule de Sertoli sécrète l'ABP.<br>
+⇒ la testosterone associée à l'ABP forme un Complexe ABP_T, qui active la spermatogenèse</span></p>
+<p class="para">Action sur l'axe H–H<br>
+<span class="t-blue">. A forte dose, la testostérone exerce un RC(–) sur l'axe Hypothalamo-Hypophysaire.<br>
+. la Cellule de Sertoli secrete l'inhibine, Cette Hormone. exerce un RC(–) sur les Cellules</span> Hypophysaires secrétrice de la FSH.</p>
+<div class="exsub">Exercice 3 — 30 min — 6 pt</div>
+<p class="para"><span class="t-red"><b>1.</b></span><br>
+………………………………………………………………………………<br>
+………………………………………………………………………………<br>
+………………………………………………………………………………</p>
+<!-- NOTE: a red underline under "active" left out -->
+
+
+<div class="exsub">5 - corrigé_SERIE 2</div>
+<!-- page 01 -->
+<!-- ROTATE: 4114 part2 p01 180 -->
+<!-- NOTE: the answers of this correction are handwritten into the printed blanks/table; transcribed as best reading -->
+<p class="para">Classe : 4<sup>ème</sup> Sc Exp (Gr : Excellent 3 )</p>
+<p class="subhead t-red"><u>Correction Série 2</u> :</p>
+<p class="subhead t-navy"><span class="t-gold">La fonction reproductrice chez l'homme.</span></p>
+<div class="exsub">Exercice 1 · 25 min · 5 pt</div>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>
+<tr><td>b-d</td><td>b-c</td><td>a-</td><td>a</td><td>a-d</td><td>b-d</td><td>c</td><td>c</td><td>a b</td><td>c d</td></tr>
+</table>
+<div class="exsub">Exercice 2 · 30 min · 6 pt</div>
+<p class="para"><b>1.</b></p>
+<p class="para"><span class="t-blue">Phase A = phase d'occroissement ;<br>
+Justification : la Cellule 1 (spermatogonie) augmenté de taille pour donner une Cellule Volumineux = (spermatocyte I)</span></p>
+<!-- PROOFREAD: 4114 part2 p01 — handwriting: "occroissement", "augmenté", "Volumineux" read as written -->
+<p class="para"><span class="t-blue">phase B phase de differenciation ou la spermiogenèse :<br>
+Justification : il y a transformation cytologique d'une Cellule sphérique pour donner la cellule de forme allongée est Caractéristique = les spermatozoïdes.</span></p>
+<!-- PROOFREAD: 4114 part2 p01 — "phase de differenciation ou la spermiogenèse", "est Caractéristique" uncertain handwriting -->
+<p class="para"><span class="t-red">Phase C = phase de multiplication par Mitoses,</span><br>
+<span class="t-blue">Une Cellule souche se divise pour donner</span></p>
+<!-- page 02 -->
+<p class="para"><span class="t-blue">deux Cellules identiques entre elles et identiques à la Cellule mère, dont l'une resté en Stock, alors que la deuxième Contenue à se division pour donner d'autres Cellules identiques_</span></p>
+<!-- PROOFREAD: 4114 part2 p02 — "resté en Stock", "Contenue à se division" read as written -->
+<p class="para"><span class="t-red">Phase D = phase de Maturation par Meiose :</span><br>
+<span class="t-blue">la Cellule 4, Volumineuse, se divise en deux temps- pour donner deux, puis 4 Cellules de plus en plus petites-</span></p>
+<p class="para"><span class="t-red">2-</span><br>
+<span class="t-blue">Phase C → phase A → phase D → phase B.</span></p>
+<p class="para"><span class="t-red">3 -</span><br>
+<span class="t-blue">1 = spermatogonie.<br>
+2 = spermatide.<br>
+3 = spermatozoïde.<br>
+4 : spermatocyte I.<br>
+5 = spermatocyte II.</span></p>
+<!-- PROOFREAD: 4114 part2 p02 — handwritten labels 1–5 (spelling of "spermatogonie / spermatide / spermatozoïde") best reading -->
+<!-- page 03 -->
+<!-- NOTE: a handwritten insertion ("Mobile") written above the printed line "Cellule de petite taille, de forme allongée," is left out -->
+<p class="para">Le spermatozoïde ou le gamète mâle est la cellule reproductrice masculine contenue dans le sperme.</p>
+<p class="para">Il s'agit de cellule <b>différenciée</b>, bien adaptée à sa fonction, ayant les caractéristiques suivantes :</p>
+<p class="para">Cellule de petite taille, de forme allongée, formée de trois parties Principales :</p>
+<ul class="b">
+<li><b><u><span class="t-blue">Tête :</span></u></b> formée d'un noyau haploïde coiffé d'un acrosome</li>
+<li><b><span class="t-blue">Pièce <u>intermédiaire</u> :</span></b> formée par de nombreuses mitochondries disposées en hélice autour de la base(début) du flagelle.</li>
+<li><b><u><span class="t-blue">Queue</span></u></b> <u>Formée</u> d'un long flagelle <span class="t-red">,</span> entouré d'une très mince couche de cytoplasme.</li>
+</ul>
+<p class="para">Entre la tête et la pièce intermédiaire, sous le noyau existe un centrosome formé de deux centrioles. Le tout est enveloppé par une membrane plasmique</p>
+<div class="data"><p class="para"><span class="t-blue"><u>Caractéristiques Chromosomiques (nucléaires)</u> du spermatozoïde :<br>
+Cellule Haploïde à n = 23 chromosomes simples. avec deux formules Chromosomiques possibles :<br>
+- 22 autosomes + X<br>
+- 22 autosomes + Y-</span></p></div>
+<p class="para"><span class="t-blue">5- 2n = 4 ;</span></p>
+<!-- page 04 -->
+<!-- ROTATE: 4114 part2 p04 180 -->
+<p class="para"><span class="t-blue"><u>Justifiat.</u> Cellule 2 = spermatide, à <u>n = 2</u>- simples-</span></p>
+<!-- PROOFREAD: 4114 part2 p04 — "Justifiat." abbreviation unclear -->
+<!-- CROP: 4114 2 4 0.140 0.190 0.350 0.370 4114_p2_04_cellule2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p2_04_cellule2.png" alt=""></figure>
+<p class="para"><span class="t-blue">Cellule 4 = spermatocyte I à 2n = 4 dupliqués-</span></p>
+<!-- CROP: 4114 2 4 0.570 0.160 0.870 0.385 4114_p2_04_cellule4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p2_04_cellule4.png" alt=""></figure>
+<p class="para"><span class="t-gold">spermatocyte I en P1.<br>
+2n = 4.</span></p>
+<div class="exsub">Exercice 3 · 30 min · 6 pt</div>
+<p class="para"><span class="t-red">1 :</span><br>
+<span class="t-blue">legende : 1 = spermatozoïde.<br>
+2 = Cellule de Sertoli<br>
+3 : spermatide.<br>
+4 : spermatocyte II<br>
+5 : spermatocyte I</span></p>
+<!-- page 05 -->
+<!-- ROTATE: 4114 part2 p05 180 -->
+<p class="para"><span class="t-blue">6 = spermatogonie.<br>
+7 : Cellule de leydig<br>
+8 : Capillaire Sanguin.</span></p>
+<p class="para"><span class="t-red">2 -</span></p>
+<table>
+<tr><th>Exploitation.</th><th>Déduction.</th></tr>
+<tr><td>. les 2 Coupes des testicules présentent des tubes séminifères séparés par un tissu interstitiel.<br>
+. le tissu interstitiel est bien Vascularisé avec des Cellules de leydig developpées au niveau des 2. Coupes ; chez le rat « a » et le rat « b »</td>
+<td>le rat « a » présente un aspect normal de testicule d'un mâle pubere fertile.<br>
+rat a = fertile.</td></tr>
+<tr><td>Pour le rat a :<br>
+la paroi des tubes séminifères est large Contenant toutes les Catégories des Cellules germinales.<br>
+On note également la présence de spermatozoïdes dans la lumière des tubes séminifères avec les têtes implantées dans les replis</td>
+<td></td></tr>
+</table>
+<!-- PROOFREAD: 4114 part2 p05 — "le rat « a »" in the Déduction column (letter after "rat" unclear) -->
+<!-- page 06 -->
+<!-- ROTATE: 4114 part2 p06 180 -->
+<table>
+<tr><td><span class="t-blue">cytoplasmiques des Cellule de Sertoli, qui présentent un aspect bien développé</span><br>
+<span class="t-green">Pour le rat « b »</span><br>
+<span class="t-blue">la paroi des tubes séminifères est réduite avec des Cellules de Sertoli atrophiées et une seule rangée de spermatogonies.<br>
+On note également l'absence des autres Cellules de la lignée germinale et de spermatozoïdes.</span></td>
+<td>→ l'absence de spermatozoïdes montre que le rat « b » est stérile.</td></tr>
+</table>
+<p class="para"><span class="t-red">3 .</span><br>
+<span class="t-blue">L'aspect normal du tissu interstitiel des testicules du rat "b" et l'atrophie des tubes séminifères et des Cellules de Sertoli, suggèrent les problemes suivants :</span></p>
+<div class="data"><p class="para"><span class="t-green">H1</span> <span class="t-blue">- 1<sup>er</sup> Cause possible : → rat Cryptorchide.</span><br>
+<span class="t-green">H2</span> <span class="t-blue">- 2<sup>e</sup> Cause possible : un problème lié à la sécrétion de la FSH :⇒<br>
+(absence de la FSH, secretion de FSH de structure modifiée, absence de recepteurs</span></p></div>
+<!-- PROOFREAD: 4114 part2 p06 — "Cryptorchide" and "recepteurs" handwriting -->
+<!-- page 07 -->
+<!-- ROTATE: 4114 part2 p07 180 -->
+<div class="data"><p class="para"><span class="t-blue">spécifiques à la FSH au niveau des Cellules de Sertoli)</span></p></div>
+<p class="para"><span class="t-red">4 :</span></p>
+<p class="para">Exploitation de l'experience 2,</p>
+<p class="para"><span class="t-blue">Des Cellules Hypophysaires des deux Rats Cultivées en présence de GnRH radioactive, montrent :</span></p>
+<p class="para">. Chez le rat A Normal = (experience temoin)</p>
+<p class="para"><span class="t-blue">le pourcentage de la radioactivité est de 95%.<br>
+Ceci reflète une fixation de la GnRH sur les Cellules Hypophysaires sécrétrices de FSH.<br>
+Dans ces Conditions les C Hypophysaires du Rat « a » libèrent 95UA de FSH.</span></p>
+<p class="para">Pour le rat B Stérile. :</p>
+<p class="para"><span class="t-blue">on trouve les mêm resultats,<br>
+⇒ fixation de la GnRH sur les C Hypophysaire (95%) et la liberation de 95UA de FSH</span><br>
+<span class="t-blue">⇒</span> <span class="t-green">le rat « b » secréte une quantité normale de FSH<br>
+⇒ Hypothèse 2 est rejetée</span></p>
+<!-- PROOFREAD: 4114 part2 p07 — "mêm resultats", "C Hypophysaires" abbreviation, "95UA" read as written -->
+<!-- page 08 -->
+<!-- ROTATE: 4114 part2 p08 180 -->
+<p class="para"><span class="t-gold">Exploitation Doc. 3 :</span></p>
+<p class="para"><span class="t-blue">Dans un milieu Contenant la FSH radioactive. et des Cellules de Sertoli des rats « a » et « b »<br>
+on remarque :<br>
+. la radioactivité au niveau des C de Sertoli donc le pourcentage de fixation de la FSH sur les recepteurs spécifiques des C de Sertoli, Chez le rat « a » est elevé, il est de 95%.,<br>
+Suite à Cette fixation, les C de Sertoli libèrent <span class="t-blue"><b>98 UA d'ABP.</b></span><br>
+⇒ c'est la valeur de référence. chez un sujet normal fertile : ⇒ (valeur temoin)</span></p>
+<p class="para">Cependant : <span class="t-blue">la radioactivité, donc le % de fixation de la FSH sur les C de Sertoli chez le rat « b », stérile est très faible. de l'ordre de 5%. Dans ces Conditions les C de Sertoli du rat « b » liberent seulement <span class="t-red">5 UA d'ABP</span></span></p>
+<!-- NOTE: "98 UA d'ABP." and "5 UA d'ABP" are each written inside a drawn box on the page -->
+<!-- PROOFREAD: 4114 part2 p08 — "valer"/"valeur", "sujet normal fertile" handwriting -->
+<!-- page 09 -->
+<!-- ROTATE: 4114 part2 p09 180 -->
+<p class="para"><span class="t-blue">Ces résultats reflètent un probleme de Fixation de la FSH sur les recepteurs des C de Sertoli chez le rat « b ».<br>
+- Soit une l'absence de Recepteurs.<br>
+Soit la FSH synthétisée est de modifiée</span></p>
+<p class="para"><span class="t-blue">Si la FSH radioactive utilisée sur les 2 rats-, est la m̂ ⇒<br>
+probleme = Absence de recepteurs au niveau des Cellules de Sertoli chez le rat « b »</span></p>
+<!-- PROOFREAD: 4114 part2 p09 — "m̂" abbreviation (même) as written; "Soit une l'absence" -->
+<!-- page 10 -->
+<p class="para"><span class="t-red">5 ,</span></p>
+<!-- CROP: 4114 2 10 0.20 0.10 0.88 0.94 4114_p2_10_schema_regulation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p2_10_schema_regulation.png" alt=""></figure>
+
+
+<div class="exsub">6 - corrigé_SERIE 3</div>
+<!-- page 01 -->
+<!-- NOTE: the answers of this correction are handwritten into the printed blanks/table/graph; transcribed as best reading -->
+<p class="para">Classe : 4<sup>ème</sup> Sc Exp <span class="t-gold">(Gr : Excellent 3 )</span></p>
+<p class="subhead t-red"><u>Correction Série 3</u> :</p>
+<p class="subhead t-navy"><span class="t-gold">La fonction reproductrice chez l'homme.</span></p>
+<div class="exsub">Exercice 1 · 25 min · 3.5 pt</div>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr>
+<tr><td>a</td><td>c</td><td>c</td><td>d</td><td>a-d</td><td>c</td><td>b</td></tr>
+</table>
+<div class="exsub">Exercice 2 · 20 min · 4 pt</div>
+<!-- CROP: 4114 3 1 0.06 0.57 1.00 0.90 4114_p3_01_graphe_adn -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p3_01_graphe_adn.png" alt=""></figure>
+<!-- page 02 -->
+<!-- ROTATE: 4114 part3 p02 180 -->
+<p class="para"><span class="t-blue">1 : spermatogonie à 2n = 46 simples.<br>
+2 : spermatogonie à 2n = 46 dupliqués.<br>
+3. // à 2n = 46 simples.<br>
+4 : spermatogonies à 2n = 46 dupliqués.<br>
+5 : = Fin de la multiplication = spermatogonies à 2n = 46 simples.<br>
+6 = spermatocyte I en accroissement = accumulation de substance de reserves au niveau du Cytoplasme :⇒ taille ↗<br>
+⇒</span> <span class="t-red">spermatocyte I.</span><br>
+<span class="t-gold">S<sub>3</sub> = synthèse d'ADN ⇒ duplication des Chromosomes.</span><br>
+<span class="t-blue">⇒ 7 : Fin de l'accroissement :<br>
+⇒ spermatocyte I à 2n = 46 dupliqués.</span></p>
+<!-- PROOFREAD: 4114 part3 p02 — orange "S<sub>3</sub>" (S with a 3 below) uncertain -->
+<p class="para"><span class="t-blue">8 = Fin de la division reductionnelle :<br>
+⇒ spermatocyte II à n = 23 dupliqués.<br>
+9 = Fin de la division équationnelle :<br>
+⇒ spermatide à n = 23 ch. simples.<br>
+10 = phase de differenciation : = transformation cytologiques : (m̂ garniture Chromosomique que la spermatide : ⇒ spermatozoïde à n = 23 simples.</span></p>
+<!-- page 03 -->
+<!-- ROTATE: 4114 part3 p03 180 -->
+<div class="exsub">Exercice 3 · 30 min · 6 pt</div>
+<p class="para"><span class="t-red">1 :</span></p>
+<table>
+<tr><th>Analyse . <span class="t-blue">Doc 3.</span></th><th><span class="t-blue">Déduction.</span></th></tr>
+<tr><td><span class="t-blue">. Avant l'injection de H<sub>1</sub> à cet animal stérile, le taux de testostérone est Constant à 100 mg/dL.<br>
+. Chaque injection de H<sub>1</sub> est suivit, après un certain retard, par un pic de 500 mg/dL de testostérone.</span></td>
+<td>→ H<sub>1</sub> stimule la synthèse de la testostérone Chez M<sub>1</sub> :<br>
+<span class="t-blue">Cette Hormone peut-être :<br>
+Soit la GnRH.<br>
+Soit la LH.</span></td></tr>
+</table>
+<p class="para"><span class="t-blue">b :<br>
+le pic de testostérone qui suit Chaque injection de H<sub>1</sub> exclue un problème au niveau des C de leydig, fonctionnelle dans ce Cas ;<br>
+⇒ Donc l'Hypo-testostéronémie de M<sub>1</sub></span></p>
+<!-- PROOFREAD: 4114 part3 p03 — "Analyse" written in black, "Doc 3." blue; "suivit", "exclue" read as written -->
+<!-- page 04 -->
+<!-- ROTATE: 4114 part3 p04 180 -->
+<p class="para"><span class="t-blue">peut être expliqué par les Hypothèses suivantes :<br>
+H<sub>1</sub> = probleme fonctionnel au niveau de l'Hypophyse qui se traduit par un taux anormal de LH.<br>
+H<sub>2</sub> : probleme fonctionnel au niveau de l'Hypothalamus. qui se traduit par l'absence de GnRH (taux faible)</span></p>
+<p class="para"><span class="t-red">2 -</span></p>
+<table>
+<tr><th><span class="t-blue">Exploitation : Doc 4 :</span></th><th><span class="t-blue">Déduction :</span></th></tr>
+<tr><td><span class="t-blue">. Avant l'Hypophysectomie de M<sub>2</sub>, mâle pubère normal, le taux de testostérone est Constant à 500 mg/dl.<br>
+. Après l'Hypophysectomie, la testostéronémie diminue rapidement de 500 à 100 mg/ml, on elle reste Constante, malgré les injections répétées de H<sub>1</sub></span></td>
+<td>→ la stimulation de la secretion de la testostérone par H<sub>1</sub> nécessite la présence de l'Hypophyse-<br>
+⇒ H<sub>1</sub> = GnRH.</td></tr>
+</table>
+<!-- NOTE: "⇒ H1 = GnRH." is written inside a drawn box on the page -->
+<!-- PROOFREAD: 4114 part3 p04 — "100 mg/ml" (unit as written), "on elle reste" -->
+<!-- page 05 -->
+<!-- ROTATE: 4114 part3 p05 180 -->
+<table>
+<tr><th>Analyse</th><th>Déduction.</th></tr>
+<tr><td><span class="t-blue">. Doc 5 :</span> <span class="t-gold">Avant la lésion de l'Hypothalamus.</span><br>
+<span class="t-blue">les testicules d'un mâle pubère montrent :<br>
+* Des tubes séminifères bien développés, avec une paroi large, Contenant toutes les catégories de Cellules germinales, organisées en rangées. les Cellules de Sertoli bien développées où se raccroche, spermatozoïdes.<br>
+* Un tissu interstitiel bien vascularisé formé par un nb important de Cellules de leydig.</span></td>
+<td><span class="t-blue">⇒ C'est l'aspect normal. des testicules d'un mâle pubère normal :<br>
+⇒ situation témoin.</span></td></tr>
+<tr><td>Alors que : suite à la lésion de l'Hypothalamus d'un ♂ pubère :<br>
+<span class="t-blue">(Doc 6) on remarque :<br>
+. l'atrophie des tubes séminifères dont la paroi devient mince, avec des Cellules de Sertoli de petite taille. (atrophiées) et une seule rangée de spermatogonies, avec <u>absence</u> de Spz</span></td>
+<td><span class="t-red">M</span><br>
+<span class="t-blue">→ A partir de la puberté l'Hypothalamus Contrôle le developpement et le fonctionnement des testicules-</span></td></tr>
+</table>
+<!-- PROOFREAD: 4114 part3 p05 — red mark "M" at top of the second Déduction cell unclear; "Doc 5" digit; "où se raccroche" -->
+<!-- page 06 -->
+<!-- ROTATE: 4114 part3 p06 180 -->
+<table>
+<tr><td><span class="t-blue">. l'atrophie du tissu interstitiel où on trouve un nb réduit de Cellules de leydig de petit taille.</span><br>
+<span class="t-gold">→ Cependant</span> <span class="t-blue">En absence de l'Hypothalamus, l'injection régulière de H<sub>2</sub> à un mâle pubère, permet le developpement du tissu interstitiel des testicules qui retrouve son aspect normal, alors que les tubes séminifère restent atrophiés. avec une seule rangée de spermatogonie.</span></td>
+<td><span class="t-red">a)</span><br>
+<span class="t-blue">→ H<sub>2</sub> est une Hormone qui stimule les Cellules de leydig. Cette Hormone n'a pas d'effet sur tubes séminifères<br>
+⇒</span> <span class="t-red">H<sub>2</sub> = LH</span></td></tr>
+</table>
+<!-- NOTE: "H2 = LH" is written inside a drawn box on the page -->
+<p class="para"><span class="t-blue">Deduction :/ H<sub>2</sub> = LH<br>
+M l'Hypothalamus, stimule à partir de la puberté le developpement et le fonctionnement des testicules.</span></p>
+<!-- PROOFREAD: 4114 part3 p06 — sign "M" before "l'Hypothalamus" (same sign as the red mark on p05) unclear -->
+<p class="para"><span class="t-red">4 :</span><br>
+<span class="t-blue">Analyse Doc 8 :<br>
+Période 1 : avant la Castration de M<sub>4</sub> mâle pubère : la secrétion de H<sub>2</sub> = LH, et de H<sub>3</sub> est pulsatile avec la même fréquence :</span></p>
+<!-- page 07 -->
+<!-- ROTATE: 4114 part3 p07 180 -->
+<p class="para"><span class="t-blue">3 pics / 3 heures. Ce mode de secrétion permet la variation :<br>
+. du taux sanguin de LH entre 0.5 et 4 mg/ml.<br>
+. du taux de H<sub>3</sub> entre : 2 et 20 UI/ml.<br>
+On remarque aussi que Chaque pic de H<sub>2</sub> (LH) et suivit par un pic de H<sub>3</sub> ⇒ il y a une relation de Causalité entre la LH et H<sub>3</sub>.</span></p>
+<p class="para">Période 2 : <span class="t-blue">les dosages de LH et H<sub>3</sub> quelques jours après la Castration, montrent :<br>
+- Un taux de LH élevé et Constant à 4 mg/ml.<br>
+- Un taux faible, presque nul de H<sub>3</sub>.</span></p>
+<p class="para">Période 3 : <span class="t-blue">L'injection d'une forte dose de H<sub>3</sub> à un mâle Castré entraine la diminution du taux sanguin de LH qui se stabilise à à 0.2 mg/ml.</span></p>
+<p class="para"><span class="t-blue">Deduction :</span> <span class="t-blue">il y a une relation de Causalité entre LH et H<sub>3</sub>, un taux nul de H<sub>3</sub> est associé à une augmentation du taux de LH (levée d'une inhibition) alors que un taux</span></p>
+<!-- NOTE: "Deduction :" is written inside a drawn box on the page -->
+<!-- PROOFREAD: 4114 part3 p07 — units "mg/ml", "UI/ml" and "à à 0.2" read as written -->
+<!-- page 08 -->
+<!-- ROTATE: 4114 part3 p08 180 -->
+<p class="para"><span class="t-blue">élévé de H<sub>3</sub> provoque la Chute du taux sanguin de LH. (RC(-)).<br>
+⇒ H<sub>3</sub> = testostérone.</span></p>
+<!-- NOTE: "H3 = testostérone" is written inside a drawn box on the page -->
+<p class="para"><span class="t-red">5.</span></p>
+<table>
+<tr><th><span class="t-blue">Analyse</span></th><th><span class="t-blue">Déduction.</span></th></tr>
+<tr><td><span class="t-blue">. Avant l'injection de l'Hormone H<sub>4</sub> à un mâle normale ;<br>
+- taux d'ABP est Constant à 40 UA.<br>
+. le pourcentage de la spermatogenèse est Constant à 90%.</span><br>
+- Suite à l'injection de l'Hormone H<sub>4</sub> :<br>
+<span class="t-blue">on remarque : une diminution du taux d'ABP après un certain retard, dont le taux revient à 20 UA, suivit après un Certain décalage par la diminution du % de la spermatogenèse qui revient à 48%.</span></td>
+<td>o/<br>
+→ H<sub>4</sub> inhibe la spermatogenèse en diminuant la synthèse d'ABP ;<br>
+⇒ H<sub>4</sub> = inhibine</td></tr>
+</table>
+<!-- PROOFREAD: 4114 part3 p08 — mark "o/" at top of the Déduction cell unclear; "48%" -->
+<!-- page 09 -->
+<!-- ROTATE: 4114 part3 p09 180 -->
+<p class="para">b -<br>
+<span class="t-blue">L'injection d'inhibine provoque la diminution du taux de FSH, par un R C(-) : Dans le Cas les Cellules de Sertoli moins activées baissent leur production d'ABP- d'où la diminution du pourcentage de la spermatogenèse</span></p>
+<p class="para"><span class="t-red">6 -</span></p>
+<!-- CROP: 4114 3 9 0.100 0.380 0.930 0.820 4114_p3_09_schema_regulation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p3_09_schema_regulation.png" alt=""></figure>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">8 - corrigé_SERIE 4</div>
+<!-- page 01 -->
+<!-- NOTE: the QCM answers are handwritten into the printed table -->
+<p class="para">Classe : 4<sup>ème</sup> Sc Exp <span class="t-gold">(Gr : Excellent 3 )</span></p>
+<p class="subhead t-red"><u>Correction Série 4</u> :</p>
+<p class="subhead t-navy"><span class="t-gold">La fonction reproductrice chez la femme.</span></p>
+<div class="exsub">Exercice 1 · 30 min · 6 pt</div>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th></tr>
+<tr><td>b</td><td>b-c</td><td>c</td><td>b</td><td>d</td><td>c-d</td><td>a -</td><td>c</td><td>a -</td><td>c-d</td><td>a-c</td><td>b.</td></tr>
+</table>
+<div class="exsub">Exercice 2 · 20 min · 4 pt</div>
+<p class="para">……………………………………………………………………………………………………</p>
+<!-- NOTE: the page continues with 11 empty dotted answer lines (left unfilled) -->
+
+
+<div class="exsub">9 - corrigé_SERIE 5</div>
+<!-- page 01 -->
+<!-- NOTE: the answers of this correction are handwritten into the printed table/blanks -->
+<p class="para">Classe : 4<sup>ème</sup> Sc Exp <span class="t-gold">(Gr : Excellent 3 )</span></p>
+<p class="subhead t-red"><u>Correction Série 5</u> :</p>
+<p class="subhead t-navy"><span class="t-gold">La fonction reproductrice chez la femme.</span></p>
+<div class="exsub">Exercice 1 · 30 min · 5 pt</div>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>
+<tr><td>c</td><td>d</td><td>b-d</td><td>c-d</td><td>b</td><td>a-c</td><td>a.</td><td>a-c</td><td>c-d</td><td>b.</td></tr>
+</table>
+<div class="exsub">Exercice 2 · 20 min · 4 pt</div>
+<!-- page 02 -->
+<!-- ROTATE: 4114 part5 p02 180 -->
+<table>
+<tr><th></th><th><span class="t-blue">Cellule germinale 1</span></th><th>Cellule germinale 2</th></tr>
+<tr><td><span class="t-red">Nom de la cellule</span></td><td><span class="t-blue">spermatogonie.</span></td><td><span class="t-blue">ovocyte I .</span></td></tr>
+<tr><td><span class="t-red">Justification du nom</span></td><td><span class="t-blue">Cellule d'origine masculine (vue la présence d'un paire de chromosomes sexuels x et y) qui se multiplie par mitose.</span></td><td><span class="t-blue">Cellule germinale d'origine féminine vue la presence d'une paire de chromosomes sexuels (<u>XX</u>) en Anaphase I de la meiose.</span></td></tr>
+<tr><td><span class="t-red">Nom de la division</span></td><td><span class="t-blue">Mitose</span></td><td><span class="t-blue">Meiose (D.R)</span></td></tr>
+<tr><td><span class="t-red">Phase de la division et justification</span></td><td><span class="t-blue">Métaphase = alignement de 2n = 6 chromosomes dupliqués au niveau de la plaque équatoriale</span></td><td>L'Anaphase I : séparation des ch. Homologues pu ascension polaire, et formation d'un lot de n. dupliqués au niveau de chaque pôle</td></tr>
+<tr><td><span class="t-red">Etape de la gamétogenèse</span></td><td><span class="t-blue">phase de Multiplication de la spermatogenèse</span></td><td>- Maturation.</td></tr>
+<tr><td><span class="t-red">Produit de la division</span></td><td>2 spermatogonies à 2n = 46 Ch. chacune</td><td>1<sup>er</sup> globule polaire + ovocyte II.</td></tr>
+</table>
+<!-- NOTE: "2n = 46 Ch. chacune" is written inside a drawn box below the table -->
+<!-- PROOFREAD: 4114 part5 p02 — "pu ascension polaire" (pu = par?) and "2n = 6" vs "46" read as written -->
+<!-- page 03 -->
+<!-- ROTATE: 4114 part5 p03 180 -->
+<div class="exsub">Exercice 3 · 30 min · 6 pt</div>
+<!-- NOTE: small handwritten marks on the printed header row (above "G1" and "G2") are left out; handwritten answers that overflow into the "Hormone" column are kept in their row -->
+<table>
+<tr><th rowspan="2">Hormone</th><th colspan="2"><span class="t-red">Comparaison</span></th><th rowspan="2"><span class="t-blue">Nom de l'hormone</span></th><th rowspan="2"><span class="t-blue">Déduction</span></th></tr>
+<tr><th>G1</th><th>G2</th></tr>
+<tr><td>H1</td><td><span class="t-blue">taux variable secretion cyclique. avec une chaque cycle il y a 2 pics 1<sup>er</sup> vers le j 14 de 280 mg/ml le 2<sup>e</sup> le j 23 de 100 ng/ml.</span></td><td><span class="t-blue">taux faible presque nul le long de la période du dosage.</span></td><td>H<sub>1</sub> = <span class="t-blue">oestradiol</span></td>
+<td rowspan="3">G<sub>1</sub> : secretion normale des H. sexuelles :<br>G<sub>1</sub> = normale<br>G<sub>2</sub> : taux nul d'oestrog. prog.. taux élevé de LH<br>⇓<br>f ovariectomisée.</td></tr>
+<tr><td>H2</td><td><span class="t-blue">→ taux variable f secrétion cyclique : chaque cycle : taux faible Constant à 4 mg/ml le long du cycle à l'exception d'un pic = de 25 mg/ml le j 15 = ovulation - 1 jour.</span></td><td><span class="t-blue">. taux élevé et Constant à au alentour de 20 mg/ml.</span></td><td><span class="t-blue">H<sub>2</sub> =</span> <u>LH</u></td></tr>
+<tr><td>H3</td><td>taux variable avec secretion cyclique chaq. Cycle = absente pendant la 1<sup>ère</sup> moitié du cycle. elle est sécrétée à partir du j16 (date d'ovulation) avec un pic 5 mg/ml le j 23 = milieu de la phase lutéale -</td><td>- taux nul :</td><td>H<sub>3</sub> = progestérone</td></tr>
+</table>
+<!-- PROOFREAD: 4114 part5 p03 — handwriting: "avec une chaque cycle", "taux variable f", units "mg/ml"/"ng/ml", "oestrog. prog.." abbreviations, "Constant à au alentour" -->
+<!-- page 04 -->
+<!-- ROTATE: 4114 part5 p04 180 -->
+<p class="para"><b>2) a-</b></p>
+<table>
+<tr><th><span class="t-blue">Exploitation</span></th><th><span class="t-blue">Déduction</span></th></tr>
+<tr><td>Exp 1 :<br><span class="t-blue">L'injection d'une faible dose d'oestrogènes à la guenon G<sub>2</sub> ovariectomisée entraine la chute du la sécrétion de la LH.</span></td>
+<td><span class="t-blue">→ à faible dose, l'oestrogène exerce un RC(-) sur la sécrétion de la LH.</span></td></tr>
+<tr><td>Exp. 2 : L'injection d'une forte dose d'oestrogène pendant une courte durée au début du cycle à G1 normale entraine un pic de LH</td>
+<td>→ <span class="t-green">A forte dose, l'oestrogène agit par RC(+) sur la sécrétion de LH.</span></td></tr>
+</table>
+<p class="para">b)</p>
+<table>
+<tr><th><span class="t-blue">Exploitation</span></th><th><span class="t-blue">Déduction</span></th></tr>
+<tr><td><span class="t-green">Exp 3 :</span> <span class="t-blue">L'injection de la progestérone au début du cycle à G<sub>2</sub> ovariectomisée n'a aucun effet sur le developpement de l'endomètre.</span></td>
+<td>→ Au début du cycle (phase post menstruelle) les Cellules de l'endomètre ne possèdent pas de recepteurs à la progestérone.</td></tr>
+<tr><td><span class="t-green">Exp 4 :</span> <span class="t-blue">L'injection d'oestrogènes durant tout le cycle et de la progestérone pendant la 2<sup>e</sup> moitié du cycle, permet le developpement max. de l'endomètre et la formation d'une dentelle utérine.</span></td>
+<td><span class="t-blue">→ la formation d'une dentelle utérine nécessite un traitement de l'endomètre aux oestrogènes suivi par un traitement à l'oestrog + progestérone</span></td></tr>
+</table>
+<!-- PROOFREAD: 4114 part5 p04 — "chute du la sécrétion", "à G1 normale" (subscript unclear), "traitement à l'oestrog" -->
+<!-- page 05 -->
+<p class="para"><span class="t-blue">Conclusion :<br>
+le traitement de l'endomètre par les oestrogènes pendant la phase post-menstruelle permet aux Cellules de cette muqueuse de synthétiser des recepteurs à la progestérone ⇒</span> <span class="t-gold">C'est la sensibilisation.</span></p>
+<p class="para">Explication :</p>
+<p class="subhead t-navy"><b>Explication</b> :</p>
+<ul class="dash">
+<li>Au cours de la phase post-menstruelle et sous l'action des œstrogènes secrétés par les follicules en évolution, la muqueuse utérine s'épaissit, se vascularise et forme des glandes en tubes droits.<br>
+Pendant cette période les œstrogènes sensibilisent les cellules de l'endomètre a l'action de la progestérone. C'est-à-dire permettent l'apparition de récepteurs membranaires spécifiques à la progestérone.</li>
+<li>Pendant la phase prémenstruelle et sous l'action combinée des deux hormones, le développement de la muqueuse s'accentue, les vaisseaux sanguins se spiralisent, les glandes en tubes se ramifient et deviennent sécrétrices. Toutes ces transformations donnent un aspect très découpé de l'endomètre appelé la dentelle utérine.</li>
+</ul>
+
+
+<div class="exsub">12 - corrigé_SERIE</div>
+<!-- page 01 -->
+<!-- NOTE: the correction is handwritten into the printed dotted lines of the sheet; handwritten answers are transcribed (best reading). -->
+<p class="subhead t-navy">Classe : 4<sup>ème</sup> Sc Exp <span class="t-gold">(Gr : Excellent 3 )</span></p>
+<p class="subhead t-red"><u>Correction Série 8</u> :</p>
+<p class="subhead t-gold">La fonction reproductrice chez la femme - procréation.</p>
+<div class="exsub">Exercice 1 &nbsp; 20 min &nbsp; 4 pt</div>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+<tr><td>a – d</td><td>b – d</td><td>a</td><td>a – d</td><td>a – c – d</td><td>a – b – d</td><td>d</td><td>d .</td></tr>
+</table>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 2 &nbsp; 25 min &nbsp; 5 pt</div>
+<p class="para"><span class="t-red">1- a</span>- Les Cycles des mois de Février et de Mars sont deux Cycles sous pilule Combinée, qui exerce un effet Anti-ovulatoir.</p>
+<p class="para">⇒ Donc une seule ovulation aura lieu au Cours du Cycle du Mois de janvier normal.</p>
+<p class="para">Cette ovulation a lieu 14 jours avant la fin du Cycle du Mois janvier.</p>
+<p class="para">c'est à dire :</p>
+<p class="para"><u>le 31 Janvier</u> – 14 jour = 17 Janvier</p>
+<p class="para">dernier jour du cycle.</p>
+<!-- PROOFREAD: 4114 part6 p01 — handwritten; "aura lieu", "a lieu", "jour" best readings -->
+<!-- page 02 -->
+<p class="para"><span class="t-red">b</span>: la période de fécondité pour le cycle du Mois de Janvier :</p>
+<p class="para">date d'ovulation (DO) + durée de vie de l'ovocyte ; DO – durée de vie des spz.</p>
+<p class="para"><span class="t-green">3 à 5 jours ← DO + 2 jours : ( durée de vie de l'ovocyte</span></p>
+<p class="para"><span class="t-green">durée de vie des spermatozoïdes. (4)</span></p>
+<p class="para"><span class="t-green">donc ⇒ Cette période Correspond à l'intervalle de : </span><span class="t-green">14 Janvier ⟶ 19 Janvier.</span></p>
+<!-- PROOFREAD: 4114 part6 p02 — green handwritten notes: arrow from "3 à 5 jours" to circled "DO", circled "4" — layout approximate -->
+<p class="para"><span class="t-red">C</span>: la Fécondation = rencontre et l'union d'un ovocyte II avec un spermatozoïde au niveau des voies génitales de la femme : Ceci n'est possible que dans les 2 jours max. qui suivent l'ovulation :⇒ 17, 18 ou 19.</p>
+<p class="para"><span class="t-red">2-</span></p>
+<p class="para">. Déterminisme Hormonal de l'ovulation du Cycle du Mois de Janvier.</p>
+<!-- page 03 -->
+<!-- ROTATE: 4114 part6 p03 180 -->
+<p class="para">2 jours avant l'ovulation, c'est à dire vers le 15 Janvier, le follicule mûr secrète une forte dose d'oestradiol, ce qui exerce un R.C + sur l'axe H-H, d'où le pic important de LH et le petit pic de FSH. Cette décharge d'Hormone Hypophysaire provoque l'éclatement du follicule mûr : c'est l'ovulation.</p>
+<p class="para">- L'absence d'ovulation des Mois de Février et de Mars.</p>
+<p class="para">- L'oestroprogestatif de synthèse de la pilule Combinée exerce un RC(–) Continue sur l'axe H-H d'où le taux faible et Constant de LH et de FSH.</p>
+<p class="para">. L'absence de FSH bloque la Croissance folliculaire.</p>
+<p class="para">. L'absence de LH empêche l'ovulation.</p>
+<p class="para">⇒ C'est l'action Anti-ovulatoire de la pilule Combinée.</p>
+<p class="para"><span class="t-red">3-</span></p>
+<!-- PROOFREAD: 4114 part6 p03 — handwritten, read from a 180°-rotated copy -->
+<!-- page 04 -->
+<!-- ROTATE: 4114 part6 p04 180 -->
+<p class="para">Pour les règles du 1 → 4 Février : Ce sont des règles consécutifs à un Cycle normal sans pilule : En effet la régression du Corps jaune pendant les 7 derniers jours de la phase lutéale du Cycle du mois de Janvier (25 → 31 Janvier), provoque la destruction de la dentelle utérine, d'où les règles du 1 → 4 Février.</p>
+<p class="para">Pour les règles du 29 Février → 3 Mars<br>et du 28 → 31 Mars.</p>
+<p class="para">⇒ Ce sont des règles consécutifs à 2 Cycles sous pilule Combinées. ⇒ il s'agit d'Hémorragie de privation.</p>
+<p class="para">En effet, l'oestroprogestatif de la pilule Combinée, permet la mise en place pendant les 21 jours de la prise, d'une fausse dentelle, l'arrêt de la prise de la pilule pendant les 7 jours de repos provoque la Chute du taux sanguin de l'oestroprogestatif de synthèse ce qui Conduit à la destruction de la fausse</p>
+<!-- PROOFREAD: 4114 part6 p04 — handwritten, read from a 180°-rotated copy -->
+<!-- page 05 -->
+<!-- ROTATE: 4114 part6 p05 180 -->
+<p class="para">dentelle, d'où les Hémorragies de privation, Comparables à des règles normales du 29 Février → 3 Mars. et du 28 au 31 Mars.</p>
+<div class="exsub">Exercice 3 &nbsp; 35 min &nbsp; 7 pt</div>
+<p class="para"><span class="t-red">1.</span></p>
+<p class="para">Ces figures illustrent la rencontre et l'union d'un gamète mâle et d'un gamète femelle :<br>⇒ c'est la fécondation.</p>
+<p class="para"><span class="t-red">2 -</span> les Conditions de la fécondation chez l'espèce Humaine :</p>
+<p class="para">1/ un sperme normal =<br>2/ des spermatozoïdes Capacités<br>3 - un rapport sexuel pendant la période de fécondité<br>4 - une glaire Cervicale perméable.<br>5 : Des Voies génitales saines et perméables.</p>
+<p class="para"><span class="t-red">3 -</span></p>
+<p class="para">1 : Cellule de la Corona radiata.<br>2 – spermatozoïde Capacité.</p>
+<!-- PROOFREAD: 4114 part6 p05 — handwritten, read from a 180°-rotated copy; "Capacités" / "Capacité" as written (capacités?) -->
+<!-- page 06 -->
+<!-- ROTATE: 4114 part6 p06 180 -->
+<p class="para">3 - 1<sup>er</sup> globule polaire.<br>4 : espace périovocytaire.<br>5 : Matériel génétique en Métaphase II<br>6 : Zone pellucide.<br>7 : granule cortical.<br>8 : pronucleus ♀<br>9 : 2<sup>è</sup> globule polaire.<br>10 : pronucleus ♂.</p>
+<p class="para"><span class="t-red">4 :</span></p>
+<p class="para"><span class="t-red">Fig a</span> = Embryon stade 2 cellules.</p>
+<p class="para"><span class="t-red">Fig b</span> = Pénétration du spermatozoïde fécondant, dans le cytoplasme ovocytaire.</p>
+<p class="para"><span class="t-red">Fig c</span> : Caryogamie = Fusion des deux pronucléi.</p>
+<p class="para"><span class="t-red">Fig d</span> : Cellule oeuf ou zygote en métaphase de la 1ère mitose.</p>
+<p class="para"><span class="t-red">Fig e</span> : Achèvement de la meiose, expulsion du 2<sup>è</sup> globule polaire et la formation</p>
+<!-- PROOFREAD: 4114 part6 p06 — handwritten, read from a 180°-rotated copy; "8 : pronucleus ♀" (symbol drawn as a small circle), "Fig a/b/c/d/e" are in red boxes -->
+<!-- page 07 -->
+<p class="para">des pronucléi.</p>
+<p class="para"><span class="t-red">Fig F</span> : = Rencontre des gamètes : des spermatozoïdes Capacités avec l'ovocyte II.</p>
+<p class="para"><span class="t-red">5 -</span></p>
+<p class="para">La pénétration du spermatozoïde fécondant déclenche l'activation du gamète ♀. Cette activation se traduit par des transformations <b class="t-gold">cytologiques et nucléaires</b> :</p>
+<table>
+<tr><th><span class="t-blue">Transformations cytologiques</span></th><th><span class="t-red">Transformations nucléaires</span></th></tr>
+<tr><td><b><span class="t-blue">4</span> - Réaction corticale de l'ovocyte <u>II:</u></b> les granules corticaux déversent leur contenu sous la zone pellucide dans l'espace péri-ovocytaire, d'où l'hydrolyse des récepteurs membranaires de cette zone, ce qui bloque la pénétration d'autres spermatozoïdes. Ainsi la monospermie est assurée et la polyspermie est bloquée.<br><span class="t-blue">5-</span> Synthèse de protéines à partir des réserves cytoplasmiques</td>
+<td><span class="t-blue">6</span> - Reprise et fin de la 2<sup>ème</sup> division de la méiose (division équationnelle), qui s'achève par l'expulsion du 2<sup>ème</sup> globule polaire et formation de l'ovule fécondé ou l'ovotide.<br><span class="t-blue">7-</span> Formation par synthèse d'ADN et duplication des chromosomes, des pronucléi.<br><span class="t-blue">8-</span> Rapprochement des deux pronuclei, mâle et femelle.<br><span class="t-blue">9-</span> À partir du centriole, formation puis dédoublement de l'aster.<br><span class="t-blue">10-</span> Caryogamie : fusion des deux pronuclei mâle et femelle chacun à 23 chromosomes dupliqués et formation de la cellule œuf ou zygote. = Etape C :</td></tr>
+</table>
+<p class="para"><span class="t-red">6 :</span> La Cellule mère est à 2n = 6 ;</p>
+<p class="para">♀ = 4 autosomes + XX.</p>
+<!-- PROOFREAD: 4114 part6 p07 — handwritten "= Etape C :" added after the printed table; "2n = 6", "4 autosomes + XX" best readings -->
+<!-- page 08 -->
+<!-- ROTATE: 4114 part6 p08 180 -->
+<p class="para">♂ : 4 autosomes + XY.</p>
+<p class="para">⇒ 8 = pronucleus ♀ = Haploïde :<br>n = 3 = 2 autosomes + X.</p>
+<p class="para">9 = 2<sup>è</sup> globule polaire. : c'est une Cellule Haploïde à n = 3 chromosomes =<br>2 autosomes + X.</p>
+<p class="para">10 = pronucleus ♂ : Haploïde à n = 3 chromosomes : 2 autosomes + X. ou :<br><span class="t-red">2 autosomes + Y</span></p>
+<p class="para"><span class="t-gold">b</span> : G = Cellule Embryonnaire = Cellule diploïde d'un garçon donc avec une formule chromosomique 2n = 6. :<br>4 autosomes + XY.</p>
+<p class="para">puisque Cette la structure représentée (Fig a) vient d'achever sa division, donc les chromosomes sont simples</p>
+<!-- PROOFREAD: 4114 part6 p08 — handwritten, read from a 180°-rotated copy; "Cette la structure représentée (Fig a) vient d'achever sa division" best reading -->
+<!-- page 09 -->
+<!-- CROP: 4114 6 9 0.21 0.035 0.67 0.37 4114_p6_09_cellule_G -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p6_09_cellule_G.png" alt=""></figure>
+<p class="para">Pour I et H :</p>
+<p class="para">. I = pronucleus ♀ au moment de la Caryogamie<br>⇒ Haploïde à n = 3 chromosomes dupliqués : 2 autosome + X.</p>
+<p class="para">H = pronucleus ♂ au moment de la Caryogamie : ⇒ Haploïde avec n = 3 chromosomes dupliqués. Puisque Cette structure évolue pour donner un garçon donc la formule chromosomique du pronucleus ♂ est : <span class="t-red">2 autosomes + Y.</span></p>
+<!-- PROOFREAD: 4114 part6 p09 — handwritten; "2 autosome + X" as written -->
+<!-- page 10 -->
+<!-- CROP: 4114 6 10 0.04 0.10 0.97 0.39 4114_p6_10_pronucleus_I_H -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p6_10_pronucleus_I_H.png" alt=""></figure>
+<!-- page 11 -->
+<!-- NOTE: page 11 is an empty dotted-line answer page — nothing to transcribe -->
+<!-- page 12 -->
+<!-- NOTE: page 12 is an empty dotted-line answer page — nothing to transcribe -->
+<!-- page 13 -->
+<!-- NOTE: page 13 is an empty dotted-line answer page — nothing to transcribe -->
+<!-- page 14 -->
+<!-- NOTE: page 14 is an empty dotted-line answer page — nothing to transcribe -->
+<!-- page 15 -->
+<!-- NOTE: page 15 is an empty dotted-line answer page — nothing to transcribe -->
+<!-- page 16 -->
+<!-- NOTE: page 16 is an empty dotted-line answer page — nothing to transcribe -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">13 - corrigé_SERIE 9</div>
+<!-- page 01 -->
+<!-- NOTE: the correction is handwritten into the printed dotted lines of the sheet; handwritten answers are transcribed (best reading). -->
+<p class="subhead t-navy">Classe : 4<sup>ème</sup> Sc Exp <span class="t-gold">(Gr : Excellent 3 )</span></p>
+<p class="subhead t-red"><u>Correction Série 9</u> :</p>
+<p class="subhead t-gold">La fonction reproductrice chez la femme - procréation.</p>
+<div class="exsub">Exercice 1 &nbsp; 30 min &nbsp; 6 pt</div>
+<p class="para"><span class="t-red">1.</span></p>
+<p class="para">a/ structure A = follicule secondaire.<br>structure B = follicule mûr.<br>structure C = Corps jaune.</p>
+<p class="para">b/ Legende :</p>
+<p class="para">1 : thèque externe.<br>2 : thèque interne.<br>3 : Cumulus oophorus.<br>4 : Cellules folliculaires de la granulosa.<br>5 : " " de la Corona radiata.<br>6 : Cavité folliculaire = Antrum.<br>7 : Cellules lutéales = lutéiniques.<br>8 : Endomètre<br>9 : myomètre :</p>
+<p class="para">c/</p>
+<p class="para">le passage d'un follicule secondaire au stade follicule mûr est assuré par les modifications</p>
+<!-- PROOFREAD: 4114 part7 p01 — handwritten; ditto marks on line 5 rendered as " " -->
+<!-- page 02 -->
+<!-- ROTATE: 4114 part7 p02 180 -->
+<p class="para">structurales suivantes.</p>
+<p class="para">- la taille du follicule augmente.<br>- differenciation definitive des 2 thèques.<br>la thèque Externe = fibreuse.<br>- la thèque interne = glanduleuse.<br>. les Cellules folliculaires de la granulosa se multiplient par mitoses → leur nombre augmente.<br>- la granulosa se creuse d'une grande cavité := Antrum (apparition de petites Cavités folliculaires au stade follicule tertiaire, puis leur union pour former une Cavité unique)<br>- l'ovocyte I augmente de taille (Reprise de l'accroissement)</p>
+<p class="para">2 -</p>
+<table>
+<tr><th>Hormone</th><th>Structure secrétrice</th><th>Cellules cibles</th><th>effets physiologiques.</th></tr>
+<tr><td>Les oestrogènes<br>=<br>oestradiol</td><td>B = f. mûr<br>thèque interne<br>granulosa.<br><br>C = c. jaune<br>= thèque interne.</td><td>Cellules de l'endomètre.<br><br>. Cellules du myomètre</td><td>- prolifération des cellules + multiplication par mitoses.<br><br>- Contraction rythmique</td></tr>
+</table>
+<!-- PROOFREAD: 4114 part7 p02 — handwritten table, read from a 180°-rotated copy; "C = c. jaune" (first letter could be "S"); table continues on next page -->
+<!-- page 03 -->
+<table>
+<tr><td></td><td></td><td>Cellules du Col de l'utérus.<br><br>- Cellules du Complexe H-H<br><br>- les Cellules du Contrôles les C.S II.<br><br>" les Cellules du Centre du thermo-Régulation</td><td>→ glaire cervicale.<br>à faible dose → imperméable.<br>- A forte dose → glaire filante → perméable<br><br>- faible dose → RC(–)<br>forte dose → RC(+).<br><br>→ developpement et maintien des C.S II<sup>aires</sup><br><br>→ Effet Hypo-thermique.</td></tr>
+<tr><td>progestérone.</td><td>Cellules lutéales du c. Jaune.</td><td>- Cellules de l'endomètre<br><br>- Cellules du myomètre.</td><td>→ formation de la dentelle utérine.<br><br>→ Silence utérin : ( inhibe les Contractions rythmiques du myomètre.</td></tr>
+</table>
+<!-- PROOFREAD: 4114 part7 p03 — handwritten table (continued); "les Cellules du Contrôles les C.S II", "Effet Hypo-thermique" best readings -->
+<!-- page 04 -->
+<!-- ROTATE: 4114 part7 p04 180 -->
+<table>
+<tr><td></td><td></td><td>- Cellules du Complexe H-H<br><br>- Cellules du Col de l'utérus<br><br>- Centre du thermo-Régulation</td><td>→ RC(–).<br><br>→ glaire cervicale dense ⇒ imperméable.<br><br>→ effet Hyper-thermique.</td></tr>
+</table>
+<p class="para">3 :</p>
+<p class="para">E<sub>1</sub> : l'ovulation : déterminisme Hormonal de l'ovulation.</p>
+<p class="para">• 2 jours avant l'ovulation, le follicule mûr secrète une forte dose d'oestrogènes (pendant une Courte durée) ce qui exerce un RC(+) sur l'axe H-H, d'où le pic important de LH et le petit pic de FSH. Cette décharge d'Hormones Hypophysaire (LH) declanche l'éclatement du follicule mûr.</p>
+<!-- PROOFREAD: 4114 part7 p04 — handwritten, read from a 180°-rotated copy; end of the table from p03 -->
+<!-- page 05 -->
+<p class="para">Déterminisme Hormonal de la menstruation :<br>Vers la fin d'un Cycle non fécondant, la régression du Corps Jaune provoque la Chute du taux sanguin d'Hormones ovariennes, Ce qui provoque la destruction de la dentelle utérine (80%)</p>
+<p class="para">4 =</p>
+<p class="para">Après l'ovulation, le follicule rompu (le reste du follicule mûr au niveau de l'ovaires), se transforme en Corps Jaune : il se cicatrice, il garde ces thèques, les Cellules de la granulosa se multiplient par mitoses, augmentent de taille, et se changent en lutéine, et occupent l'ancien antrum du f mûr. Ainsi il se transforme en Corps Jaune.</p>
+<p class="para">5 =</p>
+<!-- CROP: 4114 7 5 0.01 0.62 0.995 0.975 4114_p7_05_courbe_oestrogenes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p7_05_courbe_oestrogenes.png" alt=""></figure>
+<!-- PROOFREAD: 4114 part7 p05 — handwritten; "(80%)", "se changent en lutéine" best readings -->
+<!-- page 06 -->
+<p class="para">6 -</p>
+<p class="para">Vers la fin du cycle non fécondant, la regression du Corps Jaune, (Structure C) se traduit par une Chute des taux sanguins des Hormones ovariennes. Ce qui la destruction partielle de l'endomètre. d'où la menstruation ( Evénement E<sub>2</sub> ).</p>
+<p class="para">7 <span class="t-green">a/</span></p>
+<p class="para">X et X' sont deux Cellules germinales :<br>X = ovocyte I en Prophase I.<br>X' = ovocyte II en métaphase II.</p>
+<p class="para"><span class="t-green">b –</span> 2n = 6.</p>
+<p class="para">X = ovocyte I en P I.</p>
+<!-- CROP: 4114 7 6 0.13 0.585 0.93 0.86 4114_p7_06_ovocyte_I_prophase -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p7_06_ovocyte_I_prophase.png" alt=""></figure>
+<p class="para">ovocyte I en PI -</p>
+<!-- PROOFREAD: 4114 part7 p06 — handwritten; "Ce qui la destruction partielle" as written (verb missing on page) -->
+<!-- page 07 -->
+<!-- CROP: 4114 7 7 0.19 0.05 0.93 0.34 4114_p7_07_ovocyte_II_AII -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p7_07_ovocyte_II_AII.png" alt=""></figure>
+<p class="para">ovocyte II en A II</p>
+<p class="para">la formule chromosomique du spz dans ce Cas est n = 3 → 2 autosomes + Y (♂).</p>
+<!-- CROP: 4114 7 7 0.03 0.61 0.92 0.905 4114_p7_07_noyaux_gametiques -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p7_07_noyaux_gametiques.png" alt=""></figure>
+<!-- PROOFREAD: 4114 part7 p07 — handwritten; "ovocyte II en A II" best reading -->
+<!-- page 08 -->
+<!-- ROTATE: 4114 part7 p08 180 -->
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<div class="exsub">Exercice 2 &nbsp; 50 min &nbsp; 7.5 pt</div>
+<p class="para">E<sub>1</sub> = ovulation<br>E<sub>2</sub> = fécondation<br>E<sub>3</sub> = Nidation.</p>
+<p class="para">2 -</p>
+<p class="para">H<sub>1</sub> = LH taux faible le long du cycle + pic pré-ovulatoire.</p>
+<p class="para">H<sub>2</sub> = progesterone = absente pendant la phase folliculaire</p>
+<p class="para">- secrétion à partir de l'ovulation avec un taux croissant.</p>
+<p class="para">- pic le j 21 (date de la nidation)</p>
+<p class="para">H<sub>3</sub> : HCG : Hormone secrétée à partir de la nidation :</p>
+<p class="para">3 : F<sub>2</sub> = taux faible faible + Constant de LH<br>- taux nul de progestérone :</p>
+<!-- PROOFREAD: 4114 part7 p08 — handwritten, read from a 180°-rotated copy; "taux faible faible + Constant" as written; "(date de la nidation)" best reading -->
+<!-- page 09 -->
+<p class="para">Hyp → femme sous pilule <u>Combinée</u>.</p>
+<p class="para">4 :</p>
+<p class="para">Moment (1) → femme normale : → dentelle utérine :<br>↑ le jour (21) d'un cycle de 28 j</p>
+<p class="para">Moment 2 : → femme F<sub>2</sub> sous pilule.<br>↑ jour 21 du cycle :<br>↓ <u>fausse dentelle</u> :</p>
+<p class="para"><span class="t-red">5 :</span></p>
+<p class="para">• structure A = Embryon stade blastocyste<br>- Structure B = ovotide ou ovule fécondé au moment de la Caryogamie.</p>
+<p class="para">legende : 1 = Cellule du trophoblaste.<br>2 = 1<sup>er</sup> globule polaire<br>3 = 2<sup>è</sup> g. P.<br>4 : pronucleus ♀<br>5 = pronucleus ♂</p>
+<!-- PROOFREAD: 4114 part7 p09 — handwritten; layout of "Moment (1)/(2)" notes with arrows approximate; red "5 :" could read "8 :" -->
+<!-- page 10 -->
+<p class="para">2 =</p>
+<p class="para">blastocyste → 7 jours après la fécondation obtenu par segmentation de la Cellule oeuf.</p>
+<p class="para">. B = ovotide = étape de la fécondation qui a lieu dans les <u>48 heures</u> qui suivent <u>l'ovulation</u> :</p>
+<p class="para">3 :</p>
+<p class="para">• Avant l'injection :<br>le taux de H<sub>2</sub> = prog. ↗ à partir du j – 10.<br>pic de 24 ng/ml le jour – 3 = (le j. 21 du cycle).<br>– 3 → 0 le taux de H<sub>2</sub> ↘ = 15 ng/ml le jour de l'injection.</p>
+<p class="para">• Après l'injection d'un filtrat de broyat des Cellules du trophoblaste (= HCG)<br>le taux de progestérone ↗ → 30 ng/ml le j + 6 –.</p>
+<!-- PROOFREAD: 4114 part7 p10 — handwritten; "H2 = prog. ↗ à partir du j – 10", "– 3 → 0 le taux de H2 ↘ = 15 ng/ml" best readings -->
+<!-- page 11 -->
+<!-- ROTATE: 4114 part7 p11 180 -->
+<p class="para">A partir du jour 6. le taux de progestérone ↘ il revient à 13 ng/ml le j + 12.</p>
+<!-- CROP: 4114 7 11 0.080 0.190 0.990 0.950 4114_p7_11_schema_HCG_corps_jaune -->
+<!-- NOTE: crop box measured on the stored (upside-down) page image; the crop must be turned 180° -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p7_11_schema_HCG_corps_jaune.png" alt=""></figure>
+<!-- PROOFREAD: 4114 part7 p11 — handwritten, read from a 180°-rotated copy -->
+<!-- page 12 -->
+<!-- ROTATE: 4114 part7 p12 180 -->
+<p class="para">A partir de la 11<sup>è</sup> semaine → <u>Accouchement</u></p>
+<!-- CROP: 4114 7 12 0.080 0.100 0.970 0.510 4114_p7_12_schema_placenta -->
+<!-- NOTE: crop boxes on this page are measured on the stored (upside-down) page image; the crops must be turned 180° -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p7_12_schema_placenta.png" alt=""></figure>
+<!-- CROP: 4114 7 12 0.180 0.540 0.850 0.830 4114_p7_12_courbe_corps_jaune -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4114/4114_p7_12_courbe_corps_jaune.png" alt=""></figure>
+<!-- PROOFREAD: 4114 part7 p12 — handwritten, read from a 180°-rotated copy -->
+
+</section>
+
+</div>
+</body>
+</html>

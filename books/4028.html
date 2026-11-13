@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · EX-REVISION-REP-MASC (1)</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Source non indiquée">
+<meta data-pagefind-meta="n[content]" content="4028">
+<meta data-pagefind-meta="title[content]" content="EX-REVISION-REP-MASC (1)">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Sport"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · EX-REVISION-REP-MASC (1)" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>EX-REVISION-REP-MASC (1)</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Révision</span><span class="tg sec">SVT · Sport</span> <a href="https://drive.google.com/file/d/1DbsvpTFDrAVtUwMGcvcHfpIbstqTf5-R/view">↗ EX-REVISION-REP-MASC (1).pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/1DbsvpTFDrAVtUwMGcvcHfpIbstqTf5-R/view">Anas Saïd · IDEAL BAC MATH(Anas Saïd) › SVT / science / Reproduction</a></li><li><a href="https://drive.google.com/file/d/1MNOW-yIj4XJWOaaPkZWK_lHMvLiXlKkG/view">Karim Fourati · Bac 2KF25 › SVT / Mme Hend(LPM8) / Reproduction</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Reproduction chez l&#x27;homme</h2></div>
+<div class="exh"><span class="idx ex">Série</span><h2>EX-REVISION-REP-MASC (1)</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4028.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Révision</span><span class="tg sec">SVT · Sport</span> <a href="https://drive.google.com/file/d/1DbsvpTFDrAVtUwMGcvcHfpIbstqTf5-R/view">↗ EX-REVISION-REP-MASC (1).pdf</a></div>
+<!-- page 01 -->
+<ul class="b"><li>BAC SPORT 2019 PRINCP</li></ul>
+<div class="exsub">I- Reproduction chez l’homme (6 points)</div>
+<p class="para">Afin d’étudier le mécanisme de régulation de la fonction reproductrice masculine, on a réalisé les expériences suivantes :</p>
+<p class="para"><b>1)Expérience 1 :</b> Chez deux rats pubères, l’un normal et l’autre hypophysectomisé :</p>
+<ul class="dash">
+<li>on mesure la masse des testicules et des vésicules séminales.</li>
+<li>on dose les taux plasmatiques de testostérone, de LH et de FSH.</li>
+<li>on réalise des observations microscopiques d’une coupe transversale de testicule.</li>
+</ul>
+<p class="para">Les résultats et les observations microscopiques sont représentés dans le document 2.</p>
+<table>
+<tr><th rowspan="2"></th><th colspan="2">Masse des :</th><th colspan="3">Taux (en ng.mL<sup>-1</sup>) de :</th><th rowspan="2">Observation microscopique d’une portion de coupe transversale de testicule</th></tr>
+<tr><th>testicules (g)</th><th>vésicules séminales (mg)</th><th>testostérone</th><th>LH</th><th>FSH</th></tr>
+<tr><td><b>Rat pubère normal</b></td><td>2.35</td><td>195</td><td>8</td><td>2.5</td><td>1</td><td><!-- CROP: 4028 1 1 0.612 0.262 0.922 0.362 4028_doc2_testicule_normal --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_doc2_testicule_normal.png" alt=""></figure></td></tr>
+<tr><td><b>Rat pubère hypophysectomisé</b></td><td>0.78</td><td>61</td><td>0.29</td><td>0</td><td>0</td><td><!-- CROP: 4028 1 1 0.612 0.364 0.922 0.470 4028_doc2_testicule_hypophysectomise --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_doc2_testicule_hypophysectomise.png" alt=""></figure></td></tr>
+</table>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>Expérience 2 :</b> L’injection d’extraits hypophysaires à un rat pubère hypophysectomisé rétablit les troubles observés dans l’expérience 1.</p>
+<p class="consigne">Exploitez les résultats des expériences 1 et 2 en vue de dégager la relation entre l’hypophyse, les testicules et les vésicules séminales.</p>
+<p class="para"><b>2)Expérience 3 :</b> Chez un même rat pubère castré, on suit l’évolution des taux plasmatiques de :</p>
+<ul class="dash">
+<li>testostérone, de LH et de FSH dans les conditions physiologiques normales. Les résultats obtenus sont représentés dans le document 3.</li>
+<li>LH et de FSH suite à l’injection d’extraits testiculaires pendant la période 1, et suite à l’injection de testostérone pendant la période 2. Les résultats obtenus sont consignés dans le document 4.</li>
+</ul>
+<!-- CROP: 4028 1 1 0.100 0.660 0.516 0.833 4028_doc3_castration -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_doc3_castration.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<!-- CROP: 4028 1 1 0.512 0.660 0.922 0.833 4028_doc4_injections -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_doc4_injections.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="consigne">A partir de l’analyse des courbes des documents 3 et 4 et en faisant appel à vos connaissances, expliquez la relation entre les testicules et l’hypophyse.</p>
+<!-- page 02 -->
+<p class="para"><b>3)Expérience 4 :</b> On place dans un milieu de culture additionné de GnRH, des cellules hypophysaires en présence ou en absence de cellules testiculaires, puis on dose le taux de LH dans le milieu. Le document 5 présente les milieux de cultures et les résultats obtenus.</p>
+<table>
+<tr><th></th><th>Milieu 1</th><th>Milieu 2</th><th>Milieu 3</th></tr>
+<tr><td></td><td>Cellules hypophysaires+GnRH</td><td>Cellules hypophysaires + GnRH + cellules de Leydig</td><td>Cellules hypophysaires + GnRH + cellules de Sertoli</td></tr>
+<tr><td>Quantité de LH libre dans le milieu (mU)</td><td>8</td><td>4</td><td>8</td></tr>
+</table>
+<p class="para"><b>Document 5</b></p>
+<p class="consigne">A partir de l’exploitation des données du document 5, proposez deux hypothèses expliquant la variation du taux de LH libre dans les trois milieux.</p>
+<p class="para"><b>4) Expérience 5 :</b> L’addition, au milieu 2, d’une substance S ayant la même structure moléculaire que la LH, montre un résultat proche de celui qui est obtenu dans le milieu 1 de l’expérience 4.</p>
+<p class="consigne">Exploitez les données des expériences 4 et 5 en vue de vérifier la validité des hypothèses émises précédemment.</p>
+<p class="consigne"><b>5)</b> En vous basant sur les informations dégagées des cinq expériences précédentes et en faisant appel à vos connaissances, représentez, à l’aide d’un schéma fonctionnel, le mécanisme de régulation de la fonction reproductrice masculine.</p>
+<!-- page 03 -->
+<div class="exsub">Correction BAC SPORT 2019 PRINC</div>
+<table>
+<tr><td><p class="para"><b>1) Expérience 1:</b><br>Suite à l’hypophysectomie on constate :</p>
+<ul class="dash">
+<li>Une diminution de la masse des testicules et des vésicules séminales,</li>
+<li>Une diminution du taux de testostérone et de gonadostimulines (LH et FSH),</li>
+<li>Une réduction de la taille des cellules de Sertoli avec présence de spermatogonies seulement.</li>
+</ul>
+<p class="para"><b>Expérience 2 :</b> l’injection des extraits hypophysaires corrige les troubles déjà signalés dans l’expérience 1.</p>
+<p class="para"><b>⇨ L’hypophyse contrôle le fonctionnement des testicules (fonctions exocrine et endocrine) et la variation de la masse des vésicules séminales et ceci par le biais de la voie hormonale.</b></p></td><td><b>1.5pt</b><br>(0.75+0.25 +0.5)</td></tr>
+<tr><td><p class="para"><b>2) Expérience 3 :</b></p>
+<ul class="dash">
+<li><b>Document 3 :</b> A la suite de la castration, le taux de testostérone diminue, passant de 8ng/mL à 1ng/mL. Parallèlement, les taux de LH et de FSH augmentent passant de 2.5 à 21 ng/mL pour la LH et passant de 1 à 8ng/mL pour la FSH.</li>
+<li><b>Document 4 :</b><br>* <b>Période 1 :</b> l’injection d’extraits testiculaires au rat castré entraine une chute du taux de LH qui passe de 21 à 5ng/mL suivie d’une diminution du taux de FSH qui passe de 8 à environ 5ng/mL.<br>* <b>Période 2 :</b> par suite de l’injection de testostérone seulement, le taux de LH continue à diminuer jusqu’à s’annuler au bout de 10 jours. Alors que celui de la FSH, marque une reprise de sécrétion passant de 5 à environ 7ng/ml.</li>
+</ul>
+<p class="para"><b>Explication :</b></p>
+<p class="para"><b>⇨ Les testicules exercent un RC (-) sur l’hypophyse d’où l’inhibition de la sécrétion de LH et FSH :</b><br><b>➢ La testostérone exerce une action inhibitrice sur la sécrétion de LH.</b><br><b>➢ L’inhibine exerce une action inhibitrice sur la sécrétion de FSH.</b></p></td><td><b>1.5pt</b><br>(0.5 x 3)</td></tr>
+<tr><td><p class="para"><b>3) Expérience 4 :</b><br>* <b>Milieu 1 :</b> en présence de GnRH, les cellules hypophysaires, sécrètent la LH = 8mU.<br>* <b>Milieu 2 :</b> en ajoutant au contenu du milieu 1 des cellules de Leydig, le taux de LH libre diminue de moitié.<br>* <b>Milieu 3 :</b> en ajoutant au contenu du milieu 1 des cellules de Sertoli, le taux de LH libre ne change pas.<br><b>hypothèse 1 :</b> les cellules de Leydig freinent la sécrétion de LH.<br><b>Hypothèse 2 :</b> la diminution du taux de LH dans le milieu 2 est due à sa fixation sur les récepteurs localisés sur les cellules de Leydig.<br><b>NB :</b> acceptez toute autre hypothèse pertinente.</p></td><td><b>1pt</b><br>(0.5+0.25 +0.25)</td></tr>
+<tr><td><p class="para"><b>4) Expérience 5 :</b><br>La substance S ayant la même structure que la LH, a la capacité de se fixer sur les récepteurs localisés au niveau de la membrane des cellules de Leydig empêchant la LH de s’y fixer.<br><b>⇨ L’hypothèse 2 est validée.</b></p></td><td><b>1pt</b><br>(0.5x2)</td></tr>
+</table>
+<p class="para">5. Schéma fonctionnel : voir cours (schéma complet)</p>
+<!-- page 04 -->
+<p class="subhead t-red"><b>SUJET 1 :</b></p>
+<div class="exsub">1<sup>ère</sup> partie : QCM (8 pts)</div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponse(s) correcte(s).<br>Relevez sur votre copie le numéro de chaque item et indiquez dans chaque cas la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) correcte(s)</p>
+<p class="para"><b>1/ Parmi les cellules suivantes, les cellules qui sont haploïdes (à n chromosomes) sont:</b><br>a- Les spermatogonies.<br>b- Les spermatocytes I.<br>c- Les spermatocytes II.<br>d- Les spermatozoïdes.</p>
+<p class="para"><b>2/ Le sperme est un liquide blanc visqueux formé d’un mélange de :</b><br>a- Liquide séminal et prostatique.<br>b- Spermatozoïdes et de liquide séminal.<br>c- Spermatozoïdes, de liquide séminal et prostatique.<br>d- Spermatides, de liquide séminal et prostatique.</p>
+<p class="para"><b>3/ L’inhibine est produite par :</b><br>a- Les cellules de Sertoli.<br>b- Les cellules de Leydig.<br>c- Les cellules de l’hypophyse antérieure.<br>d- Les neurosécréteurs de l’hypothalamus.</p>
+<p class="para"><b>4/ Dans le testicule, les cellules interstitielles ont pour rôle :</b><br>a- La sécrétion de LH.<br>b- La nutrition des spermatozoïdes.<br>c- La production de spermatozoïdes.<br>d- La sécrétion de testostérone.</p>
+<p class="para"><b>5/ Les gonadolibérines</b><br>a- Sont sécrétées par les gonades.<br>b- Sont sécrétées par l’hypothalamus.<br>c- Sont sécrétées par l’hypophyse.<br>d- Ont des récepteurs sur des cellules cibles au niveau des gonades.</p>
+<p class="para"><b>6/ Parmi les points communs à la spermatogenèse et à l’ovogenèse il y a :</b><br>a- Toutes les deux se déroulent d’une manière continue.<br>b- Toutes les deux commencent à partir de la puberté.<br>c- Toutes les deux aboutissent à la formation des cellules haploïdes.<br>d- Toutes les deux se déroulent entièrement dans les gonades.</p>
+<p class="para"><b>7/ Chez l’espèce humaine, parmi les points communs entre l’oestradiol et la testostérone il y a :</b><br>a- Les deux sont sécrétés d’une façon continue à partir de la puberté.<br>b- Les deux provoques l’apparition des caractères sexuels secondaires à la puberté.<br>c- Les deux agissent, par rétrocontrôle positif, sur le complexe hypothalamohypophysaire.<br>d- Les deux agissent, par rétrocontrôle négatif, sur le complexe hypothalamo-hypophysaire.</p>
+<p class="para"><b>8/ La folliculogenèse est :</b><br>a- La transformation d’une ovogonie en un ovocyte I.<br>b- La transformation d’une ovogonie en ovocyte II.<br>c- L’évolution d’un follicule primordial en follicule mûr.<br>d- La transformation d’un follicule mûr en corps jaune.</p>
+<p class="para"><b>9/ Le cycle ovarien de la femme :</b><br>a- A une durée moyenne de 14 jours.<br>b- Est contrôlé par les gonadostimulines (FSH et LH)<br>c- Est suspendu (arrêté) après la fécondation.<br>d- Est sous le contrôle du cycle utérin.</p>
+<p class="para"><b>10/ Chez la femme, l’ovulation :</b><br>a- Est la rupture du follicule mûr et expulsion de l’ovocyte I.<br>b- Est déclenchée suite à une chute du taux de LH.<br>c- Est déclenchée suite à une chute du taux de FSH.<br>d- Se produit en général, 14 jours avant l’apparition de la menstruation.</p>
+<div class="data"><p class="para"><span class="t-gold">Corrigé de ce QCM p.6</span></p></div>
+<!-- page 05 -->
+<p class="para"><b>11/ L’apparition du deuxième globule polaire au cours de l’ovogenèse indique :</b><br>a- L’évolution de l’ovocyte I en ovocyte II.<br>b- L’achèvement de la division réductionnelle et le début de la division équationnelle.<br>c- Une fécondation.<br>d- L’achèvement de la division équationnelle.</p>
+<p class="para"><b>12/ Parmi les points communs entre un follicule mûr et un corps jaune il y a :</b><br>a- Les deux sécrètent les oestrogènes.<br>b- Les deux sécrètent la progestérone.<br>c- Les deux agissent, par l’intermédiaire de leurs hormones, sur la muqueuse utérine.<br>d- Les deux agissent, par l’intermédiaire de leurs hormones, sur la croissance des ovocytes.</p>
+<p class="para"><b>13/ Au cours du cycle ovarien, les oestrogènes sont sécrétés par :</b><br>a- La thèque externe du follicule.<br>b- La thèque interne du follicule.<br>c- Le corps jaune.<br>d- L’ovocyte.</p>
+<p class="para"><b>14/ Le corps jaune :</b><br>a- Sécrète la FSH.<br>b- Sécrète les oestrogènes et la progestérone.<br>c- Se développent sous l’action de la LH.<br>d- Régresse après la fécondation.</p>
+<p class="para"><b>15/ La menstruation est la conséquence de :</b><br>a- La fécondation.<br>b- L’ovulation.<br>c- La chute du taux des hormones ovariennes.<br>d- La formation du corps jaune.</p>
+<p class="para"><b>16/ Les effets directs de l’hormone lutéinisante (LH) chez la femme sont :</b><br>a- L’ovulation.<br>b- La croissance de l’endomètre.<br>c- La stimulation de la croissance folliculaire.<br>d- La transformation du follicule rompu en corps jaune.</p>
+<div class="exsub">2<sup>ème</sup> partie : (12 pts)</div>
+<p class="para">On se propose d’étudier certains aspects de la fonction reproductrice chez l’homme.</p>
+<p class="para"><b>I /</b></p>
+<p class="para"><b>1.</b> Le <b><i>document 1</i></b>, ci-dessous, représente une coupe simplifier d’une portion de testicule d’un homme adulte.</p>
+<!-- CROP: 4028 1 5 0.292 0.526 0.632 0.706 4028_s1_doc1_coupe_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_s1_doc1_coupe_testicule.png" alt=""></figure>
+<p class="para"><b><i>Document 1</i></b></p>
+<p class="consigne">a- Que représentent les zones A et B indiquées sur le <b><i>document 1</i></b>.<br>b- Annotez les éléments de 1 à 8 en reportant sur votre copie les numéros et les noms correspondants.<br>c- Nommer le phénomène qui conduit à la formation de l’élément 5 à partir de l’élément 1.<br>d- Reconstituer à l’aide d’un schéma de synthèse les étapes de ce phénomène.</p>
+<!-- page 06 -->
+<div class="exsub">CORRECTION SUJET 1 :</div>
+<!-- NOTE: the marks (barème) printed in the right-hand column are typed after the block they face -->
+<p class="subhead t-navy"><u>1<sup>ERE</sup> PARTIE : <i>(8 PTS)</i></u></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th></tr>
+<tr><td>c-d</td><td>c</td><td>a</td><td>d</td><td>b</td><td>c</td><td>b-d</td><td>c</td><td>b-c</td><td>d</td><td>c-d</td><td>a-c</td><td>b-c</td><td>b-c</td><td>c</td><td>a-d</td></tr>
+</table>
+<p class="para"><b>8 pts</b><br><b>(16 x 05)</b></p>
+<p class="subhead t-navy"><u>2<sup>EME</sup> PARTIE : <i>(12PTS)</i></u></p>
+<p class="para"><b><i>I/ 1/</i></b></p>
+<p class="para"><b>a.</b> La zone <span class="t-green"><b>B</b></span> représente le tissu interstitiel<br>La zone <span class="t-green"><b>A</b></span> représente la paroi du tube séminifère.</p>
+<p class="para"><b><i>1 pts</i></b></p>
+<p class="para"><b>b.</b> Légende :</p>
+<table>
+<tr><td>1- spermatogonie<br>2- spermatocyte I<br>3- spermatocyte II<br>4- spermatide</td><td>5- Spermatozoïde<br>6- Cellule de Sertoli<br>7- Capillaire sanguin<br>8- Cellule de Leydig</td></tr>
+</table>
+<p class="para"><b><i>2 pts</i></b><br><b><i>(0.25 X 8)</i></b></p>
+<p class="para"><b>c.</b> Le phénomène, par lequel la cellule 1 (spermatogonie) évolue en spermatozoïde est la <span class="t-green"><b>spermatogenèse</b></span>.</p>
+<p class="para"><b><i>0.5 pts</i></b></p>
+<p class="para"><b>d. Schéma :</b></p>
+<!-- CROP: 4028 1 6 0.190 0.383 0.650 0.560 4028_s1_corr_schema_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_s1_corr_schema_spermatogenese.png" alt=""></figure>
+<p class="para"><b><i>1.5 pts</i></b></p>
+<p class="para"><b>2/ Expérience n°1 :</b> La destruction des cellules de la zone B provoque la stérilité et la régression des caractères sexuels secondaires, donc les cellules de la structure B contrôlent le développement des CSII et la production des spermatozoïdes dans les tubes séminifères.</p>
+<p class="para"><b><i>1 pts</i></b></p>
+<p class="para"><b>Expérience n°2 :</b> la destruction des cellules de la zone A provoque la stérilité et n’a aucun effet sur les CSII, donc la zone B est responsable du développement des caractères sexuels secondaire.<br><b><i>------&gt; La synthèse des spermatozoïdes nécessite la présence des deux structures A et B.</i></b></p>
+<p class="para"><b><i>1 pts</i></b></p>
+<p class="para"><b>Explication :</b> La testostérone assure le maintien des caractères sexuels secondaires (CSII) masculins. Elle stimule également l’évolution des cellules germinales de la paroi du tube séminifère en spermatozoïdes indirectement par son association avec l’ABP sécrétée par les cellules de Sertoli.<br><i>(ABP : protéine de liaison indispensable à la réception de testostérone par les cellules germinales)</i></p>
+<p class="para"><b><i>1 pts</i></b></p>
+<!-- page 07 -->
+<!-- ROTATE: 4028 part1 p07 180 -->
+<p class="para"><b>II/</b></p>
+<p class="para"><b><i>1. Analyse du document 3:</i></b><br>- La sécrétion du LH (hormone hypophysaire) pour les souris adultes normales, est pulsatile avec une fréquence d’un pulse toute les 3 heures.<br>Le taux de LH dans le sang varie entre deux valeurs limites ; 2 ng/ml et 30ng/ml<br>- La sécrétion de la testostérone (hormone testiculaire) est pulsatile aussi avec la même fréquence.<br><b><i>-----&gt; Les deux courbes montrent que les pics de testostérones sont légèrement décalés par rapport aux pics de LH. Donc il y a une relation de causalité entre l’activité hormonale du testicule et la sécrétion de LH par l’hypophyse.</i></b></p>
+<p class="para"><b><i>1 pts</i></b></p>
+<p class="para"><b><i>Analyse du document 4 :</i></b><br>Le taux de testostérone est constant au voisinage de 0 ng/ml pour les souris castrés.<br>La concentration de LH chez les souris castrés est pulsatile avec une fréquence de 3 pulses par heure.<br>Le taux de LH varie entre deux valeurs limites ; de 10 ng/ml à 50 ng/ml<br><b><i>----&gt; en absence de testostérone, la fréquence et l’amplitude des pulses de LH augmentent ce qui donne l’augmentation du taux plasmatique de LH.</i></b></p>
+<p class="para"><b><i>1 pts</i></b></p>
+<p class="para"><b><i>Analyse du document 5 :</i></b><br>L’injection d’une dose constante de testostérone, pour les souris castrées, provoque la diminution du taux de LH dans le sang et la diminution de l’amplitude des pics de LH.<br><b><i>----&gt; la testostérone à un effet inhibiteur sur la sécrétion de LH par l’hypophyse.</i></b></p>
+<p class="para"><b><i>1 pts</i></b></p>
+<p class="para"><span class="t-navy"><b>Conclusion :</b></span><br>* L’hypophyse stimule les cellules de Leydig, pour sécréter la testostérone, par l’intermédiaire de LH.<br>* Le testicule agit sur l’hypophyse par un rétrocontrôle négatif par l’intermédiaire de la testostérone.</p>
+<p class="para"><b>2. Schéma récapitulatif</b></p>
+<!-- CROP: 4028 1 7 0.200 0.458 0.620 0.724 4028_s1_corr_schema_recapitulatif -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_s1_corr_schema_recapitulatif.png" alt=""></figure>
+<p class="para"><b><i>1.5 pts</i></b></p>
+<p class="para"><b><i>NB. Sanctionner l’élève de 0.5 pts, s’il représente l’inhibine et la FSH.</i></b></p>
+<!-- page 08 -->
+<p class="consigne"><b>Pour chacun des items suivants, il peut y avoir une ou deux réponse(s)correcte(s). Reportez sur votre copie le numéro de chaque item et indiquez dans chaque cas la ou les deux lettre(s) correspondant à la ou aux deux réponse(s) correcte(s).</b></p>
+<p class="para"><b>1- La durée de vie d’un spermatozoïde normal est de l’ordre de :</b><br>a- 12 heures,<br>b- 24 heures,<br>c- 48heures,<br>d- 72 à 120heures.</p>
+<p class="para"><b>2- La paroi du tube séminifère :</b><br>a- est épaisse avant la puberté,<br>b- est le lieu de la spermatogenèse,<br>c- contient des cellules endocrines,<br>d- est le siège de la production de testostérone.</p>
+<p class="para"><b>3- La spermatide</b> :<br>a- a la même quantité d’ADN que le spermatocyte I,<br>b- a la moitié de la quantité d’ADN que le spermatocyte II,<br>c- a le double de la quantité d’ADN que le spermatozoïde,<br>d- a la même quantité d’ADN que le spermatozoïde.</p>
+<p class="para"><b>4- La testostérone exerce une rétroaction sur le CHH, cette rétroaction est :</b><br>a- toujours positive.<br>b- toujours négative,<br>c- positive ou négative selon la concentration de testostérone,<br>d- positive ou négative selon la concentration de GnRH.</p>
+<p class="para"><b>5- Chez un rat castré :</b><br>a- l’injection de fortes doses de testostérone freine la sécrétion de LH,<br>b- l’injection de l’inhibine augmente le taux de la FSH,<br>c- le taux de LH augmente alors que celui de la FSH se maintient normalement,<br>d- le taux de FSH et de LH augmentent.</p>
+<p class="para"><b>6- La prostate :</b><br>a- intervient dans la formation du sperme,<br>b- intervient dans la formation des spermatozoïdes,<br>c- est une glande exocrine,<br>d- est une glande endocrine.</p>
+<p class="para"><b>7- Après la castration :</b><br>a- le taux des gonadostimulines augmentent,<br>b- la sécrétion de GnRH est inhibée,<br>c- l’homme est stérile,<br>d- il n’y a plus de rétrocontrôle exercé par le LH.</p>
+<p class="para"><b>8- Chez un individu ayant une cryptorchidie bilatérale, on note:</b><br>a- l’absence de sécrétion de testostérone;<br>b- l’absence de production de spermatozoïdes;<br>c- la présence de caractères sexuels masculins atrophiés;<br>d- le développement normal de la paroi des tubes séminifères.</p>
+<div class="data"><ol class="qn">
+<li>d</li>
+<li>bc</li>
+<li>bd</li>
+<li>b</li>
+<li>ad</li>
+<li>ac</li>
+<li>ac</li>
+<li>b</li>
+</ol></div>
+<!-- page 09 -->
+<p class="para"><b>9- Chez un rat male castré, la greffe sous-cutanée d'un fragment de testicule:</b><br>a- corrige sa stérilité;<br>b- restaure les CSS;<br>c- entraine une élévation des taux plasmatiques de FSH et de LH;<br>d- entraine les mêmes effets que des injections répétées d'extraits testiculaires.</p>
+<p class="para"><b>10- Dans le cas d'une cryptorchidie bilatérale la paroi des tubes séminifères révèle la présence de:</b><br>a- spermatides ;<br>b- spermatogonies;<br>c- spermatozoïdes;<br>d- spermatocytes.</p>
+<p class="para"><b>11- Les cellules de Sertoli et de Leydig sont toutes les deux des cellules:</b><br>a- sexuelles;<br>b- germinales;<br>c- sécrétrices d'hormones;<br>d- responsables de l'apparition des CSS.</p>
+<p class="para"><b>12- Parmi les cellules germinales de l'homme, on peut citer:</b><br>a- les spermatogonies;<br>b- les spermatocytes II;<br>c- les cellules de Leydig;<br>d- les cellules de Sertoli.</p>
+<p class="para"><b>13- L'inibine agit sur les cellules de:</b><br>a- Leydig;<br>b- Sertoli;<br>c- l'hypothalamus;<br>d- l'hypophyse.</p>
+<p class="para"><b>14- Parmi les cellules cibles de la testostérone, on peut citer:</b><br>a- les cellules de Sertoli;<br>b- les cellules de tissu interstitiel;<br>c- les cellules hypophysaires sécrétrices de LH;<br>d- les cellules germinales localisées au niveau de la paroi du tube séminifère.</p>
+<p class="para"><b>15- Les récepteurs de la LH sont localisés au niveau des cellules:</b><br>a- de Leydig;<br>b- de Sertoli;<br>c- de la muqueuse utérine;<br>d- de la thèque externe du follicule mûr.</p>
+<p class="para"><b>16- Le spermatozoïde humain est une cellule qui comporte:</b><br>a- 22autosomes+une paire de chromosome sexuel XY;<br>b- 22autosomes+ 1chromosme sexuel X;<br>c- 22autosomes+1 chromosome sexuel Y;<br>d- 22autosomes+une paire de chromosome sexuel XY;</p>
+<p class="para"><b>17- La spermatogenèse comporte les phases successives suivantes:</b><br>a- différenciation – maturation –multiplication – accroissement;<br>b- accroissement – multiplication –maturation –différenciation;<br>c- multiplication –accroissement- maturation – différenciation;<br>d- maturation –accroissement –multiplication – différenciation.</p>
+<p class="para"><b>18- Parmi les cellules diploïdes:</b><br>a- spermatocytes I;<br>b- spermatocytes II;</p>
+<div class="data"><ol class="qn" start="9">
+<li>bd</li>
+<li>b</li>
+<li>c</li>
+<li>ab</li>
+<li>d</li>
+<li>cd</li>
+<li>a</li>
+<li>bc</li>
+<li>c</li>
+<li>ad</li>
+</ol></div>
+<!-- page 10 -->
+<p class="para">c- spermatides;<br>d- spermatogonies.</p>
+<p class="para"><b>19- Chez l'homme, les cellules germinales à 23 chromosomes sont:</b><br>a- spermatocytes I;<br>b- spermatocytes II;<br>c- spermatides;<br>d- spermatogonies.</p>
+<p class="para"><b>20- Chez l'homme, la sécrétion de la testostérone est contrôlée par le taux sanguin de:</b><br>a- la LH;<br>b- la FSH;<br>c- l'inhibine;<br>d- la testostérone elle-même.</p>
+<p class="para"><b>21- Après la destruction sélective des cellules de Leydig, on note:</b><br>a- l'arrêt de la spermatogenèse;<br>b- la diminution de la sécrétion de la LH;<br>c- l'augmentation de la sécrétion de la FSH;<br>d- le maintien des CSS.</p>
+<p class="para"><b>22- Le schéma suivant représente une coupe partielle de testicule; la cellule X correspond à:</b><br>a- un spermatocyte I;<br>b- un spermatocyte II;<br>c- une cellule à 23 chromosomes;<br>d- une cellule à 46 chromosomes.</p>
+<!-- CROP: 4028 1 10 0.642 0.358 0.824 0.437 4028_qcm22_coupe_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_qcm22_coupe_testicule.png" alt=""></figure>
+<p class="para"><b>23- La spermiogenèse:</b><br>a- se déroule dans l'épididyme;<br>b- se déroule dans les tubes séminifères;<br>c- est la différenciation des spermatocytes II en spermatides;<br>d- est la différenciation des spermatides en spermatozoïdes.</p>
+<p class="para"><b>24- Le spermatozoïde et l'ovocyte II ont en commun:</b><br>a- la forme des cellules;<br>b- la mobilité de la cellule;<br>c- le nombre de chromosomes;<br>d- la richesse du cytoplasme en substances de réserves.</p>
+<p class="para"><b>25- L'inhibine:</b><br>a- est sécrétée par les cellules de Leydig;<br>b- est sécrétée par les cellules de Sertoli;<br>c- stimule la sécrétion de LH;<br>d- stimule la spermatogenèse.</p>
+<p class="para"><b>26- Le spermatozoïde humain est une cellule caractérisée par:</b><br>a- la mobilité;<br>b- un noyau bloqué en métaphase II;<br>c- un nombre de chromosomes égal à 23;<br>d- un cytoplasme riche en substances de réserve.</p>
+<p class="para"><b>27- La destruction sélective des cellules de Sertoli provoque:</b><br>a- la diminution de la sécrétion de testostérone;<br>b- la baisse de la fréquence des pulses de GnRH;<br>c- l'arrêt de la production de la protéine de liaison ABP;<br>d- la baisse des taux de gonadostimulines LH et FSH.</p>
+<div class="data"><ol class="qn" start="19">
+<li>bc</li>
+<li>d</li>
+<li>ac</li>
+<li>c</li>
+<li>bd</li>
+<li>c</li>
+<li>b</li>
+<li>ac</li>
+<li>c</li>
+</ol></div>
+<!-- page 11 -->
+<!-- ROTATE: 4028 part1 p11 180 -->
+<p class="para"><b>28- Au cours de la spermatogenèse, le passage de l’état diploide à l’état haploide s’effectue lors d phase de (d’) :</b><br>a- multiplication ;<br>b- accroissement ;<br>c- maturation ;<br>d- différenciation.</p>
+<!-- PROOFREAD: 4028 part1 p11 — item 28: the words after "lors d" are hidden by a red bookmark mark (probably "de la") -->
+<p class="para"><b>29- Les schémas 1, 2 et 3 ci -contre représentent des cellules germinales observées dans paroi d’un tube séminifère (2n=4) :</b><br>a- la cellule1 est un spermatocyte II ;<br>b- la cellule 2 est un spermatogonie ;<br>c- la cellule 3 est un spermatocyte I ;<br>d- la cellule 2 donne naissance à deux spermatides.</p>
+<!-- CROP: 4028 1 11 0.532 0.154 0.868 0.253 4028_qcm29_cellules_1_2_3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_qcm29_cellules_1_2_3.png" alt=""></figure>
+<p class="para"><b>30- Le spermatocyte I a le même nombre de chromosomes que :</b><br>a- l’ovogonie ;<br>b- l’ovocyte I ;<br>c- l’ovocyte II.<br>d- le 1<sup>er</sup> globule polaire.</p>
+<p class="para"><b>31- Les cellules de Sertoli assurent :</b><br>a- la sécrétion de l’inhibine ;<br>b- la sécrétion de la testostérone ;<br>c- la synthèse de l’ABP ;<br>d- le maintien des CSS.</p>
+<p class="para"><b>32- Les récepteurs de la testostérone sont localiés au niveau des cellules :</b><br>a- de Sertoli ;<br>b- de Leydig ;<br>c- hypothalamiques ;<br>d- sécrétrices de FSH.</p>
+<p class="para"><b>33- L’inhibine agit par rétrocontrole négatif sur la sécrétion de la :</b><br>a- LH ;<br>b- FSH ;<br>c- GnRH ;<br>d- testostérone.</p>
+<div class="data"><ol class="qn" start="28">
+<li>c</li>
+<li>bd</li>
+<li>ab</li>
+<li>ac</li>
+<li>c</li>
+<li>b</li>
+</ol></div>
+<!-- page 12 -->
+<table>
+<tr><td>REPUBLIQUE TUNISIENNE<br>MINISTERE DE L’EDUCATION<br>◈◈◈<br><b>EXAMEN DU BACCALAUREAT</b><br>SESSION DE JUIN <b>2014</b></td><td>Epreuve : <b>SCIENCES DE LA VIE ET DE LA TERRE</b><br>Durée : 3 H<br>Coefficient : 4</td></tr>
+<tr><td><b>Section : Sciences expérimentales</b></td><td><b>Session principale</b></td></tr>
+</table>
+<div class="exsub">I- Reproduction humaine (7,5 points)</div>
+<p class="para">Les mécanismes de la régulation des fonctions testiculaires chez l’homme font intervenir des interactions hormonales entre le complexe hypothalamo-hypophysaire et les testicules.<br>Pour comprendre ces mécanismes, on se réfère à une étude médicale réalisée chez un garçon pubère normal et à une étude réalisée chez deux garçons X et Y âgés de 19 ans et présentant des troubles de la puberté.</p>
+<p class="para">- Le document 2 représente des schémas d’interprétation d’observations microscopiques testiculaires réalisées chez un garçon pubère normal (document 2a) et chez les deux garçons X et Y (document 2b).<br>- Le document 3 représente les résultats du dosage de testostérone durant 24 heures chez le garçon pubère normal (document 3a) et chez les garçons X et Y (document 3b).</p>
+<!-- CROP: 4028 1 12 0.082 0.289 0.493 0.419 4028_bac2014_doc2a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2014_doc2a.png" alt=""></figure>
+<p class="para"><b>Document 2a</b></p>
+<!-- CROP: 4028 1 12 0.488 0.289 0.922 0.419 4028_bac2014_doc2b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2014_doc2b.png" alt=""></figure>
+<p class="para"><b>Document 2b</b></p>
+<p class="para"><b>Document 2</b></p>
+<!-- CROP: 4028 1 12 0.082 0.436 0.493 0.524 4028_bac2014_doc3a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2014_doc3a.png" alt=""></figure>
+<p class="para"><b>Document 3a</b></p>
+<!-- CROP: 4028 1 12 0.488 0.436 0.922 0.524 4028_bac2014_doc3b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2014_doc3b.png" alt=""></figure>
+<p class="para"><b>Document 3b</b></p>
+<p class="para"><b>Document 3</b></p>
+<p class="consigne"><b>1)</b><br><b>a-</b> Comparez l’aspect testiculaire observé chez les garçons X et Y à celui du garçon pubère normal.<br><b>b-</b> Faites une analyse comparée des résultats du dosage de testostérone (document 3).<br><b>c-</b> En vous basant sur vos réponses précédentes (1-a et 1-b), établissez un lien entre la structure microscopique des testicules et la sécrétion de testostérone observée chez les garçons X et Y.<br><b>d-</b> Proposez trois causes possibles qui pourraient être à l’origine des troubles observés chez les garçons X et Y.</p>
+<ul class="dash">
+<li>Le document 4 représente les résultats du dosage de LH et de FSH observés chez le garçon normal et chez les garçons X et Y.</li>
+<li>Le document 5 représente les résultats de deux tests de stimulation réalisés chez les garçons X et Y.</li>
+</ul>
+<table>
+<tr><th></th><th>Concentration de LH (UI.L<sup>-1</sup>)</th><th>Concentration de FSH (UI.L<sup>-1</sup>)</th></tr>
+<tr><td><b>Garçon pubère normal</b></td><td>2 à 10</td><td>1 à 12</td></tr>
+<tr><td><b>Garçons X et Y</b></td><td>0,5 à 0,9</td><td>0,1 à 0,4</td></tr>
+</table>
+<p class="para"><b>Document 4</b></p>
+<table>
+<tr><th>Tests de stimulation</th><th>Résultats</th></tr>
+<tr><td><b>Test 1 :</b> Injections de HCG, dont l’action est analogue à celle de la LH, aux garçons X et Y.</td><td>- Correction des troubles de la sécrétion de testostérone chez les deux garçons.<br>- Aucune modification de l’aspect de la paroi du tube séminifère des deux garçons.</td></tr>
+<tr><td><b>Test 2 :</b> Injections d’un mélange de HCG et de FSH aux garçons X et Y.</td><td>- Correction des troubles de la sécrétion de testostérone chez les deux garçons.<br>- Aspect testiculaire des deux garçons devient analogue à celui du garçon normal.</td></tr>
+</table>
+<p class="para"><b>Document 5</b></p>
+<p class="consigne"><b>2)</b> Exploitez les résultats fournis par les documents 4 et 5 et vos connaissances en vue :<br><b>a-</b> d’expliquer les résultats des tests 1 et 2.<br><b>b-</b> de préciser parmi les causes proposées dans la réponse 1-d celle(s) qui est (sont) à retenir.</p>
+<!-- page 13 -->
+<p class="para">Le document 6 représente les résultats de tests réalisés chez le garçon normal et chez les garçons X et Y.</p>
+<table>
+<tr><th></th><th>Test 3</th><th>Test 4</th><th>Test 5</th><th>Test 6</th></tr>
+<tr><td><b>Tests</b></td><td>Dosage de GnRH chez le garçon normal.</td><td>Dosage de GnRH chez le garçon X.</td><td>Dosage de GnRH chez le garçon Y.</td><td>Injections de GnRH chez le garçon Y suivies de dosage de LH et de FSH.</td></tr>
+<tr><td><b>Résultats</b></td><td><!-- CROP: 4028 1 13 0.103 0.134 0.306 0.226 4028_bac2014_doc6_test3 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2014_doc6_test3.png" alt=""></figure></td><td><!-- CROP: 4028 1 13 0.303 0.134 0.506 0.226 4028_bac2014_doc6_test4 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2014_doc6_test4.png" alt=""></figure></td><td><!-- CROP: 4028 1 13 0.503 0.134 0.705 0.226 4028_bac2014_doc6_test5 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2014_doc6_test5.png" alt=""></figure></td><td>Correction des troubles de sécrétion de LH et de FSH.</td></tr>
+</table>
+<p class="para"><b>Document 6</b></p>
+<p class="consigne"><b>3)</b><br><b>a-</b> À partir de l’analyse comparée des résultats du dosage de GnRH chez le garçon normal (test 3) et chez le garçon X (test 4) et des données du document 3-b, expliquez le résultat du dosage de GnRH obtenu chez le garçon X (test 4).<br><b>b-</b> D’après les informations précédentes, précisez la cause des troubles observés chez le garçon X.<br><b>c-</b> Analysez le résultat du test 5 en vue de préciser la cause des troubles observés chez le garçon Y.<br><b>d-</b> En vous basant sur les résultats du test 6, établissez la relation fonctionnelle entre hypothalamus et hypophyse.</p>
+<p class="consigne"><b>4)</b> En intégrant vos réponses aux questions précédentes et à l’aide de vos connaissances, représentez par un schéma fonctionnel les interactions hormonales responsables de la régulation du fonctionnement normal des testicules chez un garçon pubère.</p>
+<div class="exsub">CORRECTION :</div>
+<p class="para">1.<br>a. Tableau :</p>
+<table>
+<tr><th>Doc</th><th>2.a</th><th>2.b</th></tr>
+<tr><td>Cellules de Leydig</td><td>Nombreuses et développées</td><td>Peu nombreuses et très peu développées</td></tr>
+<tr><td>Cellules de Sertoli</td><td>Développées</td><td>Très peu développées</td></tr>
+<tr><td>Cellules germinales</td><td>Toutes les catégories sont présentes</td><td>Seules les spermatogonies sont présentes</td></tr>
+<tr><td>Spermatozoïdes</td><td>Présents</td><td>Absents</td></tr>
+</table>
+<p class="para">b. Chez le garçon pubère normal, la sécrétion de la testostérone est pulsatile et de concentration comprise entre 300 et 600 ng/ml. Par contre, chez les garçons X et Y, la sécrétion de la testostérone est très faible avec des pulses très réduits (avec un maximum de 100ng/ml).<br>c. Chez les garçons X et Y, les cellules de Leydig peu nombreuses et très peu développées sécrètent très peu de testostérone.<br>d. Trois causes :</p>
+<ul class="b">
+<li>Cause 1 : Anomalie au niveau des testicules (testostérone).</li>
+<li>Cause 2 : Anomalie au niveau de l’hypophyse (LH et FSH).</li>
+<li>Cause 3 : Anomalie au niveau de l’hypothalamus (GnRH).</li>
+</ul>
+<p class="para">2. Exploitation :</p>
+<ul class="b"><li>Doc.4 :</li></ul>
+<p class="para">Les résultats de dosages de LH et FSH chez les trois garçons montrent des taux faibles de gonadostimulines chez X et Y par rapport à ceux observés chez le garçon normal.</p>
+<ul class="b"><li>Doc.5 :</li></ul>
+<p class="para">- Les injections de HCG corrigent les troubles de la sécrétion de testostérone chez les deux garçons X et Y mais n’ont aucun effet sur la paroi du tube séminifère.<br>- Les injections d’un mélange HCG+FSH aux deux garçons X et Y corrigent les troubles de la sécrétion de testostérone et assurent le rétablissement de l’aspect testiculaire normal.<br>a. Explication :</p>
+<ul class="b">
+<li>La LH stimule les cellules de Leydig qui se développent et sécrètent la testostérone.</li>
+<li>La FSH stimule les cellules de Sertoli qui se développent et sécrètent l’ABP indispensable à la réception de la testostérone par les cellules germinales, ce qui active la spermatogenèse.</li>
+</ul>
+<p class="para">b. Causes possibles :<br>→ Les causes 2 (hypophyse) et 3 (hypothalamus) sont à retenir.</p>
+<!-- page 14 -->
+<p class="para">3.<br>a. Analyse comparée :<br>Chez le garçon pubère normal, la sécrétion de GnRH est normale : elle est pulsatile (un pulse/h) et de concentration comprise entre 8 et 30 pg/ml.<br>Par contre, le garçon X montre une hypersécrétion de GnRH : fréquence des pulses plus importante (3/h) et amplitude plus importante de 10 à 50pg/ml.<br>Données du Doc.5 :<br>Taux faible de testostérone chez le garçon X.<br>Explication :<br>- L’hypersécrétion de GnRH est due à une levée de l’inhibition exercée par la testostérone sur l’hypothalamus.<br>b. Cause des troubles chez X : → Problème hypophysaire (rappelons que le garçon X montre une hypersécrétion de GnRH).<br>c. Analyse du test 5 : Chez le garçon Y, la sécrétion de GnRH est très faible avec l’absence de pics.<br>→ Y souffre d’un problème hypothalamique.<br>d. Les injections de GnRH chez le garçon Y corrigent les troubles de sécrétion de LH et de FSH.<br>→ L’hypothalamus stimule par la GnRH la sécrétion par l’hypophyse de la LH et de la FSH.</p>
+<p class="para">4. Schéma fonctionnel :</p>
+<p class="para"><b>- Inhibe (RC - )</b><br><b>+ Stimule</b></p>
+<!-- CROP: 4028 1 14 0.225 0.290 0.785 0.558 4028_bac2014_corr_schema_fonctionnel -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2014_corr_schema_fonctionnel.png" alt=""></figure>
+<!-- page 15 -->
+<table>
+<tr><td rowspan="3"><b>RÉPUBLIQUE TUNISIENNE</b><br><br><b>MINISTÈRE DE L’ÉDUCATION</b></td><td><b>EXAMEN DU BACCALAURÉAT<br>SESSION 2021</b></td><td><b>Session principale</b></td></tr>
+<tr><td>Épreuve : <b>Sciences de la vie et de la terre</b></td><td>Section :<br><b>Sciences expérimentales</b></td></tr>
+<tr><td>Durée : <b>3h</b></td><td>Coefficient de l’épreuve : <b>4</b></td></tr>
+</table>
+<p class="para">✻✻✻✻✻</p>
+<p class="para">N° d’inscription ______</p>
+<p class="para"><b>Le sujet comporte quatre pages numérotées 1/4-2/4-3/4 et 4/4</b></p>
+<div class="exsub">PREMIÈRE PARTIE (8 points)</div>
+<p class="subhead t-navy"><b>I- QCM</b> (4 points)</p>
+<p class="consigne">Pour chacun des items suivants (de 1 à 8), il peut y avoir une (ou deux) réponse(s) correcte(s). Reportez sur votre copie le numéro de chaque item et indiquez dans chaque cas la (ou les deux) lettre(s) correspondant à la (ou aux deux) réponse(s) correcte(s).<br><b>NB : toute réponse fausse annule la note attribuée à l’item.</b></p>
+<div class="data">
+<p class="para"><b>1) Les cellules de Sertoli assurent :</b><br><b>a-</b> la sécrétion de l’inhibine.<br><b>b-</b> la sécrétion de la testostérone.<br><b>c-</b> la synthèse de l’ABP (Androgen Binding Protein).<br><b>d-</b> le maintien des caractères sexuels secondaires.</p>
+<p class="para"><b>2) Les récepteurs de la testostérone sont localisés au niveau des cellules</b><br><b>a-</b> de Sertoli.<br><b>b-</b> de Leydig.<br><b>c-</b> hypothalamiques.<br><b>d-</b> sécrétrices de FSH.</p>
+<!-- NOTE: item 3 is struck through by a red line drawn over the printed text; the text under the line is transcribed -->
+<p class="para"><b>3) Les enzymes de l’acrosome :</b><br><b>a-</b> empêchent la polyspermie.<br><b>b-</b> hydrolysent la zone pellucide.<br><b>c-</b> détruisent les récepteurs situés au niveau de la zone pellucide.<br><b>d-</b> sont libérées suite à la fixation du spermatozoïde sur la zone pellucide.</p>
+<!-- PROOFREAD: 4028 part1 p15 — item 3: letters under the red line ("acrosome", "polyspermie", "hydrolysent", "détruisent", "sont") are partly hidden -->
+<p class="para"><b>4) L’inhibine agit par rétrocontrôle négatif sur la sécrétion de la :</b><br><b>a-</b> LH.<br><b>b-</b> FSH.<br><b>c-</b> GnRH.<br><b>d-</b> testostérone.</p>
+</div>
+<table>
+<tr><th>Items</th><th>1</th><th>2</th><th>4</th></tr>
+<tr><td><b>Réponses</b></td><td>a, c</td><td>c</td><td>b</td></tr>
+</table>
+<!-- page 16 -->
+<table>
+<tr><td rowspan="3"><b>RÉPUBLIQUE TUNISIENNE</b><br><br><b>MINISTÈRE DE L’ÉDUCATION</b></td><td><b>EXAMEN DU BACCALAURÉAT<br>SESSION 2021</b></td><td><b>Session de contrôle</b></td></tr>
+<tr><td>Épreuve : <b>Sciences de la vie et de la terre</b></td><td>Section :<br><b>Sciences expérimentales</b></td></tr>
+<tr><td>Durée : <b>3h</b></td><td>Coefficient de l’épreuve : <b>4</b></td></tr>
+</table>
+<div class="exsub">I- Fonction reproductrice chez l’homme (5points)</div>
+<p class="para">Afin d’étudier certains aspects de la régulation de la fonction reproductrice masculine, on réalise des expériences sur des mammifères mâles dont la fonction reproductrice est comparable à celle de l’homme.</p>
+<p class="para">❖ <b>Expérience 1 et 2</b><br>Les expériences 1 et 2 sont réalisées sur deux mammifères mâles non pubères M1 et M2.<br>Les expériences et les résultats obtenus sont présentés par le document 2.</p>
+<table>
+<tr><th colspan="2">Expériences</th><th>Résultats</th></tr>
+<tr><td><b>1</b></td><td>Injections régulières d’une hormone radioactive H<sub>1</sub> à M1.</td><td>La radioactivité est détectée au niveau du tissu interstitiel.</td></tr>
+<tr><td><b>2</b></td><td>Injections régulières d’une hormone radioactive H<sub>2</sub> à M2.</td><td>La radioactivité est détectée au niveau de la paroi du tube séminifère.</td></tr>
+</table>
+<p class="para"><b>Document 2</b></p>
+<p class="consigne"><b>1)</b> En vous référant au document 2 et en faisant appel à vos connaissances, identifiez les hormones H<sub>1</sub> et H<sub>2</sub> ainsi que les cellules cibles de chaque hormone.</p>
+<p class="para">❖ <b>Expérience 3</b><br>On suit, au cours du temps, la variation des taux plasmatiques de l’hormone H<sub>1</sub> et de la testostérone chez un mammifère mâle pubère M3.<br>Le document 3 présente les résultats obtenus.</p>
+<!-- CROP: 4028 1 16 0.258 0.434 0.670 0.551 4028_bac2021c_doc3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2021c_doc3.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="consigne"><b>2)</b> À partir de l’analyse du document 3 et en faisant appel à vos connaissances, dégagez la relation fonctionnelle entre les structures sécrétrices de ces deux hormones.</p>
+<p class="para">❖ <b>Expérience 4</b><br>Chez un mammifère mâle pubère M4, on suit, au cours du temps, la variation des taux plasmatiques de l’hormone H<sub>1</sub> avant et après castration, suivie d’une injection d’inhibine puis, de testostérone.<br>Le document 4 présente les résultats obtenus.</p>
+<!-- CROP: 4028 1 16 0.388 0.615 0.818 0.780 4028_bac2021c_doc4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2021c_doc4.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<!-- NOTE: a red frame and green highlight drawn over "3) À partir de l’analyse" are not reproduced -->
+<p class="consigne"><b>3)</b> À partir de l’analyse du document 4 et en intégrant vos connaissances, expliquez les résultats obtenus.</p>
+<p class="consigne"><b>4)</b> À partir des informations tirées précédemment et en faisant appel à vos connaissances, expliquez, à l’aide d’un schéma fonctionnel le mécanisme de la régulation de la fonction endocrine testiculaire chez l’homme.</p>
+<!-- page 17 -->
+<div class="exsub">Corrigé :</div>
+<p class="para"><b>1)</b><br>- H1 est détectée uniquement au niveau du tissu interstitiel, les cellules cibles de H1 sont les cellules de Leydig --&gt; H1 = LH<br>- H2 est détectée uniquement au niveau de la paroi du tube séminifère, les cellules cibles d H2 sont les cellules de Sertoli --&gt; H2 = FSH</p>
+<p class="para"><span class="t-red"><b>1.5 point</b><br>(075x2)</span></p>
+<p class="para"><b>2)</b><br>La sécrétion de LH est suivie d'une sécrétion de testostérone avec un profil semblable : 1 pulse / 4h et des taux variables allant de 0,5 à 3ng.ml<sup>-1</sup> pour LH et de 0,5 à 4ng.ml<sup>-1</sup> pour la testostérone.<br><span class="t-blue">⟶</span> L'hypophyse antérieure stimule, par l'intermédiaire de LH, la sécrétion de testostérone par les cellules de Leydig</p>
+<p class="para"><span class="t-red"><b>1 point</b><br>(0.5x2)</span></p>
+<p class="para"><b>3)</b></p>
+<div class="data">
+<p class="para"><span class="t-red"><b>ANALYSE → Avec valeurs</b></span></p>
+<p class="para">Analyse :<br>- Avant castration : sécrétion pulsatile de LH de fréquence 2 pulses/5h et d'amplitude 3 ng.ml<sup>-1</sup> .<br>- Après castration</p>
+<ul class="b">
+<li>La fréquence des pulses augmente de 2 pulses/5heures à 3 pulses / 5h</li>
+<li>L'amplitude des pulses augmente de 3 ng.ml<sup>-1</sup> à 15 ng.ml<sup>-1</sup> .</li>
+<li>L'injection de l'inhibine au temps t=20h n'a pas d'effet ni sur la fréquence ni sur l'amplitude des pulses.</li>
+<li>L'injection de la testostérone au temps t=35h provoque la chute de l'amplitude des pulses qui revient à sa valeur initiale.</li>
+</ul>
+</div>
+<p class="para">Explications :<br>L'augmentation de la fréquence et de l'amplitude des pulses de LH suite à la castration est expliquée par la levée de l'inhibition exercée par la testostérone sur la sécrétion de LH</p>
+<p class="para">L'inhibine n'a pas d'effet sur la sécrétion de LH car elle n'a pas de récepteurs spécifiques sur les cellules sécrétrices de LH</p>
+<p class="para">Le retour de la sécrétion de LH à son état initial est expliqué par l'inhibition exercée par la testostérone sur l'hypophyse (RC-).</p>
+<p class="para"><span class="t-red"><b>1.75 point</b><br>(0.25x7)</span></p>
+<p class="para"><b>4)</b></p>
+<!-- CROP: 4028 1 17 0.180 0.578 0.640 0.927 4028_bac2021c_corr_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2021c_corr_schema.png" alt=""></figure>
+<p class="para"><span class="t-red"><b>0.75 point</b></span></p>
+<!-- page 18 -->
+<table>
+<tr><td rowspan="3"><b>RÉPUBLIQUE TUNISIENNE</b><br><br><b>MINISTERE DE L’ÉDUCATION</b></td><td><b>EXAMEN DU BACCALAURÉAT<br>SESSION 2022</b></td><td><b>Session de contrôle</b></td></tr>
+<tr><td>Épreuve : <b>Sciences de la vie et de la terre</b></td><td>Section : <b>Mathématiques</b></td></tr>
+<tr><td>Durée : <b>1h30</b></td><td>Coefficient de l’épreuve: <b>1</b></td></tr>
+</table>
+<div class="exsub">II- Fonction reproductrice chez l’homme (6 points)</div>
+<p class="para">On se propose de déterminer les interactions hormonales entre l’hypophyse et les testicules. Pour cela on se réfère aux résultats d’expériences réalisées sur des rats, dont la fonction reproductrice est analogue à celle de l’homme.</p>
+<p class="para"><b>Expérience 1</b> :<br>On injecte des gonadostimulines (FSH et LH) à deux lots de rats impubères. Le premier lot est traité par la FSH, le second par la LH. Par une technique appropriée, on détecte les cellules testiculaires activées.</p>
+<p class="para">Les résultats obtenus sont indiqués dans le document 4.</p>
+<table>
+<tr><th></th><th>Spermatogonies</th><th>Cellules de Sertoli</th><th>Cellules de Leydig</th></tr>
+<tr><td>Lot 1 injecté de FSH</td><td>+</td><td>+</td><td>-</td></tr>
+<tr><td>Lot 2 injecté de LH</td><td>-</td><td>-</td><td>+</td></tr>
+<tr><td colspan="4">+ : cellules activées - : cellules non activées</td></tr>
+</table>
+<p class="para"><b>Document 4</b></p>
+<p class="consigne"><b>1)</b> Utilisez les résultats du document 4 et vos connaissances, afin de préciser l’action des gonadostimulines sur les cellules testiculaires.</p>
+<p class="para"><b>Expérience 2</b> :<br>On pratique une castration bilatérale d’un rat pubère R<sub>1</sub> au temps <b>t<sub>1</sub></b>, puis on lui injecte des extraits testiculaires au temps <b>t<sub>2</sub></b>.<br>On réalise chez cet animal, des dosages des taux plasmatiques de LH et de FSH :</p>
+<ul class="dash">
+<li>avant et après la castration,</li>
+<li>après l’injection d’extraits testiculaires.</li>
+</ul>
+<p class="para">Les résultats obtenus sont représentés par le document 5.</p>
+<!-- NOTE: a red frame drawn around "Exploitez les données" is not reproduced -->
+<p class="consigne"><b>2)</b> Exploitez les données du document 5 afin de préciser les interactions hormonales entre l’hypophyse et les testicules.</p>
+<!-- CROP: 4028 1 18 0.430 0.496 0.854 0.614 4028_bac2022c_doc5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2022c_doc5.png" alt=""></figure>
+<p class="para"><b>Document 5</b></p>
+<p class="para"><b>Expérience 3 :</b><br>On isole une substance (S) de l’extrait testiculaire du rat R<sub>1</sub> que l’on injecte à un rat pubère R<sub>2</sub>.<br>On réalise chez R<sub>2</sub> avant et après l’injection de la substance (S) :</p>
+<ul class="dash">
+<li>le dosage des taux plasmatiques des gonadostimulines (LH et FSH),</li>
+<li>le dénombrement des spermatozoïdes dans le sperme.</li>
+</ul>
+<p class="para">Le document 6 illustre, graphiquement, les résultats obtenus.</p>
+<!-- CROP: 4028 1 18 0.236 0.708 0.725 0.847 4028_bac2022c_doc6 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2022c_doc6.png" alt=""></figure>
+<p class="para"><b>Document 6</b></p>
+<p class="consigne"><b>3)</b> En vous basant sur les données du document 6 et en utilisant vos connaissances :<br><b>a-</b> expliquez l’effet de la substance (S) sur la sécrétion des gonadostimulines et le nombre de spermatozoïdes.<br><b>b-</b> identifiez la substance « S ».</p>
+<p class="consigne"><b>4)</b> En vous limitant aux informations tirées des expériences précédentes, illustrez par un schéma fonctionnel, les interactions hormonales existant entre l’hypophyse et les testicules chez l’homme.</p>
+<!-- page 19 -->
+<div class="exsub">Corrigé :</div>
+<p class="subhead t-navy"><b>II- Fonction reproductrice chez l’homme (6 points)</b></p>
+<p class="para"><b>1)</b></p>
+<ul class="dash">
+<li>L’injection de FSH active les cellules de Sertoli et les cellules germinales.</li>
+<li>L’injection de LH active les cellules de Leydig.</li>
+</ul>
+<p class="para">* la FSH stimule directement les cellules de Sertoli qui secrètent l’inhibine et l’ABP et indirectement les cellules germinales ;<br>* la LH stimule les cellules de Leydig qui secrètent de la testostérone.</p>
+<p class="para"><b>1 point</b><br>(0,25 x 4)</p>
+<p class="para"><b>2)</b></p>
+<div class="data">
+<table>
+<tr><th>Exploitations</th><th>Interactions</th></tr>
+<tr><td>La castration fait augmenter la sécrétion pulsatile des gonadostimulines en amplitude et en fréquence.</td><td>Les testicules exercent un RC- sur l’hypophyse.</td></tr>
+<tr><td>L’injection d’extraits testiculaires est suivie d’une diminution progressive de la sécrétion des gonadostimulines vers les valeurs initiales.</td><td>Le RC exercé par le testicule sur l’hypophyse se fait par voie sanguine.</td></tr>
+</table>
+<p class="para"><b>EXPLOITATION → Sans valeurs</b></p>
+</div>
+<p class="para"><b>2 points</b><br>(0,5 x 4)</p>
+<p class="para"><b>3)</b><br>a- Avant l’injection de (S) :</p>
+<ul class="dash"><li>Les trois paramètres sont constants</li></ul>
+<p class="para">Après l’injection de (S) :</p>
+<ul class="dash">
+<li>La sécrétion de LH n’est pas perturbée (le taux reste constant) → Pas d’action de (S) sur les cellules hypophysaires sécrétrices de LH.</li>
+<li>La sécrétion de FSH diminue immédiatement, suivie d’une diminution du nombre de spermatozoïdes dans le sperme.</li>
+<li>La substance (S) agit sur les cellules hypophysaires sécrétrices de FSH en inhibant sa sécrétion.</li>
+</ul>
+<p class="para">b- La substance (S) est donc l’inhibine.</p>
+<p class="para"><b>1,75 point</b><br>a : 0,75 + 0,5<br>b : 0,5</p>
+<p class="para"><b>4)</b></p>
+<!-- CROP: 4028 1 19 0.060 0.520 0.800 0.700 4028_bac2022c_corr_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4028/4028_bac2022c_corr_schema.png" alt=""></figure>
+<p class="para">⊕ : Stimule ⊖: Inhibe ⟶ : Sécrète ┈┈&gt; : Agit sur ➡ : produit</p>
+<p class="para"><b>1,25 point</b></p>
+
+</section>
+
+</div>
+</body>
+</html>

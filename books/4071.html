@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Svt</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Devoir">
+<meta data-pagefind-filter="resource[content]" content="L.P.A">
+<meta data-pagefind-meta="n[content]" content="4071">
+<meta data-pagefind-meta="title[content]" content="Svt">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="chapter[content]" content="Procréation (fécondation, nidation, maîtrise)">
+<meta data-pagefind-filter="chapter[content]" content="Génétique humaine">
+<meta data-pagefind-filter="chapter[content]" content="Neurophysiologie (tissu nerveux, réflexe, message nerveux)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Svt" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Svt</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">L.P.A · Prof : Mr et Mme FEKIH</span> <span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1RgmbBVb1jDDB5xoINpv2o-WnC7sQDxmF/view">↗ c1 25-26.pdf</a> <a href="https://drive.google.com/file/d/17ujQTnGXDUMLlqqEsVE4eGWmWZNsVn3e/view">↗ c2.pdf</a> <a href="https://drive.google.com/file/d/1tPCro3QNb_xGYgFdLrY2LI1e3BOgNQh-/view">↗ Correction.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (3)</b><ul><li><a href="https://drive.google.com/file/d/1RgmbBVb1jDDB5xoINpv2o-WnC7sQDxmF/view">Eya Masmoudi · Bac math 2026 › Svt</a></li><li><a href="https://drive.google.com/file/d/17ujQTnGXDUMLlqqEsVE4eGWmWZNsVn3e/view">Eya Masmoudi · Bac math 2026 › Svt</a></li><li><a href="https://drive.google.com/file/d/1tPCro3QNb_xGYgFdLrY2LI1e3BOgNQh-/view">Eya Masmoudi · Bac math 2026 › Svt</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+<!-- SOURCE: L.P.A · Prof : Mr et Mme FEKIH -->
+<div class="exh"><span class="idx ex">Devoir</span><h2>Devoir de contrôle n°1</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4071.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">L.P.A · Prof : Mr et Mme FEKIH</span> <span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1RgmbBVb1jDDB5xoINpv2o-WnC7sQDxmF/view">↗ c1 25-26.pdf</a> <a href="https://drive.google.com/file/d/17ujQTnGXDUMLlqqEsVE4eGWmWZNsVn3e/view">↗ c2.pdf</a> <a href="https://drive.google.com/file/d/1tPCro3QNb_xGYgFdLrY2LI1e3BOgNQh-/view">↗ Correction.pdf</a></div>
+<div class="exsub">c1 25-26</div>
+<!-- page 01 -->
+<table>
+<tr><td>L.P.A<br>Classes : 4<sup>ème</sup><br>Math 1 et 3</td><td>Devoir de contrôle n°1<br>Sciences de la vie et de la terre</td><td>Prof : Mr et Mme FEKIH<br>2025 / 2026<br>Durée : 1 heure</td></tr>
+</table>
+<!-- NOTE: handwritten marks on the printed pages (circled QCM letters, pencil labels on Document 1) not transcribed -->
+<p class="subhead t-red"><span class="t-gold">Première partie: (10pts)</span></p>
+<div class="exsub"><span class="t-blue">Exercice 1:</span> <b>QCM (5pts)</b></div>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes. Indiquez dans chaque cas la (ou les) lettre (s) correspondant à la (ou aux) réponse (s) exacte (s).</p>
+<p class="para"><b>1- Un rat pubère qui présente une cryptorchidie bilatérale est :</b><br>
+a- fertile.<br>
+b- stérile.<br>
+c- présente une atrophie des voies génitales.<br>
+d- présente une hypersécrétion des gonadostimulines.</p>
+<p class="para"><b>2- Les vésicules séminales secrètent un liquide :</b><br>
+a- riche en fructose.<br>
+b- diluant le sperme.<br>
+c- contenant des enzymes.<br>
+d- contenant des hormones.</p>
+<p class="para"><b>3- Suite à une destruction sélective des cellules interstitielles, on note :</b><br>
+a- l'arrêt de la spermatogenèse.<br>
+b- la diminution de la sécrétion de la LH.<br>
+c- une augmentation de la sécrétion de la GnRH.<br>
+d- le maintien des caractères sexuels secondaires.</p>
+<p class="para"><b>4- Au cours de la spermatogenèse, la réduction du nombre de chromosomes des cellules germinales se produit au cours de la phase :</b><br>
+a- de maturation.<br>
+b- de multiplication.<br>
+c- d'accroissement.<br>
+d- de spermiogenèse.</p>
+<p class="para"><b>5- Parmi les cellules cibles de l'inhibine, on peut citer :</b><br>
+a- les cellules de Sertoli.<br>
+b- les cellules germinales.<br>
+c- les noyaux hypothalamiques.<br>
+d- les cellules hypophysaires sécrétrices de la FSH.</p>
+<div class="exsub"><span class="t-blue">Exercice 2:</span> (5pts)</div>
+<p class="para">Dans le but d'étudier certains aspects de la fonction reproductrice chez l'homme.<br>
+* on représente dans le document 1 le schéma d'une coupe transversale du testicule humain.<br>
+* le document 2 représente des cellules germinales prélevées de la paroi de tube séminifère.<br>
+(Le nombre des chromosomes est réduit à 2n = 6).</p>
+<!-- CROP: 4071 1 1 0.150 0.738 0.650 0.945 4071_c1_doc1_coupe_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c1_doc1_coupe_testicule.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<!-- CROP: 4071 1 1 0.678 0.735 0.850 0.940 4071_c1_doc2_cellules_germinales -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c1_doc2_cellules_germinales.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<!-- page 02 -->
+<ol class="qn">
+<li>Légendez le document 1 en reportant les numéros de 1 à 8 sur votre copie.</li>
+<li>Réalisez un schéma détaillé et légendé de la cellule 7.</li>
+<li>Identifiez les cellules A, B et C du document 2. Justifiez votre réponse.</li>
+<li>Les testicules jouent un double rôle dans la fonction reproductrice chez l'homme assuré par les cellules 4 et 6 du document 1.<br>
+a- Citez les deux fonctions du testicule.<br>
+b- Proposez un protocole expérimentale permettant la nature hormonale de l'une des deux fonctions testiculaires.<br>
+c- Expliquez l'action combinée des deux cellules 4 et 6 dans le déroulement de l'une des deux fonctions testiculaires.</li>
+</ol>
+<p class="subhead t-red"><span class="t-gold">Deuxième partie</span> :(8pts)</p>
+<p class="para">on se propose d'identifier 3 hormones A, B, et C intervenant dans la fonction reproductrice masculine à partir d'une exploitation des données expérimentales suivantes :</p>
+<p class="para"><u>Expérience 1</u> : On dose le taux sanguin de testostérone chez deux rats pubères R1 et R2 suite à des injections répétitives de l'hormone A.<br>
+• R1 : rat stérile présentant un taux très faible de testostérone.<br>
+• R2 : rat normal mais qui a subit, au temps t1, une hypophysectomie.<br>
+Les résultats de ces dosages sont donnés dans les documents 1 et 2 suivants :</p>
+<!-- CROP: 4071 1 2 0.050 0.355 0.455 0.510 4071_c1_p2_doc1_testosterone_R1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c1_p2_doc1_testosterone_R1.png" alt=""></figure>
+<p class="para"><b>Document 1 : résultat pour l'animal R1</b></p>
+<table>
+<tr><th>Temps</th><th>t0</th><th>t1</th><th>t2</th><th>t3</th><th>t4</th><th>t5</th></tr>
+<tr><td>Taux de testostérone (UA)</td><td>500</td><td>55</td><td>54</td><td>56</td><td>55</td><td>54</td></tr>
+</table>
+<p class="para"><b>Document 2 : résultat pour l'animal R2<br>
+• t0 : R2 normal.<br>
+• t1 : ablation de l'hypophyse chez R2.<br>
+• t2, t3, t4 et t5 : injections de l'hormone A.</b></p>
+<p class="para">1- Analysez le document 1 en vue de déduire :<br>
+a- l'effet de l'hormone A.<br>
+b- les causes possibles du taux faible de testostérone chez le rat R1.</p>
+<p class="para">2- Exploitez le document 2 et les déductions précédentes, en vue d'identifier l'hormone A.</p>
+<p class="para"><u>Expérience 2</u> : Chez un rat R3 souffrant d'une lésion au niveau de certains noyaux hypothalamiques, des injections régulières de l'hormone B donnent à leur structure testiculaire l'aspect que montre le document 3 suivant :</p>
+<!-- CROP: 4071 1 2 0.298 0.680 0.682 0.853 4071_c1_p2_doc3_structure_testiculaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c1_p2_doc3_structure_testiculaire.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para">3- Exploitez le document 3 en vue d'identifier l'hormone B.</p>
+<p class="para"><u>Expérience 3</u>: On dose les taux des hormones A et C chez un rat R4 pendant trois périodes:<br>
+• Période 1: avant sa castration et durant quelques heures.<br>
+• Période 2: quelques jours après sa castration.</p>
+<!-- page 03 -->
+<!-- PROOFREAD: 4071 part1 p03 — page corner folded: first letters of "Période 3" and "Les résultats" hidden; only visible letters typed -->
+<p class="para">ériode 3: quelques jours après sa castration avec injection régulière de l'hormone C.<br>
+s résultats sont présentés dans le document 4 suivant :</p>
+<!-- CROP: 4071 1 3 0.080 0.055 0.962 0.318 4071_c1_p3_doc4_hormones_A_C -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c1_p3_doc4_hormones_A_C.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<p class="para">4- Analysez les résultats obtenus dans le document 4 en vue:<br>
+a- de déduire le <b>mode de sécrétion</b> des hormones A et C.<br>
+b- de dégager les <b>relations fonctionnelles</b> entre les hormones A et C.<br>
+c- d'identifier l'hormone C.</p>
+<p class="para">5- Représentez à l'aide d'un schéma de synthèse le mécanisme de régulation de la fonction reproductrice masculine.</p>
+<!-- page 04 -->
+<p class="subhead t-red"><b>Correction du devoir de contrôle n°1</b></p>
+<p class="subhead t-red"><b>Première partie : (10pts)</b></p>
+<div class="exsub"><b>Exercice 1 : QCM (5pts)</b></div>
+<table>
+<tr><td>Items</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><td>Réponse(s)</td><td>b</td><td>a</td><td>a-c</td><td>a</td><td>d</td></tr>
+</table>
+<div class="exsub"><b>Exercice 2 : (5pts)</b></div>
+<p class="para">1- 1 : spermatide. &nbsp;&nbsp; 2 : spermatocyte I. &nbsp;&nbsp; 3 : spermatogonie. &nbsp;&nbsp; 4 : cellule de Leydig.<br>
+5 : capillaire sanguin &nbsp;&nbsp; 6 : cellule de Sertoli &nbsp;&nbsp; 7 : spermatozoïde. &nbsp;&nbsp; 8 : spermatocyte II.</p>
+<p class="para">2-</p>
+<!-- CROP: 4071 1 4 0.118 0.202 0.905 0.315 4071_c1_corr_spermatozoide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c1_corr_spermatozoide.png" alt=""></figure>
+<p class="para">3- A : spermatide ou spermatozoïde : n chromosomes simples.<br>
+B : spermatocyte II : n chromosomes dupliqués.<br>
+C : spermatocyte I ou spermatogonie : 2n dupliqués.</p>
+<p class="para">4- a- Fonction1 exocrine : production des gamètes males (spermatogenèse).<br>
+Fonction2 endocrine : apparition, développement et maintien des caractères sexuels.</p>
+<p class="para">b-</p>
+<table>
+<tr><th>Expérience</th><th>Résultat</th><th>Conclusion</th></tr>
+<tr><td>Ablation des testicules chez un rat adulte.</td><td>*stérilité.<br>*régression des CSS.</td><td rowspan="2">Le testicule agit dur le développement des CSS par voie sanguine hormonale.</td></tr>
+<tr><td>Injection d'extraits testiculaires au rat castré.</td><td>*stérilité.<br>*rétablissement des CSS.</td></tr>
+</table>
+<p class="para">c- *Les cellules de Leydig activées sécrètent la TTT qui forme un complexe avec une protéine de liaison ABP sécrétée par la cellule de Sertoli activée.<br>
+L'ABP assure la réception de la TTT par les cellules germinales ce qui active la spermatogenèse (fonction exocrine du testicule).</p>
+<p class="subhead t-red"><b>Deuxième partie : (10pts)</b></p>
+<p class="para">1- Analyse : suite aux injections d'hormone A chez le rat R1 stérile, on remarque une augmentation de taux de TTT à 500 UA.<br>
+a- l'hormone A stimule la sécrétion de TTT.<br>
+b- le taux faible de TTT chez R1 peut être dû à :<br>
+*une anomalie hypophysaire (trouble de sécrétion de LH).<br>
+*une anomalie hypothalamique (trouble de sécrétion de GnRH).</p>
+<p class="para">2- Exploitation du document 2 :<br>
+*L'ablation de l'hypophyse chez R2 diminue la sécrétion de TTT qui passe de 500 UA à 55 UA.<br>
+*Suite aux différents injections de l'hormone A, le taux de TTT reste invariable.<br>
+* selon le document 1, l'hormone A stimule la sécrétion de TTT.<br>
+→ donc cette stimulation se fait à travers l'hypophyse.<br>
+→ A : GnRH.</p>
+<p class="para">3- Exploitation du document 3 :<br>
+Des injections régulières de l'hormone B au rat R3, qui présente des lésions hypothalamiques, montre :<br>
+*un développement des cellules de Sertoli.</p>
+<!-- page 05 -->
+<p class="para">*une multiplication des spermatogonies.<br>
+*tissu interstitiel atrophié.<br>
+→ L'hormone B : la FSH.</p>
+<p class="para">4- Analyse :<br>
+* dans la période 1 : avant la castration on remarque :<br>
+-une sécrétion discontinue des hormones C (24 UA) et A (4 ng/ml) en moyenne de 3 pulses/2heures.<br>
+-un décalage entre les sécrétions : les pulses de A précèdent celles de C.<br>
+*dans la période 2 : après castration, on note une diminution du taux de l'hormone C ( &lt;9UI) alors que la fréquence des pulses de sécrétion de l'hormone A augmente (7pulses/2h).<br>
+*dans la période 3 : l'injection régulière de l'hormone C au rat castré, entraine une augmentation du taux de C (&gt;18 UI) alors que le taux de A diminue (&lt; 1ng/ml).</p>
+<p class="para">a- les hormones A et C sont sécrétées de manière pulsatile.<br>
+b- * P1 : la relation de causalité entre les sécrétions de A et C indique que l'hormone A contrôle les sécrétions de l'hormone C.<br>
+*P2 : un taux faible de C lève l'inhibition exercée par RC- sur l'hypothalamus ce qui augmente la sécrétion de A (GnRH).<br>
+*P3 : un taux élevé de C exerce un RC- sur l'hypothalamus ce qui freine la sécrétion de A.</p>
+<p class="para">c- L'hormone C est testiculaire agissant sur l'hypothalamus : c'est la TTT.</p>
+<p class="para">Schéma de synthèse (voir cours)</p>
+<div class="exsub">c2</div>
+<!-- page 01 (part2) -->
+<table>
+<tr><td>L.P.A<br>Classes : 4<sup>ème</sup><br>Math 1 et 3</td><td>Devoir de contrôle n°2<br>Sciences de la vie et de la terre</td><td>Prof : Mr et Mme FEKIH<br>2025 / 2026<br>Durée : 60 minutes</td></tr>
+</table>
+<!-- NOTE: handwritten marks on the printed pages (circled QCM letters, pencil notes near the questions) not transcribed -->
+<p class="subhead t-red"><b>Première partie : (10pts)</b></p>
+<div class="exsub"><b>Exercice 1 : QCM (4 pts)</b></div>
+<p class="consigne"><b>Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes. Indiquez dans chaque cas la (ou les) lettre (s) correspondant à la (ou aux) réponse (s) exacte (s).</b></p>
+<p class="para"><b>1- La période de fécondité dépend de la :</b><br>
+a- durée du cycle.<br>
+b- date de l'ovulation.<br>
+c- durée des menstruations.<br>
+d- durée de vie des gamètes.</p>
+<p class="para"><b>2- La folliculogenèse est :</b><br>
+a- la transformation d'une ovogonie en un ovocyte I.<br>
+b- l'évolution d'un follicule primordial en follicule mûr.<br>
+c- la transformation d'un follicule cavitaire en follicule mûr.<br>
+d- un phénomène qui se déroule entièrement dans les ovaires.</p>
+<p class="para"><b>3- La petite fille naît avec un stock :</b><br>
+a- d'ovogonies.<br>
+b- d'ovocytes I.<br>
+c- d'ovocytes II.<br>
+d- de follicules cavitaires.</p>
+<p class="para"><b>4- Dans le cas de la transmission d'une anomalie autosomale récessive :</b><br>
+a- tout individu sain est homozygote.<br>
+b- un enfant atteint hérite au moins un allèle muté de l'un de ses parents.<br>
+c- le mariage consanguin augmente le risque d'avoir des enfants atteints.<br>
+d- tous les enfants issus d'un couple phénotypiquement sain sont normaux.</p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub"><b>Exercice 2 : QROC (6 pts)</b></div>
+<p class="para"><b>Le document 1 présente le calendrier des cycles chez une guenon pendant les mois de Janvier, Février et de Mars.</b></p>
+<!-- CROP: 4071 2 1 0.075 0.652 0.900 0.812 4071_c2_doc1_calendrier_cycles -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c2_doc1_calendrier_cycles.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para"><b>1- Déterminez la date de l'ovulation au cours du 1<sup>er</sup> cycle. Justifiez votre réponse.<br>
+2- Précisez la durée du 2<sup>ème</sup> cycle. Justifiez votre réponse.<br>
+3- Représentez dans un même repère, la variation du taux des hormones ovariennes au cours du 3<sup>ème</sup> cycle.</b></p>
+<!-- page 02 (part2) -->
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<p class="para"><b>Le document 2 illustre quelques étapes A, B et C de la fécondation.</b></p>
+<!-- CROP: 4071 2 2 0.100 0.045 0.937 0.282 4071_c2_doc2_etapes_fecondation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c2_doc2_etapes_fecondation.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<p class="para"><b>4- Identifiez les étapes A et B en précisant les rôles des éléments 1 et 2.<br>
+5- Nommez l'étape C et identifiez (en justifiant) les éléments 3 et 4.<br>
+6- Précisez l'origine des éléments 3 et 4, les moments et les lieux de leur apparition (Réponse sous forme de tableau).</b></p>
+<p class="subhead t-red"><b>Deuxième partie : (10pts)</b></p>
+<div class="exsub"><b>Exercice 1 : Procréation (4 pts)</b></div>
+<p class="para"><b>On se propose d'étudier la cause de stérilité de trois couples (H<sub>1</sub>, F<sub>1</sub>) (H<sub>2</sub>, F<sub>2</sub>) et (H<sub>3</sub>, F<sub>3</sub>).<br>
+Le document 3 présente le spermogramme des trois hommes H<sub>1</sub>, H<sub>2</sub> et H<sub>3</sub>.</b></p>
+<table>
+<tr><th></th><th>H<sub>1</sub></th><th>H<sub>2</sub></th><th>H<sub>3</sub></th></tr>
+<tr><td>Volume (ml)</td><td>4</td><td>4.5</td><td>0.5</td></tr>
+<tr><td>Nombre de spermatozoïdes (millions/ml)</td><td>60</td><td>0.1</td><td>62</td></tr>
+<tr><td>% de spermatozoïdes atypiques</td><td>60</td><td>30</td><td>25</td></tr>
+<tr><td>% de mobilité</td><td>&gt; 50</td><td>&gt; 50</td><td>&gt; 50</td></tr>
+<tr><td>pH</td><td>7.3</td><td>7.3</td><td>7.3</td></tr>
+<tr><td>couleur</td><td>blanchâtre</td><td>blanchâtre</td><td>blanchâtre</td></tr>
+</table>
+<p class="para"><b>Document 3</b></p>
+<p class="para"><b>1- Exploitez le document 3 en vue d'identifier le (ou les) sujet(s) stérile(s).</b></p>
+<p class="para"><b>Les documents 4 et 5 montrent respectivement une coupe d'ovaire et l'évolution du taux plasmatique de LH chez les trois femmes F<sub>1</sub>, F<sub>2</sub> et F<sub>3</sub>.</b></p>
+<!-- CROP: 4071 2 2 0.055 0.705 0.527 0.852 4071_c2_doc4_coupes_ovaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c2_doc4_coupes_ovaire.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<!-- CROP: 4071 2 2 0.533 0.705 0.925 0.855 4071_c2_doc5_taux_LH -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c2_doc5_taux_LH.png" alt=""></figure>
+<p class="para"><b>Document 5</b></p>
+<!-- page 03 (part2) -->
+<!-- PROOFREAD: 4071 part2 p03 — page corner folded over the first three lines: question number "2-" and letters "a-"/"b-" hidden; only visible letters typed -->
+<p class="para"><b>xploitez les documents 4 et 5 en vue :<br>
+expliquer la variation de la sécrétion de LH chez chaque femme.<br>
+de déduire une cause de stérilité de la femme F2.</b></p>
+<p class="para"><b>On injecte dans le vagin de chaque femme une substance radioactive, quatre heures plus tard, on détecte la radioactivité dans les pavillons, les trompes et autour des ovaires. Le document 6 présente les résultats obtenus.</b></p>
+<table>
+<tr><th>Femmes</th><th>Trompes</th><th>pavillons</th><th>Autour des ovaires</th></tr>
+<tr><td>F<sub>1</sub></td><td>+</td><td>+</td><td>+</td></tr>
+<tr><td>F<sub>2</sub></td><td>+</td><td>+</td><td>+</td></tr>
+<tr><td>F<sub>3</sub></td><td>+</td><td>-</td><td>-</td></tr>
+</table>
+<p class="para"><b>Document 6</b></p>
+<p class="para"><b>3- A partir de l'exploitation du document 6 expliquez la cause de stérilité de la femme F3.</b></p>
+
+<div class="chtag"><span>Chapitre</span> Génétique humaine</div>
+
+<div class="exsub"><b>Exercice 2 : GH (6pts)</b></div>
+<p class="para"><b>On étudie la transmission d'une maladie héréditaire à travers une famille dont on a établi l'arbre généalogique du document 7.</b></p>
+<!-- CROP: 4071 2 3 0.510 0.345 0.910 0.487 4071_c2_doc7_arbre_genealogique -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c2_doc7_arbre_genealogique.png" alt=""></figure>
+<p class="para"><b>1- A partir de l'analyse de cet arbre généalogique, montrez que :<br>
+a- l'allèle de la maladie peut être récessif.<br>
+b- l'allèle de la maladie peut être dominant.</b></p>
+<p class="para"><b>Document 7</b></p>
+<p class="para"><b>L'étude de l'ADN des individus II<sub>1</sub>, II<sub>3</sub> et III<sub>4</sub> fournit les résultats présentés par le document 8.</b></p>
+<!-- CROP: 4071 2 3 0.510 0.515 0.903 0.620 4071_c2_doc8_electrophorese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c2_doc8_electrophorese.png" alt=""></figure>
+<p class="para"><b>Document 8</b></p>
+<p class="para"><b>3- Exploitez le document 8 en vue de déduire laquelle des deux hypothèses précédentes est à retenir.</b></p>
+<p class="para"><b>3- Discutez la localisation de l'allèle responsable de la maladie.</b></p>
+<p class="para"><b>A partir de l'analyse de l'ADN, on a pu déterminer la nature et le nombre des allèles chez le couple II1, II2 et leurs descendants III1, III2, III3 et III4.</b></p>
+<table>
+<tr><th></th><th>Nombre d'allèles</th></tr>
+<tr><td><b>Allèle muté</b></td><td><b>3</b></td></tr>
+<tr><td><b>Allèle normal</b></td><td><b>6</b></td></tr>
+</table>
+<p class="para"><b>Document 9</b></p>
+<p class="para"><b>4- En tenant compte des résultats de cette analyse, précisez la localisation chromosomique de l'allèle responsable de cette maladie</b></p>
+<p class="para"><b>La femme III4 est enceinte, elle craint que l'enfant à naître (son fœtus) soit atteint par cette maladie.<br>
+Le document 10 représente le caryotype de l'enfant à naître :</b></p>
+<!-- CROP: 4071 2 3 0.735 0.810 0.918 0.925 4071_c2_doc10_caryotype -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_c2_doc10_caryotype.png" alt=""></figure>
+<p class="para"><b>Document 10</b></p>
+<p class="para"><b>5- Exploitez les informations dégagées précédemment et celles fournies par le document 10, pour rassurer ou non la mère quant à l'état de santé de son foetus.</b></p>
+<div class="exsub">Correction</div>
+<!-- page 01 (part3) -->
+<p class="subhead t-red"><b>Correction :</b></p>
+<p class="subhead t-navy"><span class="t-blue"><b>Génétique humaine :</b></span></p>
+<table>
+<tr><td>1-<br>
+<b>Hypothèse 1</b> : l'allèle muté est récessif porté par un autosome.<br>
+Dans ce cas II<sub>3</sub>, III<sub>1</sub> et III<sub>3</sub> malades homozygotes devraient hériter un allèle muté récessif de leurs parents sain I<sub>2</sub> et II<sub>2</sub> qui devraient être hétérozygotes, ce qui est possible.<br>
+<b>➔ Hypothèse à retenir</b><br><br>
+<b>Hypothèse 2</b> : l'allèle muté est dominant porté par un autosome.<br>
+Dans ce cas II<sub>2</sub> et III<sub>2</sub> sains homozygotes devraient hériter un allèle normal récessif de leurs parents atteints I<sub>1</sub> et II<sub>1</sub> qui devraient être hétérozygotes, ce qui est possible.<br>
+<b>➔ Hypothèse à retenir</b><br><br>
+<b>Hypothèse 3</b> : l'allèle muté est récessif porté par le chromosome X.<br>
+Dans ce cas la fille III<sub>1</sub> hérite l'allèle muté de son père qui devrait être atteint, ce qui n'est pas le cas car, II<sub>2</sub> est sain.<br>
+<b>➔ Hypothèse à rejeter</b><br><br>
+<b>Hypothèse 4 :</b> l'allèle muté est dominant porté par le chromosome X.<br>
+Dans ce cas la fille III<sub>2</sub> saine hérite un allèle normal de sa mère atteinte II<sub>1</sub> qui devrait être hétérozygote ce qui est possible.<br>
+<b>➔ Hypothèse à retenir</b></td><td><b>2 pts</b><br>(0,5 x 4)</td></tr>
+<tr><td>2-<br>
+<b>a-</b> III<sub>3</sub> est atteint, il n'a que l'allèle A<sub>2</sub> donc A<sub>2</sub> est muté.<br>
+<b>b-</b> Si l'allèle muté est dominant autosomal, l'individu III<sub>3</sub> devrait hériter l'allèle muté dominant de sa mère atteinte II<sub>1</sub> et un allèle normal récessif de son père sain homozygote II<sub>2</sub>, donc III<sub>3</sub> devrait être hétérozygote, or d'après le document 6, il est homozygote.<br>
+<b>➔ Hypothèse 2 à rejeter</b><br>
+Si l'allèle muté est récessif autosomal, le fœtus devrait hériter un allèle muté de son père atteint homozygote III<sub>3</sub> et un allèle normal de sa mère III<sub>4</sub> saine homozygote (document 6), donc il devrait être hétérozygote, or le fœtus est homozygote (document 6).<br>
+<b>➔ Hypothèse 1 à rejeter</b><br>
+Par conséquent, l'allèle muté est dominant porté par le chromosome X.<br><br>
+<b>c-</b> III<sub>3</sub> : XA<sub>2</sub>Y ; &nbsp; III<sub>4</sub> : XA<sub>1</sub>XA<sub>1</sub> ; &nbsp; Fœtus : XA<sub>1</sub>Y.<br><br>
+<b>NB : accepter tout raisonnement correct</b> &nbsp; <span class="t-blue"><span dir="rtl" lang="ar">2025 جوان 02</span></span></td><td><b>2,5 pts</b><br>0,5<br><br>0,5<br><br>0,5<br><br>0,25<br><br>0,75</td></tr>
+</table>
+<!-- PROOFREAD: 4071 part3 p01 — blue stamp near "NB" read as "2025 جوان 02" (session label), uncertain -->
+
+<div class="chtag"><span>Chapitre</span> Neurophysiologie (tissu nerveux, réflexe, message nerveux)</div>
+
+<p class="subhead t-navy"><span class="t-blue"><b>Neurophysiologie :</b></span></p>
+<p class="para">1- PR = -70mv.<br>
+→ au repos, la membrane est polarisée. Elle est chargée négativement à l'intérieur et positivement à l'extérieur.<br>
+2- * suite à une stimulation d'intensité I1, on enregistre :<br>
+- en O1 une légère dépolarisation appelé PL d'amplitude 10 mv.<br>
+→ I1 est infraliminaire.<br>
+- en O2 un PR.<br>
+→ Le PL est non propageable.<br>
+* suite à une stimulation d'intensité I2 supérieure à I1, on enregistre :<br>
+- en O1 un PL d'amplitude 15 mv.<br>
+→ I2 est infraliminaire.<br>
+→ Le Pr est graduable.<br>
+- en O2 un PR.</p>
+<!-- page 02 (part3) -->
+<p class="para">* suite à une stimulation d'intensité I3 supérieure à I2, on enregistre :<br>
+- en O1 un PA d'amplitude 100 mv.<br>
+→ I3 est liminaire.<br>
+- en O2 le même PA de même amplitude avec un temps de latence plus important.<br>
+→ Le PA est propageable.<br>
+3- * suite à une stimulation d'intensité I4 supérieure à I3, on enregistre :<br>
+- en O1 un PA d'amplitude 100 mv.<br>
+- en O2 le même PA de même amplitude avec un temps de latence plus important.<br>
+Justification : Le PA obéit à la loi du tout ou rien.</p>
+<!-- CROP: 4071 3 2 0.640 0.158 0.848 0.282 4071_corr_neuro_enregistrements_O1_O2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4071/4071_corr_neuro_enregistrements_O1_O2.png" alt=""></figure>
+
+</section>
+
+</div>
+</body>
+</html>

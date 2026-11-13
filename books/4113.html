@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Trimestre 1 — brouillon serie</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4113">
+<meta data-pagefind-meta="title[content]" content="Trimestre 1 — brouillon serie">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="chapter[content]" content="Procréation (fécondation, nidation, maîtrise)">
+<meta data-pagefind-filter="chapter[content]" content="Génétique des diploïdes (monohybridisme, dihybridisme)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Trimestre 1 — brouillon serie" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Trimestre 1 — brouillon serie</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com</span> <span class="tg">Sujet BAC</span><span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/13Hw7CP7ocDlEqMgRGh_goT2nwCD0t9ze/view">↗ 4 - BROUILLON_SERIE 1.pdf</a> <a href="https://drive.google.com/file/d/1FuJUgCAa4KaS8IAyLsJlxC1VuupnGMby/view">↗ 5 - BROUILLON_SERIE 2.pdf</a> <a href="https://drive.google.com/file/d/1Ve6lbnefbeeOK-0A9JkRU5BDAx6fKeR9/view">↗ 6 - BROUILLON_SERIE 3.pdf</a> <a href="https://drive.google.com/file/d/15vbZepk5iFqgTmEhpNaTTq9O1VnYLso1/view">↗ 9 - BROUILLON_SERIE 5.pdf</a> <a href="https://drive.google.com/file/d/1wV-MjRTdRjR2AX2hQeQLZbCwkzsujs9r/view">↗ 13 - BROUILLON_SERIE 9.pdf</a> <a href="https://drive.google.com/file/d/1ruEIvPmoHktI5KJqLQpuyVm09wZ-oma5/view">↗ 14 - BROUILLON_SERIE 10.pdf</a> <a href="https://drive.google.com/file/d/1DVH1H7prbYSYBpS6fOjtLX_rMOdBGXjz/view">↗ 15 - BROUILLON_SERIE 11.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (7)</b><ul><li><a href="https://drive.google.com/file/d/13Hw7CP7ocDlEqMgRGh_goT2nwCD0t9ze/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1FuJUgCAa4KaS8IAyLsJlxC1VuupnGMby/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1Ve6lbnefbeeOK-0A9JkRU5BDAx6fKeR9/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/15vbZepk5iFqgTmEhpNaTTq9O1VnYLso1/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1wV-MjRTdRjR2AX2hQeQLZbCwkzsujs9r/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1ruEIvPmoHktI5KJqLQpuyVm09wZ-oma5/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li><li><a href="https://drive.google.com/file/d/1DVH1H7prbYSYBpS6fOjtLX_rMOdBGXjz/view">une · Bac science 2026 › bac 2026 / SVT / Trimestre 1</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+<!-- SOURCE: Taki Academy · www.takiacademy.com -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série 1 : La fonction reproductrice chez l'homme.</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4113.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Taki Academy · www.takiacademy.com</span> <span class="tg">Sujet BAC</span><span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/13Hw7CP7ocDlEqMgRGh_goT2nwCD0t9ze/view">↗ 4 - BROUILLON_SERIE 1.pdf</a> <a href="https://drive.google.com/file/d/1FuJUgCAa4KaS8IAyLsJlxC1VuupnGMby/view">↗ 5 - BROUILLON_SERIE 2.pdf</a> <a href="https://drive.google.com/file/d/1Ve6lbnefbeeOK-0A9JkRU5BDAx6fKeR9/view">↗ 6 - BROUILLON_SERIE 3.pdf</a> <a href="https://drive.google.com/file/d/15vbZepk5iFqgTmEhpNaTTq9O1VnYLso1/view">↗ 9 - BROUILLON_SERIE 5.pdf</a> <a href="https://drive.google.com/file/d/1wV-MjRTdRjR2AX2hQeQLZbCwkzsujs9r/view">↗ 13 - BROUILLON_SERIE 9.pdf</a> <a href="https://drive.google.com/file/d/1ruEIvPmoHktI5KJqLQpuyVm09wZ-oma5/view">↗ 14 - BROUILLON_SERIE 10.pdf</a> <a href="https://drive.google.com/file/d/1DVH1H7prbYSYBpS6fOjtLX_rMOdBGXjz/view">↗ 15 - BROUILLON_SERIE 11.pdf</a></div>
+<div class="exsub">4 - BROUILLON_SERIE 1</div>
+<!-- page 01 -->
+<!-- ROTATE: 4113 part1 p01 180 -->
+<p class="subhead t-navy"><span class="t-blue">Classe :</span> <span class="t-blue"><i>4<sup>ème</sup> Sc Exp (Gr : Excellent 3 )</i></span></p>
+<p class="subhead t-navy"><span class="t-gold">Séance directe N°5 18-09-2023</span></p>
+<p class="subhead t-red"><span class="t-blue"><u>Série 1</u> :</span> <span class="t-gold"><i>La fonction reproductrice chez l'homme.</i></span></p>
+<!-- NOTE: the rest of page 01 is entirely handwritten (teacher's board notes on ruled lines) — transcribed below as best reading -->
+<p class="para">1. a + b → 0.5.<br>
+a ⇒ 0,25<br>
+a + c = 0.</p>
+<p class="para">Haploïde → méiose : -Mécanisme de la maturation de la spermatogenèse.</p>
+<p class="para">ie la naissance → avant la puberté → un tube séminifère contient 1 seule rangée de spermatogonies := cellules souches des spermatozoïdes.</p>
+<!-- PROOFREAD: 4113 part1 p01 — handwriting; line start "ie la naissance" unclear (maybe "dès la naissance"); "a ⇒ 0,25" sign unclear -->
+<p class="para">8/ cryptorchidie : → tissu interstitiel : Normal<br>
+→ tubes séminifères affectés.<br>
+↓<br>
+Cavité abdominale : température = 37°c.<br>
+↓<br>
+blocage de la spermatogenèse.</p>
+<!-- page 02 -->
+<!-- ROTATE: 4113 part1 p02 180 -->
+<!-- NOTE: page 02 is entirely handwritten (board notes) on the Taki Academy template — transcribed as best reading -->
+<p class="para">éjaculat ≈ 3 à 4 mL → 140 → 350 Millions de spz.<br>
+↓<br>
+5000 spz → lieu de la fécondation.</p>
+<p class="para">5/ Adulte → Hypophysectomie<br>
+↓<br>
+Résultats : → Absence de LH + FSH → les testicules non fonctionnels ;<br>
+↓ stérilité &nbsp; ↓ Régression des CSII<sup>air</sup> + CSI<sup>air</sup>.</p>
+<p class="para">↑ greffe de l'Hypophyse sous la peau :</p>
+<p class="para">l'Hypophyse n'est fonctionnel que en Contact avec la hyp. pituitaire.</p>
+<p class="para">GnRH → circulation sanguine de la hyp. pituitaire → Hypophyse.<br>
+⇒ le fonctionnement de l'Hypophyse necessite un Contact direct avec l'Hypothalamus.</p>
+<!-- PROOFREAD: 4113 part1 p02 — handwriting: "3 à 4 mL" (reads "3 o 4 mL"), "140 → 350" boxed, "n'est fonctionnel que en Contact" (reads "n'al fonctionnel Saut en Contacte"), "hyp. pituitaire" (abbreviation) -->
+<!-- page 03 -->
+<!-- CROP: 4113 1 03 0.010 0.075 0.965 0.556 4113_p03_hypothalamus_hypophyse -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p03_hypothalamus_hypophyse.png" alt=""></figure>
+<!-- NOTE: handwritten red annotations drawn on and beside the printed figure (arrows, "présence de GnRH", "sang", "circulation générale → FL de sang") are left in the crop, not retyped -->
+<p class="para"><span class="t-red">2<sup>e</sup> prise → tres → pas de GnRH</span></p>
+<p class="para">• la secretion de la testostérone nécessite une stimulation des C de Leydig par la LH</p>
+<p class="para">En absence de TTT → <span class="t-red">levée de RC(-)</span> exercé par les testicule sur l'axe H-H<br>
+↓<br>
+augmentation en <span class="t-red">freq</span> et en <span class="t-red">Amplitude</span> de la secrétion de GnRH</p>
+<!-- PROOFREAD: 4113 part1 p03 — handwriting: "2e prise → tres → pas de GnRH" uncertain ("tres" unclear); pink highlight boxes rendered as t-red -->
+<!-- page 04 -->
+<!-- NOTE: page 04 is entirely handwritten (board notes): the hand-drawn graph and the hand-drawn regulation schema are cropped whole -->
+<!-- CROP: 4113 1 04 0.050 0.030 0.640 0.235 4113_p04_graphe_GnRH -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p04_graphe_GnRH.png" alt=""></figure>
+<p class="para">Fréquence = 3pics/3h<br>
+Amplitude<br>
+0,5 → 1 UA.</p>
+<p class="para">→ secrétion de GnRH dans les Conditions Normales.</p>
+<p class="para"><span class="t-red">→ secrétion de GnRH en Cas d'absence de TTT.</span></p>
+<!-- CROP: 4113 1 04 0.030 0.478 0.850 0.950 4113_p04_schema_regulation -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p04_schema_regulation.png" alt=""></figure>
+<!-- PROOFREAD: 4113 part1 p04 — handwriting: "3pics/3h" (reads "3pics/3l") -->
+<!-- page 05 -->
+<!-- NOTE: page 05 is entirely handwritten (board notes); the hand-drawn schema in the lower half is cropped whole -->
+<p class="para">Cellules glandulaires = Cellules secrétrices d'Hormones. (TTT)</p>
+<p class="para">injection de TTT → [TTT] ↗<br>
+↓<br>
+RC(-) sur la LH et<br>
+la GnRH &nbsp; b<br>
+⇓<br>
+GnRH ↓<br>
+LH ↓</p>
+<!-- CROP: 4113 1 05 0.030 0.470 0.960 0.910 4113_p05_schema_perfusion_GnRH -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p05_schema_perfusion_GnRH.png" alt=""></figure>
+<!-- PROOFREAD: 4113 part1 p05 — handwriting: "RC(-) sur la LH et ... la GnRH" (words "la"/"b" under the line unclear) -->
+<!-- page 06 -->
+<!-- NOTE: page 06 is entirely handwritten (board notes); the hand-drawn curves and cell drawing are cropped whole -->
+<!-- CROP: 4113 1 06 0.280 0.035 0.830 0.350 4113_p06_courbes_FSH_LH -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p06_courbes_FSH_LH.png" alt=""></figure>
+<p class="para">n ou 2n :</p>
+<!-- CROP: 4113 1 06 0.190 0.438 0.390 0.577 4113_p06_cellule_chromosomes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p06_cellule_chromosomes.png" alt=""></figure>
+<p class="para">1 spermatocyte I<br>
+↓<br>
+2 spermatocyte II<br>
+↓<br>
+4 spermatides.</p>
+<p class="para"><span class="t-red">1 spermatocyte II → 2 spermatides.</span></p>
+<!-- page 07 -->
+<p class="para">RC(-) Retrocontrôle négatif.</p>
+
+
+<div class="exsub">5 - BROUILLON_SERIE 2</div>
+<!-- page 01 -->
+<p class="para"><span class="t-blue">Classe :</span> <i>4<sup>ème</sup> Sc Exp</i> <i>(Gr : Excellent 3 )</i></p>
+<p class="subhead t-navy"><span class="t-gold">Séance directe N°6 25-09-2023</span></p>
+<p class="subhead t-red"><span class="t-blue"><u>Série 2</u> :</span> <span class="t-gold"><i>La fonction reproductrice chez l'homme.</i></span></p>
+<!-- NOTE: the rest of the page is a handwritten board (teacher's notes with arrows) — transcribed as best reading; red marks and circles left out -->
+<p class="para">Castration. – stérilité<br>
+– Regression des c.s.I<sup>aire</sup> + II<sup>aire</sup><br>
+[TTT] = 0.<br>
+Levée du RC(–) → ↗ FSH + LH ↗<br>
+GnRH ↗</p>
+<p class="para">FSH + TTT →</p>
+<p class="para">greffe d'un fragment de Testicule.</p>
+<p class="para">[TTT] — Actif</p>
+<p class="para">↓<br>
+RC(–) sur l'axe H-H → ↘ GnRH<br>
+↘ LH<br>
+↘ FSH</p>
+<p class="para">fonction hormonale = fonction endocrine<br>
+fonction par voie sanguine.</p>
+<!-- PROOFREAD: 4113 part2 p01 — handwritten "[TTT] — Actif" and "Levée du RC(–)" best reading -->
+<!-- page 02 -->
+<p class="para">fin de la phase de maturation de la spermatogenèse ⇒ <span class="t-red">spermatides ; 4 c.à n. = 23 ch. simples</span></p>
+<!-- CROP: 4113 2 2 0.09 0.22 0.97 0.975 4113_p2_02_schema_axe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p2_02_schema_axe.png" alt=""></figure>
+<!-- NOTE: handwritten schema (hypothalamus – hypophyse antérieure – testicule, GnRH, FSH, LH, cellules de Sertoli, cellules de Leydig, inhibine, ABP, TTT, RC(–), spermatogenèse) cropped whole; its labels are kept in the crop -->
+<!-- page 03 -->
+<!-- CROP: 4113 2 3 0.11 0.065 0.98 0.21 4113_p2_03_pulses_fsh_lh -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p2_03_pulses_fsh_lh.png" alt=""></figure>
+<p class="para">baisse du Taux de TTT → <u>levée</u> de RC(–)<br>
+↓<br>
+↗ taux de LH.<br>
+↗ taux de GnRH<br>
+<u>en fréquence</u> et <u>en Amplitude</u>.</p>
+<!-- CROP: 4113 2 3 0.10 0.29 0.40 0.57 4113_p2_03_pulses_gnrh -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p2_03_pulses_gnrh.png" alt=""></figure>
+<div class="data"><p class="para">GnRH : pic / 90min</p></div>
+<p class="para">taux normal.</p>
+<p class="para">identifiez = nommez + justifiez.</p>
+<!-- CROP: 4113 2 3 0.36 0.69 0.84 0.85 4113_p2_03_dessin -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p2_03_dessin.png" alt=""></figure>
+<!-- PROOFREAD: 4113 part2 p03 — handwritten "baisse du Taux de TTT" and "GnRH : pic / 90min" best reading -->
+<!-- page 04 -->
+<!-- NOTE: page 04 is two handwritten schemas (cellules hypophysaires with GnRH*, cellules de Sertoli with FSH*, radioactivité, [ABP]); their labels are kept in the crops -->
+<!-- CROP: 4113 2 4 0.04 0.085 0.96 0.56 4113_p2_04_schema_gnrh -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p2_04_schema_gnrh.png" alt=""></figure>
+<!-- CROP: 4113 2 4 0.04 0.59 0.96 0.965 4113_p2_04_schema_fsh -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p2_04_schema_fsh.png" alt=""></figure>
+<!-- page 05 -->
+<p class="para">fonction Hormonale :<br>
+– Hormone de structure normale.<br>
+– presence de Recepteur au niveau des C. Cibles.</p>
+<!-- CROP: 4113 2 5 0.35 0.27 0.80 0.44 4113_p2_05_recepteur -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p2_05_recepteur.png" alt=""></figure>
+<p class="para">C. de Sertoli de Rat A + FSH du Rat B !!</p>
+<p class="para">(TTT) ↓ → <u>levée</u> de RC(–) → taux de LH ↗<br>
+↓<br>
+↗ GnRH ↗.</p>
+<!-- PROOFREAD: 4113 part2 p05 — handwritten "C. de Sertoli de Rat A + FSH du Rat B !!" best reading -->
+
+
+<div class="exsub">6 - BROUILLON_SERIE 3</div>
+<!-- page 01 -->
+<p class="para"><span class="t-blue">Classe :</span> <i>4<sup>ème</sup> Sc Exp</i> <i>(Gr : Excellent 3 )</i></p>
+<p class="subhead t-navy"><span class="t-gold">Séance directe N°7 02-10-2023</span></p>
+<p class="subhead t-red"><span class="t-blue"><u>Série 3</u> :</span> <span class="t-gold"><i>La fonction reproductrice chez l'homme.</i></span></p>
+<!-- NOTE: the rest of the page is a handwritten board (teacher's notes with arrows) — transcribed as best reading -->
+<p class="para">Castration → <u>levée</u> du RC(–).<br>
+↓ ↗ en freq + Amplitude<br>
+de la sécrétion de GnRH + LH<br>
+↓ FSH ↗.<br>
+taux nul de [TTT] → Regression des CCS<br>
+↘ Atrophie du tractus génital – CSI<sup>air</sup></p>
+<p class="para">Cellule qui possede des recepteurs à une Hormone = Cellule Cible de Cette Hormone.</p>
+<!-- CROP: 4113 3 1 0.29 0.66 0.76 0.935 4113_p3_01_schema -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p3_01_schema.png" alt=""></figure>
+<!-- PROOFREAD: 4113 part3 p01 — handwritten lines "taux nul de [TTT]" and "↘ Atrophie du tractus génital – CSI air" best reading -->
+<!-- page 02 -->
+<!-- CROP: 4113 3 2 0.25 0.06 0.70 0.35 4113_p3_02_schema_fsh -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p3_02_schema_fsh.png" alt=""></figure>
+<ul class="b"><li>La <b>FSH</b> : c'est une hormone hypophysaire qui active indirectement la spermatogenèse. En se liant aux récepteurs des cellules de Sertoli, la <b>FSH</b> stimule la synthèse par ces cellules d'une protéine, l'ABP (Androgen Binding Protein) indispensable à la réception de la testostérone par les cellules germinales, ce qui active la spermatogenèse.</li></ul>
+<p class="para">La sécrétion de FSH est pulsatile et synchronisée avec celle de <b>LH</b>.</p>
+<!-- NOTE: the box drawn around "indirectement" is an annotation on printed text — left out -->
+<!-- CROP: 4113 3 2 0.22 0.59 0.88 0.915 4113_p3_02_sertoli -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p3_02_sertoli.png" alt=""></figure>
+<!-- page 03 -->
+<!-- ROTATE: 4113 part3 p03 180 -->
+<p class="para">q = quantité d'ADN / n = 23 simples ;</p>
+<p class="para">C spermatogonie → spermatocyte I.<br>
+– cytoplasme ↗<br>
+– synthèse d'ADN</p>
+<!-- CROP: 4113 3 3 0.070 0.290 0.930 0.870 4113_p3_03_schema_h1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p3_03_schema_h1.png" alt=""></figure>
+<!-- NOTE: page stored upside down; the handwritten schema (H1 : GnRH ou LH, hypothalamus, hypophyse, LH, C. de Leydig, [TTT], H1 = LH) is cropped on the stored image and must be turned 180° -->
+<!-- PROOFREAD: 4113 part3 p03 — handwritten "q = quantité d'ADN / n = 23 simples" best reading -->
+<!-- page 04 -->
+<p class="para"><span class="t-red">H<sub>1</sub> → stimule l'Hypophyse —LH→ C. Leydig<br>
+GnRH</span></p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub">9 - BROUILLON_SERIE 5</div>
+<!-- page 01 -->
+<p class="para"><span class="t-blue">Classe :</span> <i>4<sup>ème</sup> Sc Exp</i> <span class="t-gold"><i>(Gr : Excellent 3 )</i></span></p>
+<p class="subhead t-red"><span class="t-blue"><u>Correction Série 5</u></span> <span class="t-gold">:</span></p>
+<p class="subhead t-navy"><span class="t-gold"><i>La fonction reproductrice chez la femme.</i></span></p>
+<div class="exsub">Exercice 1 · 30 min · 5 pt</div>
+<!-- NOTE: the rest of the page is a handwritten board (teacher's notes) — transcribed as best reading -->
+<p class="para">1<sup>er</sup> blocage : en P I → vie fœtale → ovaire<br>
+– 2<sup>e</sup> blocage en M II → qq heures avant l'ovulation : (1 min)<br>
+→ Naissance : stock de follicules primordiaux</p>
+<p class="para">ovogonie → Multiplication par mitoses successives ⇒ stock d'ovogonies<br>
+↓<br>
+début d'accroissement<br>
+↓<br>
+ovocyte I<br>
+↓<br>
+début de Maturation<br>
+Prophase I ⇒ ovocyte I en P I</p>
+<!-- CROP: 4113 4 1 0.40 0.81 0.92 0.905 4113_p4_01_follicule_primordial -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_01_follicule_primordial.png" alt=""></figure>
+<!-- PROOFREAD: 4113 part4 p01 — handwritten "qq heures avant l'ovulation : (1 min)" best reading -->
+<!-- page 02 -->
+<!-- CROP: 4113 4 2 0.09 0.065 0.93 0.535 4113_p4_02_ovocyte_ovotide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_02_ovocyte_ovotide.png" alt=""></figure>
+<p class="para"><span class="t-gold">1 ovocyte → 1 ovotide<br>
+ovogenèse → 1 seul gamète :</span></p>
+<!-- CROP: 4113 4 2 0.09 0.605 0.95 0.89 4113_p4_02_q2_schema_cycle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_02_q2_schema_cycle.png" alt=""></figure>
+<!-- NOTE: page 02 handwritten schemas (ovocyte I / II, globules polaires, ovotide, ovule fécondé; 2/ RC(+) sur l'axe H-H, pic d'œstrogènes, follicule mûr, ovulation, pic de LH, axe des jours 1–28) cropped whole; their labels are kept in the crops -->
+<!-- page 03 -->
+<p class="para">ovulation → J 21 = les 7 premiers Jours de la phase lutéale : developpement du Corps Jaune → <span class="t-red">secrétion d'oestrogènes + progéstérone.</span><br>
+↓<br>
+l'utérus.<br>
+↓<br>
+dentelle : le j 21 d'un cycle de 28.</p>
+<p class="para"><span class="t-gold">RC(–) sur l'axe H-H<br>
+↓<br>
+taux faible + Constant de LH + FSH</span></p>
+<!-- CROP: 4113 4 3 0.18 0.44 0.96 0.875 4113_p4_03_endometre_courbes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_03_endometre_courbes.png" alt=""></figure>
+<!-- NOTE: handwritten drawing (Endomètre (7 mm), Myomètre, courbes avec C. Jaune, jours 1, 14, 21, 24, 28) cropped whole; its labels are kept in the crop -->
+<!-- PROOFREAD: 4113 part4 p03 — handwritten "dentelle : le j 21 d'un cycle de 28" best reading -->
+<!-- page 04 -->
+<p class="para">3 Janvier : 1<sup>er</sup> Jour du cycle &nbsp;&nbsp; <span class="t-red">27</span> . 28 Janvier = 1<sup>er</sup> Jour d'un nouveau cycle.<br>
+<span class="t-red">dernier Jour du cycle</span></p>
+<p class="para">3 J 4 5 6 . . . . → 27 Janvier = dernier Jour ;<br>
+(27 – 3) + 1 = 25 Jours.</p>
+<p class="para">[a . b]</p>
+<!-- CROP: 4113 4 4 0.02 0.50 0.95 0.94 4113_p4_04_schema_cycle -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_04_schema_cycle.png" alt=""></figure>
+<!-- NOTE: handwritten schema (1 octobre, uniquement des follicules tertiaires, 12, 14, ovulation, 1 mûr, le reste dégénère, 21 développement du c. jaune, 28 régression du corps jaune = corps blanc / fin d'un cycle, F. pd, F. I, F. II, F. III, nouveau cycle) cropped whole; its labels are kept in the crop -->
+<!-- page 05 -->
+<!-- NOTE: page 05 is a handwritten schema (l'utérus, règles, phase post-menstruelle, phase pré-menstruelle, dentelle, ovulation, phase folliculaire, phase lutéale, période fertile d'un cycle, imperméable, glaire perméable, sélection des spermatozoïdes) with drawings; cropped whole, its labels kept in the crop -->
+<!-- CROP: 4113 4 5 0.0 0.065 0.93 0.60 4113_p4_05_schema_glaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_05_schema_glaire.png" alt=""></figure>
+<!-- CROP: 4113 4 5 0.22 0.60 0.92 0.86 4113_p4_05_dessins -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_05_dessins.png" alt=""></figure>
+<!-- page 06 -->
+<p class="para">ménopause = arrêt du fonctionnement des ovaires.<br>
+↓<br>
+levée du RC(–)<br>
+↓<br>
+taux élevé de LH + FSH<br>
++ GnRH</p>
+<p class="para">ovariectomisé → pas d'ovaires</p>
+<p class="para">femme enceinte</p>
+<!-- CROP: 4113 4 6 0.10 0.41 0.94 0.84 4113_p4_06_courbes_hcg -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_06_courbes_hcg.png" alt=""></figure>
+<p class="para">en Cas de fécondation le j 21 ⇒ Embryon.</p>
+<!-- PROOFREAD: 4113 part4 p06 — handwritten "ovariectomisé" best reading -->
+<!-- page 07 -->
+<!-- ROTATE: 4113 part4 p07 180 -->
+<p class="para">Métaphase d'une Mitose → alignement de 2n chromosomes au niveau de la plan équatorial.</p>
+<p class="para"><span class="t-red">Métaphase I Meiose :</span> → alignement des bivalents au niveau du p. Eq.</p>
+<p class="para"><span class="t-gold">Métaphase II de la Meiose → alignement de n chromosomes dupliqués</span></p>
+<p class="para"><span class="t-gold">Métaphase d'une Mitose.</span> — <u>ovogonies</u> = 2n = 46.<br>
+<u>44 autosomes + XX</u></p>
+<p class="para">↓<br>
+spermatogonies<br>
+2n = 46<br>
+44 autosomes X Y.</p>
+<!-- CROP: 4113 4 7 0.190 0.630 0.570 0.820 4113_p4_07_cellule_metaphase -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_07_cellule_metaphase.png" alt=""></figure>
+<p class="para">X et Y = les chromosomes sexuels d'un homme = ch. partiellement Homologues</p>
+<!-- PROOFREAD: 4113 part4 p07 — handwritten "dupliqués" and "au niveau de la plan équatorial" best reading -->
+<!-- page 08 -->
+<p class="para">les 2 chromosomes X (XX) de la Femme = sont deux ch. parfaitement Homologues.</p>
+<!-- CROP: 4113 4 8 0.06 0.21 0.98 0.59 4113_p4_08_graphe_oestrogenes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_08_graphe_oestrogenes.png" alt=""></figure>
+<!-- NOTE: the shaded boxes and handwritten marks (16, 23) drawn on the printed graph are kept inside the crop -->
+<p class="para"><span class="t-gold">cycle = 30 j</span> | 1<sup>er</sup> pic d'œstrogène : ovulation – 2 j (j 14)<br>
+– date d'ovulation : 30 – 14 = 16.<br>
+2<sup>e</sup> pic = 7 Jours après l'ovulation</p>
+<p class="para">phase lutéale = 14 j = 7 + 7</p>
+<!-- page 09 -->
+<p class="para">H<sub>1</sub> : Chez G<sub>1</sub> : taux variable + sécrétion Cyclique :<br>
+1 cycle → 2 pics | 1<sup>er</sup> pic : 280 ng/ml<br>
+| le j 14 = (2 Jours avant l'ovulation qui a lieu le j 16 / Cycle de 30 j)<br>
+– 2<sup>e</sup> pic : 7 Jours apres l'ovulation<br>
+16 + 7 = 23.</p>
+<p class="para">H<sub>1</sub> = l'oestradiol = oestrogenes.</p>
+<!-- CROP: 4113 4 9 0.10 0.53 0.93 0.71 4113_p4_09_axe_oestrog_progest -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p4_09_axe_oestrog_progest.png" alt=""></figure>
+
+
+<div class="exsub">13 - BROUILLON_SERIE 9</div>
+<!-- page 01 -->
+<!-- ROTATE: 4113 part5 p01 180 -->
+<p class="para"><span class="t-blue">Classe :</span> <i>4<sup>ème</sup> Sc Exp</i> <span class="t-gold"><i>(Gr : Excellent 3 )</i></span></p>
+<p class="subhead t-red"><span class="t-blue"><u>Brouillon correction série 9</u></span> <span class="t-gold">:</span></p>
+<p class="subhead t-navy"><span class="t-gold"><i>La fonction reproductrice chez la femme -La procréation.</i></span></p>
+<!-- NOTE: the rest of the page is a handwritten board (teacher's notes) — transcribed as best reading -->
+<p class="para">f. secondaire → f. tertiaire → f. mûr.</p>
+<p class="para">follicule mûr → thèque interne. ⎫<br>
+↘ → Cellule de la granulosa ⎭<br>
+⇒ <span class="t-red">l'oestrogènes</span><br>
+→ Corps Jaune → thèque interne<br>
+↘ oestrogènes<br>
+↳ les Cellules lutéales<br>
+↓<br>
+<span class="t-red">progestérone.</span></p>
+<p class="para">rétrocontrôle négatif ( RC(–) )</p>
+<!-- page 02 -->
+<p class="para">effet de la progestérone.</p>
+<!-- CROP: 4113 5 2 0.0 0.105 0.93 0.345 4113_p5_02_courbe_temperature -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p5_02_courbe_temperature.png" alt=""></figure>
+<!-- CROP: 4113 5 2 0.05 0.36 0.78 0.85 4113_p5_02_schema_axe -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p5_02_schema_axe.png" alt=""></figure>
+<!-- NOTE: printed temperature curve (with handwritten 37 °C line) and handwritten schema (hypothalamus, GnRH, hypophyse, FSH, LH, ovaires, oestrog., prog., l'utérus, RC(–) ou RC(+)) cropped whole; their labels are kept in the crops -->
+<!-- page 03 -->
+<!-- CROP: 4113 5 3 0.12 0.085 0.93 0.62 4113_p5_03_courbes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p5_03_courbes.png" alt=""></figure>
+<p class="para">date d'apparition du f. mûr &nbsp;&nbsp;&nbsp; date d'apparition du Corp Jaune.</p>
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<p class="para">E<sub>1</sub> : ovulation.<br>
+E<sub>2</sub> = fécondation.<br>
+E<sub>3</sub> = Nidation.</p>
+<!-- page 04 -->
+<p class="para">Cellule de trophoblaste → sécrétion de la HCG.</p>
+<p class="para">4 =</p>
+<p class="para">Avant l'inj.</p>
+<p class="para"><u>P</u>.<u>A</u>.M = procréation médicalement assistée</p>
+<p class="para">FIVETE :<br>
+HCG = LH.</p>
+<p class="para">FSH → f. mûr<br>
+ovocyte I en P I.<br>
+↓<br>
+Reprise de la maturation à l'interieur des follicule mûr<br>
+↓<br>
+</p>
+<div class="data"><p class="para">ovocyte II en M II.</p></div>
+<!-- PROOFREAD: 4113 part5 p04 — handwritten "4 =" and "Avant l'inj." best reading -->
+<!-- page 05 -->
+<!-- CROP: 4113 5 5 0.20 0.085 0.88 0.70 4113_p5_05_dessins_fivete -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p5_05_dessins_fivete.png" alt=""></figure>
+<p class="para">traitement Enzymatique<br>
+↓<br>
+Pour décrocher le facteur de decapacitation, qui masque les Antigènes (Recepteurs) des spermatozoïdes Condition indispensable à la reconnaissance des gamètes.</p>
+<!-- page 06 -->
+<p class="para">– Mise en Contact des gamètes (ovocytes + les spz)</p>
+
+<div class="chtag"><span>Chapitre</span> Génétique des diploïdes (monohybridisme, dihybridisme)</div>
+
+<div class="exsub">14 - BROUILLON_SERIE 10</div>
+<!-- page 01 -->
+<!-- ROTATE: 4113 part6 p01 180 -->
+<p class="para"><span class="t-blue">Classe :</span> <i>4<sup>ème</sup> Sc Exp</i> <span class="t-gold"><i>(Gr : Excellent 3 )</i></span></p>
+<p class="subhead t-navy"><span class="t-blue"><u>Brouillon correction série 10</u></span> <span class="t-gold">:</span></p>
+<p class="subhead t-red"><span class="t-gold"><i>La génétique des diploïdes : Le Dihybridisme</i></span></p>
+<!-- NOTE: the rest of the page is a handwritten board — transcribed as best reading -->
+<p class="para">Rappel MonoHybridisme :</p>
+<p class="para">Croisement entre ♂ + ♀ de même espèce qui differents par un seul Caractère héréditaire.</p>
+<p class="para">1 Caractère → 1 gène = 1 Couple d'alleles.</p>
+<!-- CROP: 4113 6 1 0.100 0.455 0.995 0.965 4113_p6_01_schema_monohybridisme -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p6_01_schema_monohybridisme.png" alt=""></figure>
+<!-- NOTE: handwritten tree (localisation : autosomes + 1 paire de ch. sexuels → un autosome → dihybridisme / un ch. sexuel → génétique humaine ; relation de dominance entre les allèles → dominance absolue (A > a, dominant / récessif) / codominance A1 = A2) cropped whole; its labels are kept in the crop -->
+<!-- PROOFREAD: 4113 part6 p01 — handwritten "qui differents par un seul Caractère" best reading -->
+<!-- page 02 -->
+<!-- ROTATE: 4113 part6 p02 180 -->
+<div class="data"><p class="para"><span class="t-blue">MonoHybridisme avec dominance absolue :</span></p></div>
+<p class="para">g<sub>1</sub> (A , a) : A > a .</p>
+<p class="para">Parent P<sub>1</sub> × Parent P<sub>2</sub><br>
+Homozygote (pur) (pur)<br>
+↓<br>
+F<sub>1</sub> : uniforme = (Homogène) = qui exprime le <span class="t-red"><u>phénotype parental dominant</u></span></p>
+<p class="para">♂ F<sub>1</sub> × ♀ F<sub>1</sub><br>
+↓</p>
+<div class="data"><p class="para">F<sub>2</sub> : | – Hétérogène.<br>
+| – Repartition Caractéristique :<br>
+<span class="t-red">3/4 [dominant] + 1/4 [Recessif]</span></p></div>
+<p class="para">un individu homozygote = individu dont les 2 chromosomes Homologues portent le même allele pour le gène étudié</p>
+<!-- CROP: 4113 6 2 0.030 0.715 0.980 0.960 4113_p6_02_homozygote -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p6_02_homozygote.png" alt=""></figure>
+<!-- NOTE: handwritten drawing (g1(A,a) : chromosomes A/A ou bien a/a ⇒ génotype, Homozygote) cropped whole; its labels are kept in the crop -->
+<!-- page 03 -->
+<!-- ROTATE: 4113 part6 p03 180 -->
+<!-- CROP: 4113 6 3 0.130 0.085 0.970 0.190 4113_p6_03_heterozygote -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p6_03_heterozygote.png" alt=""></figure>
+<!-- CROP: 4113 6 3 0.130 0.210 0.270 0.310 4113_p6_03_chromatides -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p6_03_chromatides.png" alt=""></figure>
+<p class="para">deux chromatides soeurs d'un même chromosome dupliqué <span class="t-red">portent le même allele.</span></p>
+<div class="data"><p class="para">test Cross :</p></div>
+<p class="para">= Croisement test entre :<br>
+un dominant × Recessif → testeur : = Homozygote<br>
+à tester<br>
+génotype inconnu : ?</p>
+<p class="para">si l'individu testé est Hétérozygote</p>
+<div class="data"><p class="para"><span class="t-red">1/2 [dominant] + 1/2 [recessif]</span></p></div>
+<p class="para">A/a × a/a<br>
+↓ ↓<br>
+A a a<br>
+1/2 1/2 100%</p>
+<table>
+<tr><th>♂ \ ♀</th><th>A 1/2</th><th>a 1/2</th></tr>
+<tr><td>a</td><td>A/a 1/2</td><td>a/a 1/2</td></tr>
+</table>
+<!-- PROOFREAD: 4113 part6 p03 — handwritten corner label of the table read as "♂" (diagonal cell) -->
+<!-- page 04 -->
+<p class="para">P<sub>1</sub> P<sub>2</sub> <span class="t-red">♂</span><br>
+A × a<br>
+↓<br>
+<span class="t-red">F<sub>1</sub></span> [A] → back cross.<br>
+<span class="t-red">♀ F<sub>1</sub> × parent recessif.</span></p>
+<p class="para">F<sub>1</sub> × P<sub>2</sub><br>
+[A] [a]</p>
+<p class="subhead t-red"><span class="t-red">MonoHybridisme avec <span class="t-red">Codominance :</span></span></p>
+<p class="para"><span class="t-red">*</span> P<sub>1</sub> × P<sub>2</sub> <span class="t-red">×</span> (purs)<br>
+[R] [B]<br>
+↓<br>
+<span class="t-green">F<sub>1</sub> : . Uniforme = Homogène.<br>
+. exprime un <u>nouveau phénotype</u> intermidiaire entre les 2 phénotypes parentaux.</span> <span class="t-gold">[rose]</span>.</p>
+<p class="para"><span class="t-green">♂ F<sub>1</sub> × ♀ F<sub>1</sub><br>
+↓<br>
+F<sub>2</sub> : – Hétérogène.</span><br>
+– Répartition Caractéristique :<br>
+<span class="t-red">1/2 [nouveau] + 1/4 [P<sub>1</sub>] + 1/4 [P<sub>2</sub>].</span><br>
+<span class="t-gold">[rose] [Rouge] [Blanc]</span></p>
+<!-- NOTE: the handwritten "F1" circled in red and the boxes drawn around words are left out as marks -->
+<!-- page 05 -->
+<p class="para">♂ × ♀<br>
+[R] [b]<br>
+↓<br>
+F<sub>1</sub> . [R]</p>
+<p class="para"><span class="t-blue">♂ × ♀<br>
+[b] [R]<br>
+↓<br>
+F'<sub>1</sub> = ?</span></p>
+<p class="para"><span class="t-blue">gène qui Contrôle Couleur des yeux. g<sub>1</sub> :</span></p>
+<!-- CROP: 4113 6 5 0.08 0.385 0.93 0.755 4113_p6_05_alleles -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p6_05_alleles.png" alt=""></figure>
+<!-- NOTE: handwritten drawing (g1 : chromosomes and DNA sequences, allele 1 → [V], allele N°2, = 2 version ≠ du gène qui Contrôle la Couleur des yeux, information génétique qui contrôle la Couleur des yeux [M]) cropped whole; its labels are kept in the crop -->
+<p class="para"><span class="t-blue">Soient les 3 gènes :<br>
+g<sub>1</sub> (A , a) , g<sub>2</sub> (B , b) g<sub>3</sub> (D , d)</span></p>
+<!-- page 06 -->
+<!-- ROTATE: 4113 part6 p06 180 -->
+<!-- CROP: 4113 6 6 0.030 0.075 0.950 0.460 4113_p6_06_caryotype -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p6_06_caryotype.png" alt=""></figure>
+<!-- NOTE: printed karyotype (pairs 1–18) with handwritten marks g1, g2 on pair 1 and g3 on pair 10 — cropped whole; its labels are kept in the crop -->
+<p class="para"><span class="t-blue">g<sub>1</sub> et g<sub>2</sub> ⇒ sont localisés sur la même paire de chromosomes</span><br>
+<span class="t-red">⇒ 2 gènes liés.</span></p>
+<!-- CROP: 4113 6 6 0.060 0.625 0.995 0.810 4113_p6_06_genes_lies -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p6_06_genes_lies.png" alt=""></figure>
+<!-- NOTE: handwritten drawing (g1(A,a), g2(B,b) on one pair of chromosomes → AB/ab, double Hétérozygote) cropped whole; its labels are kept in the crop -->
+<p class="para"><span class="t-blue">g<sub>1</sub> – g<sub>3</sub><br>
+(A , a) (D d) ) localisés sur 2 paires de chromosomes non Homologues<br>
+g<sub>2</sub> – g<sub>3</sub> ) ⇒</span> <span class="t-red">2 gènes indépendants.</span><br>
+<span class="t-blue">(B d) (D d)</span></p>
+<!-- PROOFREAD: 4113 part6 p06 — handwritten "(B d)" under g2 as written (probably meant B b) -->
+<!-- page 07 -->
+<p class="para"><span class="t-red">AB/AB</span> ou <span class="t-red">ab/ab</span> <span class="t-red">aB/aB</span> ou <span class="t-red">Ab/Ab</span></p>
+<p class="para"><span class="t-red">⇒ double Homozygote = Homozygote pour les 2 gènes étudiés.</span></p>
+<p class="para"><span class="t-blue">double Hétérozygote = Hétérozygote pour les 2 gènes étudiés.</span></p>
+<p class="para"><span class="t-blue">1<sup>er</sup> Croisement :</span></p>
+<p class="para"><span class="t-blue">P<sub>1</sub> : [noire , sphérique] × [blanche , ridée] P<sub>2</sub><br>
+♂ V<sub>1</sub> ↓ V<sub>2</sub> ♀<br>
+→ <u>F<sub>1</sub></u> : [noires , sphériques].<br>
+100% → Homogènes.</span></p>
+<p class="para"><span class="t-blue"><u>2<sup>e</sup> Croisement</u> , ♂ F<sub>1</sub> × ♀ F<sub>1</sub><br>
+↓<br>
+F<sub>2</sub> 180 [noires , sphériques]<br>
+60 [blanches sphérique]<br>
+60 [noires ridées]<br>
+20 [blanches , ridés]</span></p>
+<!-- PROOFREAD: 4113 part6 p07 — handwritten "noire(s)" (could read "moire") and "2u Croisement" best reading -->
+<!-- page 08 -->
+<p class="para"><span class="t-blue">F<sub>1</sub> — uniforme ⇒ parents purs : = Homozygote.<br>
+↘ Exprime l [ ] parl'</span></p>
+<p class="para"><span class="t-blue">génotype ——→ phénotype<br>
+= information génétique → Aspect visuel d'un Caractère Héréditaire.<br>
+vgt =</span></p>
+<p class="para"><span class="t-blue">[N] × [b]<br>
+↓<br>
+F<sub>1</sub> [N]<br>
+♂ F<sub>1</sub> × ♀ F<sub>1</sub><br>
+[N] [N]<br>
+↓<br>
+3/4 [N] + 1/4 [b].</span></p>
+<!-- PROOFREAD: 4113 part6 p08 — handwritten "Exprime l [ ] parl'" and "vgt =" unclear -->
+<!-- page 09 -->
+<!-- ROTATE: 4113 part6 p09 180 -->
+<p class="para">[S] × [r]<br>
+↓<br>
+F<sub>1</sub> [S]<br>
+♂ F<sub>1</sub> × ♀ F<sub>1</sub><br>
+↓<br>
+3/4 [S] + 1/4 [r]</p>
+<p class="para">Si les 2 gènes sont independants.</p>
+<p class="para"><span class="t-blue">la repartition de la F<sub>2</sub> de diHybridisme = produit de rencontre les F<sub>2</sub> de monoHybridisme de chaque gène</span></p>
+<table>
+<tr><th>C. Appa. \ C<sub>1</sub> ich</th><th>3/4 [N]</th><th>1/4 [b]</th></tr>
+<tr><td>3/4 [S]</td><td>9/16 [N . S] <span class="t-red">56,25%</span></td><td>3/16 [b . S] <span class="t-red">18,75%</span></td></tr>
+<tr><td>1/4 [r]</td><td>3/16 [N . r] <span class="t-red">18,75%</span></td><td>1/16 [b . r] <span class="t-red">6,25%</span></td></tr>
+</table>
+<!-- PROOFREAD: 4113 part6 p09 — handwritten corner cell of the table "C. Appa." / "C1 ich" best reading -->
+<!-- page 10 -->
+<p class="para"><span class="t-red">pour ecrire le génotype d'un individu :<br>
+⇒ 3 information :</span> <span class="t-blue">① → phénotype : (données)<br>
+② → information sur sa pureté → Analyse<br>
+pour . Hétérozygote<br>
+③ – localisation des 2 gènes</span> → Hypothèse</p>
+<!-- CROP: 4113 6 10 0.12 0.395 0.98 0.775 4113_p6_10_schema_gametes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p6_10_schema_gametes.png" alt=""></figure>
+<!-- NOTE: handwritten drawing (chromosomes N/N, s/s and the gametes they give, circled) cropped whole; its labels are kept in the crop -->
+<p class="para"><span class="t-red">6 ———→ 11 = interprétation</span></p>
+<!-- PROOFREAD: 4113 part6 p10 — handwritten "pour . Hétérozygote" placement and "② → information sur sa pureté" best reading -->
+<!-- page 11 -->
+<!-- ROTATE: 4113 part6 p11 180 -->
+<p class="para"><span class="t-red">Analysez les R. — 1 → 5.<br>
+Interprétez : 6 → 14 :</span></p>
+<p class="para"><span class="t-red">[N . S]</span> <span class="t-blue">→ ① double Homozygote :<br>
+N/N S/S → 1 seul type de gamète.<br>
+↓<br>
+100% [N S].</span></p>
+<p class="para"><span class="t-blue">Simple Hétérozygote :<br>
+N/b S/S ou N/N S/r<br>
+↓ ↓<br>
+<u>N</u> <u>S</u> 1/2 <u>N</u> <u>S</u> 1/2<br>
+<u>b</u> <u>S</u> 1/2 <u>N</u> <u>r</u> 1/2<br>
+↓<br>
+descendance 1/2 + 1/2</span></p>
+<!-- PROOFREAD: 4113 part6 p11 — handwritten "Analysez les R." and "descendance 1/2 + 1/2" best reading -->
+<!-- page 12 -->
+<p class="para"><span class="t-blue">→ double Hétérozygote<br>
+N/b S/r → <u>N</u> <u>S</u> 1/4<br>
+<u>N</u> <u>r</u> 1/4<br>
+<u>b</u> <u>S</u> 1/4<br>
+<u>b</u> <u>r</u> 1/4</span></p>
+<!-- CROP: 4113 6 12 0.18 0.405 0.56 0.645 4113_p6_12_chromosomes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p6_12_chromosomes.png" alt=""></figure>
+<!-- NOTE: handwritten drawing (duplicated chromosomes N / b and their separated chromatids) cropped whole; its labels are kept in the crop -->
+
+
+<div class="exsub">15 - BROUILLON_SERIE 11</div>
+<!-- page 01 -->
+<p class="para"><span class="t-blue">Classe :</span> <i>4<sup>ème</sup> Sc Exp</i> <span class="t-gold"><i>(Gr : Excellent 3 )</i></span></p>
+<p class="subhead t-navy"><span class="t-blue"><u>Brouillon correction série 11</u></span> <span class="t-gold">:</span></p>
+<p class="subhead t-red"><span class="t-gold"><i>La génétique des diploïdes : Le Dihybridisme (2<sup>eme</sup> Série)</i></span></p>
+<p class="para"><span class="t-blue">[tailles des ailes . couleurs × [<br>
+t<sub>1</sub> c<sub>1</sub> ] [t<sub>2</sub> . c<sub>2</sub>].<br>
+↓<br>
+F<sub>1</sub> 100% [ailes longues . y. Rouges].<br>
+↓</span></p>
+<p class="subhead t-navy">❖ Dihybridisme :</p>
+<p class="subhead t-red"><b><i><u>1)Cas de 2 gènes indépendants :</u></i></b></p>
+<table>
+<tr><th>1<sup>er</sup> caractère</th><th>2<sup>ème</sup> caractère</th><th>Résultats <span class="t-blue">F<sub>2</sub> :</span></th></tr>
+<tr><td>dominant<br>(¾ + ¼)</td><td>dominant<br>(¾ + ¼)</td><td>9/16 + 3/16 + 3/16 + 1/16</td></tr>
+<tr><td>test-cross<br>(½ + ½)</td><td>test-cross<br>(½ + ½)</td><td>1/4 + 1/4 + 1/4 + 1/4</td></tr>
+<tr><td>dominant<br>(¾ + ¼)</td><td>test-cross<br>(½ + ½)</td><td>3/8 + 3/8 + 1/8 + 1/8</td></tr>
+<tr><td>codominant<br>(¼ + ½ + ¼)</td><td>codominant<br>(¼ + ½ + ¼)</td><td>1/16 + 1/8 + 1/16 + 1/8 + 1/4 + 1/8 + 1/16 + 1/8 + 1/16</td></tr>
+<tr><td>dominant<br>(¾ + ¼)</td><td>codominant<br>(¼ + ½ + ¼)</td><td>3/16 + 1/16 + 3/8 + 1/8 + 3/16 + 1/16</td></tr>
+<tr><td>codominant<br>(¼ + ½ + ¼)</td><td>test-cross<br>(½ + ½)</td><td>1/8 + 1/8 + 1/4 + 1/4 + 1/8 + 1/8</td></tr>
+</table>
+<!-- NOTE: handwritten ticks, crosses and underlines on the printed table left out -->
+<!-- PROOFREAD: 4113 part7 p01 — handwritten "ailes longues . y. Rouges" best reading -->
+<!-- page 02 -->
+<table>
+<tr><th>C<sub>2</sub> \ C<sub>1</sub></th><th>3/4 D<sub>1</sub></th><th>1/4 r<sub>1</sub></th></tr>
+<tr><td>3/4 D<sub>2</sub></td><td>9/16</td><td>3/16</td></tr>
+<tr><td>1/4 r<sub>2</sub></td><td>3/16</td><td>1/16.</td></tr>
+</table>
+<p class="para"><span class="t-blue">(vg+ vg')<br>
+↓ L/vg R/P'</span></p>
+<p class="para"><span class="t-blue"><u>L</u> <u>R</u> 1/4<br>
+<u>L</u> <u>P</u> 1/4<br>
+<u>vg</u> <u>R</u> 1/4<br>
+<u>vg</u> <u>P</u> 1/4</span></p>
+<!-- CROP: 4113 7 2 0.15 0.675 0.70 0.785 4113_p7_02_g1_g2_g3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p7_02_g1_g2_g3.png" alt=""></figure>
+<!-- NOTE: handwritten drawing (one chromosome line with g1, g2 at the same locus and g3 further along) cropped whole; its labels are kept in the crop -->
+<div class="data"><p class="para"><span class="t-blue">gène liés → liaison totale = linkage total ..</span></p></div>
+<!-- PROOFREAD: 4113 part7 p02 — handwritten "(vg+ vg')" and "R/P'" best reading -->
+<!-- page 03 -->
+<!-- ROTATE: 4113 part7 p03 180 -->
+<p class="para"><span class="t-blue">. les 2 gènes se comportent comme un seul gène :<br>
+→ Resultat de diHybridisme = Résultat de MonoHybridisme.<br>
+⇒ la frequence de c.o = 0.<br>
+⇒ double Hétérozygote donne 2 types de gametes , = gamètes parentaux<br>
+AB/ab → <u>A B</u> 1/2<br>
+<u>a b</u> 1/2<br>
+⇒ d<sub>g1 g2</sub> = 0 cM</span> <span class="t-gold"><s>AB</s> (c.o) = 0.</span></p>
+<p class="para"><span class="t-blue">. Liaison partielle = linkage partielle :<br>
+0 &lt; d<sub>g1 g3</sub> &lt; 50cM.</span></p>
+<p class="para"><span class="t-blue">→ dans le cas un double Hétérozygote,</span> <span class="t-red">(Sauf le ♂ de la drosophile)</span> <span class="t-blue">produit 4 types de gamètes : – 2 parentaux (association allelique parentale)<br>
+↓</span></p>
+<div class="data"><p class="para">majoritaires</p></div>
+<p class="para"><span class="t-red">(1 – P)/2 + (1 – P)/2</span></p>
+<!-- PROOFREAD: 4113 part7 p03 — handwritten "Liaison partielle = linkage partielle" and "(1 – P)/2" best reading; crossed-out orange "AB" kept struck -->
+<!-- page 04 -->
+<!-- ROTATE: 4113 part7 p04 180 -->
+<p class="para"><span class="t-green">– 2 Recombinés obtenus par <u>c.o</u> (donc avec des associations alléliques recombinés) ⇒ Minoritaires , P/2 + P/2 .</span></p>
+<p class="para"><span class="t-green">Exemple :<br>
+AB/ab → <u>AB</u> (1 – P)/2<br>
+<u>ab</u> (1 – P)/2</span></p>
+<div class="data"><p class="para"><span class="t-green"><u>Ab</u> P/2</span> <span class="t-gold">co</span><br>
+<span class="t-green"><u>aB</u> P/2</span> <span class="t-gold">. co .</span></p></div>
+<div class="data"><p class="para"><span class="t-blue">d<sub>g1 g2</sub> ≥ 50cM .</span></p></div>
+<p class="para"><span class="t-blue">⇒ P = 50%.</span></p>
+<p class="para"><span class="t-blue">P = 50%.<br>
+= 0,5</span></p>
+<p class="para"><span class="t-green"><u>AB</u> (1 – P)/2</span> <span class="t-blue">= (1 – 0,5)/2 = 25%</span><br>
+<span class="t-green"><u>ab</u> (1 – P)/2</span> <span class="t-blue">(1 – 0,5)/2 = 25%.</span></p>
+<div class="data"><p class="para"><span class="t-green"><u>Ab</u> P/2</span> <span class="t-gold">c</span> <span class="t-blue">0,5/2 = 25%.</span><br>
+<span class="t-green"><u>aB</u> P/2</span> <span class="t-blue">. 0,5/2 = 25%.</span></p></div>
+<p class="para"><span class="t-blue">→ liaison physique = localisés sur la même chromosomes</span></p>
+<!-- PROOFREAD: 4113 part7 p04 — handwritten last value of aB "= 25%" (could read "45%"); "liaison physique" best reading -->
+<!-- page 05 -->
+<!-- ROTATE: 4113 part7 p05 180 -->
+<p class="para"><span class="t-blue">Mais telle que la distance est importante → les 2 gènes se comportent comme independants.</span></p>
+<p class="para"><span class="t-blue">gènes liés partiellement ,</span></p>
+<!-- CROP: 4113 7 5 0.070 0.265 0.990 0.685 4113_p7_05_gametes_parentaux_recombines -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p7_05_gametes_parentaux_recombines.png" alt=""></figure>
+<!-- NOTE: handwritten diagram (100% = 1 ; 1–P : 2 parentaux (1–P)/2 + (1–P)/2 ; P = fréq de recombinaison = fréq de c.o : gamètes recombinés, 2 recombinés P/2 + P/2) cropped whole; its labels are kept in the crop -->
+<!-- CROP: 4113 7 5 0.130 0.645 0.990 0.955 4113_p7_05_cis_trans -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4113/4113_p7_05_cis_trans.png" alt=""></figure>
+<!-- NOTE: handwritten drawing (② L→R / vg→P [L R] ≠ ① L P / vg . R [L R], trans, couleur) cropped whole; its labels are kept in the crop -->
+<!-- page 06 -->
+<!-- ROTATE: 4113 part7 p06 180 -->
+<p class="para"><span class="t-blue">AB/Ab → <u>AB</u> 1/2<br>
+<u>A b</u> 1/2</span></p>
+<p class="para"><span class="t-blue">A/A B/b → <u>A</u> <u>B</u> 1/2<br>
+<u>A</u> <u>b</u> 1/2.</span></p>
+<p class="para"><span class="t-blue">♂ drosophile .<br>
+A/a B/b → <u>A</u> <u>B</u> 1/4<br>
+<u>A</u> <u>b</u> 1/4<br>
+<u>a</u> <u>B</u> 1/4<br>
+<u>a</u> <u>b</u> 1/4</span></p>
+<p class="para"><span class="t-blue">L R . = 64. = P/2.</span></p>
+<p class="para"><span class="t-blue">AB/AB</span></p>
+<p class="para"><span class="t-blue">AB/aB. <u>AB</u>/<u>aB</u></span></p>
+<!-- PROOFREAD: 4113 part7 p06 — handwritten "L R . = 64. = P/2." best reading -->
+
+</section>
+
+</div>
+</body>
+</html>

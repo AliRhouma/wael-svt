@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Homme - QCM et QROC</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Lycée Pilote de Médenine">
+<meta data-pagefind-meta="n[content]" content="4051">
+<meta data-pagefind-meta="title[content]" content="Homme - QCM et QROC">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Homme - QCM et QROC" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Homme - QCM et QROC</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Lycée Pilote Médenine · Professeur : Ezzeddini Med · Ezzeddini Mohamed · Année scolaire 2021/22</span> <span class="tg">Série</span><span class="tg">QCM</span><span class="tg">QROC</span><span class="tg">Exercices</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/16iMJc3_hqQMsD5uwiAv6lwWF-XZSn99u/view">↗ Homme - QCM et QROC.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (7)</b><ul><li><a href="https://drive.google.com/file/d/16iMJc3_hqQMsD5uwiAv6lwWF-XZSn99u/view">Mohamed Mehdi Mareghni · BAC MATHS › Sciences de La Vie et de la Terre / 1 - Reproduction humaine et santé / Séries et exercices</a></li><li><a href="https://drive.google.com/file/d/1bv7usZd2uR7ZjV5M51NaPeRE4HdqBpmh/view">Iyed Hasnaoui · bac 2024 › Nouveau dossier / SVT / Homme</a></li><li><a href="https://drive.google.com/file/d/1reGXsHRNlsSWJmcak4oVgCinNEr_MbPS/view">Anas Saïd · IDEAL BAC MATH(Anas Saïd) › SVT / SVT pilote mednine / Homme</a></li><li><a href="https://drive.google.com/file/d/15k8upIdNosLGvsRTeAMdgQXKcghkfjQW/view">Emna bac maths 2025 · Drive de Emna (Bac maths) › svt / Homme cours+série+correction</a></li><li><a href="https://drive.google.com/file/d/1kNjyKeYzo46ki4VTOd2G1zfMxNv_rNS4/view">Mohamed aziz saideni lycee Farhat Hached bizertebac 2026 · BAC MATH 2026 MOHAMED AZIZ SAIDENI › TOUT 2026 / SVT / Homme</a></li><li><a href="https://drive.google.com/file/d/1UY7dLtfkGNT1Nto5lPEZWHyEB-smnhJD/view">Eya Masmoudi · Bac math 2026 › Svt</a></li><li><a href="https://drive.google.com/file/d/1fJqxgtDB5R3h3CRyazBik5W1qR-suF53/view">Mohamed Ahmed Zahi · Bac Math Zahi 2024/2025 › SVT / Séries / 2) reproduction humaine et santé / 1) reproduction chez l&#x27;homme</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Reproduction chez l&#x27;homme</h2></div>
+<!-- SOURCE: Lycée Pilote Médenine · Professeur : Ezzeddini Med · Ezzeddini Mohamed · Année scolaire 2021/22 -->
+<div class="exh"><span class="idx ex">Série</span><h2>(QCM + QROC)1 2021/2022</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4051.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Lycée Pilote Médenine · Professeur : Ezzeddini Med · Ezzeddini Mohamed · Année scolaire 2021/22</span> <span class="tg">Série</span><span class="tg">QCM</span><span class="tg">QROC</span><span class="tg">Exercices</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/16iMJc3_hqQMsD5uwiAv6lwWF-XZSn99u/view">↗ Homme - QCM et QROC.pdf</a></div>
+<!-- page 01 -->
+<p class="subhead t-red">Thème: Reproduction humaine et santé<br>4ème SC. Exp, M &amp; Sport</p>
+<p class="consigne"><span class="t-gold"><b><u>QCM :</u></b></span> <b>Pour chacun des items suivants (de 1 à 39), il peut y avoir une (ou deux) réponse(s) correcte (s). Reportez, sur votre copie, le numéro de chaque item et indiquez dans chaque cas la (ou les deux) réponse(s) correcte(s).</b></p>
+<p class="para"><b>1. Le spermatozoïde humain est une cellule caractérisée par :<br>
+a. la mobilité<br>
+b. un noyau bloqué en métaphase II<br>
+c. un nombre de chromosomes égal à 23<br>
+d. un cytoplasme riche en substances de réserves</b></p>
+<p class="para"><b>2. L’inhibine est une hormone qui:<br>
+a. est sécrétée par les cellules de Leydig<br>
+b. est sécrétée par les cellules de Sertoli<br>
+c. exerce un rétrocontrôle négatif sur la sécrétion de LH<br>
+d. exerce un rétrocontrôle négatif sur la sécrétion de FSH</b></p>
+<p class="para"><b>3. Chez l’homme, les cellules hypothalamiques présentent des récepteurs à :<br>
+a. la LH<br>
+b.b. la FSH<br>
+c.c. l’ABP<br>
+d.d. la testostérone</b></p>
+<p class="para"><b>4. La testostérone est une hormone qui:<br>
+a. est sécrétée par les cellules de Sertoli<br>
+b. est sécrétée par les cellules de Leydig<br>
+c. exerce un rétrocontrôle négatif sur la sécrétion de LH<br>
+d. exerce un rétrocontrôle négatif sur la sécrétion de FSH</b></p>
+<p class="para"><b>5. La testostérone agit sur :<br>
+a. le complexe hypothalamo-hypophysaire par rétrocontrôle négatif.<br>
+b. le complexe hypothalamo-hypophysaire par rétrocontrôle positif.<br>
+c. les cellules de Sertoli.<br>
+d. la spermatogenèse</b></p>
+<p class="para"><b>6. Dans la spermatogenèse, la réduction du nombre de chromosomes des cellules germinales se produit au cours de la phase de (‘) :<br>
+a. multiplication<br>
+b. différenciation<br>
+c. accroissement<br>
+d. maturation</b></p>
+<p class="para"><b>7. La spermiogenèse :<br>
+a. se déroule dans l’épididyme.<br>
+b. se déroule dans les tubes séminifères.<br>
+c. est la différenciation des spermatocytes II en spermatides.<br>
+d. est la différenciation des spermatides en spermatozoïdes.</b></p>
+<p class="para"><b>8. La GnRH ou gonadolibérine :<br>
+a. est sécrétée par les cellules de l'hypophyse antérieure<br>
+b. est sécrétée de manière pulsatile<br>
+c. commande la sécrétion des gonadostimulines FSH et LH<br>
+d. possède des récepteurs au niveau de la muqueuse utérine.</b></p>
+<p class="para"><b>9. La phase de maturation de la spermatogenèse :<br>
+a. produit des spermatides<br>
+b. produit des spermatocytes I<br>
+c. s’achève dans le testicule.<br>
+d.d. s’achève dans l’épididyme</b></p>
+<p class="para"><b>10. Les gonadostimulines:<br>
+a. sont sécrétés par les gonades.<br>
+b. stimulent les gonades.<br>
+c. possèdent des récepteurs membranaires.<br>
+d. possèdent des récepteurs cytoplasmiques.</b></p>
+<p class="para"><b>11. Une baisse de la sécrétion de la testostérone en dessous de la valeur normale de référence est corrigée par :<br>
+a. un rétrocontrôle positif de la testostérone sur l’hypothalamus.<br>
+b. un rétrocontrôle négatif de la testostérone sur l’hypothalamus.<br>
+c. un rétrocontrôle négatif de la testostérone sur la sécrétion de la LH.<br>
+d. une stimulation des cellules de Leydig.</b></p>
+<p class="para"><b>12. Chez l’homme, la testostérone :<br>
+a. est secrétée de façon pulsatile.<br>
+b. agit, seule, pour stimuler la spermatogenèse<br>
+c. est secrétée par les cellules de Sertoli.<br>
+d. possède des récepteurs membranaires.</b></p>
+<p class="para"><b>13. La destruction sélective des cellules de Leydig (cellules interstitielles) chez un rat adulte <small>provoque :</small><br>
+a. la baisse du taux des gonadostimulines.<br>
+b. l’absence de la sécrétion de testostérone.<br>
+c. la baisse de la fréquence des pulses de la GnRH.<br>
+d. la régression des caractères sexuels secondaires.</b></p>
+<p class="para"><b>14. Après destruction sélective des cellules de Leydig, <small>on note :</small><br>
+a. l’arrêt de la spermatogenèse.<br>
+b. la diminution de la sécrétion de la LH.<br>
+c. l’augmentation de la sécrétion de la FSH.<br>
+d. le maintien des caractères sexuels secondaires.</b></p>
+<p class="para"><b>15. Le schéma suivant représente une coupe partielle de testicule ; la cellule X correspond à<br>
+a. un spermatocyte I<br>
+b. un spermatocyte II<br>
+c. une cellule à 23 chromosomes<br>
+d. une cellule à 46 chromosomes</b></p>
+<!-- PROOFREAD: 4051 part1 p01 — item 15 "correspond à": the "à" is cut by the table border -->
+<!-- CROP: 4051 1 1 0.370 0.834 0.526 0.898 4051_p01_coupe_testicule_cellule_X -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p01_coupe_testicule_cellule_X.png" alt=""></figure>
+<p class="para"><b>16. Le spermatocyte du deuxième ordre est :<br>
+a. une cellule diploïde<br>
+b. une cellule haploïde<br>
+c. le résultat de la première division de la méiose<br>
+d. le résultat de la deuxième division de la méiose</b></p>
+<!-- page 02 -->
+<p class="para"><b>17. Le schéma suivant monte une interprétation d’une observation microscopique d’un testicule qui peut correspondre à un sujet:<br>
+a. cryptorchide<br>
+b. normal<br>
+c. eunuque<br>
+d. stérile</b></p>
+<!-- CROP: 4051 1 2 0.368 0.085 0.498 0.172 4051_p02_coupe_tube_seminifere -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p02_coupe_tube_seminifere.png" alt=""></figure>
+<p class="para"><b>18. L’injection d’extraits testiculaires à un rat pubère castré :<br>
+a. corrige la stérilité.<br>
+b. entraine la restauration des caractères sexuels secondaires.<br>
+c. entraine la baisse de la fréquence des pulses de la GnRH.<br>
+d. entraine la baisse de la fréquence des pulses de la FSH.</b></p>
+<p class="para"><b>19. L’injection de fortes doses de FSH à des rats hypophsectomisés, entraine :<br>
+a. le développement des tubes séminifères.<br>
+b. le rétablissement de la spermatogenèse.<br>
+c. le développement des cellules interstitielles.<br>
+d. le rétablissement de la spermatogenèse et de la production de la testostérone.</b></p>
+<p class="para"><b>20. Une augmentation de la sécrétion de testostérone en dessus de la valeur normale est corrigée par.<br>
+a. un rétrocontrôle positif de la testostérone sur l’hypothalamus<br>
+b. une stimulation des cellules de Leydig par LH<br>
+c. un rétrocontrôle négatif de la testostérone sur l’hypothalamus<br>
+d. une stimulation des tubes séminifères par FSH.</b></p>
+<p class="para"><b>21. La greffe d’une hypophyse à un endroit quelconque de l’organisme d’un rat hypophysectomisé :<br>
+a. rétablit la sécrétion de la LH.<br>
+b. rétablit la sécrétion de la FSH.<br>
+c. rétablit la sécrétion de la testostérone<br>
+d. ne corrige rien.</b></p>
+<p class="para"><b>22. Injectée à un animal ayant subi la destruction des cellules de Sertoli, la testostérone :<br>
+a. inhibe la sécrétion de LH.<br>
+b. inhibe la sécrétion de FSH.<br>
+c. stimule la sécrétion d’inhibine<br>
+d. stimule la sécrétion de Gn-RH</b></p>
+<p class="para"><b>23. Chez un homme normal, un faible taux sanguin de testostérone entraine :<br>
+a. l’inhibition de la sécrétion de LH ;<br>
+b. l’inhibition de la sécrétion d’ABP ;<br>
+c. l’inhibition de la sécrétion de FSH ;<br>
+d. la levée de l’inhibition exercée sur le complexe hypothalamo-hypophysaire.</b></p>
+<p class="para"><b>24. La formule chromosomique d’un spermatocyte II à l’origine d’un garçon normal est :</b><br>
+a. 21 autosomes + Y.<br>
+b. 22 autosomes + Y.<br>
+c. 23 autosomes + Y.<br>
+d. 21 autosomes + XY.</p>
+<p class="para"><b>25. Les cellules de Sertoli et de Leydig sont toutes les deux des cellules :</b><br>
+a- sexuelles,<br>
+b- germinales,<br>
+c- sécrétrices d’hormones,<br>
+d- responsables de l’apparition des caractères sexuels secondaires.</p>
+<p class="para"><b>26. Parmi les cellules germinales de l’homme, on peut citer :</b><br>
+a- les spermatogonies,<br>
+b- les spermatocytes II,<br>
+c- les cellules de Leydig,<br>
+d- les cellules de Sertoli.</p>
+<p class="para"><b>27. L’inhibine agit sur les cellules de:</b><br>
+a- Leydig,<br>
+b- Sertoli,<br>
+c- l’hypothalamus,<br>
+d- l’hypophyse antérieure.</p>
+<p class="para"><b>28. Une augmentation de la concentration plasmatique de testostérone exerce :</b><br>
+a. un rétrocontrôle négatif sur la sécrétion de LH.<br>
+b. un rétrocontrôle négatif sur la sécrétion de FSH.<br>
+c. un rétrocontrôle positif sur la sécrétion de Gn-Rh.<br>
+d. une action stimulatrice sur la spermatogenèse.</p>
+<p class="para"><b>29. Chez un homme normal, la sécrétion de FSH est stimulée par :</b><br>
+a. l’ABP.<br>
+b. la Gn-Rh.<br>
+c. l’inhibine.<br>
+d. la testostérone.</p>
+<p class="para"><b>30) Un homme atteint de cryptorchidie bilatérale présente :</b><br>
+a- un tissu interstitiel normal.<br>
+b- une spermatogenèse normale.<br>
+c- des voies génitales atrophiées.<br>
+d- une régression des caractères sexuels secondaires.</p>
+<p class="para"><b>31. Chez un individu ayant une cryptorchidie bilatérale, on note :</b><br>
+<b>a-</b> l’absence de sécrétion de testostérone ;<br>
+<b>b-</b> l’absence de production de spermatozoïdes ;<br>
+<b>c-</b> la présence de caractères sexuels masculins atrophiés ;<br>
+<b>d-</b> le développement normal de la paroi des tubes séminifères.</p>
+<p class="para"><b>32. Chez un rat mâle castré, la greffe sous-cutanée d'un fragment de testicule :</b><br>
+<b>a-</b> corrige sa stérilité;<br>
+<b>b-</b> restaure les caractères sexuels secondaires ;<br>
+<b>c-</b> entraîne une élévation des taux plasmatiques de FSH et de LH ;<br>
+<b>d-</b> entraîne les mêmes effets que des injections répétées d'extraits testiculaires.</p>
+<!-- page 03 -->
+<p class="para"><b>33/Le document ci-contre représente l’évolution du taux plasmatique de testostérone chez deux animaux pubères.</b><br>
+<b>a-</b> Le tracé 1 est celui d’un animal hypophysectomisé.<br>
+<b>b-</b> Le tracé 1 est celui d’un animal normal.<br>
+<b>c-</b> Le tracé 2 est celui d’un animal dont les cellules sécrétrices de GnRH sont détruites.<br>
+<b>d-</b> Le tracé 2 est celui d’un animal dont les tubes séminifères sont irradiés.</p>
+<!-- CROP: 4051 1 3 0.585 0.051 0.924 0.173 4051_p03_testosterone_traces_1_2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p03_testosterone_traces_1_2.png" alt=""></figure>
+<p class="para"><b>34/La destruction sélective des cellules de Sertoli entraîne :</b><br>
+<b>a-</b> la stérilité de l’animal.<br>
+<b>b-</b> la diminution du taux plasmatique de la LH.<br>
+<b>c-</b> la diminution du taux plasmatique d’inhibine.<br>
+<b>d-</b> la diminution du taux plasmatique de la GnRH.</p>
+<p class="para"><span class="t-blue"><b>35.</b></span> <b>Les cellules de Sertoli assurent :</b><br>
+<b>a-</b> la sécrétion de l’inhibine.<br>
+<b>b-</b> la sécrétion de la testostérone.<br>
+<b>c-</b> la synthèse de l’ABP (Androgen Binding Protein).<br>
+<b>d-</b> le maintien des caractères sexuels secondaires.</p>
+<p class="para"><span class="t-blue"><b>36.</b></span> <b>Les récepteurs de la testostérone sont localisés au niveau des cellules :</b><br>
+<b>a-</b> de Sertoli.<br>
+<b>b-</b> de Leydig.<br>
+<b>c-</b> hypothalamiques.<br>
+<b>d-</b> sécrétrices de FSH.</p>
+<p class="para"><span class="t-blue"><b>37.</b></span> <b>Les enzymes de l’acrosome :</b><br>
+<b>a-</b> empêchent la polyspermie.<br>
+<b>b-</b> hydrolysent la zone pellucide.<br>
+<b>c-</b> détruisent les récepteurs situés au niveau de la zone pellucide.<br>
+<b>d-</b> sont libérées suite à la fixation du spermatozoïde sur la zone pellucide.</p>
+<p class="para"><span class="t-blue"><b>38.</b></span><b>L’inhibine agit par rétrocontrôle négatif sur la sécrétion de la :</b><br>
+<b>a-</b> LH.<br>
+<b>b-</b> FSH.<br>
+<b>c-</b> GnRH.<br>
+<b>d-</b> testostérone.</p>
+<p class="para"><b>39.L’injection d’extraits hypophysaires à un rat castré :</b><br>
+<b>a-</b> n’a aucun effet.<br>
+<b>b-</b> stimule la sécrétion de la GnRH.<br>
+<b>c-</b> stimule la sécrétion de la testostérone.<br>
+<b>d-</b> restaure les caractères sexuels secondaires.</p>
+<!-- page 04 -->
+<div class="exsub"><span class="t-red"><u>QROC 1 : bac sprt prin 17</u></span></div>
+<p class="para">Le document 1a représente une portion d’une coupe transversale schématique réalisée au niveau du testicule d’un homme normal. Le document 1b représente des cellules prélevées de la paroi d’un tube séminifère à des stades différents de la spermatogenèse. (Le nombre de chromosomes a été réduit à 2n=8).</p>
+<!-- CROP: 4051 1 4 0.032 0.158 0.462 0.350 4051_p04_document1a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p04_document1a.png" alt=""></figure>
+<!-- CROP: 4051 1 4 0.458 0.158 0.893 0.350 4051_p04_document1b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p04_document1b.png" alt=""></figure>
+<p class="para" style="text-align:center"><b>Document 1</b></p>
+<p class="para"><b>1)</b> Légendez le document 1a en reproduisant les numéros des flèches (de 1 à 5) sur votre copie.</p>
+<p class="para"><b>2)</b> Faites correspondre les cellules A, B et C du document 1b aux cellules 2, 3 et 4 du document 1a. Justifiez votre réponse.</p>
+<p class="para"><b>3)</b> Mettez dans l’ordre chronologique les cellules A, B et C selon le déroulement normal de la spermatogenèse.</p>
+<p class="para"><b>4)</b> Précisez les rôles physiologiques des cellules de Sertoli et des cellules de Leydig.</p>
+<div class="exsub"><span class="t-red">QROC 2 :</span></div>
+<p class="para">La spermatogenèse est le processus par lequel se forment les gamètes mâles ou spermatozoïdes.</p>
+<p class="para">1) Représentez par un schéma annoté, les phases de la spermatogenèse.</p>
+<p class="para">Le document 1 illustre schématiquement la structure d’un spermatozoïde humain.</p>
+<!-- CROP: 4051 1 4 0.657 0.532 0.898 0.753 4051_p04_document1_spermatozoide -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p04_document1_spermatozoide.png" alt=""></figure>
+<p class="para"><b>Document 1</b></p>
+<p class="para">2) Légendez le document 1 en reportant sur votre copie les numéros des flèches (de 1 à 6).</p>
+<p class="para">3) Précisez, dans un tableau, le rôle de chacune des structures désignées par les numéros 1, 2, 3 et 6.</p>
+<!-- page 05 -->
+<div class="exsub">QROC 3 : Complétez les deux tableaux (1 &amp; 2) suivants :</div>
+<table>
+<tr><th rowspan="2">Tableau 1</th><th rowspan="2">étape de l’expérience</th><th colspan="2">Nature de l’intervention</th><th colspan="2">Résultats enregistrés</th></tr>
+<tr><th>Chez le rat A</th><th>Chez le rat B</th><th>Chez le rat A</th><th>Chez le rat B</th></tr>
+<tr><td colspan="2"><b>1</b></td><td>Ablation de l’hypophyse</td><td style="background:#ddd"></td><td></td><td style="background:#ddd"></td></tr>
+<tr><td colspan="2"><b>2</b></td><td style="background:#ddd"></td><td>Castration</td><td style="background:#ddd"></td><td></td></tr>
+<tr><td colspan="2"><b>3</b></td><td>Mise en circulation croisée <b><u>(parabiose)</u></b> avec le rat B</td><td>Mise en circulation croisée <b>(parabiose)</b> avec le rat A</td><td></td><td></td></tr>
+<tr><td colspan="2"><b>4</b></td><td style="background:#ddd"></td><td>Circulation croisée supprimée puis injection de testostérone à forte dose</td><td style="background:#ddd"></td><td></td></tr>
+<tr><td colspan="2"></td><td style="background:#ddd"></td><td></td><td style="background:#ddd"></td><td></td></tr>
+</table>
+<table>
+<tr><td><b><u>Explication</u></b><br><br><br><br><br><br></td><td></td></tr>
+</table>
+<!-- page 06 -->
+<table>
+<tr><th></th><th colspan="4"><span class="t-red">A apprendre</span></th></tr>
+<tr><th>Tableau 2</th><th>Hormone</th><th>Glande ou cellule sécrétrice</th><th>Organes ou cellules cibles</th><th>Effets physiologiques</th></tr>
+<tr><td colspan="2" rowspan="3"><span class="t-blue"><b>Testostérone (stéroïde)</b></span></td><td rowspan="3"><span class="t-gold"><b>Cellules de Leydig</b></span></td><td><b>Cellules germinales</b></td><td>La testostérone se combine avec l’ABP et forment ensemble un complexe T-ABP qui active la spermatogenèse</td></tr>
+<tr><td><span class="t-blue">Cellules et organes responsables des caractères sexuels masculins</span></td><td><span class="t-blue">Apparition, maintien et développement des caractères sexuels primaires (prostate, pénis, vésicule séminale.........) et secondaires (pilosité, voix .........).</span></td></tr>
+<tr><td><span class="t-red"><b><i>Axe hypothalamo-hypophysaire</i></b></span></td><td><span class="t-red">Rétrocontrôle négatif</span></td></tr>
+<tr><td colspan="2" rowspan="2"><span class="t-blue"><b>F.S .H (peptide)</b></span></td><td rowspan="3"><span class="t-red"><b>Hypophyse antérieure</b></span></td><td><b>Cellules souches (spermatogonies)</b></td><td><b>Multiplication (mitoses)</b></td></tr>
+<tr><td><b>Cellules de Sertoli (cellules somatiques)</b></td><td><b>1) Synthèse et sécrétion de l’ABP.<br>2) Synthèse et sécrétion de l’inhibine.</b></td></tr>
+<tr><td colspan="2"><span class="t-blue"><b>L.H (peptide)</b></span></td><td><b>Cellules de Leydig</b></td><td><b>Synthèse et production de la testostérone</b></td></tr>
+<tr><td colspan="2"><span class="t-blue"><b>Gn-Rh (peptide)</b></span></td><td><span class="t-navy"><b>Neurones hypothalamiques (cellules nerveuses de l’hypothalamus)</b></span></td><td><b>Cellules hypophysaires (hypophyse antérieure) sécrétrices de LH et de FSH.</b></td><td><b>Synthèse et sécrétion des gonadotrophines (LH et FSH)</b></td></tr>
+<tr><td colspan="5"><b><i>Rétrocontrôle négatif (testiculaire)</i></b></td></tr>
+<tr><td colspan="2" rowspan="2"><b>Testostérone (forte dose)</b></td><td rowspan="2"><b>Cellules de Leydig</b></td><td>Hypothalamus</td><td>Rétrocontrôle négatif sur la sécrétion de la GnRh</td></tr>
+<tr><td>Cellules hypophysaires sécrétrices de LH</td><td>Rétrocontrôle négatif sur la sécrétion de la LH uniquement</td></tr>
+<tr><td colspan="2"><b>Inhibine</b></td><td><b>Cellules de Sertoli</b></td><td>Cellules hypophysaires (ou gonadotropes) sécrétrices de FSH</td><td>Rétrocontrôle négatif sur la sécrétion de la FSH uniquement</td></tr>
+</table>
+<!-- page 07 -->
+<div class="exsub"><span class="t-red">QROC 4</span></div>
+<p class="para">Le document ci-contre représente une coupe schématique du testicule d’un mammifère.</p>
+<!-- CROP: 4051 1 7 0.604 0.079 0.970 0.290 4051_p07_coupe_testicule_mammifere -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p07_coupe_testicule_mammifere.png" alt=""></figure>
+<ol class="qn">
+<li><span class="t-blue"><b>Annotez</b></span> ce document.</li>
+<li><span class="t-blue"><b>Indiquez</b></span> les particularités cytologiques et chromosomiques de l’élément 7.</li>
+<li>L’évolution de l’élément 2 en élément 7 est assurée par un phénomène cellulaire <b>P</b>.<br>
+<span class="t-red"><b>a.</b></span> <span class="t-blue"><b>nommez</b></span> le phénomène cellulaire <b>P</b>.<br>
+<span class="t-red"><b>b.</b></span> <span class="t-blue"><b>représentez</b></span> à l’aide d’un schéma légendé les étapes du phénomène cellulaire <b>P</b>.<br>
+<span class="t-red"><b>c.</b></span> <span class="t-blue"><b>expliquez</b></span> le contrôle hormonal du phénomène cellulaire <b>P</b>.</li>
+</ol>
+<div class="exsub"><span class="t-red">QROC 5</span></div>
+<p class="para">Le document 1 représente un schéma simplifié du déroulement de la spermatogenèse.</p>
+<!-- CROP: 4051 1 7 0.070 0.320 0.957 0.525 4051_p07_document1_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p07_document1_spermatogenese.png" alt=""></figure>
+<p class="para" style="text-align:center"><b>Document 1</b></p>
+<p class="para"><b>1) a-</b> Identifiez les phases A, B, C et D de la spermatogenèse.<br>
+<b>b-</b> Nommez les cellules désignées par les flèches 1, 2, 3, 4 et 5.<br>
+<b>c-</b> Précisez le nombre et l’état des chromosomes des cellules désignées par les flèches 1, 2, 3, 4 et 5.</p>
+<p class="para"><b>2)</b> Expliquez le mécanisme du contrôle hormonal du déroulement de la spermatogenèse.</p>
+<div class="exsub"><b><u>QROC 6 (bac sc P20):</u></b></div>
+<p class="para">Le document 1 présente schématiquement des relations R1, R2 et R3, qui s’établissent entre l’hypothalamus, l’hypophyse antérieure et les testicules d’un homme normal.</p>
+<!-- CROP: 4051 1 7 0.414 0.607 0.958 0.873 4051_p07_document1_relations_R1_R2_R3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p07_document1_relations_R1_R2_R3.png" alt=""></figure>
+<p class="para" style="text-align:center"><b>Document 1</b></p>
+<p class="para">1. <span class="t-red"><b>Proposez un protocole expérimental</b></span> permettant de montrer la nature hormonale de la relation R2.</p>
+<p class="para">2. <span class="t-red"><b>Nommez</b></span> les substances sécrétées par les testicules et précisez leurs origines.</p>
+<p class="para">3. <span class="t-red"><b>Expliquez</b></span> comment les relations R1, R2 et R3 interviennent dans la régulation du fonctionnement testiculaire.</p>
+<!-- page 08 -->
+<div class="exsub"><b><u>QROC 7 : bac MP21</u></b></div>
+<div class="data">
+<p class="para">Le document 1 est une interprétation schématique de la structure histologique d’une portion de testicule d’un mammifère pubère.</p>
+<p class="para"><b>1)</b> Légendez le document 1 en reportant les numéros des flèches sur votre copie.</p>
+<!-- CROP: 4051 1 8 0.482 0.092 0.853 0.197 4051_p08_document1_portion_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p08_document1_portion_testicule.png" alt=""></figure>
+<p class="para" style="text-align:center"><b>Document 1</b></p>
+<p class="para"><b>2)</b> Précisez le nombre et l’état des chromosomes (dupliqués ou simples) des cellules 2, 3, 4 et 6.<br>
+<b>3)</b> Expliquez le rôle de la cellule indiquée par la flèche 5 dans la spermatogenèse.</p>
+<p class="para"><b>Constat :</b> dans les clubs de musculation, on dope les athlètes par des anabolisants stéroïdiens ; substances dont la structure est analogue à celle secrétée par la cellule 1. Ce dopage pendant une longue période, provoque une atrophie des testicules et une stérilité de l’athlète.</p>
+<p class="para"><b>4)</b> Proposez une explication du mécanisme à l’origine des effets secondaires des anabolisants stéroïdiens sur la fertilité des athlètes.</p>
+</div>
+<!-- page 09 -->
+<p class="subhead t-red"><u>Eléments du corrigé</u></p>
+<table>
+<tr><th>Correction</th><th>QCM 1</th></tr>
+<tr><td>1)</td><td>a, c</td></tr>
+<tr><td>2)</td><td>b, d</td></tr>
+<tr><td>3)</td><td>d</td></tr>
+<tr><td>4)</td><td>b, c</td></tr>
+<tr><td>5)</td><td>a, d</td></tr>
+<tr><td>6)</td><td>d</td></tr>
+<tr><td>7)</td><td>b, d</td></tr>
+<tr><td>8)</td><td>b, c</td></tr>
+<tr><td>9)</td><td>a, c</td></tr>
+<tr><td>10)</td><td>b, c</td></tr>
+<tr><td>11)</td><td>d</td></tr>
+<tr><td>12)</td><td>a</td></tr>
+<tr><td>13)</td><td>b, d</td></tr>
+<tr><td>14)</td><td>a</td></tr>
+<tr><td>15)</td><td>b, c</td></tr>
+<tr><td>16)</td><td>b, c</td></tr>
+<tr><td>17)</td><td>d</td></tr>
+<tr><td>18)</td><td>b, c</td></tr>
+<tr><td>19)</td><td>a</td></tr>
+<tr><td>20)</td><td>c</td></tr>
+<tr><td>21)</td><td>d</td></tr>
+<tr><td>22)</td><td>a</td></tr>
+<tr><td>23)</td><td>d</td></tr>
+<tr><td>24)</td><td>b</td></tr>
+<tr><td>25)</td><td>c</td></tr>
+<tr><td>26)</td><td>a, b</td></tr>
+<tr><td>27)</td><td>d</td></tr>
+<tr><td>28)</td><td>a, d</td></tr>
+<tr><td>29)</td><td>b</td></tr>
+<tr><td>30)</td><td>a</td></tr>
+<tr><td>31)</td><td>b</td></tr>
+<tr><td>32)</td><td>b et d</td></tr>
+<tr><td>33)</td><td>b et c</td></tr>
+<tr><td>34)</td><td>a et c</td></tr>
+<tr><td>35)</td><td>a et c</td></tr>
+<tr><td>36)</td><td>c</td></tr>
+<tr><td>37)</td><td>b et d</td></tr>
+<tr><td>38)</td><td>b</td></tr>
+<tr><td>39)</td><td></td></tr>
+</table>
+<div class="exsub"><span class="t-red"><u>Corrige du QROC 1</u></span></div>
+<p class="para"><span class="t-navy">1. <u>Légende :</u></span><br>
+<u>1- Spermatozoïde 2- Spermatide 3- Spermatocyte II 4- Spermatocyte 5- Spermatogonie</u></p>
+<p class="para"><u> </u><span class="t-red">Recommandations :</span></p>
+<ul class="b">
+<li><span class="t-blue"><u>Les abréviations ne sont pas acceptées</u></span><u>, il faut écrire les mots <b><span class="t-navy">en toutes lettres</span></b></u></li>
+<li><u>Pour légender il faut suivre la pointe de la flèche</u></li>
+</ul>
+<p class="para">1.</p>
+<table>
+<tr><th>Correspondance</th><th>Cellule A correspond à l’élément 3</th><th>Cellule B correspond à l’élément 2</th><th>Cellule C correspond à l’élément 4</th></tr>
+<tr><td><b>Justification</b></td><td>La cellule est à n=4 chromosomes entiers placés en plaque équatoriale c’est donc un spermatocyte II en métaphase II</td><td>La cellule est à n=4 chromosomes simples donc c’est une spermatide</td><td>La cellule est à 2n=8 chromosomes entiers placés en plaque équatoriale associés en bivalents Spermatocyte I en métaphase I</td></tr>
+</table>
+<!-- PROOFREAD: 4051 part1 p09 — a stray "1." is printed over the "C" of "Correspondance"; kept as a separate line -->
+<p class="para"><span class="t-red"><b>Conseil : On vous conseille de traiter ce genre de question dans un tableau pour une meilleure organisation de la réponse</b></span></p>
+<p class="para">2. <span class="t-red"><u>Ordre</u></span> <u>C→A→B</u></p>
+<p class="para">3.</p>
+<table>
+<tr><th>Cellules</th><th>Cellule de Sertoli</th><th>Cellules de Leydig</th></tr>
+<tr><td><b>- Rôles</b> physiologique</td><td><b>-</b> Activation de la spermatogenèse par le biais de l’ABP.<br><b>-</b> RC(-) sur la sécrétion de FSH par le biais de l’inhibine.<br>-Rôle nourricier.</td><td>- Activation de la spermatogenèse par le biais de la testostérone.<br>- RC (-) sur la sécrétion de LH et de G n-RH par le biais de la testostérone.<br>- Apparition et maintien des caractères sexuels secondaires.</td></tr>
+</table>
+<div class="exsub"><span class="t-red">Corrigé du QROC 2</span></div>
+<p class="para"><b>1)</b></p>
+<!-- CROP: 4051 1 9 0.255 0.492 0.906 0.705 4051_p09_phases_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p09_phases_spermatogenese.png" alt=""></figure>
+<p class="para" style="text-align:center"><b>Les phases de la spermatogenèse</b></p>
+<p class="para"><b>2)</b></p>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
+<tr><td>Acrosome</td><td>Noyau</td><td>Mitochondrie</td><td>Tête</td><td>Pièce intermédiaire</td><td>Flagelle</td></tr>
+</table>
+<p class="para"><b>3)</b></p>
+<table>
+<tr><th>Structures</th><th>Rôles</th></tr>
+<tr><td><b>1</b></td><td>Facilite la pénétration du Spz dans l’ovocyte</td></tr>
+<tr><td><b>2</b></td><td>Rétablissement de la diploïdie</td></tr>
+<tr><td><b>3</b></td><td>Production de l’énergie</td></tr>
+<tr><td><b>6</b></td><td>Assure la mobilité du Spz</td></tr>
+</table>
+<!-- page 10 -->
+<div class="exsub"><span class="t-red"><u>Corrigé du QROC 5</u></span></div>
+<p class="para"><b>1)</b> a- A : multiplication, B : accroissement, C : maturation, D : différenciation<br>
+<b>b-</b> 1 : spermatogonie, 2 : spermatocyte I, 3 : spermatocyte II, 4 : spermatide, 5 : spz<br>
+<b>c-</b> 1 : 2n chromosomes simples, 2:2n chromosomes dédoublés, 3: n chromosomes dédoublés, 4 et 5 n chromosomes simples,<br>
+<b>2)</b></p>
+<!-- CROP: 4051 1 10 0.202 0.176 0.732 0.435 4051_p10_schema_controle_spermatogenese -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4051/4051_p10_schema_controle_spermatogenese.png" alt=""></figure>
+<p class="para">0.5pt<br>0.5pt</p>
+<div class="exsub"><span class="t-red">Corrigé du QROC 6</span></div>
+<p class="para"><b>3)</b> ✓<span class="t-red">Ablation</span> de l’hypophyse chez un rat pubère ⇒ Troubles des fonctions testiculaires<br>
+✓<span class="t-red">Injection</span> d’extraits hypophysaires au même rat hypophysectomisé ⇒ Correction des troubles de l’hypophysectomie.</p>
+<table>
+<tr><th rowspan="2">Question 2</th><td>Substances</td><td>Testostérone</td><td>Inhibine, ABP</td></tr>
+<tr><td>Origine</td><td>Cellules de Leydig</td><td>Cellules de Sertoli</td></tr>
+</table>
+<p class="para"><b>3)</b><br>
+- R1 : La GnRH agit sur l’hypophyse antérieure et stimule la sécrétion de LH et de FSH.<br>
+- R2 :<br>
+• La LH agit sur les cellules interstitielles et stimule la sécrétion de la testostérone.<br>
+• La FSH agit sur les cellules de Sertoli et stimule la sécrétion de l’ABP et de l’inhibine : l’ABP favorise la fixation de la testostérone sur les cellules germinales, ce qui active la spermatogenèse,<br>
+- R3 : Toute hausse du taux de testostérone par rapport aux valeurs de référence accentue le freinage sur l’axe HH. Il se produit alors une baisse de LH et le testicule, moins stimulé, abaisse sa production de testostérone.</p>
+
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · REVISION-REP-HUMAINE-FEC-BAC-2023</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Source non indiquée">
+<meta data-pagefind-meta="n[content]" content="4030">
+<meta data-pagefind-meta="title[content]" content="REVISION-REP-HUMAINE-FEC-BAC-2023">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="chapter[content]" content="Procréation (fécondation, nidation, maîtrise)">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · REVISION-REP-HUMAINE-FEC-BAC-2023" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>REVISION-REP-HUMAINE-FEC-BAC-2023</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Sujet BAC</span><span class="tg">Révision</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1uHPlPs-_3d9AerN8FkoG7gpYmKtSpTxD/view">↗ REVISION-REP-HUMAINE-FEC-BAC-2023.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (2)</b><ul><li><a href="https://drive.google.com/file/d/1uHPlPs-_3d9AerN8FkoG7gpYmKtSpTxD/view">Anas Saïd · IDEAL BAC MATH(Anas Saïd) › SVT / science / Révision Mai-Juin</a></li><li><a href="https://drive.google.com/file/d/1QlGjArhOWGFAE8QRZ--P0vDulHW9nO2x/view">Karim Fourati · Bac 2KF25 › SVT / Mme Hend(LPM8) / Révision Mai-Juin</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+<div class="exh"><span class="idx ex">Série</span><h2>REVISION REPRODUCTION HUMAINE FECONDATION</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4030.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Source non indiquée dans le document</span> <span class="tg">Sujet BAC</span><span class="tg">Révision</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1uHPlPs-_3d9AerN8FkoG7gpYmKtSpTxD/view">↗ REVISION-REP-HUMAINE-FEC-BAC-2023.pdf</a></div>
+<!-- page 01 -->
+<p class="subhead t-red"><b><span class="t-red">REVISION</span></b></p>
+<p class="subhead t-red"><b><span class="t-red">REPRODUCTION HUMAINE</span></b></p>
+<p class="subhead t-navy"><b><span class="t-blue">FECONDATION</span></b></p>
+<p class="subhead"><b><span class="t-red">4EME MATHS</span></b></p>
+<!-- NOTE: decorative cover photo (leaf on burnt wood) on page 01 not cropped — decoration -->
+<p class="para"><b>2022-2023</b></p>
+<!-- page 02 -->
+<p class="subhead t-red"><b><span class="t-gold">ENONCES</span></b></p>
+<p class="subhead t-navy"><b>QROC HOMME/FEMME</b></p>
+<div class="exsub">EXERCICE 1</div>
+<p class="para">Chez l'homme, comme chez la femme, la fonction reproductrice met en jeu des mécanismes régulateurs impliquant différentes structures et hormones.</p>
+<p class="consigne"><b>1)</b> Reproduisez, sur votre copie, le tableau suivant et complétez-le par ce qui convient.</p>
+<table>
+<tr><th rowspan="2"></th><th colspan="2">Structure(s) cible(s)</th><th colspan="2">Effets physiologiques sur la (les) structure(s) cible(s)</th></tr>
+<tr><th>homme</th><th>femme</th><th>homme</th><th>femme</th></tr>
+<tr><td><b>LH</b></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><b>FSH</b></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><b>Gn-RH</b></td><td colspan="2"></td><td colspan="2"></td></tr>
+</table>
+<p class="consigne"><b>2)</b> Les hormones produites par les gonades agissent sur le complexe hypothalamohypophysaire. Précisez le (ou les) effet(s) de chaque hormone sur le complexe hypothalamohypophysaire et indiquez la (ou les) conséquence(s) de chaque effet sur la sécrétion de Gn-RH, LH et FSH.</p>
+<div class="exsub">EXERCICE 2</div>
+<p class="para">Le document 1 illustre des interactions hormonales entre des organes (O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>) et des structures (S<sub>1</sub>, S<sub>2</sub> et S<sub>3</sub>) impliqués dans la fonction reproductrice chez l'espèce humaine.</p>
+<!-- CROP: 4030 1 2 0.525 0.483 0.945 0.812 4030_doc1_p02 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc1_p02.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<p class="consigne"><b>1)</b> Nommez :</p>
+<ul class="dash">
+<li>les organes O<sub>1</sub>, O<sub>2</sub> et O<sub>3</sub>.</li>
+<li>les structures S<sub>1</sub>, S<sub>2</sub> et S<sub>3</sub>.</li>
+<li>les hormones H<sub>1</sub>, H<sub>2</sub>, H<sub>3</sub>, H<sub>4</sub>, H<sub>5</sub> et H<sub>6</sub>.</li>
+</ul>
+<p class="consigne"><b>2)</b> Indiquez les effets physiologiques de chacune des deux hormones H<sub>1</sub> et H<sub>2</sub> sur les structures cibles mentionnées dans le document 1.</p>
+<p class="consigne"><b>3)</b> Précisez l'effet de chacune des hormones H<sub>3</sub>, H<sub>4</sub>, H<sub>5</sub> et H<sub>6</sub> sur la sécrétion de la GnRH.</p>
+<!-- page 03 -->
+<p class="subhead t-navy"><b>Fonction reproductrice chez l'homme</b></p>
+<p class="para">On se propose de déterminer les interactions hormonales entre l'hypophyse et les testicules. Pour cela on se réfère aux résultats d'expériences réalisées sur des rats, dont la fonction reproductrice est analogue à celle de l'homme.</p>
+<p class="para"><b>Expérience 1</b> :<br>
+On injecte des gonadostimulines (FSH et LH) à deux lots de rats impubères. Le premier lot est traité par la FSH, le second par la LH. Par une technique appropriée, on détecte les cellules testiculaires activées.</p>
+<p class="para">Les résultats obtenus sont indiqués dans le document 4.</p>
+<table>
+<tr><th></th><th>Spermatogonies</th><th>Cellules de Sertoli</th><th>Cellules de Leydig</th></tr>
+<tr><td>Lot 1 injecté de FSH</td><td>+</td><td>+</td><td>-</td></tr>
+<tr><td>Lot 2 injecté de LH</td><td>-</td><td>-</td><td>+</td></tr>
+<tr><td colspan="4">+ : cellules activées&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - : cellules non activées</td></tr>
+</table>
+<p class="subhead"><b>Document 4</b></p>
+<p class="consigne"><b>1)</b> Utilisez les résultats du document 4 et vos connaissances, afin de préciser l'action des gonadostimulines sur les cellules testiculaires.</p>
+<p class="para"><b>Expérience 2</b> :</p>
+<p class="para">On pratique une castration bilatérale d'un rat pubère R<sub>1</sub> au temps <b>t<sub>1</sub></b>, puis on lui injecte des extraits testiculaires au temps <b>t<sub>2</sub></b>.</p>
+<p class="para">On réalise chez cet animal, des dosages des taux plasmatiques de LH et de FSH :</p>
+<ul class="dash">
+<li>avant et après la castration,</li>
+<li>après l'injection d'extraits testiculaires.</li>
+</ul>
+<p class="para">Les résultats obtenus sont représentés par le document 5.</p>
+<p class="consigne"><b>2)</b> Exploitez les données du document 5 afin de préciser les interactions hormonales entre l'hypophyse et les testicules.</p>
+<!-- CROP: 4030 1 3 0.435 0.44 0.882 0.572 4030_doc5_p03 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc5_p03.png" alt=""></figure>
+<p class="subhead"><b>Document 5</b></p>
+<p class="para"><b>Expérience 3 :</b><br>
+On isole une substance (S) de l'extrait testiculaire du rat R<sub>1</sub> que l'on injecte à un rat pubère R<sub>2</sub>.<br>
+On réalise chez R<sub>2</sub> avant et après l'injection de la substance (S) :</p>
+<ul class="dash">
+<li>le dosage des taux plasmatiques des gonadostimulines (LH et FSH),</li>
+<li>le dénombrement des spermatozoïdes dans le sperme.</li>
+</ul>
+<p class="para">Le document 6 illustre, graphiquement, les résultats obtenus.</p>
+<!-- CROP: 4030 1 3 0.238 0.682 0.745 0.836 4030_doc6_p03 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc6_p03.png" alt=""></figure>
+<p class="subhead"><b>Document 6</b></p>
+<p class="consigne"><b>3)</b> En vous basant sur les données du document 6 et en utilisant vos connaissances :<br>
+<b>a-</b> expliquez l'effet de la substance (S) sur la sécrétion des gonadostimulines et le nombre de spermatozoïdes.<br>
+<b>b-</b> identifiez la substance « S ».</p>
+<p class="consigne"><b>4)</b> En vous limitant aux informations tirées des expériences précédentes, illustrez par un schéma fonctionnel, les interactions hormonales existant entre l'hypophyse et les testicules chez l'homme.</p>
+<!-- page 04 -->
+<div class="exsub">EXERCICE 2</div>
+<p class="para">Les mécanismes de la régulation des fonctions testiculaires chez l'homme font intervenir des interactions hormonales entre le complexe hypothalamo-hypophysaire et les testicules.<br>
+Pour comprendre ces mécanismes, on se réfère&nbsp; à une étude médicale réalisée chez un garçon pubère normal et à une étude réalisée chez deux garçons X et Y âgés de 19 ans et présentant des troubles de la puberté.</p>
+<p class="para">- Le document 2 représente des schémas d'interprétation d'observations microscopiques testiculaires réalisées chez un garçon pubère normal (document 2a) et chez les deux garçons X et Y (document 2b).<br>
+- Le document 3 représente les résultats du dosage de testostérone&nbsp; durant 24 heures chez le garçon pubère normal (document 3a) et chez les garçons X et Y (document 3b).</p>
+<!-- CROP: 4030 1 4 0.083 0.168 0.497 0.263 4030_doc2a_p04 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc2a_p04.png" alt=""></figure>
+<p class="subhead"><b>Document&nbsp; 2a</b></p>
+<!-- CROP: 4030 1 4 0.497 0.168 0.912 0.263 4030_doc2b_p04 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc2b_p04.png" alt=""></figure>
+<p class="subhead"><b>Document 2b</b></p>
+<p class="subhead"><b>Document 2</b></p>
+<!-- CROP: 4030 1 4 0.083 0.277 0.497 0.343 4030_doc3a_p04 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc3a_p04.png" alt=""></figure>
+<p class="subhead"><b>Document 3a</b></p>
+<!-- CROP: 4030 1 4 0.497 0.277 0.912 0.343 4030_doc3b_p04 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc3b_p04.png" alt=""></figure>
+<p class="subhead"><b>Document 3b</b></p>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne"><b>1)</b><br>
+<b>a-</b> Comparez l'aspect testiculaire observé chez les garçons X et Y à celui du garçon pubère normal.<br>
+<b>b-</b> Faites une analyse comparée des résultats du dosage de testostérone (document 3).<br>
+<b>c-</b> En vous basant sur vos réponses précédentes (1-a et 1-b), établissez un lien entre la structure microscopique des testicules et la sécrétion de testostérone observée chez les garçons X et Y.<br>
+<b>d-</b> Proposez trois causes possibles qui pourraient être à l'origine des troubles observés chez les garçons X et Y.</p>
+<ul class="dash">
+<li>Le document 4 représente les résultats du dosage de LH et de FSH observés chez le garçon normal et chez les garçons X et Y.</li>
+<li>Le document 5 représente les résultats de deux tests de stimulation réalisés chez les garçons X et Y.</li>
+</ul>
+<table>
+<tr><th></th><th>Concentration de LH (UI.L<sup>-1</sup>)</th><th>Concentration de FSH (UI.L<sup>-1</sup>)</th></tr>
+<tr><td><b>Garçon pubère normal</b></td><td>2 à 10</td><td>1 à 12</td></tr>
+<tr><td><b>Garçons X et Y</b></td><td>0,5&nbsp; à 0,9</td><td>0,1 à&nbsp; 0,4</td></tr>
+</table>
+<p class="subhead"><b>Document 4</b></p>
+<table>
+<tr><th>Tests de stimulation</th><th>Résultats</th></tr>
+<tr><td><b>Test 1 :</b> Injections de HCG, dont l'action est analogue à celle de la LH, aux garçons&nbsp; X et Y.</td><td>-&nbsp;&nbsp; Correction des troubles de la sécrétion de testostérone chez les deux garçons.<br>-&nbsp;&nbsp; Aucune modification de l'aspect de la paroi du tube séminifère des deux garçons.</td></tr>
+<tr><td><b>Test 2 :</b> Injections d'un mélange de HCG et de FSH aux garçons&nbsp; X et Y.</td><td>-&nbsp;&nbsp; Correction des troubles de la sécrétion de testostérone chez les deux garçons.<br>-&nbsp;&nbsp; Aspect testiculaire des deux garçons devient analogue à celui du garçon normal.</td></tr>
+</table>
+<p class="subhead"><b>Document 5</b></p>
+<p class="consigne"><b>2)</b> Exploitez les résultats fournis par les documents 4 et 5 et vos connaissances en vue :<br>
+<b>a-</b>&nbsp;&nbsp; d'expliquer les résultats des tests 1 et 2.<br>
+<b>b-</b>&nbsp;&nbsp; de préciser parmi les causes proposées dans la réponse 1-d celle(s) qui est (sont) à retenir.</p>
+<p class="para">Le document 6 représente les résultats de tests réalisés chez le garçon normal et chez les garçons X et Y.</p>
+<table>
+<tr><th></th><th>Test 3</th><th>Test 4</th><th>Test 5</th><th>Test 6</th></tr>
+<tr><td><b>Tests</b></td><td>Dosage de GnRH chez le garçon normal.</td><td>Dosage de GnRH chez le garçon X.</td><td>Dosage de GnRH chez le garçon Y.</td><td>Injections de GnRH chez le garçon Y suivies de dosage de LH et de FSH.</td></tr>
+<tr><td><b>Résultats</b></td>
+<td><!-- CROP: 4030 1 4 0.113 0.738 0.32 0.815 4030_doc6_test3_p04 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc6_test3_p04.png" alt=""></figure></td>
+<td><!-- CROP: 4030 1 4 0.32 0.738 0.525 0.815 4030_doc6_test4_p04 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc6_test4_p04.png" alt=""></figure></td>
+<td><!-- CROP: 4030 1 4 0.525 0.738 0.728 0.815 4030_doc6_test5_p04 --><figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc6_test5_p04.png" alt=""></figure></td>
+<td>Correction des troubles de sécrétion de LH et de FSH.</td></tr>
+</table>
+<p class="subhead"><b>Document 6</b></p>
+<p class="consigne"><b>3)</b><br>
+<b>a-</b> À partir de l'analyse comparée des résultats du dosage de GnRH chez le garçon normal (test 3) et chez le garçon X (test 4) et des données du document 3-b, expliquez le résultat du dosage de GnRH obtenu chez le garçon X (test 4).<br>
+<b>b-</b> D'après les informations précédentes, précisez la cause des troubles observés chez le garçon X.<br>
+<b>c-</b> Analysez le résultat du test 5 en vue de préciser la cause des troubles observés chez le garçon Y.<br>
+<b>d-</b> En vous basant sur les résultats du test 6, établissez la relation fonctionnelle entre hypothalamus et hypophyse.</p>
+<p class="consigne"><b>4)</b> En intégrant vos réponses aux questions précédentes et à l'aide de vos connaissances, représentez par un schéma fonctionnel les interactions hormonales responsables de la régulation du fonctionnement normal des testicules chez un garçon pubère.</p>
+<!-- page 05 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<p class="subhead t-navy"><b>Fonction reproductrice chez la femme</b></p>
+<div class="exsub">EXERCICE 1</div>
+<p class="para">On cherche à comprendre quelques aspects de la reproduction féminine. Pour cela, on se réfère aux résultats d'un test clinique et d'une expérience.</p>
+<p class="para"><b>Test clinique :</b><br>
+Des dosages plasmatiques de quatre hormones h<sub>1</sub>, h<sub>2</sub>, h<sub>3</sub> et h<sub>4</sub> réalisés, durant un mois, chez une femme à cycle sexuel normal donnent les résultats illustrés par les graphes du document 3.</p>
+<!-- CROP: 4030 1 5 0.53 0.144 0.933 0.495 4030_doc3_p05 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc3_p05.png" alt=""></figure>
+<p class="subhead"><b>Document 3</b></p>
+<p class="consigne"><b>1)</b> Identifiez les hormones h<sub>1</sub>, h<sub>2</sub>, h<sub>3</sub> et h<sub>4</sub>. Justifiez votre réponse.</p>
+<p class="consigne"><b>2)</b> Expliquez :<br>
+<b>a-</b>&nbsp; le déterminisme hormonal de la menstruation.<br>
+<b>b-</b>&nbsp; le mécanisme de la reprise du cycle ovarien.</p>
+<p class="para"><b>Expérience</b> :<br>
+Chez des guenons ovariectomisées (femelles de singe ayant un cycle sexuel analogue à celui de la femme), on fait varier :</p>
+<ul class="dash">
+<li>le taux plasmatique d'œstradiol, par modification de la taille des implants sous-cutanés.</li>
+<li>la période d'exposition de l'axe hypothalamo-hypophysaire à l'œstradiol, par modification de la durée des implants sous-cutanés.</li>
+</ul>
+<p class="para">et on mesure dans la tige pituitaire (ou hypothalamo-hypophysaire) les taux plasmatiques de la GnRH.<br>
+Le document 4 résume les conditions expérimentales et les résultats obtenus.</p>
+<table>
+<tr><th rowspan="2">Conditions expérimentales</th><th colspan="2">Implants sous-cutanés d'œstradiol</th><th rowspan="2">Résultats : présence (+) ou absence (-) du pic pré-ovulatoire de GnRH</th></tr>
+<tr><th>Taille (mm)</th><th>Durée de l'exposition (h)</th></tr>
+<tr><td>1</td><td>30</td><td>7</td><td>(-)</td></tr>
+<tr><td>2</td><td>30</td><td>24</td><td>(+)</td></tr>
+<tr><td>3</td><td>30</td><td>36</td><td>(+)</td></tr>
+<tr><td>4</td><td>5</td><td>24</td><td>(-)</td></tr>
+</table>
+<p class="subhead"><b>Document 4</b></p>
+<p class="consigne"><b>3)</b> En vous basant sur la comparaison des résultats obtenus et vos connaissances, dégagez deux conditions nécessaires à l'ovulation.</p>
+<p class="consigne"><b>4)</b> En vous limitant aux informations dégagées des documents 3 et 4 présentez sous forme d'un schéma fonctionnel le déterminisme hormonal de l'ovulation.</p>
+<!-- page 06 -->
+<div class="exsub">EXERCICE 2</div>
+<p class="para">Madame X, mariée depuis cinq ans, n'étant soumise à aucun traitement hormonal, n'arrive pas à procréer. Elle&nbsp; décide de consulter un gynécologue afin de remédier à cette stérilité.</p>
+<p class="consigne"><b>1)</b> Le document 3 représente l'évolution de la densité de la glaire cervicale et la dimension de ses mailles au cours d'un cycle menstruel de 28 jours, chez une femme fertile (document 3a) et chez madame X (document 3b).</p>
+<!-- CROP: 4030 1 6 0.072 0.127 0.912 0.224 4030_doc3a_p06 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc3a_p06.png" alt=""></figure>
+<p class="subhead"><b>Document 3a</b></p>
+<!-- CROP: 4030 1 6 0.072 0.236 0.912 0.326 4030_doc3b_p06 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc3b_p06.png" alt=""></figure>
+<p class="subhead"><b>Document 3b</b></p>
+<p class="subhead"><b>Document 3</b></p>
+<p class="para">Le document 4 représente l'évolution de la vitesse de progression des spermatozoïdes dans la glaire cervicale chez une femme fertile (document 4a) et chez madame X (document 4b).</p>
+<!-- CROP: 4030 1 6 0.062 0.386 0.494 0.464 4030_doc4a_p06 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc4a_p06.png" alt=""></figure>
+<p class="subhead"><b>Document&nbsp; 4a</b></p>
+<!-- CROP: 4030 1 6 0.492 0.386 0.93 0.464 4030_doc4b_p06 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc4b_p06.png" alt=""></figure>
+<p class="subhead"><b>Document 4b</b></p>
+<p class="subhead"><b>Document 4</b></p>
+<p class="consigne">Comparez, chez les deux femmes, l'évolution des paramètres étudiés (caractéristiques de la glaire et vitesse de progression des spermatozoïdes) en vue d'expliquer la cause de la stérilité de madame X.</p>
+<p class="consigne"><b>2)</b> Suite à une échographie, les deux ovaires de madame X se sont montrés identiques et présentant l'aspect illustré par le document 5.</p>
+<!-- CROP: 4030 1 6 0.462 0.52 0.912 0.64 4030_doc5_p06 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc5_p06.png" alt=""></figure>
+<p class="subhead"><b>Document 5</b></p>
+<p class="consigne">Exploitez les informations fournies par le document 5 et faites appel à vos connaissances en vue de dégager une nouvelle information en rapport avec l'aspect de la glaire de madame X.</p>
+<p class="consigne"><b>3)</b> Le document 6 résume l'évolution des taux plasmatiques de LH et d'œstradiol chez madame X au cours d'un cycle sexuel de 28 jours.</p>
+<!-- CROP: 4030 1 6 0.305 0.658 0.932 0.783 4030_doc6_p06 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc6_p06.png" alt=""></figure>
+<p class="subhead"><b>Document 6</b></p>
+<p class="consigne">Analysez les courbes du document&nbsp; 6 afin :<br>
+<b>a-</b>&nbsp; d'expliquer la stérilité de madame X.<br>
+<b>b-</b>&nbsp; de proposer deux hypothèses expliquant l'aspect des ovaires de madame X.</p>
+<p class="consigne"><b>4)</b> Sachant que l'injection de doses convenables de Gn-RH à madame X corrige sa stérilité, précisez alors laquelle des hypothèses proposées serait à retenir.</p>
+<p class="consigne"><b>5)</b> En vous limitant aux informations fournies par les questions précédentes, représentez à l'aide d'un schéma fonctionnel, les interactions qui existent entre les structures anatomiques mises en jeu chez une femme fertile.</p>
+<!-- page 07 -->
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<p class="subhead t-navy"><b>Fécondation</b></p>
+<div class="exsub">EXERCICE 1</div>
+<p class="para">Au cours de la vie génitale de la femme, les structures A, B et C du document 1 peuvent être observées à différents niveaux de l'appareil reproducteur, suite à des phénomènes physiologiques particuliers.</p>
+<!-- CROP: 4030 1 7 0.144 0.158 0.946 0.386 4030_doc1_p07 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc1_p07.png" alt=""></figure>
+<p class="subhead"><b>Document 1</b></p>
+<p class="consigne"><b>1-</b> Identifiez&nbsp; les structures A, B et C.</p>
+<p class="consigne"><b>2-</b> Précisez le nombre de chromosomes des cellules C<sub>1</sub>, C<sub>2</sub> et C<sub>3</sub>.</p>
+<p class="consigne"><b>3-</b> Classez les structures A, B et C dans l'ordre chronologique de leur apparition au niveau de l'appareil génital de la femme.</p>
+<p class="consigne"><b>4-</b> Indiquez, pour chaque structure,&nbsp; le phénomène physiologique à l'origine de sa formation.</p>
+<div class="exsub">EXERCICE 2</div>
+<p class="para">On se propose de déterminer deux anomalies : une chromosomique et une génique chez un fœtus humain.<br>
+Le document 6 illustre schématiquement une des étapes de la fécondation humaine. Le nombre de chromosomes est réduit à 2n=4. Le couple d'allèles (a<sub>1</sub>, a<sub>2</sub>) est celui du gène qui contrôle une anomalie héréditaire.</p>
+<!-- CROP: 4030 1 7 0.49 0.556 0.938 0.89 4030_doc6_p07 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_doc6_p07.png" alt=""></figure>
+<p class="subhead"><b>Document 6</b></p>
+<p class="consigne"><b>1)</b> Exploitez le document 6 en vue&nbsp; d'identifier les éléments désignés par les numéros 1, 2, 3 et 4.</p>
+<p class="consigne"><b>2)</b> La cellule C serait à l'origine d'un fœtus présentant une anomalie chromosomique. Exploitez le document 6 en vue de préciser cette anomalie et d'expliquer son origine.</p>
+<p class="consigne"><b>3)</b> Exploitez le document 6 en vue de préciser le sexe du fœtus, la localisation du gène qui contrôle l'anomalie génique, le génotype du fœtus et les génotypes de ses parents.</p>
+<p class="consigne"><b>4)</b> En considérant uniquement l'anomalie génique, précisez en justifiant votre réponse, le phénotype du fœtus dans les deux cas suivants :<br>
+<b>a-</b> premier cas : la mère est atteinte.<br>
+<b>b-</b> deuxième cas : la mère est saine.</p>
+<!-- page 08 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+
+<p class="subhead t-red"><b><span class="t-gold">CORRECTION</span></b></p>
+<p class="subhead t-navy"><b>QROC HOMME/FEMME</b></p>
+<div class="exsub">EXERCICE 1</div>
+<p class="subhead"><b>1)</b></p>
+<table>
+<tr><th rowspan="2"></th><th colspan="2">Structure(s) cible(s)</th><th colspan="2">Effets physiologiques sur la (les) structure(s) cible(s)</th></tr>
+<tr><th>homme</th><th>femme</th><th>homme</th><th>Femme</th></tr>
+<tr><td>LH</td><td>cellule de Leydig</td><td>follicule mûr corps jaune</td><td>Stimule la sécrétion de testostérone</td><td>- Déclenche la rupture du follicule mûr<br>- Stimule la lutéinisation<br>- Stimule la sécrétion d'œstrogènes et de progestérone<br><b>NB : un seul effet est exigé.</b></td></tr>
+<tr><td>FSH</td><td>cellule de Sertoli</td><td>Follicules ovariens</td><td>Stimule la sécrétion de l'ABP et d'inhibine.</td><td>Stimule la croissance folliculaire<br>Stimule la sécrétion d'œstrogènes</td></tr>
+<tr><td>Gn-RH</td><td colspan="2">hypophyse</td><td colspan="2">Stimule la sécrétion de gonadostimulines</td></tr>
+</table>
+<p class="para"><b>2.5 points<br>=<br>0.25 x 10</b></p>
+<p class="subhead"><b>2)</b></p>
+<table>
+<tr><th>Hormones</th><th>Effets sur complexe hypothalamohypophysaire et conséquences</th></tr>
+<tr><td><b>Testostérone</b></td><td>Rétrocontrôle négatif sur le complexe hypothalamohypophysaire d'où diminution de la sécrétion de GnRH et LH.</td></tr>
+<tr><td><b>Progestérone</b></td><td rowspan="2">Rétrocontrôle négatif sur le complexe hypothalamohypophysaire d'où diminution de la sécrétion de GnRH, LH et FSH</td></tr>
+<tr><td><b>Œstrogènes à faible dose</b></td></tr>
+<tr><td><b>Œstrogènes à forte dose</b></td><td>Rétrocontrôle positif sur le complexe hypothalamohypophysaire d'où augmentation de la sécrétion de GnRH, LH et FSH</td></tr>
+<tr><td><b>Inhibine</b></td><td>Rétrocontrôle négatif sur l'hypophyse d'où diminution de la sécrétion de FSH</td></tr>
+</table>
+<p class="para"><b>1.5 pt</b><br>0.25 x4<br>= 1 pt<br>+<br>0.5 pt<br>(oestr. FD)</p>
+<div class="exsub">EXERCICE 2</div>
+<p class="subhead"><b>1)</b></p>
+<table>
+<tr><th colspan="2">Organes</th><th colspan="2">Structures</th></tr>
+<tr><td>O1</td><td>hypothalamus</td><td>S1</td><td>Cellule de Leydig</td></tr>
+<tr><td>O2</td><td>Hypophyse antérieure</td><td>S2</td><td>Corps jaune</td></tr>
+<tr><td>O3</td><td>utérus</td><td>S3</td><td>Cellule de Sertoli</td></tr>
+<tr><th colspan="4">Hormones</th></tr>
+<tr><td>H1</td><td>LH</td><td>H4</td><td>Progestérone</td></tr>
+<tr><td>H2</td><td>FSH</td><td>H5</td><td>Œstradiol</td></tr>
+<tr><td>H3</td><td>Testostérone</td><td>H6</td><td>Inhibine</td></tr>
+</table>
+<p class="para"><span class="t-red"><b>1) Attribuer 0,25 pts à chaque case.</b></span></p>
+<p class="subhead"><b>2)</b></p>
+<p class="para">Les effets physiologiques des hormones HI et H2 sur les structures cibles :</p>
+<table>
+<tr><th>H1 : LH</th><th>H2 : FSH</th></tr>
+<tr><td><b>Les effets physiologiques sur le corps jaune (S2) :</b><ul class="b"><li>stimulation du développement du corps jaune</li><li>stimulation de la sécrétion des hormones ovariennes.</li></ul></td><td><b>Les effets physiologiques des cellule de Sertoli (S3) :</b><ul class="b"><li>stimulation de la production d'ABP.</li><li>stimulation de la sécrétion d'inhibine.</li></ul></td></tr>
+<tr><td><b>Les effets physiologiques sur les cellules de Leydig (SI)</b><ul class="b"><li>stimulation de la sécrétion de testostérone.</li></ul></td><td><b>Les effets physiologiques sur les follicules :</b><ul class="b"><li>stimulation de la croissance folliculaire.</li><li>stimulation de la sécrétion d'œstradiol</li></ul></td></tr>
+</table>
+<p class="para"><span class="t-red"><b>2) Attribuer 0,25 pour chaque effet (0,75 pour la LH et 1 pour La FSH).</b></span></p>
+<p class="subhead"><b>3)</b> Les effets des hormones H3, H4, H5 et H6 sur la sécrétion de la GnRH :</p>
+<ul class="b">
+<li><u>La testostérone</u> : Inhibition de la sécrétion de la GnRH.</li>
+<li><u>La progestérone</u> : Inhibition de la sécrétion de la GnRH.</li>
+<li><u>L'œstradiol</u> : Inhibition de la sécrétion de la GnRH à faible dose et stimulation de la sécrétion de la GnRH à forte dose.</li>
+<li><u>L'inhibine </u>: Aucun effet sur de la sécrétion de la GnRH.</li>
+</ul>
+<p class="para"><span class="t-red"><b>3) Attribuer 0,25 pour chaque effet. Soit donc 1.25 pts au total</b></span></p>
+<!-- page 09 -->
+<p class="subhead t-navy"><b>Fonction reproductrice chez l'homme</b></p>
+<div class="exsub">EXERCICE 1</div>
+<p class="subhead"><b>1)</b></p>
+<ul class="dash">
+<li>L'injection de FSH active les cellules de Sertoli et les cellules germinales.</li>
+<li>L'injection de LH active les cellules de Leydig.</li>
+</ul>
+<ul class="b">
+<li>* la FSH stimule directement les cellules de Sertoli qui secrètent l'inhibine et l'ABP et indirectement les cellules germinales ;</li>
+<li>* la LH stimule les cellules de Leydig qui secrètent de la testostérone.</li>
+</ul>
+<p class="para"><b>1 point</b><br>(0,25 x 4)</p>
+<p class="subhead"><b>2)</b></p>
+<table>
+<tr><th>Exploitations</th><th>Interactions</th></tr>
+<tr><td>La castration fait augmenter la sécrétion pulsatile des gonadostimulines en amplitude et en fréquence.</td><td>Les testicules exercent un RC- sur l'hypophyse.</td></tr>
+<tr><td>L'injection d'extraits testiculaires est suivie d'une diminution progressive de la sécrétion des gonadostimulines vers les valeurs initiales.</td><td>Le RC exercé par le testicule sur l'hypophyse se fait par voie sanguine.</td></tr>
+</table>
+<p class="para"><b>2 points</b><br>(0,5 x 4)</p>
+<p class="subhead"><b>3)</b></p>
+<p class="para">a-&nbsp; Avant l'injection de (S) :</p>
+<ul class="dash">
+<li>Les trois paramètres sont constants</li>
+</ul>
+<p class="para">Après l'injection de (S) :</p>
+<ul class="dash">
+<li>La sécrétion de LH n'est pas perturbée (le taux reste constant) → Pas d'action de (S) sur les cellules hypophysaires sécrétrices de LH.</li>
+<li>La sécrétion de FSH diminue immédiatement, suivie d'une diminution du nombre de spermatozoïdes dans le sperme.</li>
+<li>La substance (S) agit sur les cellules hypophysaires sécrétrices de FSH en inhibant sa sécrétion.</li>
+</ul>
+<p class="para">b-&nbsp; La substance (S) est donc l'inhibine.</p>
+<p class="para"><b>1,75 point</b><br>a : 0,75 + 0,5<br>b : 0,5</p>
+<p class="subhead"><b>4)</b></p>
+<!-- CROP: 4030 1 9 0.088 0.494 0.812 0.69 4030_schema_p09 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_schema_p09.png" alt=""></figure>
+<p class="para"><b>1,25 point</b></p>
+<div class="exsub">EXERCICE 2</div>
+<p class="subhead">1.</p>
+<p class="para">a.</p>
+<table>
+<tr><th></th><th>Document 2a</th><th>Document 2b</th></tr>
+<tr><td>Cellules de Leydig</td><td>Nombreuses<br>(ou développées)</td><td>Peu nombreuses<br>(ou atrophiées)</td></tr>
+<tr><td>Cellules de Sertoli</td><td>Développées</td><td>Atrophiées</td></tr>
+<tr><td>Cellules germinales</td><td>Toutes les catégories sont présentes</td><td>Seules les spermatogonies sont présentes</td></tr>
+<tr><td>Spermatozoïdes</td><td>Présents</td><td>Absents</td></tr>
+</table>
+<p class="para"><span class="t-red">1 point</span></p>
+<p class="para">b.&nbsp; Chez le garçon pubère normal, on remarque que la sécrétion de la testostérone est pulsatile et de concentration entre 300 et 600 ng/dl ; par contre chez les garçons X et Y, la sécrétion de la testostérone est très faible.</p>
+<p class="para"><span class="t-red">0.5 point</span></p>
+<p class="para">c.&nbsp; Chez les garçons X et Y, les cellules de Leydig peu nombreuses et atrophiées secrètent un taux très faible de testostérone.</p>
+<p class="para"><span class="t-red">0.5 point</span></p>
+<!-- PROOFREAD: 4030 part1 p09 — exercice 2 correction printed in a degraded (pixelated) font; readings of "ng/dl", "0.5 point" uncertain -->
+<!-- page 10 -->
+<p class="para">d.&nbsp; <u>Cause 1 :</u> anomalie au niveau des testicules : testostérone<br>
+<u>Cause 2 :</u> anomalie au niveau de l'hypophyse : LH et FSH<br>
+<u>Cause 3 :</u> anomalie au niveau de l'hypothalamus : GnRH<br>
+(accepter toute autre formulation en adéquation avec les causes précédentes).</p>
+<p class="para"><span class="t-red">(0.25x 3=0.75 point)</span></p>
+<p class="para">2.&nbsp; Exploitation :</p>
+<ul class="dash">
+<li>Les résultats de dosages de LH et de FSH chez les trois garçons montrent des taux faibles de gonadostimulines chez X et Y par rapport à ceux observés chez le garçon normal.</li>
+<li>Les injections de HCG corrigent les troubles de la sécrétion de testostérone chez les deux garçons X et Y mais n'ont aucun effet sur la paroi du tube séminifère.</li>
+<li>Les injections d'un mélange de HCG et de FSH aux garçons X et Y corrigent les troubles de sécrétion de testostérone et assurent le rétablissement de l'aspect testiculaire normal.</li>
+</ul>
+<p class="para"><span class="t-red">0.75 point</span></p>
+<p class="para">a.&nbsp; Explication :<br>
+⇨ La LH stimule les cellules de Leydig qui se développent et secrètent la testostérone.<br>
+⇨ La FSH stimule les cellules de Sertoli qui se développent et secrètent l'ABP indispensable à la réception de la testostérone par les cellules germinales, ce qui active la spermatogenèse.</p>
+<p class="para"><span class="t-red">(0.25x 2=0.5 point)</span></p>
+<p class="para">b.&nbsp; Les causes 2 (hypophyse) et 3 (hypothalamus) sont à retenir.</p>
+<p class="para"><span class="t-red">0.25 point</span></p>
+<p class="para">3.</p>
+<p class="para">a.</p>
+<ul class="dash">
+<li>Chez le garçon pubère normal, on remarque que la sécrétion de GnRH est normale : elle est pulsatile (un pulse par heure) et de concentration entre 8 et 30 pg/ml</li>
+<li>Chez le garçon X, on remarque une hypersécrétion de GnRH : fréquence des pulses plus importante, d'environ 3 pulses par heure et amplitude plus importante de 10 à 50 pg/ml</li>
+<li>Le document 3b montre un taux faible de testostérone chez le garçon X.</li>
+</ul>
+<p class="para"><span class="t-red">0.5 point</span></p>
+<p class="para"><u>Explication :</u><br>
+L'hypersécrétion de GnRH est due à une levée de l'inhibition exercée par la testostérone sur l'hypophyse.</p>
+<p class="para"><span class="t-red">0.25 point</span></p>
+<p class="para">b.&nbsp; Cause : les troubles de sécrétion de testostérone chez le garçon X sont dus à un problème hypophysaire.</p>
+<p class="para"><span class="t-red">0.25 point</span></p>
+<p class="para">c.&nbsp; Chez le garçon Y, la sécrétion de GnRH est très faible et constante.<br>
+La cause des troubles de sécrétion de testostérone chez le garçon Y est due à un dysfonctionnement de l'hypothalamus.</p>
+<p class="para"><span class="t-red">(0.25x 2=0.5 point)</span></p>
+<p class="para">d.&nbsp; A la suite des injections répétées de GnRH, il se produit une correction de la sécrétion des gonadostimulines.<br>
+⇨ L'hypothalamus agit par la GnRH sur l'hypophyse et stimule la sécrétion de LH et de FSH.</p>
+<p class="para"><span class="t-red">(0.25x 2=0.5 point)</span></p>
+<p class="para">4.&nbsp; Schéma</p>
+<!-- CROP: 4030 1 10 0.09 0.662 0.722 0.937 4030_schema_p10 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_schema_p10.png" alt=""></figure>
+<p class="para"><span class="t-red">1.25 point :<br>(relation H-H : 0.25 point, relation hypophyse-testicule : 025 point, fonctionnement du testicule : 0.5 point, rétrocontrôle négatif : 025 point)</span></p>
+<!-- PROOFREAD: 4030 part1 p10 — whole page printed in a degraded (pixelated) font; best reading of all lines, esp. "8 et 30 pg/ml", "10 à 50 pg/ml", "025 point" -->
+<!-- page 11 -->
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<p class="subhead t-navy"><b>Fonction reproductrice chez la femme</b></p>
+<div class="exsub">EXERCICE 1</div>
+<p class="subhead"><b>1.</b></p>
+<table>
+<tr><th>Identification</th><th>Justification</th></tr>
+<tr><td>h1 : œstrogènes</td><td>Sécrétion continue avec un premier pic pré ovulatoire et un second pic vers le milieu de la phase lutéale.</td></tr>
+<tr><td>h2 : progestérone</td><td>Sécrétion pendant la phase lutéale avec un pic vers le milieu de cette hase</td></tr>
+<tr><td>h3 : LH</td><td>Sécrétion continue avec un pic préovulatoire important</td></tr>
+<tr><td>h4: FSH</td><td>Sécrétion continue avec un pic préovulatoire moins important que celui de LH.</td></tr>
+</table>
+<p class="subhead"><b>2.</b></p>
+<p class="para">a- <u>Déterminisme hormonal de la menstruation</u> : La chute des taux plasmatiques des hormones ovariennes à la fin du cycle provoque la destruction de l'endomètre et donc la menstruation&nbsp; .</p>
+<p class="para">b- <u>La reprise du cycle ovarien</u> : La chute des taux plasmatiques des hormones ovariennes à la fin du cycle ovarien entraine la levée de l'inhibition sur l'axe hypothalamo-hypophysaire ce qui stimule la sécrétion de la FSH d'où la reprise du cycle ovarien.</p>
+<p class="subhead"><b>3.</b></p>
+<p class="para"><u>Comparaison des résultats</u></p>
+<ul class="dash">
+<li>Pour une même taille de l'implant (même dose d'œstradiol : expériences 1, 2 et 3), le pic préovulatoire de GnRH n'est obtenu que pour une période d'exposition de l'axe H-H à l'œstradiol qui dépasse 7 h.</li>
+<li>Pour une même période d'exposition de l'axe H-H à l'œstradiol (24h : expériences 2 et 4), le pic de sécrétion de GnRH comparable au pic pré ovulatoire n'est obtenu qu'avec un implant de taille 30 mm (taux plasmatique d'œstradiol élevé).</li>
+</ul>
+<p class="para"><u>Conditions nécessaires à l'ovulation</u>.<br>
+Première cause :Un taux plasmatique élevé d'œstradiol.<br>
+Deuxième cause : Une période d'exposition de l'axe hypothalamo-hypophysaire à l'œstradiol qui dépasse 24 heures.</p>
+<p class="subhead"><b>4.</b></p>
+<!-- NOTE: a line cut off at the top of the schema on page 11 (pasted image edge) not transcribed — illegible remnant -->
+<!-- CROP: 4030 1 11 0.1 0.672 0.905 0.946 4030_schema_p11 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_schema_p11.png" alt=""></figure>
+<!-- page 12 -->
+<div class="exsub">EXERCICE 2</div>
+<!-- NOTE: a line cut off at the top of the pasted correction on page 12 not transcribed — illegible remnant -->
+<p class="para"><b>1)</b>&nbsp; Chez la femme fertile la glaire cervicale présente des modifications tout au long du cycle ; (document 3a) :</p>
+<ul class="dash">
+<li>Pendant la période ovulatoire, la densité de la glaire cervicale est minimale : entre 1 et 3 ; la dimension des mailles est maximale : entre 4 et 12 µm (document 3a). parallèlement ; la vitesse de propagation des spz dans la glaire cervicale est maximale : 40mm/15min (document 4a)</li>
+<li>En dehors de la période ovulatoire, la glaire cervicale est dense : entre 3 et 5UA ; la dimension des mailles est minimale : entre 0.5 et 4 µm. parallèlement, la vitesse de propagation des spz dans la glaire cervicale est faible.</li>
+</ul>
+<p class="para">Chez madame X, la densité de la glaire cervicale est élevée tout au long du cycle : 4 à 5 UA ; la dimension des mailles est faible : 0.5 à 3.5 µm.</p>
+<p class="para">Ce qui explique la vitesse de propagation des spz qui est faible et constante&nbsp; (document 4b)</p>
+<p class="para"><b>Donc madame X présente une glaire cervicale imperméable aux spz ce qui explique son infertilité.</b></p>
+<p class="para"><b>1.5pt</b><br>Femme fertile 0.5<br>Madame X 0.5<br>Déduction 0.5</p>
+<p class="para"><b>2)</b>&nbsp; L'échographie de l'ovaire de madame X montre l'absence de follicule mûr donc pas d'achèvement de la folliculogenèse,&nbsp; ce qui entraine une faible sécrétion d'œstrogènes qui agit sur l'aspect de la glaire cervicale (glaire dense&nbsp; et à maillage serré au cours du cycle)</p>
+<p class="para"><b>1pt</b></p>
+<p class="para"><b>3)</b>&nbsp; a- chez madame X, le taux de LH est relativement constant et faible tout au long du cycle autour de 7ng/ml avec absence de pic.<br>
+La concentration sanguine d'œstradiol est constante et faible autour de 70 pg/ml.<br>
+<b>L'absence de follicule mûr explique le taux faible d'œstradiol qui maintient la glaire cervicale dense et à maillage serré. Donc,&nbsp; imperméable aux spermatozoïdes.</b></p>
+<p class="para"><b>1pt</b><br>Analyse (0.25x2)<br>Déduc 0.5</p>
+<p class="para">b- Hypothèse 1 : <b>anomalie au niveau de l'hypophyse</b><br>
+Hypothèse 2 : <b>anomalie au niveau de l'hypothalamus</b></p>
+<p class="para"><b>0.5pt</b><br>(0.5x2)</p>
+<p class="para"><b>4)</b>&nbsp; l'injection de Gn-RH corrige la stérilité de madame X. Donc madame X ne présente pas d'anomalie au niveau de l'hypophyse mais plutôt une anomalie au niveau de l'hypothalamus. <b>L'hypothèse 2 est alors à retenir</b></p>
+<p class="para"><b>0.5pt</b></p>
+<p class="para"><b>5)</b>&nbsp; Schéma fonctionnel :</p>
+<!-- CROP: 4030 1 12 0.053 0.593 0.79 0.915 4030_schema_p12 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4030/4030_schema_p12.png" alt=""></figure>
+<p class="para"><b>1.5pt</b></p>
+<!-- NOTE: an official ministry stamp with a handwritten date ("10 جوان 2022") on page 12 not transcribed — stamp on top of the document -->
+<!-- page 13 -->
+
+<div class="chtag"><span>Chapitre</span> Procréation (fécondation, nidation, maîtrise)</div>
+
+<p class="subhead t-navy"><b>Fécondation</b></p>
+<div class="exsub">EXERCICE 1</div>
+<p class="subhead"><b>1-</b></p>
+<ul class="dash">
+<li>Structure A : ovocyte II en métaphase II</li>
+<li>Structure B : cellule œuf</li>
+<li>Structure C: follicule cavitaire (ou tertiaire).</li>
+</ul>
+<p class="subhead"><b>2-</b></p>
+<ul class="dash">
+<li>Cellule C<sub>1</sub>: n= 23 chromosomes</li>
+<li>Cellule C<sub>2</sub>: 2n= 46 chromosomes</li>
+<li>Cellule C<sub>3</sub>: 2n= 46 chromosomes.</li>
+</ul>
+<p class="para"><b>3-</b>&nbsp;&nbsp;&nbsp; Ordre chronologique de l'apparition des structures A, B et C au niveau de l'appareil génital de la femme:</p>
+<p class="para"><b>C ⟶ A ⟶ B</b></p>
+<p class="subhead"><b>4-</b></p>
+<ul class="dash">
+<li>Phénomène physiologique à l'origine de la structure A : <b>l'ovogenèse</b> (la méiose)</li>
+<li>Phénomène physiologique à l'origine de la structure B : <b>la fécondation</b></li>
+<li>Phénomène physiologique à l'origine de la structure C : <b>la folliculogenèse</b>.</li>
+</ul>
+<div class="exsub">EXERCICE 2</div>
+<!-- NOTE: a line cut off at the top of the pasted correction (exercice 2, page 13) not transcribed — illegible remnant -->
+<p class="subhead"><b>1)</b></p>
+<table>
+<tr><th>Exploitation</th><th>Identification</th></tr>
+<tr><td>1 : petite cellule périphérique haploïde à n=2 chromosomes dupliqués.</td><td>premier globule polaire</td></tr>
+<tr><td>2 : noyau non accompagné de centriole</td><td>pronucléus ♀</td></tr>
+<tr><td>3: noyau accompagné par le centriole</td><td>pronucléus ♂</td></tr>
+<tr><td>4 : petite cellule haploïde ayant un chromosome simple</td><td>deuxième globule polaire</td></tr>
+</table>
+<p class="para"><span class="t-red"><b>1 point</b></span></p>
+<p class="subhead"><b>2)</b></p>
+<ul class="b">
+<li>La cellule C serait à l'origine d'un fœtus présentant une anomalie chromosomique. En effet, après caryogamie, la cellule-œuf comportera trois exemplaires du chromosome 21, c'est un cas de trisomie 21.</li>
+<li>Le pronucléus ♀ présente une garniture chromosomique anormale : présence de deux chromosomes 21 alors que le pronucléus ♂ présente une garniture chromosomique normale (présence d'un seul chromosome 21) → cette anomalie est d'origine maternelle : elle s'est produite au cours de l'ovogenèse.</li>
+<li>Le 1<sup>er</sup> globule polaire présente un chromosome 21, alors que le 2<sup>ème</sup> globule polaire ne contient pas un chromosome 21, ce qui confirme que cette anomalie s'est produite au cours de la division équationnelle : cette anomalie est expliquée par la non séparation des deux chromatides sœurs du chromosome 21 au cours de l'anaphase II de l'ovogenèse.</li>
+</ul>
+<p class="para">Autrement dit le candidat est demandé de présenter de façon détaillée et claire.</p>
+<p class="para"><span class="t-red"><b>1,25 point</b><br>(0,25+0,5+<br>0,5)</span></p>
+<p class="subhead"><b>3)</b></p>
+<ul class="dash">
+<li>Le fœtus sera une fille : la présence de deux chromosomes sexuels X.</li>
+<li>Le couple d'allèle (a<sub>1</sub>, a<sub>2</sub>) est porté par le chromosome sexuel X.</li>
+<li>Le génotype du fœtus est X<sub>a1</sub>X<sub>a2</sub>.</li>
+<li>Les génotypes de ses parents :
+<ul class="b">
+<li>la mère: X<sub>a1</sub>X<sub>a2</sub></li>
+<li>le père: X<sub>a2</sub>Y</li>
+</ul></li>
+</ul>
+<p class="para"><span class="t-red"><b>1,25 point</b><br>(0.25 x 5)</span></p>
+<p class="para"><span class="t-blue">Questions 4 : on cherche à exploiter les données du document 6 afin de préciser le phénotype du fœtus dans les deux cas différents.</span><br>
+<span class="t-blue">Or le verbe </span><span class="t-red">préciser</span><span class="t-blue"> signifie :</span> Clarifier une information, une action (phénomène, processus, idées...) par des détails.</p>
+<p class="para"><b>4)</b> Etant donné que le fœtus est hétérozygote comme sa mère,<br>
+<b>a-</b>&nbsp; il serait atteint si sa mère est atteinte<br>
+<b>b-</b>&nbsp; il serait sain si sa mère est saine.</p>
+<p class="para"><span class="t-red"><b>0,5 point</b><br>(0,25x2)</span></p>
+<p class="para"><b><i>NB : accepter tout autre raisonnement correct.</i></b></p>
+
+</section>
+
+</div>
+</body>
+</html>

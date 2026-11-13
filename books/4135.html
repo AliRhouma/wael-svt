@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · 100 QCM </title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="SBK">
+<meta data-pagefind-meta="n[content]" content="4135">
+<meta data-pagefind-meta="title[content]" content="100 QCM">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · 100 QCM " data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>100 QCM </h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">SBK</span> <span class="tg">QCM</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1ddVYHNdFToYi1YeFyKFExmQUc2pn61JC/view">↗ 100 QCM .pdf</a> <a href="https://drive.google.com/file/d/1TL7RmCO-EjrSASZ9oTlKdLUTl1x-7epl/view">↗ corrigé-100-QCM.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (6)</b><ul><li><a href="https://drive.google.com/file/d/1ddVYHNdFToYi1YeFyKFExmQUc2pn61JC/view">Asu bac math pilote · Asu Bac 2025 pilote › Ᏸ Ꭿ Ꮸ ᏚᏨᎥᎬᏁᏨᎬᏚ 2Ꮶ25 / science</a></li><li><a href="https://drive.google.com/file/d/1Oe33c9Sws2akCML3PWrwXp_sRJhOV90b/view">Ons chograni · BAC SC ONSSSS › SVT</a></li><li><a href="https://drive.google.com/file/d/1uBZQ2-kh0_CGdaCMq8HAhKtbPK3-ioIe/view">Mohamed Aziz belkhamsa · AZIZ BAC SC 2K25 › SVT</a></li><li><a href="https://drive.google.com/file/d/1LOLTQRqq_rPiDQDikdIelEowqmm5XLpA/view">Jacem Haj Salem · bac science(Jassem) › SVT / Révision</a></li><li><a href="https://drive.google.com/file/d/1TL7RmCO-EjrSASZ9oTlKdLUTl1x-7epl/view">Ons chograni · BAC SC ONSSSS › SVT</a></li><li><a href="https://drive.google.com/file/d/1Mgau79jSX0CzlPQEtnz_jNaSIcKm-PLI/view">Mohamed Aziz belkhamsa · AZIZ BAC SC 2K25 › SVT</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Reproduction chez l&#x27;homme</h2></div>
+<!-- SOURCE: SBK -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série de révision générale : QCM</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4135.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">SBK</span> <span class="tg">QCM</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1ddVYHNdFToYi1YeFyKFExmQUc2pn61JC/view">↗ 100 QCM .pdf</a> <a href="https://drive.google.com/file/d/1TL7RmCO-EjrSASZ9oTlKdLUTl1x-7epl/view">↗ corrigé-100-QCM.pdf</a></div>
+
+<!-- page 01 -->
+<p class="subhead t-red"><span class="t-red"><b>Série de révision générale :</b></span> <span class="t-gold">QCM</span></p>
+<p class="subhead t-navy"><span class="t-green"><b>4<sup>ème</sup> Sc Exp 1</b></span> <span class="t-blue"><b>2022/2023</b></span></p>
+<p class="consigne">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes. Reportez sur votre copie, le numéro de chaque item et indiquez, la (ou les) lettre(s) correspondant(s) à la (ou aux) réponse(s) exacte(s).</p>
+<p class="consigne"><span class="t-blue"><b>NB- Toute réponse fausse annule la note attribuée à l’item considéré.</b></span></p>
+<p class="para"><b>1) La testostérone est sécrétée par :</b><br>a) les tubes séminifères    b) les cellules interstitielles (cellules de Leydig) ;<br>c) les cellules de Sertoli    d) les cellules hypophysaires</p>
+<p class="para"><b>2) Un faible taux sanguin de testostérone :</b><br>a) inhibe la sécrétion de LH    c) inhibe la sécrétion de FSH<br>b) stimule la sécrétion de LH    d) stimule la sécrétion de FSH.</p>
+<p class="para"><b>3) L'ordre chronologique des phases de la spermatogenèse est :</b><br>a) multiplication - différenciation - maturation - accroissement<br>b) accroissement - multiplication - maturation - différenciation<br>c) multiplication - accroissement - maturation - différenciation<br>d) multiplication - différenciation - accroissement - maturation</p>
+<p class="para"><b>4) Les cellules interstitielles ou cellules de Leydig :</b><br>a) sont stimulées par la LH    c) sécrètent l'inhibine<br>b) sont stimulées par la FSH    d) sécrètent la testostérone.</p>
+<p class="para"><b>5) Les spermatozoïdes se distinguent des ovules par les caractères suivants :</b><br>a) ils sont haploïdes c) ils sont plus nombreux<br>b) ils sont mobiles d) ils sont plus riches en cytoplasme</p>
+<p class="para"><b>6) Dans le testicule, les cellules interstitielles ont pour rôle :</b><br>a) la sécrétion de LH    b) la nutrition des spermatozoïdes<br>c) la production de spermatozoïdes    d) la sécrétion de testostérone</p>
+<p class="para"><b>7) Chez l'espèce humaine, le rétrocontrôle négatif sur l'hypophyse peut être exercé par :</b><br>a- le follicule mûr,    c- les cellules de Sertoli,<br>b- les cellules gliales,    d- les cellules de Leydig.</p>
+<p class="para"><b>8) Chez la femme, le mécanisme hormonal à l'origine de l'ovulation est :</b><br>a- élévation du taux plasmatique d'œstradiol → décharge de GnRH→ pic de FSH et de LH<br>b- élévation du taux plasmatique d'œstradiol → décharge de GnRH → pic de FSH<br>c- diminution du taux plasmatique d'œstradiol → décharge de GnRH → pic de FSH et de LH<br>d- diminution du taux plasmatique d'œstradiol → décharge de GnRH → pic de LH</p>
+<p class="para"><b>9) Chez la femme la fécondation a lieu normalement dans :</b><br>a- l'utérus,    b- le vagin,    c- la trompe,    d- l'ovaire.</p>
+<p class="para"><b>10) Chez la femme, l'ovogenèse:</b><br>a) commence à partir de la puberté,    b) commence avant la naissance,<br>c) se déroule entièrement dans l'ovaire,    d) ne s'achève qu'en cas de fécondation</p>
+<p class="para"><b>11) La progestérone est une hormone qui :</b><br>a- favorise la contraction du myomètre.<br>b- favorise la formation de la dentelle utérine.<br>c- exerce, à forte dose, un rétrocontrôle positif sur l’hypophyse.<br>d- assure l’apparition des caractères sexuels secondaires chez la fille à la puberté.</p>
+<p class="para"><b>12) Au cours d'un cycle sexuel, les œstrogènes :</b><br>a) sont responsables de la formation de la dentelle utérine,<br>b) activent la motricité du myomètre,<br>c) ne stimulent pas la sécrétion de GnRH,<br>d) ne sont pas produites par le corps jaune.</p>
+
+<!-- page 02 -->
+<p class="para"><b>13) Chez l'espèce humaine, les points communs entre l'œstradiol et la testostérone sont :</b><br>a- les deux sont sécrétés d'une façon continue à partir de la puberté,<br>b- les deux provoquent l'apparition des caractères sexuels secondaires à la puberté,<br>c- les deux agissent, par rétrocontrôle positif, sur le complexe hypothalamo-hypophysaire,<br>d- les deux agissent, par rétrocontrôle négatif, sur le complexe hypothalamohypophysaire.</p>
+<p class="para"><b>14) Les points communs entre un follicule mûr et un corps jaune sont :</b><br>a) les deux sécrètent les œstrogènes,<br>b) les deux sécrètent la progestérone<br>c) les deux agissent, par l'intermédiaire de leurs hormones, sur la muqueuse utérine.<br>d) les deux exercent par l'intermédiaire de leurs hormones, un rétrocontrôle positif,<br>sur le complexe hypothalamo-hypophysaire.</p>
+<p class="para"><b>15) Chez la femme, l'ovulation :</b><br>a) est la rupture du follicule mûr et l'expulsion de l'ovocyte II,<br>b) est déclenchée suite à une chute du taux de LH ( hormone lutéinisante ),<br>c) se produit en général, 14 jours avant l'apparition de la menstruation,<br>d) se produit toujours au milieu du cycle ovarien.</p>
+<p class="para"><b>16) La pénétration d'un spermatozoïde dans l'ovocyte II provoque :</b><br>a- une réaction acrosomique,    c- une reprise de la division réductionnelle,<br>b- une réaction corticale,    d- une reprise de la division équationnelle.</p>
+<p class="para"><b>17) Le premier globule polaire possède :</b><br>a- 23 autosomes et un chromosome sexuel X.<br>b- 23 chromosomes à une chromatide chacun,<br>c- 23 chromosomes à deux chromatides chacun,<br>d- 23 autosomes et un chromosome sexuel Y.</p>
+<p class="para"><b>18) Le muscle utérin (myomètre) se contracte :</b><br>a- sous contrôle des œstrogènes,    b- sous contrôle de la progestérone,<br>c - au cours de la phase prémenstruelle,    d- au cours de la phase post-menstruelle.</p>
+<p class="para"><b>19) Le brassage inter-chromosomique, qui se produit au cours de la méiose dans des spermatocytes I à 2 n = 8 chromosomes, est à l'origine de :</b><br>a- 4 types de cellules génétiquement différents,<br>b- 8 types de cellules génétiquement différents,<br>c- 16 types de cellules génétiquement différents,<br>d- 32 types de cellules génétiquement différents.</p>
+<p class="para"><b>20) Dans le cas d’une anomalie dominante liée au chromosome sexuel X :</b><br>a- toute fille normale doit avoir son père normal,<br>b- tout garçon atteint doit avoir son père atteint,<br>c- toute fille atteinte doit avoir sa mère atteinte,<br>d- tout garçon atteint doit avoir sa mère atteinte.</p>
+<p class="para"><b>21) Les difficultés de la génétique humaine sont :</b><br>a- la fécondité est restreinte,    d- la garniture chromosomique est simple,<br>b- la durée des générations est longue,    c- les croisements dirigés sont possibles.</p>
+<p class="para"><b>22) L'anaphase I de la méiose est caractérisée par :</b><br>a- l'appariement des chromosomes homologues,<br>b- l'emplacement des chromosomes au milieu du fuseau achromatique,<br>c- la séparation des chromosomes homologues sans division des centromères,<br>d- la séparation des chromatides après division des centromères.</p>
+<p class="para"><b>23) Une femme atteinte d'une anomalie récessive liée au sexe :</b><br>a- est issue obligatoirement d'un père atteint,    b-est issue d'une mère obligatoirement atteinte,<br>c- tous ses garçons sont atteints,    d- toutes ses filles sont atteintes.</p>
+
+<!-- page 03 -->
+<p class="para"><b>24) Si deux parents atteints d'une maladie héréditaire avaient une fille saine, l'allèle de la maladie serait :</b><br>a- récessif porté par X,    b- récessif autosomal,<br>c- dominant porté par X,    d- dominant autosomal.</p>
+<p class="para"><b>25) En diagnostic prénatal, la trisomie 21 est détectée suite à une analyse :</b><br>a- du sang de la mère,    b- du caryotype du fœtus,<br>c- des protéines du fœtus,    d-de l'arbre généalogique de la famille.</p>
+<p class="para"><b>26) Parmi les mécanismes générateurs de polymorphisme chez les êtres vivants, il y a :</b><br>a- les mutations,    b- la méiose et la fécondation,<br>c- l'adaptation,    d- la sélection naturelle.</p>
+<p class="para"><b>27) Le brassage intra chromosomique a lieu :</b><br>a- de manière aléatoire à n'importe quel moment de la méiose,  d- à l'anaphase I de la méiose,<br>b-au cours de la prophase I de la méiose,    c- au cours de la prophase II de la méiose.</p>
+<p class="para"><b>28) Un axone :</b><br>a- est toujours myélinisé,    b- est toujours localisé dans la substance blanche ,<br>c- peut constituer une voie sensitive,  d- conduit l'influx nerveux grâce à un neuromédiateur.</p>
+<p class="para"><b>29) Une section de la racine antérieure d'un nerf rachidien entraîne une dégénérescence :</b><br>a- du bout central de cette racine antérieure,<br>b- du bout périphérique de cette racine antérieure,<br>c- du bout central et du bout périphérique de cette racine antérieure,<br>d- des fibres sensitives du nerf rachidien.</p>
+<p class="para"><b>30) Sur une préparation microscopique de la substance grise de la moelle épinière, on peut observer :</b><br>a- des corps cellulaires de neurones multipolaires,<br>b- des corps cellulaires de neurones unipolaires,<br>c- des cellules gliales, d- des axones recouverts de myéline.</p>
+<p class="para"><b>31) Dans un potentiel d'action, la repolarisation est le résultat :</b><br>a- d'une entrée de Na+ à l'intérieur de la fibre,<br>b- d'une sortie de K+ par les canaux voltage-dépendants à K+,<br>c- d'un excès de K+ à l'extérieur de la membrane de la fibre,<br>d- d'une entrée de Cl- et d'une sortie de K+.</p>
+<p class="para"><b>32) La vitesse de propagation du message nerveux est fonction :</b><br>a- de la nature de la fibre nerveuse,    b- du diamètre de la fibre nerveuse,<br>c- de l'intensité du stimulus,    d- de la durée de stimulation.</p>
+<p class="para"><b>33) Le rôle de la pompe Na+/ K+ au niveau d'une fibre nerveuse est :</b><br>a- de maintenir le potentiel de repo,<br>b- de transporter des ions Na+ et K+ contre le gradient de concentration,<br>c- de transporter passivement des ions Na+ et K+ à travers la membrane de la fibre,<br>d- d'assurer une égalité de concentration des ions Na+ et K+ de part et d'autre de la membrane.</p>
+<p class="para"><b>34) Dans une synapse :</b><br>a- la circulation du message nerveux est unidirectionnelle ;<br>b- le neuromédiateur diffuse à partir d'une dendrite ;<br>c- la fixation du neuromédiateur ouvre des canaux voltage-dépendants ;<br>d- l'ouverture des canaux chimio-dépendants précède celle des canaux Ca2+ voltagedépendants.</p>
+<p class="para"><b>35) Les fibres sensitives Ia :</b><br>a- sont les axones des neurones de la corne antérieure de la moelle épinière,<br>b- innervent les fuseaux neuromusculaires,<br>c- sont les axones seulement, des neurones de la corne postérieure de la moelle épinière,<br>d- font parties des neurones en T dont les corps cellulaires sont localisés dans les ganglions spinaux.</p>
+
+<!-- page 04 -->
+<p class="para"><b>36) Un réflexe myotatique :</b><br>a- correspond à une contraction de deux muscles antagonistes,<br>b- correspond à la contraction d'un muscle en réponse à son étirement,<br>c- fait intervenir un circuit nerveux polysynaptique,<br>d- a pour centre la moelle épinière.</p>
+<p class="para"><b>37) Dans une fibre à myéline, l'influx nerveux est plus rapide que dans une fibre sans myéline car :</b><br>a- la propagation de l'influx nerveux se fait par des courants locaux,<br>b- la propagation de l'influx nerveux est saltatoire,<br>c- le diamètre des fibres sans myéline est plus grand que celui des fibres à myéline,<br>d- les canaux voltage-dépendants sont plus nombreux dans les fibres à myéline que dans les<br>fibres sans myéline.</p>
+<p class="para"><b>38) La période réfractaire d'une fibre nerveuse s'explique par :</b><br>a- l'ouverture des canaux de fuite,<br>b- l'ouverture des canaux voltage-dépendants au Na+,<br>c- la fermeture des canaux voltage-dépendants au K+,<br>d- la fermeture momentanée des canaux voltage-dépendants au Na+ après la,dépolarisation.</p>
+<p class="para"><b>39) Les canaux voltage-dépendants aux ions Na+ et K+ se trouvent au niveau :</b><br>a- du corps cellulaire,    b- du cône axonique,<br>c- du site transducteur,    d- des nœuds de Ranvier.</p>
+<p class="para"><b>40) Le site transducteur d’un récepteur sensoriel :</b><br>a- est le lieu de naissance d’une dépolarisation,<br>b- est le lieu de naissance du message nerveux,<br>c- renferme des canaux chimio-dépendants aux ions Na+ et K+.<br>d- renferme des canaux voltage-dépendants aux ions Na+ et K+.</p>
+<p class="para"><b>41) La phase de repolarisation d'un potentiel d'action d'une fibre nerveuse est due à un flux :</b><br>a- sortant d'ions K+ à travers les canaux de fuite,<br>b- entrant d'ions Na+ à travers les canaux de fuite,<br>c- sortant d'ions K+ à travers les canaux voltage-dépendants<br>d- entrant d'ions Na+ à travers les canaux voltage-dépendants.</p>
+<p class="para"><b>42) Le GABA est un neurotransmetteur inhibiteur qui induit l'ouverture des canaux:</b><br>a- chimio-dépendants aux ions Cl c- voltage-dépendants aux ions Na+<br>b- chimio-dépendants aux ions Na+ d- voltage-dépendants aux ions Ca2+</p>
+<p class="para"><b>43) Au niveau d'un récepteur sensoriel : le corpuscule de Pacini, un potentiel d'action naît au niveau :</b><br>a- de la capsule conjonctive,    b- du 2ème nœud de Ranvier,<br>c- du 1er nœud de Ranvier,    d- de la gaine de myéline.</p>
+<p class="para"><b>44) Le long d'une fibre nerveuse myélinisée, la propagation du potentiel d'action se fait :</b><br>a- de proche en proche,    b- de manière saltatoire,<br>c- à une vitesse constante, d- à une vitesse d'autant plus petite que le diamètre de la fibre est plus grand.</p>
+<p class="para"><b>45) L'intégration du message nerveux :</b><br>a- consiste à faire la somme algébrique des potentiels postsynaptiques excitateurs (PPSE) seulement,<br>b- consiste à faire la somme algébrique des potentiels postsynaptiques inhibiteurs(PPSI) seulement,<br>c- consiste à faire la somme algébrique des PPSE et des PPSI,<br>d- se fait qu’au niveau du cône axonique du neurone postsynaptique.</p>
+<p class="para"><b>46) La zone de la racine dorsale située entre le ganglion spinal et la moelle épinière :</b><br>a- comporte des axones,<br>b- conduit un message nerveux afférent,<br>c- comporte des dendrites,<br>d- conduit un message nerveux efférent.</p>
+
+<!-- page 05 -->
+<p class="para"><b>47) La chaleur retardée dégagée après de la contraction musculaire provient de :</b><br>a- l’hydrolyse de l’ATP,<br>b- l’oxydation complète de l’acide pyruvique,<br>c- la fermentation alcoolique de l’acide pyruvique,<br>d- la régénération de l’ATP par la voie de la phosphocréatine.</p>
+<p class="para"><b>48) La régénération rapide de l’ATP au cours de la contraction musculaire dépend de la présence :</b><br>a- de glucose,<br>b- d’acide pyruvique,<br>c- de phosphocréatinine,<br>d- d’ADP.</p>
+<p class="para"><b>49) Le document ci-contre représente une coupe transversale schématique réalisée au niveau :</b><br>a- de la strie Z d’un sarcomère,<br>b- de la bande H d’un sarcomère,<br>c- du disque sombre d’un sarcomère,<br>d- du disque clair d’un sarcomère.</p>
+<!-- CROP: 4135 1 5 0.69 0.268 0.8 0.334 4135_p05_coupe_sarcomere -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4135/4135_p05_coupe_sarcomere.png" alt=""></figure>
+<p class="para"><b>50) Une fibre musculaire striée est caractérisée par :</b><br><b>a-</b> la contractibilité<br><b>b-</b> la présence d’un noyau central.<br><b>c-</b> un sarcoplasme riche en mitochondries.<br><b>d-</b> une succession de sarcomères formé chacun d’une bande claire et deux demi-bandes sombres.</p>
+<p class="para"><b>51) Au niveau de la bande H d’un sarcomère on trouve :</b><br><b>a-</b> des myofilaments de myosine,<br><b>b-</b> des myofilaments d’actine,<br><b>c-</b> une strie Z,<br><b>d-</b> une ligne M.</p>
+<p class="para"><b>52) Au cours d’une contraction d’une fibre musculaire :</b><br><b>a-</b> les myofilaments de myosines glissent entre les myofilaments d’actine,<br><b>b-</b> les sarcomères se raccourcissent par raccourcissement des disques sombres,<br><b>c-</b> les bandes H se raccourcissent,<br><b>d-</b> Il y a libération de la chaleur en deux temps différents.</p>
+<p class="para"><b>53) Les ions ca2+ libérés par les réticulums sarcoplasmiques assurent :</b><br><b>a-</b> la fixation de tête d’actine au niveau de son site sur la myosine,<br><b>b-</b> la fixation de l’acétylcholine sur leurs récepteurs spécifiques,<br><b>c-</b> l’exocytose de l’acétylcholine,<br><b>d-</b> la formation du complexe acto-myosine.</p>
+<p class="para"><b>54) L’énergie nécessaire à la contraction</b><br><b>a-</b> provient de l’hydrolyse de l’ATP.<br><b>b-</b> provient de la synthèse d’ATP par respiration cellulaire.<br><b>c-</b> provient de la synthèse d’ATP par fermentation lactique.<br><b>d-</b> est appelée chaleur initiale de contraction.</p>
+<p class="para"><b>55) Suite à la section du nerf de cyon, la stimulation du bout centrale entraine :</b><br><b>a-</b> une diminution du rythme cardiaque,<br><b>b-</b> une décharge d’adrénaline,<br><b>c-</b> une vasoconstriction,<br><b>d-</b> aucun effet.</p>
+<p class="para"><b>56) La destruction du centre vasomoteur entraine :</b><br><b>a-</b> une cardioaccélération,<br><b>b-</b> une vasodilatation,<br><b>c-</b> une décharge d’adrénaline,<br><b>d-</b> une hypotension.</p>
+
+<!-- page 06 -->
+<p class="para"><b>57) L’expérience de Loewi a pour but de préciser :</b><br><b>a-</b> le rôle des nerfs cardiaques.<br><b>b-</b> le rôle des nerfs sensitifs.<br><b>c-</b> le sens de conduction des nerfs cardiovasculaires.<br><b>d-</b> le mode d’action des nerfs cardiaques.</p>
+<p class="para"><b>58) La vasoconstriction des artérioles résulte de :</b><br>a- la levée de l’inhibition du centre vasomoteur,<br>b- l’activation du nerf sympathique cardiaque,<br>c- l’activation du nerf de Hering,<br>d- la libération de l’acétylcholine par le nerf Vague.</p>
+<p class="para"><b>59) Au niveau d’une fibre musculaire, le blocage de l’utilisation de l’ADP entraîne la disparition de :</b><br>a- la phase de relâchement,<br>b- la contraction,<br>c- la chaleur retardée,<br>d- la chaleur initiale de relâchement.</p>
+<p class="para"><b>60) Dans la fibre musculaire, l’oxygène est consommé afin de :</b><br>a- dégrader le glucose en acide pyruvique,<br>b- hydrolyser l’ATP,<br>c- dégrader l’acide pyruvique dans les mitochondries,<br>d- régénérer l’ATP à partir de créatine phosphate.</p>
+<p class="para"><b>61) La myokinase est une enzyme qui catalyse la réaction de :</b><br>a- synthèse d’ATP à partir de la phosphocréatine,<br>b- réduction de l’acide pyruvique en acide lactique,<br>c- la respiration mitochondriale,<br>d- régénération anaérobie de l’ATP.</p>
+<p class="para"><b>62) Le PPM crée au niveau d’une fibre musculaire striée :</b><br>a- assure la contraction de la fibre musculaire,<br>b- déclenche un PA musculaire, s’il atteint le seuil au niveau du cône axonique,<br>c- fait suite à l’ouverture des CCD à Na+,<br>d- provoque la sortie des ions Ca2+ à partir du réticulum sarcoplasmique.</p>
+<p class="para"><b>63) La stimulation des nerfs de Hering et de Cyon entraine une :</b><br>a- vasodilatation des artérioles,<br>b- augmentation de la libération de noradrénaline dans le muscle cardiaque,<br>c- diminution de la stimulation du centre vasomoteur,<br>d- augmentation de la fréquence des potentiels d’action au niveau du nerf splanchnique.</p>
+<p class="para"><b>64) En réponse à une hémorragie provoquée chez un chien :</b><br>a- la fréquence des potentiels d’action au niveau des nerfs afférents augmente,<br>b- le centre vasomoteur est plus inhibé,<br>c- l’amplitude des potentiels d’action augmente au niveau des fibres des nerfs sympathiques,<br>d- Le rythme cardiaque augmente.</p>
+<p class="para"><b>65) Une élévation de la pression artérielle au niveau du sinus carotidien entraîne une :</b><br>a- diminution de la fréquence des potentiels d’action au niveau des nerfs pneumogastriques,<br>b- activation des nerfs de Cyon et de Hering,<br>c- élévation de la fréquence des potentiels d’action au niveau des nerfs orthosympathiques,<br>d- inhibition du centre vasomoteur.</p>
+<p class="para"><b>66) À la suite de la stimulation du centre vasomoteur, on observe une :</b><br>a- vasodilatation,<br>b- hypertension,<br>c- hypersécrétion d’adrénaline,<br>d- hypotension.</p>
+
+<!-- page 07 -->
+<p class="para"><b>67) Parmi les organes lymphoïdes périphériques, on peut citer :</b><br>a- le thymus,    b- la moelle osseuse,<br>c- la rate,    d- les ganglions lymphatiques.</p>
+<p class="para"><b>68) Les lymphocytes T acquièrent leur immunocompétence au niveau :</b><br>a- de la rate,    b- des ganglions lymphatiques,<br>c- de la moelle osseuse,    d- du thymus.</p>
+<p class="para"><b>69) La moelle osseuse est :</b><br>a- un organe lymphoïde primaire ,<br>b- le lieu de maturation des lymphocytes T,<br>c- un lieu de naissance des lymphocytes B,<br>d- un lieu de déroulement des réactions immunitaires spécifiques</p>
+<p class="para"><b>70) Un vaccin peut contenir :</b><br>a- des anticorps spécifiques ,    b- des microbes affaiblis<br>c- une anatoxine ,    d- des lymphocytes mémoires</p>
+<p class="para"><b>71) Au cours de la phase effectrice d'une RIMH, l'élimination de l'antigène fait intervenir :</b><br>a- des perforines,    b- des anticorps,<br>c- des macrophages ,    d- des lymphocytes T cytotoxiques (LTc)</p>
+<p class="para"><b>72) La sérothérapie a pour effet :</b><br>a- l'acquisition d'une immunité durable,<br>b- une protection immédiate contre un agent pathogène,<br>c- l'activation des lymphocytes B,<br>d- l'acquisition d'une immunité à médiation cellulaire.</p>
+<p class="para"><b>73) Les macrophages</b><br>a- pratiquent la phagocytose,    b- produisent des anticorps,<br>c- sont des cellules présentatrices d'antigène,    d- naissent dans le thymus.</p>
+<p class="para"><b>74) Le rejet de greffe est une réaction immunitaire à médiation cellulaire car:</b><br>a- l'élimination du greffon se fait par des anticorps,<br>b- l'élimination du greffon fait intervenir des lymphocytes Tc,<br>c- l'élimination du greffon fait intervenir des lymphocytes T4,<br>d- le greffon est constitué par des cellules de « non soi ».</p>
+<p class="para"><b>75) La maturation des lymphocytes B (LB) se fait dans :</b><br>a- le thymus ,    b-la rate,    c- la moelle osseuse ,   d-les ganglions lymphatiques.</p>
+<p class="para"><b>76) Une réponse immunitaire à médiation humorale fait intervenir :</b><br>a- des anticorps,    b- des hormones.<br>c- des lymphocytes B,    d- des lymphocytes cytotoxiques.</p>
+<p class="para"><b>77) Une anatoxine :</b><br>a- a un effet immunogène,    b- a un pouvoir pathogène,<br>c- est une toxine atténuée,    d- est un microbe affaibli.</p>
+<p class="para"><b>78) L'interleukine 2 est un messager chimique libéré par :</b><br>a- les macrophages,    b- les lymphocytes B (LB),<br>c- les lymphocytes T auxiliaires (LTa),    d- les lymphocytes T cytotoxiques (LTc).</p>
+<p class="para"><b>79) La molécule d'anticorps :</b><br>a- intervient au cours de la phase effectrice d'une RIMC,<br>b- intervient au cours de la phase effectrice d'une RIMH,<br>c- présente un site de fixation de l'antigène à l'extrémité de sa partie variable,<br>d- présente un site de fixation de l'antigène à l'extrémité de sa partie constante.</p>
+<p class="para"><b>80) L’acquisition de l’immunocompétence :</b><br>a- se fait dans un organe lymphoïde primaire,    b- se fait dans un organe lymphoïde secondaire,<br>c- consiste à avoir des molécules HLA,    d- consiste à avoir des récepteurs de reconnaissance.</p>
+
+<!-- page 08 -->
+<p class="para"><b>81) La phagocytose du complexe immun :</b><br>a- aboutit à la digestion de l'antigène,<br>b- se fait par un clone de phagocytes spécifiques de l'antigène phagocyté,<br>c- s'effectue par opsonisation,<br>d- est caractéristique de la RIMC.</p>
+<p class="para"><b>82) Le complément est un :</b><br>a- ensemble d’hormones,    b- ensemble d’enzymes,<br>c- est activé lors de la phase d’induction de la RIMH,d- est activé lors de la phase effectrice de la  RIMH.</p>
+<p class="para"><b>83) Le support de la mémoire immunitaire est un ensemble :</b><br>a- d’anticorps à longue durée de vie, b- de cellules effectrices,<br>c- de cellules spécifiques de l’antigène, d- de cellules nerveuses.</p>
+<p class="para"><b>84) Les cellules cibles de l’interleukine 1 sont :</b><br>a- les cellules infectées,    b- les LB,<br>c- les LT,    d- les plasmocytes.</p>
+<p class="para"><b>85) Dans la réponse immunitaire, la molécule d'anticorps peut jouer le rôle :</b><br>a- d’un récepteur,    b- d’un effecteur,<br>c- de marqueur,    d- de régulateur.</p>
+<p class="para"><b>86) Les effecteurs de la réponse immunitaire à médiation cellulaire sont :</b><br>a- les anticorps.    b- les plasmocytes.<br>c- les lymphocytes T4.    d- les lymphocytes T cytotoxiques.</p>
+<p class="para"><b>87) Au cours de l’évolution biologique, les mutations sont :</b><br>a- des modifications phénotypiques qui conduisent à des modifications génotypiques,<br>b- les seuls moteurs de l’évolution des êtres vivants,<br>c- chromosomiques dans le cas d’une amplification génique,<br><b>d-</b> géniques dans le cas de la duplication du gène responsable de l’expression de<br>l’hémoglobine chez les vertébrés.</p>
+<p class="para"><b>88) Les données de l'embryologie chez les vertébrés permettent :</b><br>a- d’étudier des organes homologues,<br>b- de déterminer le groupe le plus primitive,<br>c- de déterminer le degré de parenté entre les espèces,<br>d- de plaider en faveur de l’existence d’un ancêtre commun.</p>
+<p class="para"><b>89) La sélection naturelle :</b><br>a- favorise les allèles avantageux selon les conditions du milieu,<br>b- est une sélection aléatoire des gènes nouveaux crées par les mécanismes de l’innovation génétique,<br>c- retient toujours les phénotypes sauvages,<br>d- consiste à éliminer les espèces chez lesquelles surviennent les mutations.</p>
+<p class="para"><b>90) L’exemple de la phalène du bouleau illustre un cas de :</b><br>a- spéciation,    b- sélection naturelle,    c- modification du caryotype,    d- polyploïdie.</p>
+<p class="para"><b>91) Les marqueurs membranaires des globules rouges (ou hématies) sont les :</b><br><b>a-</b> agglutinines,<br><b>b-</b> agglutinogènes,<br><b>c-</b> antigènes HLA I,<br><b>d-</b> antigènes HLA II.</p>
+
+<!-- page 09 -->
+<p class="para"><b>92) L’ajout d’agglutinine anti-B d’un sujet X aux hématies d’un sujet Y amène à une agglutination. Selon le système ABO, le groupe sanguin du sujet Y peut être :</b><br><b>a-</b> A,    <b>b-</b> B,    <b>c-</b> O,    <b>d-</b> AB.</p>
+<p class="para"><b>93) Au cours d’une réponse immunitaire spécifique, les lymphocytes T suppresseurs interviennent en :</b><br><b>a- s</b>écrétant des enzymes protéolytiques,<br><b>b-</b> sécrétant la perforine,<br><b>c-</b> assurant une régulation négative,<br><b>d-</b> favorisant la prolifération des lymphocytes.</p>
+<p class="para"><b>94) Les récepteurs Ig de surface :</b><br><b>a-</b> sont exposés à la surface des LTa,<br><b>b-</b> sont libres dans le sérum,<br><b>c-</b> assurent la lyse de l’antigène,<br><b>d-</b> sont acquis lors de l’immunocompétence.</p>
+<p class="para"><b>95) Un individu du groupe sanguin AB possède des :</b><br><b>a-</b> anticorps anti-A et anti-B dans son plasma,<br><b>b-</b> agglutinogènes B à la surface de ses hématies,<br><b>c-</b> agglutinogènes A à la surface de ses hématies,<br><b>d</b>- hématies sans agglutinogènes.</p>
+<p class="para"><b>96) Les lymphocytes T auxiliaires (LTh ou LTa) peuvent reconnaître les antigènes :</b><br><b>a-</b> circulants et libres,<br><b>b-</b> présentés par les lymphocytes B,<br><b>c-</b> associés à HLA I,<br><b>d-</b> présentés par les macrophages.</p>
+<p class="para"><b>97) L’acquisition de l’immunocompétence consiste à avoir des :</b><br><b>a-</b> récepteurs TCR pour les LT,<br><b>b-</b> molécules HLA II,<br><b>c-</b> molécules HLA I,<br><b>d-</b> récepteurs Ig de surface pour les LB.</p>
+<p class="para"><b>98) Après la fin d’une réponse immunitaire spécifique, le support de la mémoire immunitaire est un ensemble de cellules :</b><br><b>a-</b> à longue durée de vie,<br><b>b-</b> effectrices,<br><b>c-</b> productrices d’anticorps,<br><b>d-</b> portant les molécules HLA II.</p>
+<p class="para"><b>99) Certains bébés naissent sans thymus. Les conséquences observées sont absence des:</b><br><b>a-</b> lymphocytes T,<br><b>b-</b> lymphocytes B,<br><b>c-</b> macrophages,<br><b>d-</b> RIMC.</p>
+<p class="para"><b>100)Les molécules du CMH :</b><br><b>a-</b> n'interviennent que lors d'une RIMH,<br><b>b-</b> définissent l'identité immunitaire de chaque individu,<br><b>c-</b> sont différentes chez deux vrais jumeaux,<br><b>d-</b> sont déterminées génétiquement</p>
+
+<!-- page 10 -->
+<div class="exsub">Correction</div>
+
+<!-- page 01 (corrigé) -->
+<p class="subhead t-red"><span class="t-red">Evaluation générale (QCM) …4<sup>ème</sup> Sc Exp</span></p>
+<!-- NOTE: the answers are handwritten in the printed answer grid; they are typed in the cells -->
+<div class="exsub"><span class="t-blue"><u>Exercice 1:</u></span></div>
+<table>
+<tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr>
+<tr><td><span class="t-green">b</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">c</span></td><td><span class="t-green">a-d</span></td><td><span class="t-green">b-c</span></td><td><span class="t-green">d</span></td><td><span class="t-green">c-d</span></td><td><span class="t-green">a</span></td><td><span class="t-green">c</span></td><td><span class="t-green">b-d</span></td></tr>
+</table>
+<table>
+<tr><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th></tr>
+<tr><td><span class="t-green">b</span></td><td><span class="t-green">b</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">a-c</span></td><td><span class="t-green">a-c</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">c</span></td><td><span class="t-green">a-d</span></td><td><span class="t-green">c</span></td><td><span class="t-green">a-d</span></td></tr>
+</table>
+<table>
+<tr><th>21</th><th>22</th><th>23</th><th>24</th><th>25</th><th>26</th><th>27</th><th>28</th><th>29</th><th>30</th></tr>
+<tr><td><span class="t-green">a-b</span></td><td><span class="t-green">c</span></td><td><span class="t-green">a-c</span></td><td><span class="t-green">d</span></td><td><span class="t-green">b-(c)</span></td><td><span class="t-green">a-(b)</span></td><td><span class="t-green">b</span></td><td><span class="t-green">c</span></td><td><span class="t-green">b</span></td><td><span class="t-green">a-c</span></td></tr>
+</table>
+<!-- PROOFREAD: 4135 part2 p01 — item 28 "c" (a small dot under the letter); items 25 "b-(c)" and 26 "a-(b)" brackets as handwritten -->
+<table>
+<tr><th>31</th><th>32</th><th>33</th><th>34</th><th>35</th><th>36</th><th>37</th><th>38</th><th>39</th><th>40</th></tr>
+<tr><td><span class="t-green">b</span></td><td><span class="t-green">a-b</span></td><td><span class="t-green">a-b</span></td><td><span class="t-green">a</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">b</span></td><td><span class="t-green">d</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">a</span></td></tr>
+</table>
+<table>
+<tr><th>41</th><th>42</th><th>43</th><th>44</th><th>45</th><th>46</th><th>47</th><th>48</th><th>49</th><th>50</th></tr>
+<tr><td><span class="t-green">c</span></td><td><span class="t-green">a</span></td><td><span class="t-green">c</span></td><td><span class="t-green">b-c</span></td><td><span class="t-green">c-d</span></td><td><span class="t-green">a-b</span></td><td><span class="t-green">b</span></td><td><span class="t-green">c-d</span></td><td><span class="t-green">c</span></td><td><span class="t-green">a-c</span></td></tr>
+</table>
+<table>
+<tr><th>51</th><th>52</th><th>53</th><th>54</th><th>55</th><th>56</th><th>57</th><th>58</th><th>59</th><th>60</th></tr>
+<tr><td><span class="t-green">a-d</span></td><td><span class="t-green">c-d</span></td><td><span class="t-green">d</span></td><td><span class="t-green">b-c</span></td><td><span class="t-green">a</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">a-d</span></td><td><span class="t-green">a</span></td><td><span class="t-green">d</span></td><td><span class="t-green">c</span></td></tr>
+</table>
+<table>
+<tr><th>61</th><th>62</th><th>63</th><th>64</th><th>65</th><th>66</th><th>67</th><th>68</th><th>69</th><th>70</th></tr>
+<tr><td><span class="t-green">d</span></td><td><span class="t-green">a-c</span></td><td><span class="t-green">a-c</span></td><td><span class="t-green">d</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">b-c</span></td><td><span class="t-green">c-d</span></td><td><span class="t-green">d</span></td><td><span class="t-green">a-c</span></td><td><span class="t-green">b-c</span></td></tr>
+</table>
+
+<!-- page 02 (corrigé) -->
+<table>
+<tr><th>71</th><th>72</th><th>73</th><th>74</th><th>75</th><th>76</th><th>77</th><th>78</th><th>79</th><th>80</th></tr>
+<tr><td><span class="t-green">b-c</span></td><td><span class="t-green">b</span></td><td><span class="t-green">a-c</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">c</span></td><td><span class="t-green">a-c</span></td><td><span class="t-green">a-c</span></td><td><span class="t-green">c</span></td><td><span class="t-green">b-c</span></td><td><span class="t-green">a-d</span></td></tr>
+</table>
+<table>
+<tr><th>81</th><th>82</th><th>83</th><th>84</th><th>85</th><th>86</th><th>87</th><th>88</th><th>89</th><th>90</th></tr>
+<tr><td><span class="t-green">a-c</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">c</span></td><td><span class="t-green">c</span></td><td><span class="t-green">a-b</span></td><td><span class="t-green">d</span></td><td><span class="t-green">c-d</span></td><td><span class="t-green">b-d</span></td><td><span class="t-green">a</span></td><td><span class="t-green">b</span></td></tr>
+</table>
+<table>
+<tr><td>91</td><td>92</td><td>93</td><td>94</td><td>95</td><td>96</td><td>97</td><td>98</td><td>99</td><td>100</td></tr>
+<tr><td>b</td><td>b-d</td><td>c</td><td>d</td><td>b-c</td><td>b-d</td><td>a-d</td><td>a-d</td><td>a-d</td><td>b-d</td></tr>
+</table>
+
+</section>
+
+</div>
+</body>
+</html>

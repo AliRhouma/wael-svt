@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · serie 1</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Mme CHAOUCH">
+<meta data-pagefind-meta="n[content]" content="4084">
+<meta data-pagefind-meta="title[content]" content="serie 1">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="section[content]" content="Mathématiques"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · serie 1" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>serie 1</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">Mme CHAOUCH</span> <span class="tg">Série</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1UA1c80JDHPAkiewoqhGej7YDCBdRT85l/view">↗ serie 1.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (1)</b><ul><li><a href="https://drive.google.com/file/d/1UA1c80JDHPAkiewoqhGej7YDCBdRT85l/view">Eya Masmoudi · Bac math 2026 › Svt / Mme chaouch / Homme</a></li></ul></div></div>
+<section class="chapter"><div class="chapdiv"><div class="cn">Chapitre</div><h2>Reproduction chez l&#x27;homme</h2></div>
+<!-- SOURCE: Mme CHAOUCH -->
+<div class="exh"><span class="idx ex">Série</span><h2>serie 1</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4084.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">Mme CHAOUCH</span> <span class="tg">Série</span><span class="tg sec">SVT · Mathématiques</span> <a href="https://drive.google.com/file/d/1UA1c80JDHPAkiewoqhGej7YDCBdRT85l/view">↗ serie 1.pdf</a></div>
+<!-- page 01 -->
+<!-- NOTE: handwritten margin notes written on top of the printed page (e.g. "analogue structural", "se fixe sur des récepteurs spécifiques", "DE met II", "DR : met I", "vue polaire", underlines) not transcribed — annotations -->
+<div class="exsub">Exercice 4</div>
+<p class="para">A la suite de difficultés à concevoir un enfant, messieurs A, B et C issus de 3 couples effectuent une analyse de leur sperme (= spermogramme) qui permet de révéler, entre autres, la concentration de leur sperme en spermatozoïdes. Cette concentration s'avère très inférieure aux valeurs normales chez les sujets A et B et nulle chez le sujet C.</p>
+<p class="consigne"><b>1)</b>   Emettez trois hypothèses communes à ces trois sujets pouvant expliquer leur anomalie</p>
+<p class="para">Le dosage de la concentration sanguine de la testostérone et de la LH chez ces sujets ainsi que chez un sujet normal donne les résultats présentés par le tableau suivant.</p>
+<table>
+<tr><th></th><th>Sujet normal</th><th>A</th><th>B</th><th>C</th></tr>
+<tr><td><b>Concentration sanguine en testostérone (ng/mL)</b></td><td>2.5 à 7.5</td><td>1.3</td><td>1</td><td>5</td></tr>
+<tr><td><b>Concentration sanguine en LH (UI/L)</b></td><td>2 à 7</td><td>14</td><td>Indétectable</td><td>5</td></tr>
+</table>
+<p class="consigne"><b>2)</b>   A partir de l'exploitation rigoureuse des données du tableau précédent, déterminez-la (ou les) origine(s) certaine (ou possibles) du trouble du spermogramme observé chez chaque sujet. Les résultats d'autres examens complémentaires réalisés pour ces trois sujets sont consignés dans le tableau suivant.</p>
+<table>
+<tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+<tr><td><b>Biopsie testiculaire.</b></td><td>Nombre très réduit de cellule de Leydig</td><td>Atrophie des deux structures testiculaires</td><td>- Atrophie des tubes séminifères<br>-  Etat normal du tissu interstitiel</td></tr>
+<tr><td><b>Concentration sanguine en FSH (UI/L)</b><br>NB : <b>Taux normal de FSH : entre 2 et 7 (UI/L)</b></td><td>15</td><td>Indétectable</td><td>4.5</td></tr>
+<tr><td><b>IRM du complexe hypothalamo-hypophysaire.</b></td><td>Hypertrophie de l'hypophyse</td><td>Tumeur maligne (cancer) hypophysaire</td><td>Complexe HH normal</td></tr>
+<tr><td></td><td></td><td></td><td></td></tr>
+</table>
+<p class="para"><b><i>NB : Biopsie : analyse d'un tissu après son prélèvement - IRM : technique d'observation précise des tissus.</i></b></p>
+<p class="consigne"><b>3)</b>A partir de l'exploitation des données du tableau précédent et de vos connaissances,<br><b>a.</b>  précisez la cause exacte de l'anomalie du spermogramme du sujet B.<br><b>b.</b>  donnez une cause possible de l'anomalie du spermogramme du sujet C.<br><b>4)</b> A partir de vos connaissances, mettez en relation les résultats de tous les examens réalisés chez le sujet A.</p>
+<div class="exsub">Exercice 5 <b>On se propose d'étudier quelques aspects des relations fonctionnelles entre l'hypothalamus, l'hypophyse et le testicule.</b></div>
+<p class="para"><b>A)</b> Les 3 graphes du document 4 ci-dessous correspondent à l'enregistrement, chez le bélier, des variations des taux sanguins de 3 hormones différentes : H<sub>1</sub>, H<sub>2</sub> et H<sub>3</sub>  pendant la même période de temps. Ces hormones peuvent correspondre à : la GnRH, la LH, ou la testostérone.</p>
+<!-- CROP: 4084 1 1 0.043 0.735 0.472 0.850 4084_p01_document4_graphes -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p01_document4_graphes.png" alt=""></figure>
+<p class="para"><b>Document 4</b></p>
+<table>
+<tr><th>Lot N°</th><th>Molécule(s) injectée(s)</th><th>Radioactivité au niveau des neurones hypothalamiques</th></tr>
+<tr><td><b>1</b></td><td><b>Testostérone radioactive</b></td><td><b>présente</b></td></tr>
+<tr><td><b>2</b></td><td><b>Substance SM radioactive</b></td><td><b>présente</b></td></tr>
+<tr><td><b>3</b></td><td><b>Substance SM non radioactive <u>puis</u> Testostérone radioactive</b></td><td><b>absente</b></td></tr>
+</table>
+<p class="para"><b>Document 4</b></p>
+<p class="consigne"><b>1)</b>  Dégagez à partir de l'analyse des résultats obtenus des informations  en rapport avec les  neurones hypothalamiques  et de la substance <b>SM</b>.</p>
+<p class="consigne"><b>2)</b>  Sachant que des analyses chimiques ont montré que la molécule correspondant à la substance <b>SM</b>  a une configuration proche de celle de la testostérone, expliquez alors le résultat obtenu avec le lot 3.</p>
+<p class="para"><b><u>Donnée 2 :</u></b> On mesure la variation du taux de  GnRH   chez des rats ♂ dans différentes conditions expérimentales.<br>Les  conditions et les résultats  de cette expérience figurent dans le document 5 suivant:</p>
+<!-- CROP: 4084 1 1 0.510 0.288 0.918 0.493 4084_p01_document5 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p01_document5.png" alt=""></figure>
+<p class="consigne"><b>3)</b> nalysez les résultats de cette expérience en vue de dégager des conclusions adéquates.</p>
+<!-- PROOFREAD: 4084 part1 p01 — "3) nalysez": the first letter is hidden under a handwritten mark -->
+<p class="consigne"><b>4)</b>  Des analyses faites chez des patients prése<b>Document 5</b>e forme de stérilité ont montré des taux faibles de GnRH résultant d'une réponse excessive des neurones hypothalamiques à l'action de la testostérone (même à faible dose).</p>
+<!-- PROOFREAD: 4084 part1 p01 — the printed label "Document 5" overlaps the words "prése… …e forme" in question 4 -->
+<p class="consigne"><b>En tenant compte de l'ensemble des données, précisez l'origine de cette forme de  stérilité et expliquez comment la substance SM permet de pallier  à cette infertilité.</b></p>
+<div class="exsub">EXECICE 8</div>
+<p class="para">Le document 1 a représente une portion d'une coupe transversale schématique réalisée au niveau du testicule d'un homme normal<br>Le document Ib représente des cellules prélevées de la paroi d'un tube séminifère a des stades différents de la spermatogenèse  (Le nombre de chromosomes a été réduit a 2n = 8)</p>
+<p class="consigne">1) Légendez le document Ia.</p>
+<!-- CROP: 4084 1 1 0.513 0.675 0.690 0.797 4084_p01_document1a -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p01_document1a.png" alt=""></figure>
+<p class="para"><b>Document 1 a</b></p>
+<!-- CROP: 4084 1 1 0.688 0.690 0.862 0.797 4084_p01_document1b -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p01_document1b.png" alt=""></figure>
+<p class="para"><b>Document 1 b</b></p>
+<p class="consigne">2) Faites correspondre les cellules A, B et C du document Ib aux cellules 2, 3 et 4 du document Ia. Justifiez votre réponse.<br>3) Mettez dans l'ordre chronologique les cellules A, B et C selon le déroulement normal de la spermatogenèse<br>4) Précisez les rôles physiologiques des cellules de Sertoli et des cellules de Leydig.</p>
+<p class="para">A : spermatocyte II en métaphase II<br>B : spermatide en télophase II<br>C : spermatocyte I en métaphase I</p>
+<!-- PROOFREAD: 4084 part1 p01 — the three lines "A : … / B : … / C : …" are handwritten under question 4 (best reading: "spermatocyte II en métaphase II", "spermatide en télophase II", "spermatocyte I en métaphase I") -->
+<!-- page 02 -->
+<!-- NOTE: handwritten notes written on top of the printed page (margin notes, "A : Mitose", "Télo Mito", "DR", "DE", "≃ 60", remarks after questions, underlines, circles) not transcribed — annotations -->
+<p class="consigne"><b>1)</b>  Déduisez à partir de l'exploitation de ce document une propriété commune aux trois secrétions hormonales enregistrées.<br><b>2)</b>  A partir de ce document et en utilisant vos connaissances, faites correspondre chaque hormone (H1, H2 et H3) à : la LH, la GnRH ou la testostérone. Justifiez.</p>
+<p class="para"><b>B)</b> Les cellules hypophysaires de rat sont mises en culture. On ajoute périodiquement des doses identiques de GnRH dans le milieu de culture. On mesure alors de manière précise la libération de LH et FSH avant et pendant l'ajout de GnRH seule et à la suite de l'ajout de cellules testiculaires C dans le milieu de culture. Les résultats sont consignés dans le document 5 suivant.</p>
+<!-- CROP: 4084 1 2 0.300 0.183 0.486 0.372 4084_p02_document5_lh_fsh -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p02_document5_lh_fsh.png" alt=""></figure>
+<p class="para"><b>Document 5</b></p>
+<!-- PROOFREAD: 4084 part1 p02 — the small label under the LH/FSH graphs is blurred; read as "Document 5" -->
+<p class="consigne"><b>1)</b>  Analysez parallèlement les graphes du document 5 en vue de dégager des conclusions.<br><b>2)</b>  A partir de vos connaissances déduisez le nom des cellules C et expliquez leur mécanisme d'action au niveau du milieu de culture.</p>
+<p class="para"><b>C)</b>  Chez un bélier, on met en place une canule permettant de prélever le sang au niveau de la tige pituitaire. Après injection d'une forte dose de testostérone, on enregistre un arrêt des pulses de GnRH. De plus l'injection dans la circulation générale de la testostérone marquée par un élément radioactif permet d'observer, par la technique d'autoradiographie d'une coupe fine d'hypothalamus, des granulations noires (radioactivité) à l'intérieur de certains neurones hypothalamiques.</p>
+<p class="consigne"><b>1)</b>  Quelles nouvelles informations pouvez-vous tirer de ces données ?<br><b>2)</b>  Représentez par un schéma fonctionnel les différentes interactions hormonales mises en évidence dans cet exercice.</p>
+<div class="exsub">Exercice -6</div>
+<p class="para"><b>On se propose d'étudier quelques aspects de la fonction reproductrice masculine.</b></p>
+<p class="para"><b>A)</b> Chez des rats (2n = 42) la production de gamètes se fait selon les mêmes étapes que chez l'Homme.<br>Par des techniques appropriées on a pu suivre :l'évolution du nombre de cellules germinales et de gamètes produits lors du processus de production de spermatozoïdes, qui dure 53 jours chez cette espèce, en partant d'une seule cellule mère initiale.</p>
+<ul class="b"><li>l'évolution du nombre total de chromosomes par cellule lors du même processus.</li></ul>
+<p class="para">Les documents(2et3) suivants  présentent les résultats obtenus.</p>
+<!-- CROP: 4084 1 2 0.056 0.580 0.262 0.812 4084_p02_document2 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p02_document2.png" alt=""></figure>
+<p class="para"><b>Document 2</b></p>
+<!-- CROP: 4084 1 2 0.258 0.580 0.466 0.812 4084_p02_document3 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p02_document3.png" alt=""></figure>
+<p class="para"><b>Document 3</b></p>
+<p class="para"><b>NB</b> : <u>la proportionnalité au niveau de l'axe du temps n'est pas respectée.</u></p>
+<p class="consigne">1-Analysez les résultats du document 2 et utilisez vos connaissances, en vue :<br>-d'expliquer les variations du nombre de cellules.<br>-de nommer les phases de la spermatogénèse et les cellules a, b, c, d et e.</p>
+<p class="consigne">2-Expliquez les variations 1, 2 et 3 du nombre de chromosomes figurant dans le document 3.<br>3-Faites un schéma d'une cellule germinale au moment 1 et d'une cellule germinale au moment 2 (juste avant la variation 3) figurant dans le document 3, en supposant que le nombre de chromosomes est égal à 2n = 6 et en considérant les chromosomes sexuels</p>
+<p class="para"><b>B)</b> La courbe du document 4 suivant représente l'évolution du nombre de chromosomes au niveau des cellules germinales d'un homme adulte (Mr X) présentant un problème physiologique.</p>
+<!-- CROP: 4084 1 2 0.618 0.205 0.792 0.326 4084_p02_document4 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p02_document4.png" alt=""></figure>
+<ol class="qn">
+<li>Quel problème physiologique pouvez-vous déduire à partir de l'analyse du document 4 ?</li>
+<li>Dans le but d'élucider l'origine du problème de Mr X, des analyses du taux sanguin de LH chez cet homme ont été réalisées. Le document 5 représente les résultats obtenus.</li>
+</ol>
+<p class="para">- Le document 6 représente la variation du taux de testostérone secrétée au cours du temps chez un homme normal.</p>
+<p class="para">- Le document 7 représente la variation normale du taux de testostérone secrétée en fonction du taux sanguin de LH.</p>
+<!-- CROP: 4084 1 2 0.506 0.440 0.637 0.566 4084_p02_document5_lh -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p02_document5_lh.png" alt=""></figure>
+<!-- CROP: 4084 1 2 0.638 0.440 0.777 0.566 4084_p02_document6 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p02_document6.png" alt=""></figure>
+<!-- CROP: 4084 1 2 0.795 0.440 0.942 0.566 4084_p02_document7 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4084/4084_p02_document7.png" alt=""></figure>
+<p class="consigne"><b>a)</b>  Exploitez les documents 5 et 7 afin de donner une estimation du taux moyen de sécrétion  de testostérone chez Mr X.<br><b>b)</b>  Comparez ce taux à celui de l'homme normal (document 6) et montrez que cela permet d'expliquer le problème physiologique de Mr X.<br><b>c)</b>  Emettez deux hypothèses quant à l'origine du problème du Mr X.</p>
+<p class="consigne"><b>3.</b>  L'analyse du taux sanguin de GnRH chez Mr X montre des valeurs plus élevées que la normale.<br><b>a)</b>  Expliquez ce résultat et dites s'il permet d'éliminer l'une des hypothèses émises à la question précédente.<br><b>b)</b>  Précisez l'intérêt du mécanisme évoqué en 3) a), en rapport avec la relation entre le complexe hypothalamo-hypophysaire et les testicules, chez l'homme normal. Expliquez.</p>
+<div class="exsub">EXECICE 7</div>
+<p class="para">Une forme de stérilité masculine est traitée par injection d'une substance médicamenteuse <b>SM</b>.On se propose de comprendre, à partir de données expérimentales, comment le traitement du patient par la substance <b>SM</b>  lui permet de résoudre le problème de son infertilité.</p>
+<p class="para">Les expériences sont réalisées sur des animaux dont la physiologie de la reproduction est analogue à celle de l'Homme.</p>
+<p class="para"><b><u>Donnée1</u></b> Chez 3 lots de rats, préalablement castrés, on cherche la présence de radioactivité au niveau des neurones hypothalamiques, après injection de différentes molécules. Les résultats figurent dans le document 4 suivant :</p>
+
+</section>
+
+</div>
+</body>
+</html>

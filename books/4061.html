@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>SVT · Magazine+séries+devoirs — serie rep</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    chtml: { fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2', matchFontHeight: true },
+    startup: { typeset: true }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+:root{
+  /* =====  palette — MAIN ACCENT = green-teal gradient #0FAB8F → #067360 ===== */
+  --bg:#fff; --panel:#f2f8f8; --hair:#e6e6e9; --hair2:#d6d6db;
+  --fg:#0f2a31;        /* body text (and +/− signs) */
+  --fg2:#3f5b62;       /* softer text */
+  --fg3:#7c959b;       /* muted (footer) */
+  --blue:#067360;      /* deep accent — small numbers, borders, watermark, accent equations */
+  --blue-dark:#045260; /* titles & wordmarks (also the balance colour) */
+  --teal:#0fab8f;      /* bright accent end */
+  --loop:#0d9c82;      /* logo-loop helper */
+  --orange:#067360;    /* kicker/category labels (gold retired → deep teal) */
+  --red:#f5322f;       /* EXERCISE CHIPS ONLY — never for emphasis */
+  --cream:#e6f3f4; --blue-soft:#e6f3f4;  /* pale teal — callout fill + table sub-row fill */
+  --blue-line:#cde7e4; /* hairline */
+  --sub-ink:#045260;   /* table sub-row text */
+  --grad:linear-gradient(148deg,#0fab8f 0%,#0d9c82 52%,#067360 100%);
+  --mono:'JetBrains Mono',monospace; --latin:'Sora',sans-serif; --ar:'Cairo',sans-serif; --arb:'Tajawal',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--latin);color:var(--fg);background:#e4e4e7;padding:28px 0;
+     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+html[dir="rtl"] body{font-family:var(--arb);}
+
+/* ===== brand watermark: REAL text (crisp), full-bleed, repeats per page ===== */
+.wm{position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;
+    align-items:center;justify-content:center;overflow:hidden;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.wm span{font-family:var(--mono);font-weight:800;font-size:76.8pt;letter-spacing:.16em;
+    color:var(--blue);opacity:.06;white-space:nowrap;transform:rotate(-54deg);}  /* single diagonal: bottom-left → top-right */
+.wm.mono span{color:#000;opacity:.05;}
+
+/* ===== continuous flow stream (no page border) ===== */
+.flow{width:210mm;margin:0 auto;background:transparent;color:var(--fg);
+      padding-block:16mm 18mm;padding-inline:23mm 14mm;position:relative;}   /* spiral gutter: inline-start(=spine) 23mm / outer 14mm — dir-aware; print margins set in render_flow.py */
+@media screen{ .flow{background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.16);} }
+.flow>*{position:relative;z-index:1;}
+.flow p,.flow li,.flow .data,.flow .note,.flow .ex{break-inside:auto;}
+.flow .fig,.flow figure,.flow img,.flow svg.figsvg,.flow table,.flow tr,.flow .chapdiv,.flow .exh,.flow .qrcard,.flow .meta{break-inside:avoid;}
+.flow h1,.flow h2,.flow h3,.flow .exh,.flow .subhead,.flow .chapdiv{break-after:avoid;}
+.flow img,.flow svg.figsvg{max-width:100%;height:auto;}
+.flow figcaption,.flow .figcap{display:none;}          /* rule 3: no figure captions */
+
+/* ===== front matter + chapters each start on a fresh page ===== */
+.flow .cover{break-after:page;}        /* cover alone on page 1 */
+.flow .toc{break-after:page;}          /* Sommaire alone on the next page */
+.flow .chapter{break-before:page;}
+.flow .chapter:first-of-type{break-before:auto;}
+
+/* ===== cover ===== */
+.cover{padding:14mm 0 8mm;border-bottom:2px solid var(--blue);margin-bottom:6mm;}
+.cover .badge{font-family:var(--mono);font-size:8.5pt;letter-spacing:.28em;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+.cover h1{font-family:var(--latin);font-weight:800;font-size:34pt;line-height:1.03;letter-spacing:-.025em;color:var(--blue-dark);}
+.cover .grule{width:120px;height:5px;border-radius:5px;background:var(--grad);margin:14px 0;}
+.cover .sub{font-family:var(--mono);font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);}
+.cover .auth{font-size:11pt;color:var(--fg2);margin-top:6px;font-weight:600;}
+
+/* ===== table of contents ===== */
+.toc{margin:2mm 0 4mm;}
+.toc h2{font-family:var(--latin);font-weight:800;font-size:15pt;color:var(--blue-dark);margin-bottom:4mm;}
+.toc .trititle{font-family:var(--mono);font-size:8pt;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin:4mm 0 2mm;}
+.toc ol{list-style:none;}
+.toc li{display:flex;align-items:baseline;gap:8px;font-size:10pt;padding:2.2px 0;color:var(--fg);line-height:1.4;}
+.toc li .n{font-family:var(--mono);font-weight:700;font-size:9pt;color:var(--blue);min-width:26px;}
+.toc li .dots{flex:1;border-bottom:1px dotted var(--hair2);transform:translateY(-3px);}
+
+/* ===== chapter divider band ===== */
+.chapdiv{margin:0 0 5mm;padding:6mm 16px 5mm;border-radius:12px;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}   /* green-filled chapter band */
+.chapdiv .cn{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:5px;}
+.chapdiv h2{font-family:var(--latin);font-weight:800;font-size:17pt;line-height:1.1;letter-spacing:-.015em;color:#fff;}
+/* conclusion block — same green-filled look as the chapter band */
+.conclusion{background:var(--grad);border-radius:12px;padding:6mm 16px;margin:5mm 0;color:#fff;break-inside:avoid;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.conclusion .ck{font-family:var(--mono);font-size:8.5pt;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82);margin-bottom:6px;}
+.conclusion h3{font-family:var(--latin);font-weight:800;font-size:13pt;line-height:1.2;color:#fff;margin-bottom:4px;}
+.conclusion p,.conclusion li{font-size:10.4pt;line-height:1.7;color:#fff;}
+.conclusion b,.conclusion strong{color:#fff;font-weight:700;}
+
+/* ===== unit header (lesson/exercise) + QR emplacement ===== */
+.exh{display:flex;align-items:center;gap:11px;margin:6mm 0 3mm;}
+.exh .idx{font-family:var(--mono);font-size:9pt;font-weight:600;color:#fff;background:var(--grad);
+    border-radius:6px;padding:4px 11px;letter-spacing:.08em;text-transform:uppercase;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.exh .idx.ex{background:var(--red);}   /* exercise chip = red */
+.exh h2{font-family:var(--latin);font-size:14pt;font-weight:700;letter-spacing:-.01em;color:var(--blue-dark);}
+.exh .qrcard{margin-inline-start:auto;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;width:26mm;}
+.qrcard .qrt{font-family:var(--mono);font-size:6.5pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);text-align:center;}
+.qrcard .qrslot{width:24mm;height:24mm;padding:1.5mm;background:#fff;border:1px solid var(--blue-line);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.qrcard .qrslot img,.qrcard .qrslot svg{width:100%;height:100%;display:block;}
+
+/* sub-exercise label when one file holds several exercices */
+.exsub{font-family:var(--latin);font-weight:800;font-size:11.5pt;color:var(--blue-dark);margin:5mm 0 2.5mm;padding-bottom:3px;border-bottom:2px solid var(--blue-line);}
+
+/* ===== text blocks ===== */
+.lead{font-size:11pt;line-height:1.7;margin:2mm 0 3mm;color:var(--fg);}
+.para{font-size:10.6pt;line-height:1.7;margin:2mm 0 2.5mm;color:var(--fg);}
+.consigne{font-size:10.4pt;line-height:1.6;margin:1mm 0 2mm;color:var(--fg);font-style:italic;}
+.subhead{font-family:var(--latin);font-weight:800;font-size:12pt;letter-spacing:-.01em;color:var(--blue-dark);margin:5mm 0 2.5mm;}
+/* emphasis — green accent = .t-blue/.t-green ; balance = .t-navy ; red = SECONDARY accent (.t-red) on titles + a few words */
+.t-blue{color:var(--blue);font-weight:600;} .t-navy{color:var(--blue-dark);font-weight:700;}
+.t-red{color:var(--red);font-weight:600;} .t-green{color:var(--teal);font-weight:600;} .t-gold{color:var(--orange);font-weight:600;}
+.subhead.t-red{color:var(--red);font-weight:800;}   /* red Roman-numeral section title (I, II, …) — keeps subhead weight */
+/* highlighter marks — a soft colour wash behind a key word (agent picks green or red per what balances the page) */
+.hl-green,.hl-red{border-radius:3px;padding:.02em .24em;font-weight:600;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.hl-green{background:rgba(15,171,143,.20);color:var(--blue-dark);}   /* green highlight */
+.hl-red{background:rgba(245,50,47,.13);color:#c0261f;}               /* red highlight  */
+
+.data{background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:4px solid var(--blue);
+    border-radius:8px;padding:11px 16px;margin:3mm 0;font-size:10pt;line-height:1.65;color:var(--fg2);}
+.data b{color:var(--fg);font-weight:700;}
+.note{border:1px dashed var(--hair2);border-radius:9px;padding:11px 16px;margin:4mm 0;background:var(--panel);}
+.note .kicker{font-family:var(--mono);font-size:7.5pt;letter-spacing:.18em;color:var(--orange);display:block;margin-bottom:5px;}
+.note .nb{font-size:10pt;line-height:1.7;color:var(--fg2);} .note b{color:var(--fg);}
+.ex:not(.idx){background:var(--blue-soft);border:1px solid var(--blue-line);border-inline-start:3px solid var(--blue);
+    border-radius:7px;padding:7px 11px;font-size:9.6pt;line-height:1.6;color:var(--fg2);margin:2mm 0;}   /* :not(.idx) so it never hits the exercise chip (which is .idx.ex) */
+.ex .extag{display:inline-block;font-family:var(--latin);font-weight:800;font-size:7.6pt;color:var(--blue-dark);background:#fff;
+    border:1px solid var(--blue);border-radius:5px;padding:1px 9px;margin-inline-end:7px;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em;}
+
+/* ===== lists ===== */
+ol.q{list-style:none;counter-reset:q;margin:1mm 0 2mm;}
+ol.q>li{counter-increment:q;position:relative;padding-inline-start:30px;margin-bottom:2.5mm;font-size:10.4pt;line-height:1.6;}
+ol.q>li::before{content:counter(q);position:absolute;inset-inline-start:0;top:1px;width:21px;height:21px;background:var(--grad);color:#fff;
+    border-radius:50%;font-family:var(--mono);font-size:9pt;font-weight:600;display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ol.sub{list-style:none;counter-reset:s;margin:4px 0 0;padding-inline-start:2px;border-inline-start:1px solid var(--blue-line);}
+ol.sub li{counter-increment:s;position:relative;padding:2.5px 0 2.5px 26px;font-size:10.1pt;line-height:1.55;}
+ol.sub li::before{content:counter(s,lower-alpha)".";position:absolute;inset-inline-start:10px;top:2.5px;font-family:var(--mono);font-size:9pt;font-weight:600;color:var(--teal);}
+ol.qn{list-style:none;counter-reset:qn;margin:1mm 0 2mm;}
+ol.qn>li{counter-increment:qn;position:relative;padding-inline-start:26px;margin-bottom:2.2mm;font-size:10.4pt;line-height:1.55;}
+ol.qn>li::before{content:counter(qn)".";position:absolute;inset-inline-start:0;top:0;font-family:var(--mono);font-size:9.5pt;font-weight:700;color:var(--blue);}
+ul.b{list-style:none;margin:1mm 0 2mm;} ul.b>li{position:relative;padding-inline-start:22px;margin-bottom:2.4mm;font-size:10.4pt;line-height:1.6;}
+ul.b>li::before{content:"";position:absolute;inset-inline-start:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--grad);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+ul.dash{list-style:none;margin:1mm 0 2mm;} ul.dash>li{position:relative;padding-inline-start:20px;margin-bottom:1.8mm;font-size:10.4pt;line-height:1.6;}
+ul.dash>li::before{content:"–";position:absolute;inset-inline-start:2px;top:0;color:var(--fg);font-weight:700;}  /* dash / +/− signs = body colour */
+.flow ul.opts{list-style:none;margin:4px 0 3px;padding-inline-start:16px;}
+.flow ul.opts li{padding:2px 0;font-size:10.2pt;line-height:1.5;color:var(--fg);}
+
+/* ===== figures / tables ===== */
+.fig{margin:3mm 0;} .fig svg.figsvg{display:block;margin:0 auto;background:#fff;max-width:100%;height:auto;}
+.photo{display:block;margin:3mm auto;border-radius:8px;border:1px solid var(--hair);max-width:100%;}
+.figrow{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:3mm auto;max-width:190mm;}
+.flow .figrow img{border-radius:7px;border:1px solid var(--hair);height:46mm;width:auto;max-width:none;object-fit:cover;}
+.schemarow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin:2mm 0;}
+.schemarow .col-txt{flex:1 1 90mm;min-width:80mm;} .schemarow .col-fig{flex:0 0 78mm;} .schemarow .col-fig .fig{margin:0;}
+.flow table{border-collapse:collapse;width:100%;margin:3mm 0;font-size:9.8pt;line-height:1.5;}
+.flow table th,.flow table td{border:1px solid var(--blue-line);padding:6px 10px;text-align:start;vertical-align:top;}
+.flow table th{background:var(--grad);color:#fff;font-family:var(--latin);font-weight:700;font-size:9.4pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.flow table tr:nth-child(even) td{background:var(--blue-soft);color:var(--sub-ink);}   /* sub-row: #E6F3F4 / #045260 */
+
+mjx-container{color:var(--fg) !important;font-weight:400 !important;font-size:1.0em !important;}
+.eq-hi mjx-container,mjx-container.eq-hi{color:var(--blue) !important;}   /* accent (green) equation — highlight a key result; balance with plain math */
+.eq-red mjx-container,mjx-container.eq-red{color:var(--red) !important;}  /* red accent equation / symbol — complements the green .eq-hi */
+
+/* ===== per-file books: credit line, copies list, figures at their size ===== */
+.credit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:-1mm 0 3.5mm;font-size:9.4pt;color:var(--fg2);}
+.credit .who{font-weight:700;color:var(--blue-dark);}
+.credit .tg{font-family:var(--mono);font-size:7.2pt;letter-spacing:.04em;border-radius:5px;padding:1px 7px;line-height:1.6;
+    border:1px solid var(--blue-line);color:var(--blue);background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.credit .tg.sec{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff;}
+.credit .tg.cor{background:#fff;border-color:var(--red);color:var(--red);}
+.credit a{color:var(--fg3);font-family:var(--mono);font-size:7pt;text-decoration:none;}
+.cover .auth .credit{margin:4mm 0 0;}
+.cover .copies{margin-top:5mm;font-size:8.6pt;color:var(--fg2);}
+.cover .copies ul{list-style:none;margin:2mm 0 0;padding:0;columns:2;}
+.cover .copies a{color:var(--fg3);text-decoration:none;font-size:8pt;}
+.flow figure.fig{text-align:center;}
+.flow figure.fig img{max-height:60mm;width:auto;max-width:70%;display:inline-block;}
+
+/* chapter tag on each part of a multi-chapter book (the book keeps the original order of the file) */
+.chtag{display:inline-block;margin:5mm 0 2mm;padding:1mm 3mm;border-radius:2mm;background:#eef3fb;border:1px solid #c9d6ea;
+  color:#1f3a6b;font-size:9pt;font-weight:700}
+.chtag span{color:#6b7f9e;font-weight:600;margin-inline-end:1.5mm}
+
+@media print{ body{background:#fff;padding:0;} .flow{width:auto;max-width:none;margin:0;padding:0;} }
+@page{size:A4;}   /* margins come from render_flow.py — do NOT set them here */
+</style>
+<meta data-pagefind-filter="type[content]" content="Série">
+<meta data-pagefind-filter="resource[content]" content="Taki Academy">
+<meta data-pagefind-meta="n[content]" content="4061">
+<meta data-pagefind-meta="title[content]" content="Magazine+séries+devoirs — serie rep">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez l&#x27;homme">
+<meta data-pagefind-filter="chapter[content]" content="Reproduction chez la femme">
+<meta data-pagefind-filter="chapter[content]" content="Génétique des diploïdes (monohybridisme, dihybridisme)">
+<meta data-pagefind-filter="section[content]" content="Sciences expérimentales"><style>.qrcard{display:none!important}.wa-nav{position:sticky;top:0;z-index:50;background:#045260;padding:10px 18px;font-family:Cairo,Sora,sans-serif;direction:ltr}.wa-nav a{color:#fff;text-decoration:none;font-weight:700}@media print{.wa-nav{display:none}}</style>
+</head>
+
+<body dir="ltr" lang="fr"
+      data-subject="SVT · Magazine+séries+devoirs — serie rep" data-pagefind-body><nav class="wa-nav" data-pagefind-ignore><a href="../index.html">← Retour au catalogue SVT</a></nav>
+
+<div class="flow colored">
+<div class="cover"><div class="badge">◉ SVT</div><h1>Magazine+séries+devoirs — serie rep</h1><div class="grule"></div><div class="sub">Reproduction chez l&#x27;homme</div><div class="auth"><div class="credit">Auteur / source : <span class="who">www.takiacademy.com</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1X52sgEc_f72M2LPen4buBZLnQAgqh6SZ/view">↗ 48.._serie-13-rep0-17-12-2019.pdf</a> <a href="https://drive.google.com/file/d/1jqGzjYmCuPhto1XFxCQk9D2gZoEcSlFj/view">↗ 50..serie-14-rep0-20-12-2019.pdf</a></div></div><div class="copies" data-pagefind-ignore><b>Copies de ce fichier dans les Drives (8)</b><ul><li><a href="https://drive.google.com/file/d/1X52sgEc_f72M2LPen4buBZLnQAgqh6SZ/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1ZYEl9SHslGz9aXkA3YNES-4RgcJkZ33D/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / SVT TakiAcademy (+100 PDF)</a></li><li><a href="https://drive.google.com/file/d/1jqGzjYmCuPhto1XFxCQk9D2gZoEcSlFj/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/1_BT4UGyPBh8UgaJjIeZh-pdiDVmDDLUB/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / SVT TakiAcademy (+100 PDF)</a></li><li><a href="https://drive.google.com/file/d/1_dxSsCXCSYuS6J7vkuTHNhSMvRuGOwpk/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/15pF8zMdtaR_TdEOEB-iHFgvlGbnVZyTI/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / SVT TakiAcademy (+100 PDF)</a></li><li><a href="https://drive.google.com/file/d/1UCk47NRunefyG1h60YOAZLmke19AgR-A/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / Magazine+séries+devoirs</a></li><li><a href="https://drive.google.com/file/d/10iOcEWV-fWtewslmka2wtYW3qMNKzPtv/view">Asu bac math pilote · Asu Bac 2025 pilote › Sciences.exp - Maths / SVT / SVT TakiAcademy (+100 PDF)</a></li></ul></div></div>
+<section class="chapter">
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+<!-- SOURCE: www.takiacademy.com -->
+<div class="exh"><span class="idx ex">Série</span><h2>Série 13 : Reproduction humaine</h2>
+  <div class="qrcard"><div class="qrt">Vidéo du cours</div><div class="qrslot"><img src="qr/4061.svg" alt="QR"></div></div></div>
+<div class="credit">Auteur / source : <span class="who">www.takiacademy.com</span> <span class="tg">Série</span><span class="tg cor">Corrigé</span><span class="tg sec">SVT · Sciences expérimentales</span> <a href="https://drive.google.com/file/d/1X52sgEc_f72M2LPen4buBZLnQAgqh6SZ/view">↗ 48.._serie-13-rep0-17-12-2019.pdf</a> <a href="https://drive.google.com/file/d/1jqGzjYmCuPhto1XFxCQk9D2gZoEcSlFj/view">↗ 50..serie-14-rep0-20-12-2019.pdf</a></div>
+<div class="exsub">48.._serie-13-rep0-17-12-2019</div>
+<!-- page 01 -->
+<p class="subhead t-red">Série 13 : Reproduction humaine</p>
+<p class="para"><span class="t-gold">17/112/2019</span></p>
+<div class="exsub"><b>Exercice 1 (QCM) :</b></div>
+<p class="para">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes. Reportez sur votre copie, le numéro de chaque item et indiquez la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).</p>
+<p class="para">NB-<b><u>Toute réponse fausse annule la note attribuée à l’item considéré</u></b>.</p>
+<p class="para"><b><span class="t-blue">1) Chez l’homme, les cellules de Sertoli :</span></b><br>
+a- interviennent dans la régulation de la spermatogenèse,<br>
+b- présente des récepteurs à la testostérone,<br>
+c- synthétisent et sécrètent l’ABP,<br>
+d- ont des récepteurs spécifiques au complexe Testostérone-ABP.</p>
+<p class="para"><b><span class="t-blue">2) On désigne par "cellules souches de la lignée germinale" les :</span></b><br>
+a- cellules de Leydig,<br>
+b- cellules de Sertoli,<br>
+c- cellules folliculaires,<br>
+d- ovogonies et les spermatogonies.</p>
+<p class="para"><b><span class="t-blue">3) Chez le jeune adolescent, la paroi du tube séminifère :</span></b><br>
+a- est développée avant la puberté,<br>
+b- est le lieu de la spermatogenèse,<br>
+c- contient des cellules endocrines,<br>
+d- est le siège de la production de la testostérone.</p>
+<p class="para"><b><span class="t-blue">4) Le document ci-contre représente une structure prélevée de l’ovaire d’une femme pubère :</span></b></p>
+<!-- CROP: 4061 1 1 0.714 0.567 0.946 0.697 4061_qcm4_structure_ovaire -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_qcm4_structure_ovaire.png" alt=""></figure>
+<p class="para">a- les cellules 3 sont à n chromosomes,<br>
+b- il s’agit d’un ovocyte,<br>
+c- les cellules 4 sont à 2n chromosomes,<br>
+d- la cellule 1 referme la même quantité d’ADN que celle d’un spermatozoïde humain.</p>
+<p class="para"><b><span class="t-blue">5) La destruction sélective des cellules de Leydig chez un rat impubère provoque :</span></b><br>
+a- la baisse du taux des gonadostimulines,<br>
+b- l'absence de la puberté,<br>
+c- la baisse de la fréquence des pulses de GnRH,<br>
+d- la régression des caractères sexuels secondaires.</p>
+<!-- page 02 -->
+<p class="para"><b><span class="t-blue">6) Le document ci-contre représente l’organisation de l’appareil génital de l’homme, l’organe numéro :</span></b></p>
+<!-- CROP: 4061 1 2 0.641 0.031 0.896 0.217 4061_qcm6_appareil_genital_homme -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_qcm6_appareil_genital_homme.png" alt=""></figure>
+<p class="para">a- 5 intervient dans la production des spermatozoïdes,<br>
+b- 10 est une glande annexe,<br>
+c- 6 intervient dans la production du sperme,<br>
+d- 9 fait partie des voies génitales.</p>
+<p class="para"><b><span class="t-blue">7) Lors de l’ovogenèse, l'apparition du deuxième globule polaire se déroule dans :</span></b><br>
+a- un follicule mûr<br>
+b- l’ovaire,<br>
+c- la trompe,<br>
+d- l’utérus.</p>
+<p class="para"><b><span class="t-blue">8) L’injection de la testostérone à un enfant impubère :</span></b><br>
+a- provoque l’apparition précoce des caractères sexuels secondaires,<br>
+b- permet de désactiver son spermatogenèse,<br>
+c- active le fonctionnement de son axe hypotalamo-hypophysaire,<br>
+d- n’a pas d’effet sur son organisme.</p>
+<p class="para"><b><span class="t-blue">9) Les cellules folliculaires de la corona radiata :</span></b><br>
+a- ont le même nombre de chromosomes que le premier globule polaire,<br>
+b- sont des cellules somatiques,<br>
+c- ont un noyau bloqué en métaphase II,<br>
+d- sont haploïdes.</p>
+<p class="para"><b><span class="t-blue">10) Le schéma ci-contre est une coupe schématique du testicule :</span></b></p>
+<!-- CROP: 4061 1 2 0.703 0.563 0.937 0.674 4061_qcm10_coupe_testicule -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_qcm10_coupe_testicule.png" alt=""></figure>
+<p class="para">a- la destruction sélective de l'élément 1 entraîne uniquement la régression des caractères sexuels secondaires,<br>
+b- la cellule 4 secrète une protéine l'ABP qui agit par un rétrocontrôle négatif sur l'hypophyse,<br>
+c- la cellule 3 subit la division réductionnelle de la méiose,<br>
+d- la structure 2 correspond à un spermatocyte I.</p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez la femme</div>
+
+<div class="exsub"><b>Exercice 2 :</b></div>
+<p class="para">Au cours de l’ovogenèse, le gamète femelle subit plusieurs blocages.</p>
+<p class="para"><b>1) a-</b> Précisez pour chaque blocage, le lieu et la période.<br>
+<b>b-</b> Indiquez les conditions de déblocage à chaque fois.</p>
+<p class="para"><b>2)</b> Le tableau ci-dessous, illustre une étape d’une phase de la gamétogenèse. Complétez ce tableau en schématisant la même étape pour les deux cellules <b>B</b> et <b>C</b> et en adoptant la formule chromosomique proposée dans le tableau.</p>
+<!-- page 03 -->
+<table>
+<tr><th><span class="t-red">Cellules germinales</span></th><th><span class="t-red">A</span></th><th><span class="t-red">B</span></th><th><span class="t-red">C</span></th></tr>
+<tr><td><b><span class="t-red">Représentation de la cellule</span></b></td><td><!-- CROP: 4061 1 3 0.318 0.117 0.473 0.255 4061_ex2_cellule_A -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_ex2_cellule_A.png" alt=""></figure></td><td></td><td></td></tr>
+<tr><td><b><span class="t-red">Nom de la cellule représentée</span></b></td><td>………………</td><td>………………</td><td>………………</td></tr>
+<tr><td><b><span class="t-red">Etape de la division</span></b></td><td>……………….</td><td>………………</td><td>Anaphase I</td></tr>
+<tr><td><b><span class="t-red">Justification de la phase de division</span></b></td><td>………………<br>………………<br>………………<br>………………<br>……………………<br>………………<br>……………………<br>……………………<br>……………………<br>…………………….</td><td>Ascension polaire de n chromosomes dont 2 autosomes et 1 chromosome sexuel.</td><td>………………<br>………………<br>………………<br>………………<br>…………………<br>……..…………<br>………………………<br>………………………<br>……………………..</td></tr>
+<tr><td><b><span class="t-red">Produit de la division</span></b></td><td>………………<br>………………<br>………………<br>………………<br>……………………<br>…………<br>………………<br>……………………<br>……………………<br>………………</td><td>Spermatides</td><td>Ovocyte II<br>+<br>……………………<br>à n = 3 chromosomes dont 2 autosomes et 1 chromosome sexuel.</td></tr>
+</table>
+<p class="para"><b><span class="t-blue">NB : Les chromosomes sexuels doivent être considérés dans chaque cas.</span></b></p>
+
+<div class="chtag"><span>Chapitre</span> Reproduction chez l&#x27;homme</div>
+
+<div class="exsub"><b>Exercice 3 :</b></div>
+<p class="para"><b>I-</b> On réalise une étude quantitative du taux d’ADN au niveau des cellules germinales extraites directement, par biopsie, d’un fragment des testicules de deux hommes P1 et P2, l’un stérile et l’autre fertile (normal).<br>
+On obtient trois populations différentes de cellules dont le nombre et la quantité d’ADN correspondant à chacune d’elles, figurent dans le document 1.</p>
+<!-- page 04 -->
+<!-- CROP: 4061 1 4 0.425 0.103 0.944 0.295 4061_ex3_document1_ADN_populations -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_ex3_document1_ADN_populations.png" alt=""></figure>
+<p class="para">Exploitez les résultats du document 1 en vue de :<br>
+- préciser lequel des hommes est stérile.<br>
+- reconnaitre les cellules correspondant à chacune des populations étudiées.<br>
+- proposer une explication de la cause possible de la stérilité de l’homme stérile.</p>
+<p class="para"><b>II-</b> Dans le but de comprendre certaines modalités de thérapie contre le cancer de prostate chez l’homme âgé, on réalise les expériences suivantes.</p>
+<p class="para"><b><i><u><span class="t-blue">Expérience 1</span></u></i></b></p>
+<p class="para">On suit la variation de la taille de la prostate en fonction de la concentration d’une substance X injectée, extraite des testicules.<br>
+Le document 2 montre les résultats obtenus.</p>
+<p class="para"><b><i><u><span class="t-blue">Expérience 2</span></u></i></b></p>
+<p class="para">On suit le développement des cellules cancéreuses dans la prostate pour les mêmes concentrations de la substance <b>X</b> injectée dans l’expérience précédente.<br>
+Le document 3 montre les résultats obtenus.</p>
+<!-- CROP: 4061 1 4 0.566 0.342 0.944 0.551 4061_ex3_document2_volume_prostate -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_ex3_document2_volume_prostate.png" alt=""></figure>
+<p class="para"><i>NB : volume normale de la prostate = 24 cm<sup>3</sup>.</i></p>
+<table>
+<tr><td><span class="t-red">Concentration de la substance <b>X</b> en (UA)</span></td><td>10</td><td>20</td><td>30</td><td>40</td><td>50</td></tr>
+<tr><td><span class="t-red">Développement des cellules cancéreuses</span></td><td>Non</td><td>Non</td><td>Non</td><td>Oui</td><td>Oui</td></tr>
+</table>
+<p class="para">Document 3</p>
+<p class="para"><b>1)</b> A partir de l’exploitation des résultats des expériences 1 et 2, et en faisant appels à vos connaissances :<br>
+- identifiez la substance <b>X</b>.<br>
+- préciser la cause du développement d'un cancer de la prostate chez les personnes âgées.</p>
+<p class="para"><b>2)</b> Proposez deux hypothèses permettant de limiter le développement des cellules cancéreuses de la prostate.</p>
+<p class="para"><b>3)</b> Une personne âgée atteinte d'un cancer de prostate stade 2, consulte son médecin spécialiste qui lui prescrit le médicament portant le nom commercial DECAPEPTYL dont la molécule active est la Triptoréline.</p>
+<!-- page 05 -->
+<p class="para">Les figures suivantes du document 4, montrent les modèles en 3D de cette molécule et celui de la GnRH.</p>
+<!-- CROP: 4061 1 5 0.235 0.137 0.762 0.309 4061_ex3_document4_GnRH_triptoreline -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_ex3_document4_GnRH_triptoreline.png" alt=""></figure>
+<p class="para">a- Quelle conclusion tirez-vous de la comparaison de ces deux molécules ?<br>
+b- En faisant appel à vos connaissances sur le mode d'action de l’hormone, et à partir de votre conclusion précédent, proposez une hypothèse qui explique le mode d'action de la molécule Triptoréline pour réduire le développement des cellules cancéreuses.</p>
+<p class="para"><b>4)</b> Pour mieux comprendre le mode d'action de cette molécule, on réalise l'expérience suivante.</p>
+<p class="para">Chez des personnes âgées qui ont reçu une seule injection intramusculaire de DECAPEPTYL 11,25 mg dont la durée d'action est de 3 mois. On suit ensuite, le taux de sécrétion de LH, de la substance X ainsi que la variation du nombre des récepteurs libres de GnRH.<br>
+Le document 5 présente les résultats obtenus.</p>
+<table>
+<tr><th><span class="t-red">Temps écoulé après l’injection</span></th><th><span class="t-red">1<sup>ère</sup> semaine</span></th><th><span class="t-red">de la 2<sup>ème</sup> semaine au 3<sup>ème</sup> mois</span></th></tr>
+<tr><td><b><span class="t-red">Taux de LH</span></b></td><td>Augmentation</td><td>Diminution</td></tr>
+<tr><td><b><span class="t-red">Taux de la substance X</span></b></td><td>Augmentation</td><td>Diminution</td></tr>
+<tr><td><b><span class="t-red">Nombre de récepteurs libres de GnRH</span></b></td><td>Diminution</td><td>Diminution</td></tr>
+</table>
+<p class="para">Document 5</p>
+<p class="para">En exploitant les résultats de cette expérience et les réponses aux questions précédentes, expliquez le mode d'action de DECAPEPTYL pour réduire le développement des cellules cancéreuses de la prostate chez la personne âgée.</p>
+<div class="exsub">50..serie-14-rep0-20-12-2019</div>
+<!-- page 01 -->
+<p class="subhead t-red">Série 14 : Reproduction humaine + Dihybridisme</p>
+<p class="para"><span class="t-gold">20/12/2019</span></p>
+<div class="exsub"><b>Exercice 1 (QCM) :</b></div>
+<p class="para">Pour chacun des items suivants, il peut y avoir une ou deux réponses exactes. Reportez sur votre copie, le numéro de chaque item et indiquez la (ou les) lettre(s) correspondant à la (ou aux) réponse(s) exacte(s).</p>
+<p class="para">NB-<b><u>Toute réponse fausse annule la note attribuée à l’item considéré</u></b>.</p>
+<p class="para"><b><span class="t-blue">1) L’ablation de l’hypophyse chez une guenon gestante après le 3<sup>ème</sup> mois, entraîne :</span></b><br>
+<b>a-</b> l’avortement,<br>
+<b>b-</b> la chute du taux de progestérone,<br>
+<b>c-</b> aucun effet sur la gestation,<br>
+<b>d-</b> la régression du corps jaune.</p>
+<p class="para"><b><span class="t-blue">2) Les enzymes des granules corticaux :</span></b><br>
+<b>a-</b> sont libérées au moment de la fixation des spermatozoïdes sur la zone pellucide,<br>
+<b>b-</b> assurent la pénétration des spermatozoïdes,<br>
+<b>c-</b> empêchent la polyspermie,<br>
+<b>d-</b> modifient les antigènes membranaires glycoprotéiques situés sur la tête des spermatozoïdes.</p>
+<p class="para"><b><span class="t-blue">3) Chez la femme, pendant le septième mois de grossesse :</span></b><br>
+<b>a-</b> les ovulations sont suspendues,<br>
+<b>b-</b> le corps jaune gestatif est bien développé,<br>
+<b>c-</b> l’ovaire continue ses sécrétions hormonales,<br>
+<b>d-</b> la glaire cervicale est filante à maillage lâche.</p>
+<p class="para"><b><span class="t-blue">4) Un retard d’apparition des menstruations chez une femelle peut être dû à :</span></b><br>
+<b>a-</b> une injection d’une faible dose de FSH, au milieu de la phase lutéale,<br>
+<b>b-</b> une injection d’une forte dose de HCG, le premier jour du cycle,<br>
+<b>c-</b> une fécondation probable,<br>
+<b>d-</b> un arrêt de la prise de la pilule combinée.</p>
+<p class="para"><b><span class="t-blue">5) Chez la femme, un ovotide se caractérise par :</span></b><br>
+<b>a-</b> un espace péri ovocytaire développé,<br>
+<b>b-</b> deux noyaux gamétiques à n chromosomes simples chacun,<br>
+<b>c-</b> des cellules de la corona radiata très nombreuses,<br>
+<b>d-</b> la présence de récepteurs spécifiques de la zone pellucide bien visibles.</p>
+<p class="para"><b><span class="t-blue">6) Le brassage intra-chromosomique peut avoir lieu au niveau des :</span></b><br>
+<b>a-</b> spermatocytes I,<br>
+<b>b-</b> ovocytes I,<br>
+<b>c-</b> spermatocytes II,<br>
+<b>d-</b> ovocytes II.</p>
+<!-- page 02 -->
+<p class="para"><b><span class="t-blue">7) la pilule combinée agit directement au niveau :</span></b><br>
+<b>a-</b> des ovaires en inhibant leur activité cyclique,<br>
+<b>b-</b> du myomètre en stimulant sa motricité,<br>
+<b>c-</b> de l’axe hypothalamo-hypophysaire en arrêtant ses sécrétion,<br>
+<b>d-</b> de l’endomètre en favorisant les hémorragies de privation.</p>
+<p class="para"><b><span class="t-blue">8) Lors de la PMA, les spermatozoïdes capables de féconder l'ovocyte II peuvent être pris directement :</span></b><br>
+<b>a-</b> des tubes séminifères,<br>
+<b>b-</b> de l’urètre,<br>
+<b>c-</b> du vagin,<br>
+<b>d-</b> de l’épididyme.</p>
+<div class="exsub"><b>Exercice 2 :</b></div>
+<p class="para">Un institut de recherche australien a annoncé avoir mis au point un contraceptif masculin efficace et réversible. Une quarantaine d’hommes jeunes a subi, durant 48 semaines, un traitement expérimental hormonal formé de deux hormones sexuelles <b>H<sub>1</sub></b> et <b>H<sub>2</sub></b>.</p>
+<p class="para">Le document 1 ci-contre montre l’évolution de la concentration du sperme en spermatozoïdes avant, pendant et après ce traitement contraceptif.</p>
+<!-- CROP: 4061 2 2 0.655 0.446 0.955 0.619 4061_s14_ex2_document1_spermatozoides -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_s14_ex2_document1_spermatozoides.png" alt=""></figure>
+<p class="para"><b>1)</b> A partir de l’analyse des résultats de ce traitement et faisant appel à vos connaissances :<br>
+- expliquez l’effet contraceptif de ce traitement hormonal chez l’homme.<br>
+- proposez trois hypothèses sur le mode d’action de ce traitement contraceptif.</p>
+<p class="para"><b>2)</b> Le document 2 montre les résultats des dosages des deux hormones hypophysaires FSH et LH avant, pendant et après ce traitement contraceptif.<br>
+Analysez ces résultats en vue :<br>
+- d’expliquer les effets de ce traitement.<br>
+- de préciser la ou les quelle(s) de(s) hypothèse(s) est (ou sont) encore valide(s).<br>
+- proposez les noms de ces deux hormones <b>H<sub>1</sub></b> et <b>H<sub>2</sub>.</b><br>
+- précisez pourquoi ce traitement est réversible.</p>
+<!-- CROP: 4061 2 2 0.655 0.625 0.955 0.793 4061_s14_ex2_document2_FSH_LH -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_s14_ex2_document2_FSH_LH.png" alt=""></figure>
+<p class="para"><b>3)</b> Pour identifier les hormones utilisées dans ce nouveau traitement contraceptif, on réalise les expériences suivantes.</p>
+<p class="para"><b><i><u><span class="t-blue">1<sup>ère</sup> expérience :</span></u></i></b></p>
+<p class="para">Après castration bilatérale d’un singe mâle adulte, on injecte au temps <b>T<sub>1</sub></b> une dose de l’hormone <b>H<sub>1</sub></b>.</p>
+<!-- page 03 -->
+<p class="para">Le document 3 montre les résultats de dosage des hormones hypophysaires <b>LH et FSH</b> ainsi obtenus.</p>
+<!-- CROP: 4061 2 3 0.506 0.123 0.892 0.293 4061_s14_ex2_document3_castration_H1 -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_s14_ex2_document3_castration_H1.png" alt=""></figure>
+<p class="para">Analysez les résultats de cette expérience afin :<br>
+- de reconnaitre l’hormone <b>H<sub>1</sub></b>.<br>
+- d’expliquer les résultats obtenus</p>
+<p class="para"><b><i><u><span class="t-blue">2<sup>ème</sup> expérience :</span></u></i></b></p>
+<p class="para">Chez la femelle de singe (guenon) dont le cycle sexuel est semblable à celui de la femme normale, on enregistre l’activité du muscle utérin avant et après l’injection d’une faible dose de l’hormone <b>H<sub>2</sub></b> au temps <b>T<sub>2</sub></b>.</p>
+<p class="para">Le document 4 montre les résultats obtenus.</p>
+<!-- CROP: 4061 2 3 0.511 0.366 0.890 0.524 4061_s14_ex2_document4_contractions -->
+<figure class="fig"><img src="https://wael-philo.b-cdn.net/figs/4061/4061_s14_ex2_document4_contractions.png" alt=""></figure>
+<p class="para"><b>4)</b> A partir de l’analyse de ces résultats :<br>
+- identifiez l’hormone <b>H<sub>2</sub></b>.<br>
+- précisez la période du cycle menstruel qui coïncide avec <b>T<sub>2</sub></b>.<br>
+- expliquez les résultats obtenus.</p>
+<p class="para"><b>5)</b> En tenant compte de vos réponses précédentes, et en faisant appel à vos connaissances, expliquez pourquoi faut-il associer <b>H<sub>1</sub></b> à <b>H<sub>2</sub></b> dans ce traitement contraceptif chez le jeune homme.</p>
+
+<div class="chtag"><span>Chapitre</span> Génétique des diploïdes (monohybridisme, dihybridisme)</div>
+
+<div class="exsub"><b>Exercice 3 :</b></div>
+<p class="para">Chez la drosophile, on réalise les 3 croisements suivants :</p>
+<p class="para"><b><i><u><span class="t-blue">1<sup>er</sup> croisement :</span></u></i></b></p>
+<p class="para">On croise deux souches de Drosophile, l'une aux ailes longues et aux yeux bruns, l'autre aux ailes vestigiales et aux yeux rouges.<br>
+Les individus F<sub>1</sub> obtenus ont tous des ailes longues et des yeux rouges.</p>
+<p class="para"><b>1) a)</b> Quelles conclusions pouvez-vous dégager de ces résultats ?<br>
+<b>b)</b> En déduire les génotypes possibles des parents et celui des individus de la F<sub>1</sub>.<br>
+<b>c)</b> Représentez sur un schéma la ou les localisation(s) chromosomique(s) des gènes étudiés chez les individus de la F<sub>1</sub>.</p>
+<!-- page 04 -->
+<p class="para"><b><i><u><span class="t-blue">2<sup>ème</sup> croisement :</span></u></i></b></p>
+<p class="para">Le croisement d'une femelle aux ailes longues et aux yeux rouges, avec un mâle aux ailes vestigiales et aux yeux bruns donne naissance à :<br>
+778 drosophiles aux ailes longues et aux yeux rouges,<br>
+776 drosophiles aux ailes vestigiales et aux yeux bruns,<br>
+367 drosophiles aux ailes longues et aux yeux bruns,<br>
+365 drosophiles aux ailes vestigiales et aux yeux rouges.</p>
+<p class="para"><b>2)</b> Analysez ces résultats en vue de :<br>
+- préciser la localisation des deux gènes considérés.<br>
+- déterminer les génotypes et les phénotypes des deux parents croisés ainsi que leur descendance.</p>
+<p class="para"><b><i><u><span class="t-blue">3<sup>ème</sup> croisement :</span></u></i></b></p>
+<p class="para">On croise une femelle aux ailes vestigiales et aux yeux bruns, avec un mâle de la F<sub>1</sub> du premier croisement, aux ailes longues et aux yeux rouges.</p>
+<p class="para"><b>3)</b> Donnez les résultats obtenus sur 1000 drosophiles.</p>
+
+</section>
+
+</div>
+</body>
+</html>
